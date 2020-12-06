@@ -17,7 +17,7 @@ public class Command {
     }
 
     public void execute(List<String> arguments) {
-        executor.execute(arguments);
+        if(!disabled) executor.execute(arguments);
     }
 
     public Executor getExecutor() {
