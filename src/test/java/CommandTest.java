@@ -11,29 +11,23 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 
-public class commandTest {
+public class CommandTest {
 
     @Test
-    void commandExecutedWithArguments() {
+    void commandInvokesExecutorWithArgs() {
 
         // Given an executor
         Executor executor = mock(Executor.class);
 
-        // And Given command with actions
-        Action action1 = mock(Action.class);
-        Action action2 = mock(Action.class);
-        Action action3 = mock(Action.class);
+        // And given a command
         Command command = new Command(executor);
-        command.addAction(action1);
-        command.addAction(action2);
-        command.addAction(action3);
 
         // When executed with arguments
         List<String> args = Arrays.asList("foo", "bar", "baz");
         command.execute(args);
 
         // Then the executor is invoked with the actions and arguments
-        verify(executor).execute(any(), any());
+        verify(executor).execute(args);
 
     }
 }

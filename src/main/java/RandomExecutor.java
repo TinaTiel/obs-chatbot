@@ -1,6 +1,8 @@
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class RandomExecutor implements Executor {
 
@@ -29,11 +31,11 @@ public class RandomExecutor implements Executor {
     }
 
     @Override
-    public void execute(List<Action> actions, List<String> arguments) {
+    public void execute(List<String> arguments) {
 
         // sanitize inputs
-        if(actions == null || arguments == null) {
-            throw new IllegalArgumentException("actions or arguments cannot be null");
+        if(arguments == null) {
+            throw new IllegalArgumentException("arguments cannot be null");
         }
 
         for(int i=0; i<pickedPerExecution; i++) {
@@ -52,5 +54,10 @@ public class RandomExecutor implements Executor {
             executed.add(picked);
         }
 
+    }
+
+    @Override
+    public List<Action> getActions() {
+        return Stream.concat(available.stream(), executed.stream()).collect(Collectors.toList());
     }
 }

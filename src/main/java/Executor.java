@@ -1,5 +1,6 @@
 import java.util.List;
 
 public interface Executor {
-    void execute(List<Action> actions, List<String> arguments);
+    void execute(List<String> arguments);
+    List<Action> getActions();
 }

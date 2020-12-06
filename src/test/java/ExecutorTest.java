@@ -38,8 +38,8 @@ public class ExecutorTest {
     void executeActionsInOrder() {
 
         // When executed with arguments
-        Executor executor = new InOrderExecutor(false);
-        executor.execute(actions, args);
+        Executor executor = new InOrderExecutor(actions,false);
+        executor.execute(args);
 
         // Then the actions are executed in that order with those arguments
         InOrder inOrder = Mockito.inOrder(action1, action2, action3);
@@ -53,8 +53,8 @@ public class ExecutorTest {
     void executeActionsInReverseOrder() {
 
         // When executed with arguments
-        Executor executor = new InOrderExecutor(true);
-        executor.execute(actions, args);
+        Executor executor = new InOrderExecutor(actions,true);
+        executor.execute(args);
 
         // Then the actions are executed in that order with those arguments
         InOrder inOrder = Mockito.inOrder(action3, action2, action1);
@@ -71,7 +71,7 @@ public class ExecutorTest {
         Executor executor = new RandomExecutor(actions, 2);
 
         // when executed
-        executor.execute(actions, args);
+        executor.execute(args);
 
         // Then two of the three will be executed
         int actionsWithOneInvocation = 0;
@@ -84,7 +84,7 @@ public class ExecutorTest {
         assertEquals(2, actionsWithOneInvocation);
 
         // And when executed again
-        executor.execute(actions, args);
+        executor.execute(args);
 
         // Then at least one of them will be executed twice
         int actionsWithTwoInvocations = 0;
@@ -105,7 +105,7 @@ public class ExecutorTest {
         Executor executor = new RandomExecutor(actions, null);
 
         // when executed
-        executor.execute(actions, args);
+        executor.execute(args);
 
         // Then all are invoked
         verify(action1, times(1)).execute(args);
@@ -113,12 +113,31 @@ public class ExecutorTest {
         verify(action3, times(1)).execute(args);
 
         // And when executed again
-        executor.execute(actions, args);
+        executor.execute(args);
 
         // Then all are invoked again
         verify(action1, times(2)).execute(args);
         verify(action2, times(2)).execute(args);
         verify(action3, times(2)).execute(args);
+
+    }
+
+    @Test
+    void executeRandomTotalActionsConsistentAcrossExecutions() {
+
+        // Given executor
+        Executor executor = new RandomExecutor(actions, 2);
+
+        // When executed repeatedly, then the list of actions may change order but contains the same elements
+        assertThat(executor.getActions()).containsExactlyInAnyOrderElementsOf(actions);
+        executor.execute(args);
+        assertThat(executor.getActions()).containsExactlyInAnyOrderElementsOf(actions);
+        executor.execute(args);
+        assertThat(executor.getActions()).containsExactlyInAnyOrderElementsOf(actions);
+        executor.execute(args);
+        assertThat(executor.getActions()).containsExactlyInAnyOrderElementsOf(actions);
+        executor.execute(args);
+        assertThat(executor.getActions()).containsExactlyInAnyOrderElementsOf(actions);
 
     }
 
@@ -129,7 +148,7 @@ public class ExecutorTest {
         Executor executor = new RandomExecutor(actions, 999);
 
         // when executed
-        executor.execute(actions, args);
+        executor.execute(args);
 
         // Then all are invoked
         verify(action1, times(1)).execute(args);
@@ -137,7 +156,7 @@ public class ExecutorTest {
         verify(action3, times(1)).execute(args);
 
         // And when executed again
-        executor.execute(actions, args);
+        executor.execute(args);
 
         // Then all are invoked again
         verify(action1, times(2)).execute(args);

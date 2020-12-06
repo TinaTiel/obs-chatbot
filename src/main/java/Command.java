@@ -1,9 +1,7 @@
-import java.util.ArrayList;
 import java.util.List;
 
 public class Command {
 
-    private final List<Action> actions = new ArrayList<>();
     private final Executor executor;
 
     public Command(Executor executor) {
@@ -11,14 +9,11 @@ public class Command {
     }
 
     public void execute(List<String> arguments) {
-        executor.execute(actions, arguments);
+        executor.execute(arguments);
     }
 
-    public void addAction(Action action) {
-        actions.add(action);
+    public Executor getExecutor() {
+        return executor;
     }
 
-    public List<Action> getActions() {
-        return new ArrayList<>(actions);
-    }
 }
