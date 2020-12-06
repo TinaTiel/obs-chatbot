@@ -1,10 +1,11 @@
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
@@ -31,7 +32,7 @@ public class commandTest {
         ArgumentCaptor<List<String>> argumentCaptor = ArgumentCaptor.forClass(List.class);
         for(Action action: command.getActions()) {
             verify(action).execute(argumentCaptor.capture());
-            assertThat(argumentCaptor.getValue()).asList().containsExactlyElementsOf(args);
+            assertThat(argumentCaptor.getValue()).containsExactlyElementsOf(args);
         }
 
     }

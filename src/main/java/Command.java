@@ -3,7 +3,7 @@ import java.util.List;
 
 public class Command {
 
-    private List<Action> actions = new ArrayList<>();
+    private final List<Action> actions = new ArrayList<>();
 
     public void execute(List<String> arguments) {
         for(Action action:actions) {
@@ -16,6 +16,6 @@ public class Command {
     }
 
     public List<Action> getActions() {
-        return actions;
+        return new ArrayList<>(actions);
     }
 }
