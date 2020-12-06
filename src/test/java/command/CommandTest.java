@@ -1,3 +1,6 @@
+package command;
+
+import command.Command;
 import executor.Executor;
 import org.junit.jupiter.api.Test;
 
