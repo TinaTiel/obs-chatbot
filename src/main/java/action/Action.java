@@ -1,6 +1,7 @@
+package action;
+
 import java.util.List;
 
-public interface Executor {
+public interface Action {
     void execute(List<String> arguments);
-    List<Action> getActions();
 }

@@ -1,13 +1,15 @@
+package action;
+
 import java.time.Duration;
 import java.util.List;
 
-public class ObsSourceVisibility implements Action {
+public class ObsSourceVisibilityAction implements Action {
 
     private final String sourceName;
     private final Visibility visibility;
     private final Duration duration;
 
-    public ObsSourceVisibility(String sourceName, Visibility visibility, Duration duration) {
+    public ObsSourceVisibilityAction(String sourceName, Visibility visibility, Duration duration) {
         this.sourceName = sourceName;
         this.visibility = visibility;
         this.duration = duration;

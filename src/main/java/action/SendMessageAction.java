@@ -1,10 +1,12 @@
+package action;
+
 import java.util.List;
 
-public class SendMessage implements Action {
+public class SendMessageAction implements Action {
 
     private final String message;
 
-    public SendMessage(String message) {
+    public SendMessageAction(String message) {
         this.message = message;
     }
 
