@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
@@ -15,11 +16,14 @@ public class commandTest {
     @Test
     void commandExecutedWithArguments() {
 
-        // Given command with actions
+        // Given an executor
+        Executor executor = mock(Executor.class);
+
+        // And Given command with actions
         Action action1 = mock(Action.class);
         Action action2 = mock(Action.class);
         Action action3 = mock(Action.class);
-        Command command = new Command();
+        Command command = new Command(executor);
         command.addAction(action1);
         command.addAction(action2);
         command.addAction(action3);
@@ -28,12 +32,8 @@ public class commandTest {
         List<String> args = Arrays.asList("foo", "bar", "baz");
         command.execute(args);
 
-        // Then the actions are also executed with those arguments
-        ArgumentCaptor<List<String>> argumentCaptor = ArgumentCaptor.forClass(List.class);
-        for(Action action: command.getActions()) {
-            verify(action).execute(argumentCaptor.capture());
-            assertThat(argumentCaptor.getValue()).containsExactlyElementsOf(args);
-        }
+        // Then the executor is invoked with the actions and arguments
+        verify(executor).execute(any(), any());
 
     }
 }
