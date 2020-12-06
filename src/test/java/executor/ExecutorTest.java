@@ -1,9 +1,6 @@
 package executor;
 
 import action.Action;
-import executor.Executor;
-import executor.InOrderExecutor;
-import executor.RandomExecutor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
@@ -15,7 +12,6 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.*;
 
 public class ExecutorTest {
@@ -26,7 +22,7 @@ public class ExecutorTest {
 
     @BeforeEach
     void setUp() {
-        // given actions and arguments
+
         args.addAll(Arrays.asList("foo", "bar", "baz"));
 
         action1 = mock(Action.class);
@@ -91,7 +87,7 @@ public class ExecutorTest {
         // And when executed again
         executor.execute(args);
 
-        // Then at least one of them will be executed twice
+        // Then at least one of them will be executed twice (100% statistical certainty)
         int actionsWithTwoInvocations = 0;
         for(Action action:actions) {
             if(Mockito.mockingDetails(action).getInvocations().size() == 2) {

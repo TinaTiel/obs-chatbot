@@ -1,13 +1,11 @@
 package command;
 
-import command.Command;
 import executor.Executor;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
@@ -21,7 +19,7 @@ public class CommandTest {
         Executor executor = mock(Executor.class);
 
         // And given a command
-        Command command = new Command(executor);
+        Command command = new Command("somename", executor, false);
 
         // When executed with arguments
         List<String> args = Arrays.asList("foo", "bar", "baz");
