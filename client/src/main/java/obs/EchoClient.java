@@ -11,9 +11,7 @@ public class EchoClient {
     public EchoClient(String endpoint) {
         try {
             URI uri = new URI(endpoint);
-            System.out.println("URI: " + uri);
             WebSocketContainer webSocketContainer = ContainerProvider.getWebSocketContainer();
-            System.out.println("Container is: " + webSocketContainer);
             webSocketContainer.connectToServer(this, uri);
 
         } catch (Exception e) {
@@ -25,15 +23,13 @@ public class EchoClient {
     @OnOpen
     public void onOpen(Session session) {
         this.session = session;
-        System.out.println("Connected! Session info: ");
-        System.out.println("URI: " + this.session.getRequestURI());
-        System.out.println("Session ID: " + this.session.getId());
+        System.out.println("Connected to " + this.session.getRequestURI()
+                + ", with ID " + this.session.getId());
     }
 
     @OnMessage
     public void onMessage(String message, Session session) {
-        System.out.println("Received message: " + message);
-        System.out.println("Session id is still: " + session.getId());
+        System.out.println("Client ID " + session.getId() + " Received message: " + message);
     }
 
     @OnClose
@@ -49,8 +45,12 @@ public class EchoClient {
     }
 
     public void sendSomeMessage(String yourMessage) {
-        System.out.println("Sending message: " + yourMessage);
+        System.out.println("Client ID " + session.getId() + " sending message: " + yourMessage);
         session.getAsyncRemote().sendText(yourMessage);
+    }
+
+    public Session getSession() {
+        return session;
     }
 
 }
