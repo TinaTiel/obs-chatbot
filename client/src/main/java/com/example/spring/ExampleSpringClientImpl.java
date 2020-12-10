@@ -1,30 +1,17 @@
-package example.classic;
+package com.example.spring;
 
 import javax.websocket.*;
-import java.net.URI;
 
 @ClientEndpoint
-public class ExampleClassicClient {
+public class ExampleSpringClientImpl implements ExampleSpringClient {
 
     private Session session;
 
-    public ExampleClassicClient(String endpoint) {
-        try {
-            URI uri = new URI(endpoint);
-            WebSocketContainer webSocketContainer = ContainerProvider.getWebSocketContainer();
-            webSocketContainer.connectToServer(this, uri);
-
-        } catch (Exception e) {
-            System.out.println("Encountered exception while connecting to server: " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
-
     @OnOpen
     public void onOpen(Session session) {
+        System.out.println("Connected to " + session.getId()
+                + ", with Session ID " + session.getId());
         this.session = session;
-        System.out.println("Connected to " + this.session.getRequestURI()
-                + ", with ID " + this.session.getId());
     }
 
     @OnMessage

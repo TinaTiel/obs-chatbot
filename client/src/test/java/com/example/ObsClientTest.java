@@ -1,4 +1,4 @@
-package example;
+package com.example;
 
 public class ObsClientTest {
 

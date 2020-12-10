@@ -1,13 +1,13 @@
-package example;
+package com.example;
 
-import example.classic.ExampleClassicClient;
+import com.example.classic.ExampleClassicClient;
 
 public class ClassicJsr356App {
     public static void main(String[] args) {
         //String endpoint = "wss://echo.websocket.org/";
         String endpoint = "ws://localhost:4444/";
         try {
-            // client in this example connects in the constructor instead of here
+            // client in this com.example connects in the constructor instead of here
             ExampleClassicClient exampleClassicClient = new ExampleClassicClient(endpoint);
             ExampleClassicClient badPracticeClient = new ExampleClassicClient(endpoint);
             ExampleClassicClient broadcastClient = new ExampleClassicClient(endpoint);

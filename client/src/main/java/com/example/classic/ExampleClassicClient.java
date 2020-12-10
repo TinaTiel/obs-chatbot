@@ -1,14 +1,14 @@
-package example.spring;
+package com.example.classic;
 
 import javax.websocket.*;
 import java.net.URI;
 
 @ClientEndpoint
-public class ExampleSpringClient {
+public class ExampleClassicClient {
 
     private Session session;
 
-    public ExampleSpringClient(String endpoint) {
+    public ExampleClassicClient(String endpoint) {
         try {
             URI uri = new URI(endpoint);
             WebSocketContainer webSocketContainer = ContainerProvider.getWebSocketContainer();
