@@ -1,8 +1,6 @@
-package obs;
+package example.spring;
 
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.socket.client.standard.AnnotatedEndpointConnectionManager;
 
 @Configuration
 public class WebsocketConfig {

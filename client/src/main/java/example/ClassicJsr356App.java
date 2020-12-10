@@ -1,18 +1,17 @@
-import obs.EchoClient;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+package example;
 
-@SpringBootApplication
-public class App {
+import example.classic.ExampleClassicClient;
+
+public class ClassicJsr356App {
     public static void main(String[] args) {
-//        SpringApplication.run(App.class, args);
         //String endpoint = "wss://echo.websocket.org/";
         String endpoint = "ws://localhost:4444/";
         try {
             // client in this example connects in the constructor instead of here
-            EchoClient echoClient = new EchoClient(endpoint);
-            EchoClient badPracticeClient = new EchoClient(endpoint);
-            EchoClient broadcastClient = new EchoClient(endpoint);
-            echoClient.sendSomeMessage("{\"request-type\": \"GetVersion\",\"message-id\":\"" + echoClient.getSession().getId() + "\"}" );
+            ExampleClassicClient exampleClassicClient = new ExampleClassicClient(endpoint);
+            ExampleClassicClient badPracticeClient = new ExampleClassicClient(endpoint);
+            ExampleClassicClient broadcastClient = new ExampleClassicClient(endpoint);
+            exampleClassicClient.sendSomeMessage("{\"request-type\": \"GetVersion\",\"message-id\":\"" + exampleClassicClient.getSession().getId() + "\"}" );
             badPracticeClient.sendSomeMessage("{\"request-type\": \"GetVersion\",\"message-id\":\"foobarbaz\"}");
             broadcastClient.sendSomeMessage("{\"request-type\": \"BroadcastCustomMessage\",\"message-id\":\"" + broadcastClient.getSession().getId() + "\",\"realm\": \"myCustomRealm\",\"data\": {\"foo\":\"bar\"} }" );
 

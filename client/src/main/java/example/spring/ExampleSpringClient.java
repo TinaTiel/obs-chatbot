@@ -1,14 +1,14 @@
-package obs;
+package example.spring;
 
 import javax.websocket.*;
 import java.net.URI;
 
 @ClientEndpoint
-public class EchoClient {
+public class ExampleSpringClient {
 
     private Session session;
 
-    public EchoClient(String endpoint) {
+    public ExampleSpringClient(String endpoint) {
         try {
             URI uri = new URI(endpoint);
             WebSocketContainer webSocketContainer = ContainerProvider.getWebSocketContainer();
