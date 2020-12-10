@@ -3,9 +3,7 @@ package com.example.spring;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.client.standard.AnnotatedEndpointConnectionManager;
-import org.springframework.web.socket.config.annotation.EnableWebSocket;
 
-@EnableWebSocket
 @Configuration
 public class WebsocketConfig {
 
