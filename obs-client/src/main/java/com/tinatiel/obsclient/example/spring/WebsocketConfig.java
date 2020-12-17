@@ -1,4 +1,4 @@
-package com.example.spring;
+package com.tinatiel.obsclient.example.spring;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

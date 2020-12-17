@@ -1,4 +1,4 @@
-package com.example.spring;
+package com.tinatiel.obsclient.example.spring;
 
 import javax.websocket.Session;
 

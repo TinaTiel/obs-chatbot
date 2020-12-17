@@ -17,7 +17,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>core</module>
-        <module>client</module>
+        <module>obs-client</module>
     </modules>
 
     <properties>

@@ -1,6 +1,6 @@
-package com.example;
+package com.tinatiel.obsclient.example;
 
-import com.example.classic.ExampleClassicClient;
+import com.tinatiel.obsclient.example.classic.ExampleClassicClient;
 
 public class ClassicJsr356App {
     public static void main(String[] args) {

@@ -1,4 +1,4 @@
-package com.example.classic;
+package com.tinatiel.obsclient.example.classic;
 
 import javax.websocket.*;
 import java.net.URI;

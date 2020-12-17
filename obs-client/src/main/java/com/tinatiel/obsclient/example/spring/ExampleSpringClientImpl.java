@@ -1,8 +1,8 @@
-package com.example.spring;
+package com.tinatiel.obsclient.example.spring;
 
 import javax.websocket.*;
 
-@ClientEndpoint
+@ClientEndpoint(encoders = {GetVersionEncoder.class})
 public class ExampleSpringClientImpl implements ExampleSpringClient {
 
     private Session session;
