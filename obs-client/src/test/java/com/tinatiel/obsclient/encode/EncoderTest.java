@@ -4,6 +4,7 @@ import com.tinatiel.obsclient.model.ObsRequestEncoder;
 import com.tinatiel.obsclient.model.request.RequestGetVersion;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.skyscreamer.jsonassert.JSONAssert;
 
 import javax.websocket.Encoder;
 
@@ -25,11 +26,11 @@ public class EncoderTest {
         RequestGetVersion request = new RequestGetVersion("1");
 
         // When encoded
-        String result = encoder.encode(request);
+        String actual = encoder.encode(request);
 
         // Then it is encoded as expected
         String expected = "{\"request-type\": \"GetVersion\", \"message-id\": \"1\"}";
-        assertThat(result).isEqualTo(expected);
+        JSONAssert.assertEquals(expected, actual, false);
 
     }
 
