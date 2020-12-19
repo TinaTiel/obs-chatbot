@@ -2,13 +2,13 @@
 **.DS_Store
 
 # Maven output directory
-**/target/**
+**/target
 
 ### Maven Plugins ###
 .flattened-pom.xml
 
 ### Intellij ###
-.idea/*
+**/.idea
 **/*.iml
 
 ### react ###

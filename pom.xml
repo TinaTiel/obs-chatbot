@@ -4,17 +4,16 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.tinatiel.obschatbot</groupId>
+    <groupId>com.tinatiel</groupId>
     <artifactId>parent</artifactId>
-    <version>${revision}</version>
+    <version>1.0.0</version>
     <packaging>pom</packaging>
     <modules>
-        <module>core</module>
-        <module>obs-client</module>
+        <module>obschatbot</module>
+        <module>obsclient</module>
     </modules>
 
     <properties>
-        <revision>1.0.0-SNAPSHOT</revision>
         <java.version>11</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
@@ -82,22 +81,7 @@
                     <flattenMode>bom</flattenMode>
                 </configuration>
             </plugin>
-            <plugin>
-                <artifactId>maven-site-plugin</artifactId>
-                <version>3.8.2</version>
-                <configuration>
-                    <generateReports>false</generateReports>
-                    <templateFile>src/site/dev-to-template.vm</templateFile>
-                    <relativizeDecorationLinks>false</relativizeDecorationLinks>
-                </configuration>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.apache.maven.doxia</groupId>
-                        <artifactId>doxia-module-markdown</artifactId>
-                        <version>1.9</version>
-                    </dependency>
-                </dependencies>
-            </plugin>
+
         </plugins>
     </build>
     
