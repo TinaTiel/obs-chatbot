@@ -2,18 +2,17 @@ package com.tinatiel.obsclient.model;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tinatiel.obsclient.model.request.GetVersion;
 
 import javax.websocket.EncodeException;
 import javax.websocket.Encoder;
 import javax.websocket.EndpointConfig;
 
-public class ObsRequestEncoder implements Encoder.Text<GetVersion> {
+public class ObsRequestEncoder implements Encoder.Text<Object> {
 
     ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
-    public String encode(GetVersion object) throws EncodeException {
+    public String encode(Object object) throws EncodeException {
         try {
             return objectMapper.writeValueAsString(object);
         } catch (JsonProcessingException e) {
@@ -30,4 +29,5 @@ public class ObsRequestEncoder implements Encoder.Text<GetVersion> {
     public void destroy() {
 
     }
+
 }

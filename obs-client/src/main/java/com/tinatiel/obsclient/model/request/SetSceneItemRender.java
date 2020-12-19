@@ -1,7 +1,10 @@
 package com.tinatiel.obsclient.model.request;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class SetSceneItemRender extends AbstractObsRequest {
 
+    @JsonProperty("scene-name")
     private final String sceneName;
     private final String source;
     private final boolean render;

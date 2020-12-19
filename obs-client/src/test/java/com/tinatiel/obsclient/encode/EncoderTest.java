@@ -30,6 +30,8 @@ public class EncoderTest {
 
         // When encoded
         String actual = encoder.encode(request);
+        System.out.println("Encoded object : " + request);
+        System.out.println("To Json        : " + actual);
 
         // Then it is encoded as expected (ignoring json field order, as it doesn't matter)
         JSONAssert.assertEquals(expectedJson, actual, false);
