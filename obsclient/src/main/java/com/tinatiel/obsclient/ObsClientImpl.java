@@ -1,8 +1,10 @@
 package com.tinatiel.obsclient;
 
 import com.tinatiel.obsclient.model.ObsRequestEncoder;
+import com.tinatiel.obsclient.model.request.AbstractObsRequest;
 
 import javax.websocket.*;
+import java.util.concurrent.CompletableFuture;
 
 @ClientEndpoint(encoders = {ObsRequestEncoder.class})
 public class ObsClientImpl implements ObsClient {
@@ -35,6 +37,11 @@ public class ObsClientImpl implements ObsClient {
 
     public Session getSession() {
         return session;
+    }
+
+    @Override
+    public CompletableFuture<String> sendMessage(AbstractObsRequest request) {
+        return null;
     }
 
 }

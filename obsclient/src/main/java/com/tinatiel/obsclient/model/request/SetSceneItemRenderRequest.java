@@ -2,14 +2,14 @@ package com.tinatiel.obsclient.model.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class SetSceneItemRender extends AbstractObsRequest {
+public class SetSceneItemRenderRequest extends AbstractObsRequest {
 
     @JsonProperty("scene-name")
     private final String sceneName;
     private final String source;
     private final boolean render;
 
-    public SetSceneItemRender( String messageId, String sceneName, String source, boolean render) {
+    public SetSceneItemRenderRequest(String messageId, String sceneName, String source, boolean render) {
         super("SetSceneItemRender", messageId);
         this.sceneName = sceneName;
         this.source = source;

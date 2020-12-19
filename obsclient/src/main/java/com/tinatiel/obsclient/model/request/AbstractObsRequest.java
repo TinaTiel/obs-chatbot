@@ -3,7 +3,7 @@ package com.tinatiel.obsclient.model.request;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
-public abstract class AbstractObsRequest {
+public abstract class AbstractObsRequest implements ObsRequest {
 
     @JsonProperty("request-type")
     protected final String requestType;
@@ -16,10 +16,12 @@ public abstract class AbstractObsRequest {
         this.messageId = messageId;
     }
 
+    @Override
     public String getRequestType() {
         return requestType;
     }
 
+    @Override
     public String getMessageId() {
         return messageId;
     }
