@@ -6,10 +6,10 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 public abstract class AbstractRequest {
 
     @JsonProperty("request-type")
-    private final String requestType;
+    protected final String requestType;
 
     @JsonProperty("message-id")
-    private final String messageId;
+    protected final String messageId;
 
     protected AbstractRequest(String requestType, String messageId) {
         this.requestType = requestType;

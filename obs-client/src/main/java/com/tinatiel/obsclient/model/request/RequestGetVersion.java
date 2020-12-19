@@ -6,4 +6,11 @@ public class RequestGetVersion extends AbstractRequest {
         super("GetVersion", messageId);
     }
 
+    @Override
+    public String toString() {
+        return "RequestGetVersion{" +
+                "requestType='" + requestType + '\'' +
+                ", messageId='" + messageId + '\'' +
+                '}';
+    }
 }

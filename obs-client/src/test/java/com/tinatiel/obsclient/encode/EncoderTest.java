@@ -3,10 +3,16 @@ package com.tinatiel.obsclient.encode;
 import com.tinatiel.obsclient.model.ObsRequestEncoder;
 import com.tinatiel.obsclient.model.request.RequestGetVersion;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.skyscreamer.jsonassert.JSONAssert;
 
 import javax.websocket.Encoder;
+
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
@@ -19,19 +25,25 @@ public class EncoderTest {
         encoder = new ObsRequestEncoder();
     }
 
-    @Test
-    void encodeAsExpected() throws Exception {
-
-        // Given a request
-        RequestGetVersion request = new RequestGetVersion("1");
+    @ParameterizedTest()
+    @MethodSource("encoderArguments")
+    void encodeAsExpected(Object request, String expectedJson) throws Exception {
 
         // When encoded
         String actual = encoder.encode(request);
 
-        // Then it is encoded as expected
-        String expected = "{\"request-type\": \"GetVersion\", \"message-id\": \"1\"}";
-        JSONAssert.assertEquals(expected, actual, false);
+        // Then it is encoded as expected (ignoring json field order, as it doesn't matter)
+        JSONAssert.assertEquals(expectedJson, actual, false);
 
+    }
+
+    static Stream<Arguments> encoderArguments() {
+        return Stream.of(
+            Arguments.of(
+                    new RequestGetVersion("1"),
+                    "{\"request-type\": \"GetVersion\", \"message-id\": \"1\"}"
+            )
+        );
     }
 
 }
