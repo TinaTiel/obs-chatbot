@@ -1,10 +1,9 @@
 package com.tinatiel.obsclient.encode;
 
 import com.tinatiel.obsclient.model.ObsRequestEncoder;
-import com.tinatiel.obsclient.model.request.RequestGetVersion;
+import com.tinatiel.obsclient.model.request.GetVersion;
+import com.tinatiel.obsclient.model.request.SetSceneItemRender;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -40,8 +39,12 @@ public class EncoderTest {
     static Stream<Arguments> encoderArguments() {
         return Stream.of(
             Arguments.of(
-                    new RequestGetVersion("1"),
+                    new GetVersion("1"),
                     "{\"request-type\": \"GetVersion\", \"message-id\": \"1\"}"
+            ),
+            Arguments.of(
+                    new SetSceneItemRender("1", "foo", "bar", true),
+                    "{\"request-type\": \"SetSceneItemRender\", \"message-id\": \"1\", \"scene-name\": \"foo\", \"source\": \"bar\", \"render\": true}"
             )
         );
     }

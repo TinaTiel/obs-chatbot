@@ -1,8 +1,8 @@
 package com.tinatiel.obsclient.model.request;
 
-public class RequestGetVersion extends AbstractRequest {
+public class GetVersion extends AbstractObsRequest {
 
-    public RequestGetVersion(String messageId) {
+    public GetVersion(String messageId) {
         super("GetVersion", messageId);
     }
 
