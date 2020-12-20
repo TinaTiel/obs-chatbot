@@ -1,6 +1,6 @@
-package executor;
+package com.tinatiel.obschatbot.core.executor;
 
-import action.Action;
+import com.tinatiel.obschatbot.core.action.Action;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package action;
+package com.tinatiel.obschatbot.core.action;
 
 import java.util.List;
 

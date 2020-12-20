@@ -1,4 +1,4 @@
-package action.obs;
+package com.tinatiel.obschatbot.core.action.obs;
 
 import net.twasi.obsremotejava.OBSRemoteController;
 
@@ -19,9 +19,8 @@ public class ObsClientImpl implements ObsClient {
 
     @Override
     public void setSourceVisibility(String scene, String source, boolean visibility) {
-        connect();
         controller.setSourceVisibility(scene, source, visibility, (it) -> {
-            if(it.getError() != null || !it.getError().isEmpty()) {
+            if(it.getError() == null || !it.getError().isEmpty()) {
                 System.out.println("Error: " + it.getError());
             }
             System.out.println("[id=" + it.getMessageId() + "] Status: " + it.getStatus());

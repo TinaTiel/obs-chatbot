@@ -1,4 +1,4 @@
-package action;
+package com.tinatiel.obschatbot.core.action;
 
 import org.junit.jupiter.api.BeforeEach;
 

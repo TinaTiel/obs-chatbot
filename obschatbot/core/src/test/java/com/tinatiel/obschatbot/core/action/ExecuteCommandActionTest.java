@@ -1,6 +1,6 @@
-package action;
+package com.tinatiel.obschatbot.core.action;
 
-import command.Command;
+import com.tinatiel.obschatbot.core.command.Command;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
@@ -16,17 +16,17 @@ public class ExecuteCommandActionTest {
     @Test
     void whenExecutedThenCommandIsExecuted() {
 
-        // Given a command
+        // Given a com.tinatiel.obschatbot.core.command
         Command command = mock(Command.class);
 
-        // And an action executing it
+        // And an com.tinatiel.obschatbot.core.action executing it
         ExecuteCommandAction action = new ExecuteCommandAction(command);
 
         // When executed
         List<String> args = Arrays.asList("foo", "bar", "baz");
         action.execute(args);
 
-        // Then the command is executed
+        // Then the com.tinatiel.obschatbot.core.command is executed
         verify(command).execute(args);
 
     }
@@ -35,7 +35,7 @@ public class ExecuteCommandActionTest {
     @Test
     void whenCyclicalExecutionCreatedThenExceptionThrown() {
 
-        // Given a root command and executor
+        // Given a root com.tinatiel.obschatbot.core.command and com.tinatiel.obschatbot.core.executor
         fail("todo");
 
     }

@@ -1,6 +1,6 @@
-package command;
+package com.tinatiel.obschatbot.core.command;
 
-import executor.Executor;
+import com.tinatiel.obschatbot.core.executor.Executor;
 
 import java.util.List;
 

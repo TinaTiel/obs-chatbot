@@ -1,6 +1,6 @@
-package executor;
+package com.tinatiel.obschatbot.core.executor;
 
-import action.Action;
+import com.tinatiel.obschatbot.core.action.Action;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,11 +50,11 @@ public class RandomExecutor implements Executor {
                 executed.clear();
             }
 
-            // Pick an action from what's available to execute, and execute it
+            // Pick an com.tinatiel.obschatbot.core.action from what's available to execute, and execute it
             Action picked = available.remove(random.nextInt(available.size()));
             picked.execute(arguments);
 
-            // Add the executed action to the list of executed actions
+            // Add the executed com.tinatiel.obschatbot.core.action to the list of executed actions
             executed.add(picked);
         }
 

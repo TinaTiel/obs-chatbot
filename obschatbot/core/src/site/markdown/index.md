@@ -3,7 +3,7 @@ Stream via Open Broadcaster Software (OBS)?
 
 Want to allow chat to ruin your stream with memes and scene changes?
 
-You're in the right place! Connect actions in OBS with whatever chat, command-line, http, etc. client you damn well want.
+You're in the right place! Connect actions in OBS with whatever chat, com.tinatiel.obschatbot.core.command-line, http, etc. client you damn well want.
 
 # UNDER DEVELOPMENT
 If you pull and run this, it ain't gonna work yet cowboy.

@@ -1,4 +1,4 @@
-package action.obs;
+package com.tinatiel.obschatbot.core.action.obs;
 
 public interface ObsClient {
 

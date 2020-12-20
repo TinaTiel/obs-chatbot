@@ -1,6 +1,6 @@
-package executor;
+package com.tinatiel.obschatbot.core.executor;
 
-import action.Action;
+import com.tinatiel.obschatbot.core.action.Action;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
@@ -68,7 +68,7 @@ public class ExecutorTest {
     @Test
     void executeRandomActionsIsPseudoRandomAndCyclical() {
 
-        // Given executor will execute two of the three
+        // Given com.tinatiel.obschatbot.core.executor will execute two of the three
         Executor executor = new RandomExecutor(actions, 2);
 
         // when executed
@@ -102,7 +102,7 @@ public class ExecutorTest {
     @Test
     void executeRandomActionsWhenNullExecutionsThenExecuteAll() {
 
-        // Given executor with null args
+        // Given com.tinatiel.obschatbot.core.executor with null args
         Executor executor = new RandomExecutor(actions, null);
 
         // when executed
@@ -126,7 +126,7 @@ public class ExecutorTest {
     @Test
     void executeRandomTotalActionsConsistentAcrossExecutions() {
 
-        // Given executor
+        // Given com.tinatiel.obschatbot.core.executor
         Executor executor = new RandomExecutor(actions, 2);
 
         // When executed repeatedly, then the list of actions may change order but contains the same elements
@@ -145,7 +145,7 @@ public class ExecutorTest {
     @Test
     void executeRandomActionsWhenMoreExecutionsThanActionsThenExecuteAll() {
 
-        // Given executor with higher execution than number of actions
+        // Given com.tinatiel.obschatbot.core.executor with higher execution than number of actions
         Executor executor = new RandomExecutor(actions, 999);
 
         // when executed

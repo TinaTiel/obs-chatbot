@@ -1,6 +1,6 @@
-package action;
+package com.tinatiel.obschatbot.core.action;
 
-import command.Command;
+import com.tinatiel.obschatbot.core.command.Command;
 
 import java.util.List;
 

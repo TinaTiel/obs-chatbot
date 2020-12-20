@@ -35,7 +35,7 @@
 
 @REM Begin all REM lines with '@' in case MAVEN_BATCH_ECHO is 'on'
 @echo off
-@REM set title of command window
+@REM set title of com.tinatiel.obschatbot.core.command window
 title %0
 @REM enable echoing by setting MAVEN_BATCH_ECHO to 'on'
 @if "%MAVEN_BATCH_ECHO%" == "on"  echo %MAVEN_BATCH_ECHO%
@@ -141,7 +141,7 @@ if exist %WRAPPER_JAR% (
         echo Downloading from: %DOWNLOAD_URL%
     )
 
-    powershell -command.Command "&{"^
+    powershell -com.tinatiel.obschatbot.core.command.Command "&{"^
 		"$webclient = new-object System.Net.WebClient;"^
 		"if (-not ([string]::IsNullOrEmpty('%MVNW_USERNAME%') -and [string]::IsNullOrEmpty('%MVNW_PASSWORD%'))) {"^
 		"$webclient.Credentials = new-object System.Net.NetworkCredential('%MVNW_USERNAME%', '%MVNW_PASSWORD%');"^
