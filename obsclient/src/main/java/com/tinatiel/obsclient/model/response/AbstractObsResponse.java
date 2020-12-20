@@ -1,7 +1,10 @@
 package com.tinatiel.obsclient.model.response;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public abstract class AbstractObsResponse implements ObsResponse {
 
+    @JsonProperty("message-id")
     private final String messageId;
 
     private final Status status;
