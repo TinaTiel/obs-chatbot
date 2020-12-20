@@ -1,4 +1,4 @@
-package com.tinatiel.obsclient;
+package com.tinatiel.obsclient.client;
 
 import com.tinatiel.obsclient.model.ObsRequestEncoder;
 import com.tinatiel.obsclient.model.request.AbstractObsRequest;
