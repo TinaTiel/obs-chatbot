@@ -10,7 +10,6 @@
     <packaging>pom</packaging>
     <modules>
         <module>obschatbot</module>
-        <module>obsclient</module>
     </modules>
 
     <properties>
