@@ -89,8 +89,12 @@ public class ActionSequencerTest {
 
         // when sequenced
         List<Action> sequence = sequencer.nextSequence();
+        System.out.println("First sequence : " + sequence);
 
-        // Then two of the three will be sequenced
+        // Then there are two picked
+        assertThat(sequence).hasSize(2);
+
+        // And two of three will have been picked once
         for(Action action:sequence) {
             sequenceResults.put(action, sequenceResults.get(action) + 1);
         }
@@ -102,8 +106,12 @@ public class ActionSequencerTest {
 
         // And when sequenced again
         sequence = sequencer.nextSequence();
+        System.out.println("Second sequence: " + sequence);
 
-        // Then at least one of them will be executed twice (100% statistical certainty)
+        // Then two were picked
+        assertThat(sequence).hasSize(2);
+
+        // And at least one of them will be picked twice (100% statistical certainty)
         for(Action action:sequence) {
             sequenceResults.put(action, sequenceResults.get(action) + 1);
         }

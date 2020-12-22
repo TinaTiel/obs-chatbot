@@ -8,8 +8,8 @@ import java.util.Random;
 
 public class RandomOrderActionSequencer implements ActionSequencer {
 
-    private List<Action> available = new ArrayList<>();
-    private List<Action> sequenced = new ArrayList<>();
+    private final List<Action> available = new ArrayList<>();
+    private final List<Action> sequenced = new ArrayList<>();
     private final Integer pickedPerExecution;
     private final Random random = new Random();
 
@@ -34,22 +34,26 @@ public class RandomOrderActionSequencer implements ActionSequencer {
     @Override
     public List<Action> nextSequence() {
 
+        // Init empty list of picks
+        List<Action> picked = new ArrayList<>();
+
+        // Pick actions to sequence
         for(int i=0; i<pickedPerExecution; i++) {
 
             // If there's nothing available, then repopulate the list
-            if(available.size() <= 0) {
+            if(available.isEmpty()) {
                 available.addAll(sequenced);
                 sequenced.clear();
             }
 
-            // Pick an com.tinatiel.obschatbot.core.action from what's available to execute, and execute it
-            Action picked = available.remove(random.nextInt(available.size()));
+            Action pick = available.remove(random.nextInt(available.size()));
+            sequenced.add(pick);
+            picked.add(pick);
 
-            // Add the executed com.tinatiel.obschatbot.core.action to the list of executed actions
-            sequenced.add(picked);
         }
 
-        return new ArrayList<>(sequenced);
+        // Return what was picked
+        return new ArrayList<>(picked);
 
     }
 }
