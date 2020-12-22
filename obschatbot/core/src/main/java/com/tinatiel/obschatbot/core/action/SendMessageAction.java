@@ -1,6 +1,7 @@
 package com.tinatiel.obschatbot.core.action;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 public class SendMessageAction implements Action {
 
@@ -11,8 +12,8 @@ public class SendMessageAction implements Action {
     }
 
     @Override
-    public void execute(List<String> arguments) {
-
+    public CompletableFuture<ActionResult> execute(List<String> arguments) {
+        return null;
     }
 
     public String getMessage() {

@@ -2,6 +2,7 @@ package com.tinatiel.obschatbot.core.action;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 public class ObsSourceVisibilityAction implements Action {
 
@@ -28,8 +29,8 @@ public class ObsSourceVisibilityAction implements Action {
     }
 
     @Override
-    public void execute(List<String> arguments) {
-
+    public CompletableFuture<ActionResult> execute(List<String> arguments) {
+        return null;
     }
 
 }

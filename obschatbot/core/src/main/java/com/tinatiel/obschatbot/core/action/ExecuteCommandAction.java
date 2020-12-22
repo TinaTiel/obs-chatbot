@@ -3,6 +3,7 @@ package com.tinatiel.obschatbot.core.action;
 import com.tinatiel.obschatbot.core.command.Command;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 public class ExecuteCommandAction implements Action {
 
@@ -13,7 +14,8 @@ public class ExecuteCommandAction implements Action {
     }
 
     @Override
-    public void execute(List<String> arguments) {
+    public CompletableFuture<ActionResult> execute(List<String> arguments) {
         command.execute(arguments);
+        return null;
     }
 }
