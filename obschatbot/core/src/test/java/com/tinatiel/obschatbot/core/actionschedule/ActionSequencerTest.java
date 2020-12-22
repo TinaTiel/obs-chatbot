@@ -2,6 +2,7 @@ package com.tinatiel.obschatbot.core.actionschedule;
 
 import com.tinatiel.obschatbot.core.action.Action;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
@@ -75,7 +76,7 @@ public class ActionSequencerTest {
 
     }
 
-    @Test
+    @RepeatedTest(30)
     void executeRandomActionsIsPseudoRandomAndCyclical() {
 
         // Given actions to execute
@@ -110,7 +111,7 @@ public class ActionSequencerTest {
         for(Map.Entry entry:sequenceResults.entrySet()) {
             if(((Integer)entry.getValue()) == 2) matches ++;
         }
-        assertThat(matches).isEqualTo(1);
+        assertThat(matches).isGreaterThanOrEqualTo(1);
 
     }
 
