@@ -1,31 +1,39 @@
 package com.tinatiel.obschatbot.core.action;
 
+import com.tinatiel.obschatbot.core.actionservice.ActionServiceFactory;
+
 import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public class ObsSourceVisibilityAction implements Action {
 
-    private final String sourceName;
-    private final Visibility visibility;
-    private final Duration duration;
+    private final ActionServiceFactory factory;
+    private final ActionContext context;
 
-    public ObsSourceVisibilityAction(String sourceName, Visibility visibility, Duration duration) {
+    private final String sceneName;
+    private final String sourceName;
+    private final boolean visible;
+
+    public ObsSourceVisibilityAction(ActionServiceFactory factory, ActionContext context,
+                                     String sceneName, String sourceName, boolean visible) {
+        this.factory = factory;
+        this.context = context;
+        this.sceneName = sceneName;
         this.sourceName = sourceName;
-        this.visibility = visibility;
-        this.duration = duration;
+        this.visible = visible;
+    }
+
+    public String getSceneName() {
+        return sceneName;
     }
 
     public String getSourceName() {
         return sourceName;
     }
 
-    public Visibility getVisibility() {
-        return visibility;
-    }
-
-    public Duration getDuration() {
-        return duration;
+    public boolean isVisible() {
+        return visible;
     }
 
     @Override
