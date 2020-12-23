@@ -25,7 +25,7 @@ public abstract class AbstractAction <T extends AbstractAction<T>> implements Ac
     }
 
     @Override
-    public abstract T createRunnableClone(T action, ActionContext context);
+    public abstract T createRunnableClone(ActionContext context);
 
     @Override
     public abstract void run();

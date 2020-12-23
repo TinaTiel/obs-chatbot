@@ -6,5 +6,5 @@ import java.util.concurrent.CompletableFuture;
 public interface Action<T extends Action<T>> extends Runnable {
     ActionType getActionType();
     ActionContext getActionContext();
-    T createRunnableClone(T action, ActionContext context);
+    T createRunnableClone(ActionContext context);
 }

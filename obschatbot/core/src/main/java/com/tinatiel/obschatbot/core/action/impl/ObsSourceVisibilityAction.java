@@ -7,19 +7,23 @@ import com.tinatiel.obschatbot.core.actionservice.obs.ObsClient;
 
 public class ObsSourceVisibilityAction extends AbstractAction<ObsSourceVisibilityAction> {
 
-    private final ActionServiceFactory factory;
+    private final ActionServiceFactory actionServiceFactory;
 
     private final String sceneName;
     private final String sourceName;
     private final boolean visible;
 
-    public ObsSourceVisibilityAction(ActionContext context, ActionServiceFactory factory,
+    public ObsSourceVisibilityAction(ActionContext actionContext, ActionServiceFactory actionServiceFactory,
                                      String sceneName, String sourceName, boolean visible) {
-        super(ActionType.OBS, context);
-        this.factory = factory;
+        super(ActionType.OBS, actionContext);
+        this.actionServiceFactory = actionServiceFactory;
         this.sceneName = sceneName;
         this.sourceName = sourceName;
         this.visible = visible;
+    }
+
+    public ActionServiceFactory getActionServiceFactory() {
+        return actionServiceFactory;
     }
 
     public String getSceneName() {
@@ -35,22 +39,34 @@ public class ObsSourceVisibilityAction extends AbstractAction<ObsSourceVisibilit
     }
 
     @Override
+    public ObsSourceVisibilityAction createRunnableClone(ActionContext context) {
+        return new ObsSourceVisibilityAction(context, actionServiceFactory, sceneName, sourceName, visible);
+    }
+
+    @Override
     public void run() {
 
         // Sanitize before the run
-        if(factory == null || actionContext == null) {
+        if(actionServiceFactory == null || actionContext == null) {
             throw new IllegalStateException("Missing ActionContext or ActionServiceFactory");
         }
         if(sourceName == null) throw new IllegalStateException("Missing source name");
 
         // Get the client and invoke it
-        ObsClient client = (ObsClient) factory.getService(actionType);
+        ObsClient client = (ObsClient) actionServiceFactory.getService(actionType);
         client.setSourceVisibility(sceneName, sourceName, visible);
 
     }
 
     @Override
-    public ObsSourceVisibilityAction createRunnableClone(ObsSourceVisibilityAction action, ActionContext context) {
-        return null;
+    public String toString() {
+        return "ObsSourceVisibilityAction{" +
+                "actionType=" + actionType +
+                ", actionContext=" + actionContext +
+                ", actionServiceFactory=" + actionServiceFactory +
+                ", sceneName='" + sceneName + '\'' +
+                ", sourceName='" + sourceName + '\'' +
+                ", visible=" + visible +
+                '}';
     }
 }

@@ -20,12 +20,21 @@ public class ExecuteCommandAction extends AbstractAction<ExecuteCommandAction> {
     }
 
     @Override
-    public ExecuteCommandAction createRunnableClone(ExecuteCommandAction action, ActionContext context) {
-        return null;
+    public ExecuteCommandAction createRunnableClone(ActionContext context) {
+        return new ExecuteCommandAction(context, target);
     }
 
     @Override
     public void run() {
         // Do nothing
+    }
+
+    @Override
+    public String toString() {
+        return "ExecuteCommandAction{" +
+                "actionType=" + actionType +
+                ", actionContext=" + actionContext +
+                ", target=" + target +
+                '}';
     }
 }

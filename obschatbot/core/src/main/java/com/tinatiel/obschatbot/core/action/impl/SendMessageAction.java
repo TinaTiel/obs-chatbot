@@ -35,7 +35,7 @@ public class SendMessageAction implements Action {
     }
 
     @Override
-    public Action createRunnableClone(Action action, ActionContext context) {
+    public Action createRunnableClone(ActionContext context) {
         return null;
     }
 }

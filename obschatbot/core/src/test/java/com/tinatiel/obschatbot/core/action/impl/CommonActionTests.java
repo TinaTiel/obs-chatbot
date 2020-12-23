@@ -30,8 +30,10 @@ public class CommonActionTests {
 
         ActionContext context = mock(ActionContext.class);
 
-        Action clone = action.createRunnableClone(action, context);
-        assertThat(clone).isEqualToIgnoringGivenFields(context, "actionContext");
+        Action clone = action.createRunnableClone(context);
+        System.out.println("original: " + action);
+        System.out.println("clone   : " + clone);
+        assertThat(clone).isEqualToIgnoringGivenFields(action, "actionContext");
         assertThat(clone.getActionContext()).isEqualTo(context);
 
     }
