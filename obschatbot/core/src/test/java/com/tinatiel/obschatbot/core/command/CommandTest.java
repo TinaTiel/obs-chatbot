@@ -12,6 +12,10 @@ import static org.mockito.Mockito.*;
 
 public class CommandTest {
 
+    // Commands won't be executed directly, they will be used in a factory method to generate a list of executable
+    // actions which have their execution context ("args") inside each of them so they can be executed as Runnables
+    // in an Executor and/or queue
+    /*
     @Test
     void commandInvokesExecutorWithArgs() {
 
@@ -47,5 +51,6 @@ public class CommandTest {
         verifyNoInteractions(executor);
 
     }
+    */
 
 }

@@ -13,6 +13,9 @@ import static org.mockito.Mockito.verify;
 
 public class ExecuteCommandActionTest {
 
+    // This will be replaced. A reference to the command should be stored instead. Commands won't execute, they
+    // will merely be read and turned into a list of actions, and those list of Runnables will be passed to an Executor.
+    /*
     @Test
     void whenExecutedThenCommandIsExecuted() {
 
@@ -39,4 +42,5 @@ public class ExecuteCommandActionTest {
         fail("todo");
 
     }
+    */
 }
