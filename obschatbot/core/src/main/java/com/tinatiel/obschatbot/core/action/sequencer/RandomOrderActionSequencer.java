@@ -1,4 +1,4 @@
-package com.tinatiel.obschatbot.core.actionsequencer;
+package com.tinatiel.obschatbot.core.action.sequencer;
 
 import com.tinatiel.obschatbot.core.action.Action;
 
@@ -60,7 +60,7 @@ public class RandomOrderActionSequencer implements ActionSequencer {
     }
 
     @Override
-    public List<Action> getActions() {
+    public List<Action> listAll() {
         return original;
     }
 }

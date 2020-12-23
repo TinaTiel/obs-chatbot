@@ -1,7 +1,7 @@
 package com.tinatiel.obschatbot.core.command;
 
 import com.tinatiel.obschatbot.core.action.Action;
-import com.tinatiel.obschatbot.core.actionsequencer.ActionSequencer;
+import com.tinatiel.obschatbot.core.action.sequencer.ActionSequencer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +38,7 @@ public class Command {
     }
 
     public List<Action> getActions() {
-        return new ArrayList<>(actionSequencer.getActions());
+        return new ArrayList<>(actionSequencer.listAll());
     }
 
     public boolean isDisabled() {

@@ -1,7 +1,7 @@
 package com.tinatiel.obschatbot.core.command;
 
 import com.tinatiel.obschatbot.core.action.Action;
-import com.tinatiel.obschatbot.core.actionsequencer.ActionSequencer;
+import com.tinatiel.obschatbot.core.action.sequencer.ActionSequencer;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
@@ -57,7 +57,7 @@ public class CommandTest {
         Action action2 = mock(Action.class);
         Action action3 = mock(Action.class);
         List<Action> actions = Arrays.asList(action1, action2, action3);
-        when(actionSequencer.getActions()).thenReturn(actions);
+        when(actionSequencer.listAll()).thenReturn(actions);
 
         // And a command is assigned the sequencer
         Command command = new Command().actionSequencer(actionSequencer);
@@ -66,7 +66,7 @@ public class CommandTest {
         List<Action> result = command.getActions();
 
         // Then the (immutable) result is delegated to the sequencer
-        verify(actionSequencer, times(1)).getActions();
+        verify(actionSequencer, times(1)).listAll();
         assertThat(result).containsExactlyElementsOf(actions);
         assertThat(result).isNotSameAs(actions); // we don't want the actions to be changed from the command
 

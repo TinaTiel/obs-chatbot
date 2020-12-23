@@ -1,5 +1,6 @@
 package com.tinatiel.obschatbot.core.action;
 
+import com.tinatiel.obschatbot.core.action.impl.ObsSourceVisibilityAction;
 import com.tinatiel.obschatbot.core.actionservice.ActionServiceFactory;
 import com.tinatiel.obschatbot.core.actionservice.obs.ObsClient;
 import org.junit.jupiter.api.BeforeEach;

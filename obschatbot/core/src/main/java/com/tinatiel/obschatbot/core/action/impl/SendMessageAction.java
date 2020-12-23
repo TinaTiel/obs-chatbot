@@ -1,4 +1,6 @@
-package com.tinatiel.obschatbot.core.action;
+package com.tinatiel.obschatbot.core.action.impl;
+
+import com.tinatiel.obschatbot.core.action.Action;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;

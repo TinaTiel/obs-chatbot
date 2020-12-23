@@ -1,4 +1,4 @@
-package com.tinatiel.obschatbot.core.actionsequencer;
+package com.tinatiel.obschatbot.core.action.sequencer;
 
 import com.tinatiel.obschatbot.core.action.Action;
 import org.junit.jupiter.api.BeforeEach;
@@ -50,7 +50,7 @@ public class ActionSequencerTest {
         assertThat(sequence).isNotSameAs(input);
 
         // And getActions returns the original input
-        assertThat(sequencer.getActions()).containsExactlyElementsOf(input);
+        assertThat(sequencer.listAll()).containsExactlyElementsOf(input);
 
     }
 
@@ -78,7 +78,7 @@ public class ActionSequencerTest {
         assertThat(sequence).isNotSameAs(input);
 
         // And getActions returns the original input
-        assertThat(sequencer.getActions()).containsExactlyElementsOf(input);
+        assertThat(sequencer.listAll()).containsExactlyElementsOf(input);
 
     }
 
@@ -190,19 +190,19 @@ public class ActionSequencerTest {
 
         // when executed, the result of getActions is the same after each execution
         sequencer.nextSequence();
-        assertThat(sequencer.getActions()).containsExactlyElementsOf(input);
+        assertThat(sequencer.listAll()).containsExactlyElementsOf(input);
 
         sequencer.nextSequence();
-        assertThat(sequencer.getActions()).containsExactlyElementsOf(input);
+        assertThat(sequencer.listAll()).containsExactlyElementsOf(input);
 
         sequencer.nextSequence();
-        assertThat(sequencer.getActions()).containsExactlyElementsOf(input);
+        assertThat(sequencer.listAll()).containsExactlyElementsOf(input);
 
         sequencer.nextSequence();
-        assertThat(sequencer.getActions()).containsExactlyElementsOf(input);
+        assertThat(sequencer.listAll()).containsExactlyElementsOf(input);
 
         sequencer.nextSequence();
-        assertThat(sequencer.getActions()).containsExactlyElementsOf(input);
+        assertThat(sequencer.listAll()).containsExactlyElementsOf(input);
 
     }
 }
