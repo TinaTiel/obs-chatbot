@@ -1,30 +1,22 @@
 package com.tinatiel.obschatbot.core.action.impl;
 
-import com.tinatiel.obschatbot.core.action.Action;
 import com.tinatiel.obschatbot.core.action.ActionContext;
 import com.tinatiel.obschatbot.core.action.ActionType;
 import com.tinatiel.obschatbot.core.actionservice.ActionServiceFactory;
 import com.tinatiel.obschatbot.core.actionservice.obs.ObsClient;
 
-import java.time.Duration;
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
-
-public class ObsSourceVisibilityAction implements Action<ObsSourceVisibilityAction> {
-
-    private final ActionType ACTION_TYPE = ActionType.OBS;
+public class ObsSourceVisibilityAction extends AbstractAction<ObsSourceVisibilityAction> {
 
     private final ActionServiceFactory factory;
-    private final ActionContext context;
 
     private final String sceneName;
     private final String sourceName;
     private final boolean visible;
 
-    public ObsSourceVisibilityAction(ActionServiceFactory factory, ActionContext context,
+    public ObsSourceVisibilityAction(ActionContext context, ActionServiceFactory factory,
                                      String sceneName, String sourceName, boolean visible) {
+        super(ActionType.OBS, context);
         this.factory = factory;
-        this.context = context;
         this.sceneName = sceneName;
         this.sourceName = sourceName;
         this.visible = visible;
@@ -46,25 +38,15 @@ public class ObsSourceVisibilityAction implements Action<ObsSourceVisibilityActi
     public void run() {
 
         // Sanitize before the run
-        if(factory == null || context == null) {
+        if(factory == null || actionContext == null) {
             throw new IllegalStateException("Missing ActionContext or ActionServiceFactory");
         }
         if(sourceName == null) throw new IllegalStateException("Missing source name");
 
         // Get the client and invoke it
-        ObsClient client = (ObsClient) factory.getService(ACTION_TYPE);
+        ObsClient client = (ObsClient) factory.getService(actionType);
         client.setSourceVisibility(sceneName, sourceName, visible);
 
-    }
-
-    @Override
-    public ActionType getActionType() {
-        return null;
-    }
-
-    @Override
-    public ActionContext getActionContext() {
-        return null;
     }
 
     @Override

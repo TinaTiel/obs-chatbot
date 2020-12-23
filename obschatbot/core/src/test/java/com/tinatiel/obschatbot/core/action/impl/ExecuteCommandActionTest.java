@@ -18,7 +18,7 @@ public class ExecuteCommandActionTest {
         Command command = mock(Command.class);
 
         // When action is built
-        ExecuteCommandAction action = new ExecuteCommandAction(command);
+        ExecuteCommandAction action = new ExecuteCommandAction(null, command);
 
         // Then it has the command specified
         assertThat(action.getTarget()).isEqualTo(command);
@@ -29,7 +29,7 @@ public class ExecuteCommandActionTest {
     void commandRequired() {
 
         assertThatThrownBy(() -> {
-            ExecuteCommandAction action = new ExecuteCommandAction(null);
+            ExecuteCommandAction action = new ExecuteCommandAction(null, null);
         }).isInstanceOf(IllegalArgumentException.class);
 
     }
@@ -41,7 +41,7 @@ public class ExecuteCommandActionTest {
         Command command = mock(Command.class);
 
         // And an action is built
-        ExecuteCommandAction action = new ExecuteCommandAction(command);
+        ExecuteCommandAction action = new ExecuteCommandAction(null, command);
 
         // When run
         action.run();

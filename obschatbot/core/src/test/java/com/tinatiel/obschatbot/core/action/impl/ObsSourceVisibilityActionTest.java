@@ -3,7 +3,6 @@ package com.tinatiel.obschatbot.core.action.impl;
 import com.tinatiel.obschatbot.core.action.Action;
 import com.tinatiel.obschatbot.core.action.ActionContext;
 import com.tinatiel.obschatbot.core.action.ActionType;
-import com.tinatiel.obschatbot.core.action.impl.ObsSourceVisibilityAction;
 import com.tinatiel.obschatbot.core.actionservice.ActionServiceFactory;
 import com.tinatiel.obschatbot.core.actionservice.obs.ObsClient;
 import org.junit.jupiter.api.BeforeEach;
@@ -36,7 +35,7 @@ public class ObsSourceVisibilityActionTest {
         String scene = "some scene";
         String source = "some source";
         boolean visible = true;
-        ObsSourceVisibilityAction action = new ObsSourceVisibilityAction(factory, context,
+        ObsSourceVisibilityAction action = new ObsSourceVisibilityAction(context, factory,
                 scene, source, visible);
 
         // When run
@@ -52,7 +51,7 @@ public class ObsSourceVisibilityActionTest {
     void sourceNameIsRequired() {
 
         // Given action with no source name
-        Action action = new ObsSourceVisibilityAction(factory, context,
+        Action action = new ObsSourceVisibilityAction(context, factory,
                 "foo", null, true);
 
         // When run, then an exception is thrown
@@ -64,7 +63,7 @@ public class ObsSourceVisibilityActionTest {
     void ContextRequiredToRun() {
 
         // Given action with no context
-        Action action = new ObsSourceVisibilityAction(factory, null,
+        Action action = new ObsSourceVisibilityAction(null, factory,
                 "foo", "bar", true);
 
         // When run, then an exception is thrown
@@ -76,7 +75,7 @@ public class ObsSourceVisibilityActionTest {
     void factoryRequiredToRun() {
 
         // Given action with no factory
-        Action action = new ObsSourceVisibilityAction(null, context,
+        Action action = new ObsSourceVisibilityAction(context, null,
                 "foo", "bar", true);
 
         // When run, then an exception is thrown

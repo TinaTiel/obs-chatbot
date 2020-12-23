@@ -19,8 +19,7 @@ public class App {
         ActionServiceFactory factory = context.getBean(ActionServiceFactory.class);
 
         Action action = new ObsSourceVisibilityAction(
-                factory,
-                new ActionContext(),
+                new ActionContext(), factory,
                 "Scene",
                 "someTextSource",
                 false

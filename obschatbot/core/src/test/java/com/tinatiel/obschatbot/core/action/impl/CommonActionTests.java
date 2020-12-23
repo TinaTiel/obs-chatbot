@@ -5,7 +5,6 @@ import com.tinatiel.obschatbot.core.action.ActionContext;
 import com.tinatiel.obschatbot.core.action.ActionType;
 import com.tinatiel.obschatbot.core.actionservice.ActionServiceFactory;
 import com.tinatiel.obschatbot.core.command.Command;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -42,8 +41,8 @@ public class CommonActionTests {
         ActionServiceFactory factory = mock(ActionServiceFactory.class);
 
         return Stream.of(
-                Arguments.of(ActionType.SYSTEM, new ExecuteCommandAction(mock(Command.class))),
-                Arguments.of(ActionType.OBS, new ObsSourceVisibilityAction(factory, null, "foo", "bar", true))
+                Arguments.of(ActionType.SYSTEM, new ExecuteCommandAction(null, mock(Command.class))),
+                Arguments.of(ActionType.OBS, new ObsSourceVisibilityAction(null, factory, "foo", "bar", true))
         );
 
     }
