@@ -16,6 +16,19 @@ public class ActionServiceFactoryImpl implements ActionServiceFactory {
 
     @Override
     public ActionService getService(ActionType actionType) {
-        return null;
+        if(actionType == null) {
+            throw new IllegalArgumentException("ActionType cannot be null");
+        }
+
+        switch (actionType) {
+            case OBS:
+                return obsClient;
+
+            case TWITCH_CHAT:
+                return twitchChatClient;
+
+            default:
+                throw new UnsupportedOperationException("No service defined for actionType: " + actionType);
+        }
     }
 }

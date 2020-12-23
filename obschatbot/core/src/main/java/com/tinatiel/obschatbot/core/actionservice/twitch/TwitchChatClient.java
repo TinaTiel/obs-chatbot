@@ -1,6 +1,8 @@
 package com.tinatiel.obschatbot.core.actionservice.twitch;
 
-public interface TwitchChatClient {
+import com.tinatiel.obschatbot.core.actionservice.ActionService;
+
+public interface TwitchChatClient extends ActionService {
 
     void sendMessage(String message);
 
