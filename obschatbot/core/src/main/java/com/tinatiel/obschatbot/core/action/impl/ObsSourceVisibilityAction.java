@@ -10,7 +10,7 @@ import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-public class ObsSourceVisibilityAction implements Action {
+public class ObsSourceVisibilityAction implements Action<ObsSourceVisibilityAction> {
 
     private final ActionType ACTION_TYPE = ActionType.OBS;
 
@@ -55,5 +55,20 @@ public class ObsSourceVisibilityAction implements Action {
         ObsClient client = (ObsClient) factory.getService(ACTION_TYPE);
         client.setSourceVisibility(sceneName, sourceName, visible);
 
+    }
+
+    @Override
+    public ActionType getActionType() {
+        return null;
+    }
+
+    @Override
+    public ActionContext getActionContext() {
+        return null;
+    }
+
+    @Override
+    public ObsSourceVisibilityAction createRunnableClone(ObsSourceVisibilityAction action, ActionContext context) {
+        return null;
     }
 }
