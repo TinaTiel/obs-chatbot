@@ -1,4 +1,4 @@
-package com.tinatiel.obschatbot.core.actionschedule;
+package com.tinatiel.obschatbot.core.actionsequencer;
 
 import com.tinatiel.obschatbot.core.action.Action;
 

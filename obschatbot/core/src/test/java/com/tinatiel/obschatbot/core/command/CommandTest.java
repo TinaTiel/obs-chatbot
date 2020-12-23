@@ -1,11 +1,9 @@
 package com.tinatiel.obschatbot.core.command;
 
 import com.tinatiel.obschatbot.core.action.Action;
-import com.tinatiel.obschatbot.core.actionschedule.ActionSequencer;
-import com.tinatiel.obschatbot.core.executor.Executor;
+import com.tinatiel.obschatbot.core.actionsequencer.ActionSequencer;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 

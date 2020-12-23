@@ -1,4 +1,4 @@
-package com.tinatiel.obschatbot.core.actionschedule;
+package com.tinatiel.obschatbot.core.actionsequencer;
 
 import com.tinatiel.obschatbot.core.action.Action;
 import org.junit.jupiter.api.BeforeEach;
@@ -49,6 +49,9 @@ public class ActionSequencerTest {
         assertThat(sequence).containsExactly(action1, action2, action3);
         assertThat(sequence).isNotSameAs(input);
 
+        // And getActions returns the original input
+        assertThat(sequencer.getActions()).containsExactlyElementsOf(input);
+
     }
 
     @Test
@@ -73,6 +76,9 @@ public class ActionSequencerTest {
         // Then the actions are still sequenced in the same order
         assertThat(sequence).containsExactly(action3, action2, action1);
         assertThat(sequence).isNotSameAs(input);
+
+        // And getActions returns the original input
+        assertThat(sequencer.getActions()).containsExactlyElementsOf(input);
 
     }
 
@@ -173,4 +179,30 @@ public class ActionSequencerTest {
 
     }
 
+    @RepeatedTest(10)
+    void randomSequenceRepeatedInvocationOfGetActionsReturnsSameResult() {
+
+        // Given actions to execute
+        List<Action> input = Arrays.asList(action1, action2, action3);
+
+        // Given random order sequencer, where pick per execution is irrelevant
+        ActionSequencer sequencer = new RandomOrderActionSequencer(input, 1);
+
+        // when executed, the result of getActions is the same after each execution
+        sequencer.nextSequence();
+        assertThat(sequencer.getActions()).containsExactlyElementsOf(input);
+
+        sequencer.nextSequence();
+        assertThat(sequencer.getActions()).containsExactlyElementsOf(input);
+
+        sequencer.nextSequence();
+        assertThat(sequencer.getActions()).containsExactlyElementsOf(input);
+
+        sequencer.nextSequence();
+        assertThat(sequencer.getActions()).containsExactlyElementsOf(input);
+
+        sequencer.nextSequence();
+        assertThat(sequencer.getActions()).containsExactlyElementsOf(input);
+
+    }
 }
