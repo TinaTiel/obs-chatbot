@@ -8,6 +8,7 @@ import java.util.Random;
 
 public class RandomOrderActionSequencer implements ActionSequencer {
 
+    private final List<Action> original = new ArrayList<>();
     private final List<Action> available = new ArrayList<>();
     private final List<Action> sequenced = new ArrayList<>();
     private final Integer pickedPerExecution;
@@ -20,6 +21,7 @@ public class RandomOrderActionSequencer implements ActionSequencer {
         }
 
         // Initialize the pool of actions to pick from
+        original.addAll(actions);
         available.addAll(actions);
 
         // Determine how many to pick from the pool each execution
@@ -59,6 +61,6 @@ public class RandomOrderActionSequencer implements ActionSequencer {
 
     @Override
     public List<Action> getActions() {
-        return null;
+        return original;
     }
 }
