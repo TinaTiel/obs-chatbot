@@ -1,27 +1,47 @@
 package com.tinatiel.obschatbot.core.command;
 
-import com.tinatiel.obschatbot.core.executor.Executor;
+import com.tinatiel.obschatbot.core.action.Action;
+import com.tinatiel.obschatbot.core.actionschedule.ActionSequencer;
 
 import java.util.List;
 
 public class Command {
 
-    private final String name;
-    private final Executor executor;
-    private final boolean disabled;
+    private String name;
+    private ActionSequencer actionSequencer;
+    private boolean disabled;
 
-    public Command(String name, Executor executor, boolean disabled) {
+    public Command() {}
+
+    public Command name(String name) {
         this.name = name;
-        this.executor = executor;
+        return this;
+    }
+
+    public Command actionSequencer(ActionSequencer actionSequencer) {
+        this.actionSequencer = actionSequencer;
+        return this;
+    }
+
+    public Command disabled(boolean disabled) {
         this.disabled = disabled;
+        return this;
     }
 
-    public void execute(List<String> arguments) {
-        if(!disabled) executor.execute(arguments);
+    public String getName() {
+        return name;
     }
 
-    public Executor getExecutor() {
-        return executor;
+    public ActionSequencer getActionSequencer() {
+        return actionSequencer;
+    }
+
+    public List<Action> getActions() {
+        return null;
+    }
+
+    public boolean isDisabled() {
+        return disabled;
     }
 
 }

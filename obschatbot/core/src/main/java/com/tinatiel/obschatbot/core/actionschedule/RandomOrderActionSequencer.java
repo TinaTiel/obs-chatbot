@@ -56,4 +56,9 @@ public class RandomOrderActionSequencer implements ActionSequencer {
         return new ArrayList<>(picked);
 
     }
+
+    @Override
+    public List<Action> getActions() {
+        return null;
+    }
 }

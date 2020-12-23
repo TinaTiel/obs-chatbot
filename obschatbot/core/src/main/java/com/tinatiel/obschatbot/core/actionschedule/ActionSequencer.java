@@ -20,5 +20,6 @@ import java.util.List;
 public interface ActionSequencer {
 
     List<Action> nextSequence();
+    List<Action> getActions();
 
 }

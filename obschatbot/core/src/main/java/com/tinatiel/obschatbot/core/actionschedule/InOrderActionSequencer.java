@@ -19,4 +19,9 @@ public class InOrderActionSequencer implements ActionSequencer {
     public List<Action> nextSequence() {
         return new ArrayList<>(actions);
     }
+
+    @Override
+    public List<Action> getActions() {
+        return null;
+    }
 }
