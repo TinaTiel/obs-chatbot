@@ -11,14 +11,12 @@ public class SendMessageAction implements Action {
         this.message = message;
     }
 
-    @Override
-    public CompletableFuture<ActionResult> execute(List<String> arguments) {
-        return null;
-    }
-
     public String getMessage() {
         return message;
     }
 
+    @Override
+    public void run() {
 
+    }
 }

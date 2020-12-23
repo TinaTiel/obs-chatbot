@@ -29,8 +29,7 @@ public class ObsSourceVisibilityAction implements Action {
     }
 
     @Override
-    public CompletableFuture<ActionResult> execute(List<String> arguments) {
-        return null;
-    }
+    public void run() {
 
+    }
 }

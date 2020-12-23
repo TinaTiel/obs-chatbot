@@ -14,8 +14,7 @@ public class ExecuteCommandAction implements Action {
     }
 
     @Override
-    public CompletableFuture<ActionResult> execute(List<String> arguments) {
-//        command.execute(arguments);
-        return null;
+    public void run() {
+
     }
 }
