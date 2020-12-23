@@ -45,11 +45,11 @@ public class ObsSourceVisibilityActionTest {
     }
 
     @Test
-    void sceneNameIsRequired() {
+    void sourceNameIsRequired() {
 
-        // Given action with no scene name
+        // Given action with no source name
         Action action = new ObsSourceVisibilityAction(factory, context,
-                null, "bar", true);
+                "foo", null, true);
 
         // When run, then an exception is thrown
         assertThatThrownBy(action::run).isInstanceOf(IllegalStateException.class);

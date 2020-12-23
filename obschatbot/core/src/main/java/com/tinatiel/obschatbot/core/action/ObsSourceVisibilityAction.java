@@ -1,12 +1,15 @@
 package com.tinatiel.obschatbot.core.action;
 
 import com.tinatiel.obschatbot.core.actionservice.ActionServiceFactory;
+import com.tinatiel.obschatbot.core.actionservice.obs.ObsClient;
 
 import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public class ObsSourceVisibilityAction implements Action {
+
+    private final ActionType ACTION_TYPE = ActionType.OBS;
 
     private final ActionServiceFactory factory;
     private final ActionContext context;
@@ -38,6 +41,16 @@ public class ObsSourceVisibilityAction implements Action {
 
     @Override
     public void run() {
+
+        // Sanitize before the run
+        if(factory == null || context == null) {
+            throw new IllegalStateException("Missing ActionContext or ActionServiceFactory");
+        }
+        if(sourceName == null) throw new IllegalStateException("Missing source name");
+
+        // Get the client and invoke it
+        ObsClient client = (ObsClient) factory.getService(ACTION_TYPE);
+        client.setSourceVisibility(sceneName, sourceName, visible);
 
     }
 }
