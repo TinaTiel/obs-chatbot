@@ -1,5 +1,6 @@
-package com.tinatiel.obschatbot.core.action;
+package com.tinatiel.obschatbot.core.action.enumerator;
 
+import com.tinatiel.obschatbot.core.action.ActionContext;
 import com.tinatiel.obschatbot.core.action.enumerator.ActionEnumerator;
 import com.tinatiel.obschatbot.core.action.enumerator.ActionEnumeratorImpl;
 import com.tinatiel.obschatbot.core.action.sequencer.ActionSequencer;

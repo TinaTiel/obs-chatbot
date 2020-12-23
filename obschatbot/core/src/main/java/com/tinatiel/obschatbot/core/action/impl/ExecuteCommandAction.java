@@ -3,19 +3,21 @@ package com.tinatiel.obschatbot.core.action.impl;
 import com.tinatiel.obschatbot.core.action.Action;
 import com.tinatiel.obschatbot.core.command.Command;
 
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
-
 public class ExecuteCommandAction implements Action {
 
-    private final Command command;
+    private final Command target;
 
-    public ExecuteCommandAction(Command command) {
-        this.command = command;
+    public ExecuteCommandAction(Command target) {
+        if(target == null) throw new IllegalArgumentException("Target command is required");
+        this.target = target;
+    }
+
+    public Command getTarget() {
+        return target;
     }
 
     @Override
     public void run() {
-
+        // Do nothing
     }
 }

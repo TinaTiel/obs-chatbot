@@ -1,5 +1,8 @@
-package com.tinatiel.obschatbot.core.action;
+package com.tinatiel.obschatbot.core.action.impl;
 
+import com.tinatiel.obschatbot.core.action.Action;
+import com.tinatiel.obschatbot.core.action.ActionContext;
+import com.tinatiel.obschatbot.core.action.ActionType;
 import com.tinatiel.obschatbot.core.action.impl.ObsSourceVisibilityAction;
 import com.tinatiel.obschatbot.core.actionservice.ActionServiceFactory;
 import com.tinatiel.obschatbot.core.actionservice.obs.ObsClient;
