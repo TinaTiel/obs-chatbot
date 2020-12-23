@@ -1,4 +1,4 @@
-package com.tinatiel.obschatbot.core.action.obs;
+package com.tinatiel.obschatbot.core.actionservice.obs;
 
 import net.twasi.obsremotejava.OBSRemoteController;
 import org.springframework.context.annotation.Bean;

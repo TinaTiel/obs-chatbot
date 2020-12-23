@@ -1,4 +1,4 @@
-import com.tinatiel.obschatbot.core.action.obs.ObsClient;
+import com.tinatiel.obschatbot.core.actionservice.obs.ObsClient;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
