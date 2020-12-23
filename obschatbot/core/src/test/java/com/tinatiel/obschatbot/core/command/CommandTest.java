@@ -23,7 +23,6 @@ public class CommandTest {
         // Then it has the following defaults
         assertThat(command.getName()).isNull();
         assertThat(command.getActionSequencer()).isNull();
-        assertThat(command.getActions()).isEmpty();
         assertThat(command.isDisabled()).isFalse();
 
     }

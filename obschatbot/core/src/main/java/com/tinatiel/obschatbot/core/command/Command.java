@@ -3,13 +3,14 @@ package com.tinatiel.obschatbot.core.command;
 import com.tinatiel.obschatbot.core.action.Action;
 import com.tinatiel.obschatbot.core.actionsequencer.ActionSequencer;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Command {
 
     private String name;
     private ActionSequencer actionSequencer;
-    private boolean disabled;
+    private boolean disabled = false;
 
     public Command() {}
 
@@ -37,7 +38,7 @@ public class Command {
     }
 
     public List<Action> getActions() {
-        return null;
+        return new ArrayList<>(actionSequencer.getActions());
     }
 
     public boolean isDisabled() {
