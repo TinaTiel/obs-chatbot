@@ -3,6 +3,7 @@ package com.tinatiel.obschatbot.core.actionservice;
 import com.tinatiel.obschatbot.core.action.ActionType;
 import com.tinatiel.obschatbot.core.actionservice.obs.ObsClient;
 import com.tinatiel.obschatbot.core.actionservice.twitch.TwitchChatClient;
+import org.springframework.stereotype.Service;
 
 public class ActionServiceFactoryImpl implements ActionServiceFactory {
 
