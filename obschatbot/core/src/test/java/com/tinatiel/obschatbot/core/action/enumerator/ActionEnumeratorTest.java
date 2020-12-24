@@ -15,6 +15,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.*;
 
@@ -45,7 +46,6 @@ public class ActionEnumeratorTest {
 
         // Then the sequencer's getSequence method is called (rather than the listAll method)
         verify(sequencer).nextSequence();
-        verify(sequencer, never()).listAll();
 
     }
 
@@ -69,39 +69,40 @@ public class ActionEnumeratorTest {
                 .actionSequencer(sequencer);
 
         // When enumerated
-        enumerator.enumerate(command, context);
+        List<Action> results = enumerator.enumerate(command, context);
 
         // Then clone is called on each action
         verify(action1).createRunnableClone(context);
         verify(action2).createRunnableClone(context);
         verify(action3).createRunnableClone(context);
 
+        // And three actions are returned
+        assertThat(results).hasSize(3);
+
     }
 
     @Test
-    void commandWithActionsPointingToOtherCommandsReturnsFlatListOfActions() {
+    void commandWithActionsPointingToOtherCommandReturnsFlatListOfActions() {
 
         // Given a context
         ActionContext context = mock(ActionContext.class);
 
         // And given an existing command
         ActionSequencer existingSequencer = mock(ActionSequencer.class);
-        Command existingCommand = new Command().actionSequencer(existingSequencer);
         Action action1 = mock(Action.class);
         Action action2 = mock(Action.class);
         Action action3 = mock(Action.class);
         when(existingSequencer.nextSequence()).thenReturn(Arrays.asList(action1, action2, action3));
+        Command existingCommand = new Command().actionSequencer(existingSequencer);
 
-        // Given a separate command + sequencer
+        // And given a command that references the existing command
         ActionSequencer sequencer = mock(ActionSequencer.class);
+        ExecuteCommandAction action = spy(new ExecuteCommandAction(context, existingCommand));
+        when(sequencer.nextSequence()).thenReturn(Collections.singletonList(action));
         Command command = new Command().actionSequencer(sequencer);
 
-        // And an ExecuteCommand action referencing the existing command
-        ExecuteCommandAction action = new ExecuteCommandAction(context, existingCommand);
-        when(sequencer.nextSequence()).thenReturn(Collections.singletonList(action));
-
         // When enumerated
-        enumerator.enumerate(command, context);
+        List<Action> results = enumerator.enumerate(command, context);
 
         // Then clone is called on each action
         verify(action1).createRunnableClone(context);
@@ -110,6 +111,9 @@ public class ActionEnumeratorTest {
 
         // but not on the ExecuteCommandAction action
         verify(action, never()).createRunnableClone(any());
+
+        // And three actions are returned
+        assertThat(results).hasSize(3);
 
     }
 
@@ -136,14 +140,14 @@ public class ActionEnumeratorTest {
     }
 
     @Test
-    void enumeratingOrTestingCommandWithCyclicalActionsFailsAsExpected() {
+    void worstCaseScenarioThrowsWrappedExceptionIfCycleOccursDuringEnumeration() {
 
         // Given a context
         ActionContext context = mock(ActionContext.class);
 
         // And given an existing command
         ActionSequencer existingSequencer = mock(ActionSequencer.class);
-        Command command = new Command().actionSequencer(existingSequencer);
+        Command command = spy(new Command().actionSequencer(existingSequencer));
 
         // And given one of the actions references the command it lives in
         Action action1 = mock(Action.class);
@@ -157,11 +161,55 @@ public class ActionEnumeratorTest {
             enumerator.enumerate(command, context);
         }).isInstanceOf(CyclicalActionsException.class);
 
-        // When checked, then an exception is thrown
-        assertThatThrownBy(() -> {
-            enumerator.checkForCyclicalActions(command);
-        }).isInstanceOf(CyclicalActionsException.class);
+    }
 
+    @Test
+    void checkingCommandForCyclicalActionsThrowsExceptionAsExpected() {
+
+        // Given a context
+        ActionContext context = mock(ActionContext.class);
+
+        // Given some commands exist
+        ActionSequencer sequencer1 = mock(ActionSequencer.class);
+        Command command1 = spy(new Command().name("command1").actionSequencer(sequencer1));
+
+        ActionSequencer sequencer2 = mock(ActionSequencer.class);
+        Command command2 = spy(new Command().name("command2").actionSequencer(sequencer2));
+
+        ActionSequencer sequencer3 = mock(ActionSequencer.class);
+        Command command3 = spy(new Command().name("command3").actionSequencer(sequencer3));
+
+        ActionSequencer sequencer4 = mock(ActionSequencer.class);
+        Command command4 = spy(new Command().name("command4").actionSequencer(sequencer4));
+
+        // And given the commands are connected by actions in a chain, with on causing a loop
+
+        Action action1 = new ExecuteCommandAction(context, command2);
+        givenSequencerReturns(sequencer1, Collections.singletonList(action1));
+
+        Action action2 = new ExecuteCommandAction(context, command3);
+        givenSequencerReturns(sequencer2, Collections.singletonList(action2));
+
+        Action action3 = new ExecuteCommandAction(context, command2); // loops here
+        givenSequencerReturns(sequencer3, Collections.singletonList(action3));
+
+        Action action4 = new ExecuteCommandAction(context, command4); // shouldn't reach this action
+        givenSequencerReturns(sequencer4, Collections.singletonList(action4));
+
+        // When checked, then an exception is thrown describing the chain of execution
+        assertThatThrownBy(() -> {
+            enumerator.checkForCyclicalActions(command1);
+        }).isInstanceOf(CyclicalActionsException.class)
+                .hasMessageContaining(command1.getName())
+                .hasMessageContaining(command2.getName())
+                .hasMessageContaining(command3.getName())
+                .hasMessageNotContaining(command4.getName()); // we don't visit here because the loop was earlier in the chain
+
+    }
+
+    private void givenSequencerReturns(ActionSequencer sequencer, List<Action> actions) {
+        when(sequencer.nextSequence()).thenReturn(actions);
+        when(sequencer.listAll()).thenReturn(actions);
     }
 
 }

@@ -34,7 +34,7 @@ public class ExecuteCommandAction extends AbstractAction<ExecuteCommandAction> {
         return "ExecuteCommandAction{" +
                 "actionType=" + actionType +
                 ", actionContext=" + actionContext +
-                ", target=" + target +
+                ", target= Command !" + target.getName() +
                 '}';
     }
 }

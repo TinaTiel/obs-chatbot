@@ -11,6 +11,7 @@ public class Command {
     private String name;
     private ActionSequencer actionSequencer;
     private boolean disabled = false;
+    private boolean cyclical = false;
 
     public Command() {}
 
