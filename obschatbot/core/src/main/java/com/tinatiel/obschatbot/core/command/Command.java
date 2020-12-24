@@ -5,6 +5,7 @@ import com.tinatiel.obschatbot.core.action.sequencer.ActionSequencer;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Command {
 
@@ -46,4 +47,16 @@ public class Command {
         return disabled;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Command command = (Command) o;
+        return Objects.equals(name, command.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
+    }
 }

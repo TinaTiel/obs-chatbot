@@ -72,45 +72,35 @@ public class CommandTest {
 
     }
 
-    // Commands won't be executed directly, they will be used in a factory method to generate a list of executable
-    // actions which have their execution context ("args") inside each of them so they can be executed as Runnables
-    // in an Executor and/or queue
-    /*
     @Test
-    void commandInvokesExecutorWithArgs() {
+    void commandEquality() {
 
-        // Given an com.tinatiel.obschatbot.core.executor
-        Executor executor = mock(Executor.class);
+        // Given two instances of a command with the same name
+        Command command1 = new Command().name("foo");
+        Command command1copy = new Command().name("foo");
 
-        // And given a com.tinatiel.obschatbot.core.command
-        Command command = new Command("somename", executor, false);
+        // Then they are equal
+        assertThat(command1)
+                .isNotSameAs(command1copy)
+                .isEqualTo(command1copy);
 
-        // When executed with arguments
-        List<String> args = Arrays.asList("foo", "bar", "baz");
-        command.execute(args);
+        // But given an instance with a different name
+        Command command2 = new Command().name("bar");
 
-        // Then the com.tinatiel.obschatbot.core.executor is invoked with the actions and arguments
-        verify(executor).execute(args);
+        // Then they are not equal
+        assertThat(command2).isNotEqualTo(command1);
+
+        // And given two commands with null name
+        Command null1 = new Command();
+        Command null2 = new Command();
+
+        // Then they are equal to each other
+        assertThat(null1)
+                .isNotSameAs(null2)
+                .isEqualTo(null2);
+
+        // But are not equal to others
+        assertThat(command1).isNotEqualTo(null1);
 
     }
-
-    @Test
-    void disabledCommandNotExecuted() {
-
-        // Given an com.tinatiel.obschatbot.core.executor
-        Executor executor = mock(Executor.class);
-
-        // And given a com.tinatiel.obschatbot.core.command that is disabled
-        Command command = new Command("somename", executor, true);
-
-        // When executed with arguments
-        List<String> args = Arrays.asList("foo", "bar", "baz");
-        command.execute(args);
-
-        // Then the com.tinatiel.obschatbot.core.executor is NOT invoked
-        verifyNoInteractions(executor);
-
-    }
-    */
-
 }
