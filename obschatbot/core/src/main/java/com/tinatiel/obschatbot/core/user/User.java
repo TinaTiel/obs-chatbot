@@ -1,4 +1,45 @@
 package com.tinatiel.obschatbot.core.user;
 
+import com.tinatiel.obschatbot.core.actionservice.Platform;
+
+import java.util.Objects;
+
 public class User {
+
+    private final Platform platform;
+    private final String username;
+
+    public User(Platform platform, String username) {
+        this.platform = platform;
+        this.username = username;
+    }
+
+    public Platform getPlatform() {
+        return platform;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return platform == user.platform && Objects.equals(username, user.username);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(platform, username);
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "platform=" + platform +
+                ", username='" + username + '\'' +
+                '}';
+    }
 }
