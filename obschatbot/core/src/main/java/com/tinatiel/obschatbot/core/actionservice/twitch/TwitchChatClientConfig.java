@@ -35,6 +35,9 @@ public class TwitchChatClientConfig {
     }
 
     @Bean
-    Listener myListener() { return new MyListener(); }
+    Listener myListener() { return new MyListener(fooService()); }
+
+    @Bean
+    FooService fooService() { return new FooServiceImpl(); }
 
 }
