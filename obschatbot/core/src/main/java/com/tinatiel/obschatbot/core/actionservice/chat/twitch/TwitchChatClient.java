@@ -1,4 +1,4 @@
-package com.tinatiel.obschatbot.core.actionservice.twitch;
+package com.tinatiel.obschatbot.core.actionservice.chat.twitch;
 
 import com.tinatiel.obschatbot.core.actionservice.ActionService;
 

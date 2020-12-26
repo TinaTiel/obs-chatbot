@@ -1,4 +1,4 @@
-package com.tinatiel.obschatbot.core.actionservice.twitch;
+package com.tinatiel.obschatbot.core.actionservice.chat.twitch;
 
 import org.pircbotx.hooks.events.MessageEvent;
 

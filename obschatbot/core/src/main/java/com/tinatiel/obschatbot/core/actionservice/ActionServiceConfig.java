@@ -1,7 +1,7 @@
 package com.tinatiel.obschatbot.core.actionservice;
 
 import com.tinatiel.obschatbot.core.actionservice.obs.ObsClient;
-import com.tinatiel.obschatbot.core.actionservice.twitch.TwitchChatClient;
+import com.tinatiel.obschatbot.core.actionservice.chat.twitch.TwitchChatClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
