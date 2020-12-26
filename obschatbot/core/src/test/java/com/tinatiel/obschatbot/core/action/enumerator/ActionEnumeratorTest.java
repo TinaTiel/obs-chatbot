@@ -1,9 +1,7 @@
 package com.tinatiel.obschatbot.core.action.enumerator;
 
 import com.tinatiel.obschatbot.core.action.Action;
-import com.tinatiel.obschatbot.core.action.ActionContext;
-import com.tinatiel.obschatbot.core.action.enumerator.ActionEnumerator;
-import com.tinatiel.obschatbot.core.action.enumerator.ActionEnumeratorImpl;
+import com.tinatiel.obschatbot.core.dispatch.CommandRequest;
 import com.tinatiel.obschatbot.core.action.impl.ExecuteCommandAction;
 import com.tinatiel.obschatbot.core.action.sequencer.ActionSequencer;
 import com.tinatiel.obschatbot.core.command.Command;
@@ -32,7 +30,7 @@ public class ActionEnumeratorTest {
     void enumeratorUsesSequencer() {
 
         // Given a context
-        ActionContext context = mock(ActionContext.class);
+        CommandRequest context = mock(CommandRequest.class);
 
         // Given a sequencer
         ActionSequencer sequencer = mock(ActionSequencer.class);
@@ -53,7 +51,7 @@ public class ActionEnumeratorTest {
     void commandWithActionsReturnsFlatListOfActions() {
 
         // Given a context
-        ActionContext context = mock(ActionContext.class);
+        CommandRequest context = mock(CommandRequest.class);
 
         // Given a sequencer
         ActionSequencer sequencer = mock(ActionSequencer.class);
@@ -85,7 +83,7 @@ public class ActionEnumeratorTest {
     void commandWithActionsPointingToOtherCommandReturnsFlatListOfActions() {
 
         // Given a context
-        ActionContext context = mock(ActionContext.class);
+        CommandRequest context = mock(CommandRequest.class);
 
         // And given an existing command
         ActionSequencer existingSequencer = mock(ActionSequencer.class);
@@ -121,7 +119,7 @@ public class ActionEnumeratorTest {
     void testForCyclicalActionsUsesSequencerListAllMethod() {
 
         // Given a context
-        ActionContext context = mock(ActionContext.class);
+        CommandRequest context = mock(CommandRequest.class);
 
         // Given a sequencer
         ActionSequencer sequencer = mock(ActionSequencer.class);
@@ -143,7 +141,7 @@ public class ActionEnumeratorTest {
     void worstCaseScenarioThrowsWrappedExceptionIfCycleOccursDuringEnumeration() {
 
         // Given a context
-        ActionContext context = mock(ActionContext.class);
+        CommandRequest context = mock(CommandRequest.class);
 
         // And given an existing command
         ActionSequencer existingSequencer = mock(ActionSequencer.class);
@@ -167,7 +165,7 @@ public class ActionEnumeratorTest {
     void checkingCommandForCyclicalActionsThrowsExceptionAsExpected() {
 
         // Given a context
-        ActionContext context = mock(ActionContext.class);
+        CommandRequest context = mock(CommandRequest.class);
 
         // Given some commands exist
         ActionSequencer sequencer1 = mock(ActionSequencer.class);

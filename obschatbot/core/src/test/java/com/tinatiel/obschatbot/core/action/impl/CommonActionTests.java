@@ -1,7 +1,7 @@
 package com.tinatiel.obschatbot.core.action.impl;
 
 import com.tinatiel.obschatbot.core.action.Action;
-import com.tinatiel.obschatbot.core.action.ActionContext;
+import com.tinatiel.obschatbot.core.dispatch.CommandRequest;
 import com.tinatiel.obschatbot.core.action.ActionType;
 import com.tinatiel.obschatbot.core.actionservice.ActionServiceFactory;
 import com.tinatiel.obschatbot.core.command.Command;
@@ -28,7 +28,7 @@ public class CommonActionTests {
     @MethodSource("actionTypes")
     void cloneAsExpected(ActionType expected, Action action) {
 
-        ActionContext context = mock(ActionContext.class);
+        CommandRequest context = mock(CommandRequest.class);
 
         Action clone = action.createRunnableClone(context);
         System.out.println("original: " + action);

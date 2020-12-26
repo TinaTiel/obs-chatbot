@@ -1,17 +1,17 @@
 package com.tinatiel.obschatbot.core.action.impl;
 
 import com.tinatiel.obschatbot.core.action.Action;
-import com.tinatiel.obschatbot.core.action.ActionContext;
+import com.tinatiel.obschatbot.core.dispatch.CommandRequest;
 import com.tinatiel.obschatbot.core.action.ActionType;
 
 public abstract class AbstractAction <T extends AbstractAction<T>> implements Action<T> {
 
     protected final ActionType actionType;
-    protected final ActionContext actionContext;
+    protected final CommandRequest commandRequest;
 
-    protected AbstractAction(ActionType actionType, ActionContext actionContext) {
+    protected AbstractAction(ActionType actionType, CommandRequest commandRequest) {
         this.actionType = actionType;
-        this.actionContext = actionContext;
+        this.commandRequest = commandRequest;
     }
 
     @Override
@@ -20,12 +20,12 @@ public abstract class AbstractAction <T extends AbstractAction<T>> implements Ac
     }
 
     @Override
-    public ActionContext getActionContext() {
-        return actionContext;
+    public CommandRequest getActionContext() {
+        return commandRequest;
     }
 
     @Override
-    public abstract T createRunnableClone(ActionContext context);
+    public abstract T createRunnableClone(CommandRequest context);
 
     @Override
     public abstract void run();

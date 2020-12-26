@@ -1,7 +1,7 @@
 package com.tinatiel.obschatbot.core.action.enumerator;
 
 import com.tinatiel.obschatbot.core.action.Action;
-import com.tinatiel.obschatbot.core.action.ActionContext;
+import com.tinatiel.obschatbot.core.dispatch.CommandRequest;
 import com.tinatiel.obschatbot.core.action.impl.ExecuteCommandAction;
 import com.tinatiel.obschatbot.core.command.Command;
 
@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 
 public class ActionEnumeratorImpl implements ActionEnumerator {
     @Override
-    public List<Action> enumerate(Command command, ActionContext context) throws CyclicalActionsException {
+    public List<Action> enumerate(Command command, CommandRequest context) throws CyclicalActionsException {
 
         // Check the command for cycles
         checkForCyclicalActions(command);
@@ -26,7 +26,7 @@ public class ActionEnumeratorImpl implements ActionEnumerator {
         }
     }
 
-    private void enumerate(Command command, ActionContext context, List<Action> results) {
+    private void enumerate(Command command, CommandRequest context, List<Action> results) {
 
         for(Action action:command.getActionSequencer().nextSequence()) {
 

@@ -1,7 +1,7 @@
 package com.tinatiel.obschatbot.core.action.impl;
 
 import com.tinatiel.obschatbot.core.action.Action;
-import com.tinatiel.obschatbot.core.action.ActionContext;
+import com.tinatiel.obschatbot.core.dispatch.CommandRequest;
 import com.tinatiel.obschatbot.core.action.ActionType;
 import com.tinatiel.obschatbot.core.actionservice.ActionServiceFactory;
 import com.tinatiel.obschatbot.core.actionservice.obs.ObsClient;
@@ -13,7 +13,7 @@ import static org.mockito.Mockito.*;
 
 public class ObsSourceVisibilityActionTest {
 
-    ActionContext context;
+    CommandRequest context;
     ActionServiceFactory factory;
     ObsClient client;
 
@@ -21,7 +21,7 @@ public class ObsSourceVisibilityActionTest {
     void setUp() {
 
         // Initialize dependencies and behavior
-        context = mock(ActionContext.class);
+        context = mock(CommandRequest.class);
         factory = mock(ActionServiceFactory.class);
         client = mock(ObsClient.class);
         when(factory.getService(ActionType.OBS)).thenReturn(client);

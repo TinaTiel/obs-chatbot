@@ -1,6 +1,6 @@
 package com.tinatiel.obschatbot.core.action.impl;
 
-import com.tinatiel.obschatbot.core.action.ActionContext;
+import com.tinatiel.obschatbot.core.dispatch.CommandRequest;
 import com.tinatiel.obschatbot.core.action.ActionType;
 import com.tinatiel.obschatbot.core.actionservice.ActionServiceFactory;
 import com.tinatiel.obschatbot.core.actionservice.obs.ObsClient;
@@ -13,9 +13,9 @@ public class ObsSourceVisibilityAction extends AbstractAction<ObsSourceVisibilit
     private final String sourceName;
     private final boolean visible;
 
-    public ObsSourceVisibilityAction(ActionContext actionContext, ActionServiceFactory actionServiceFactory,
+    public ObsSourceVisibilityAction(CommandRequest commandRequest, ActionServiceFactory actionServiceFactory,
                                      String sceneName, String sourceName, boolean visible) {
-        super(ActionType.OBS, actionContext);
+        super(ActionType.OBS, commandRequest);
         this.actionServiceFactory = actionServiceFactory;
         this.sceneName = sceneName;
         this.sourceName = sourceName;
@@ -39,7 +39,7 @@ public class ObsSourceVisibilityAction extends AbstractAction<ObsSourceVisibilit
     }
 
     @Override
-    public ObsSourceVisibilityAction createRunnableClone(ActionContext context) {
+    public ObsSourceVisibilityAction createRunnableClone(CommandRequest context) {
         return new ObsSourceVisibilityAction(context, actionServiceFactory, sceneName, sourceName, visible);
     }
 
@@ -47,7 +47,7 @@ public class ObsSourceVisibilityAction extends AbstractAction<ObsSourceVisibilit
     public void run() {
 
         // Sanitize before the run
-        if(actionServiceFactory == null || actionContext == null) {
+        if(actionServiceFactory == null || commandRequest == null) {
             throw new IllegalStateException("Missing ActionContext or ActionServiceFactory");
         }
         if(sourceName == null) throw new IllegalStateException("Missing source name");
@@ -62,7 +62,7 @@ public class ObsSourceVisibilityAction extends AbstractAction<ObsSourceVisibilit
     public String toString() {
         return "ObsSourceVisibilityAction{" +
                 "actionType=" + actionType +
-                ", actionContext=" + actionContext +
+                ", actionContext=" + commandRequest +
                 ", actionServiceFactory=" + actionServiceFactory +
                 ", sceneName='" + sceneName + '\'' +
                 ", sourceName='" + sourceName + '\'' +
