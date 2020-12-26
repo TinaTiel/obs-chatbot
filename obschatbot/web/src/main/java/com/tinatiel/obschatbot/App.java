@@ -4,10 +4,13 @@ import com.tinatiel.obschatbot.core.action.Action;
 import com.tinatiel.obschatbot.core.action.ActionContext;
 import com.tinatiel.obschatbot.core.action.impl.ObsSourceVisibilityAction;
 import com.tinatiel.obschatbot.core.actionservice.ActionServiceFactory;
+import org.pircbotx.PircBotX;
+import org.pircbotx.exception.IrcException;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 @SpringBootApplication
@@ -18,15 +21,24 @@ public class App {
 //        ObsClient client = context.getBean(ObsClient.class);
 //        client.setSourceVisibility("Scene", "someTextSource", false);
 
-        ActionServiceFactory factory = context.getBean(ActionServiceFactory.class);
+//        ActionServiceFactory factory = context.getBean(ActionServiceFactory.class);
 
-        Action action = new ObsSourceVisibilityAction(
-                new ActionContext("", "", new ArrayList<>()), factory,
-                "Scene",
-                "someTextSource",
-                false
-        );
-        action.run();
+//        Action action = new ObsSourceVisibilityAction(
+//                new ActionContext("", "", new ArrayList<>()), factory,
+//                "Scene",
+//                "someTextSource",
+//                false
+//        );
+//        action.run();
+
+        PircBotX chatBot = context.getBean(PircBotX.class);
+        try {
+            chatBot.startBot();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (IrcException e) {
+            e.printStackTrace();
+        }
 
     }
 }
