@@ -9,7 +9,7 @@ public class ObsClientConfig {
 
     @Bean
     public ObsClient obsClient() {
-        OBSRemoteController controller = new OBSRemoteController("ws://localhost:4444", false);
+        OBSRemoteController controller = new OBSRemoteController("ws://localhost:4444", false, "" , false);
         return new ObsClientImpl(controller);
     }
 

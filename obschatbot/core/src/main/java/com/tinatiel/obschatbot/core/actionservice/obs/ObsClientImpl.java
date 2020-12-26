@@ -1,7 +1,6 @@
 package com.tinatiel.obschatbot.core.actionservice.obs;
 
 import net.twasi.obsremotejava.OBSRemoteController;
-import org.springframework.stereotype.Service;
 
 public class ObsClientImpl implements ObsClient {
 
@@ -13,6 +12,7 @@ public class ObsClientImpl implements ObsClient {
 
     @Override
     public void connect() {
+        controller.connect();
         if(controller.isFailed()) {
             System.out.println("Failed to connect");
         }

@@ -26,7 +26,7 @@ public class TwitchChatClientConfig {
                 .addListener(myListener())   // have to register the listener!
                 .buildConfiguration();
 
-        return new PircBotX(config);
+        return null;//return new PircBotX(config);
     }
 
     @Bean
