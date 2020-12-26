@@ -45,7 +45,7 @@ public class CommandRequest {
 
     @Override
     public String toString() {
-        return "ActionContext{" +
+        return "CommandRequest{" +
                 "command='" + command + '\'' +
                 ", user='" + user + '\'' +
                 ", arguments=" + arguments +

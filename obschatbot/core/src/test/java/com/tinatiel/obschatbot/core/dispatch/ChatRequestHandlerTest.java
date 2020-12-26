@@ -27,8 +27,10 @@ public class ChatRequestHandlerTest {
     @BeforeEach
     void setUp() {
         user = mock(User.class);
+
         parser = mock(ChatMessageParser.class);
         commandRepository = mock(CommandRepository.class);
+        dispatcher = mock(CommandDispatcher.class);
 
         handler = new ChatRequestHandlerImpl(parser, commandRepository, dispatcher);
 
@@ -39,7 +41,7 @@ public class ChatRequestHandlerTest {
 
         // Given a chat message containing no trigger
         String message = "some message";
-        when(parser.parse(any())).thenReturn(null);
+        when(parser.parse(any())).thenReturn(Optional.empty());
 
         // When handled
         handler.handle(user, message);
@@ -57,7 +59,7 @@ public class ChatRequestHandlerTest {
 
         // Given a chat message parsed into results
         ChatMessageParseResult parseResult = new ChatMessageParseResult("someCommand", Arrays.asList("for", "my", "friend"));
-        when(parser.parse(any())).thenReturn(parseResult);
+        when(parser.parse(any())).thenReturn(Optional.of(parseResult));
 
         // But no command is found
         when(commandRepository.findByName(any())).thenReturn(Optional.empty());
@@ -75,7 +77,7 @@ public class ChatRequestHandlerTest {
 
         // Given a chat message parsed into results
         ChatMessageParseResult parseResult = new ChatMessageParseResult("someCommand", Arrays.asList("for", "my", "friend"));
-        when(parser.parse(any())).thenReturn(parseResult);
+        when(parser.parse(any())).thenReturn(Optional.of(parseResult));
 
         // And a command is found
         Command command = mock(Command.class);

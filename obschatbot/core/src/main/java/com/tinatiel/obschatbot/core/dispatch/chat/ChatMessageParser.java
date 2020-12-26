@@ -1,5 +1,7 @@
 package com.tinatiel.obschatbot.core.dispatch.chat;
 
+import java.util.Optional;
+
 public interface ChatMessageParser {
-    ChatMessageParseResult parse(String message);
+    Optional<ChatMessageParseResult> parse(String message);
 }
