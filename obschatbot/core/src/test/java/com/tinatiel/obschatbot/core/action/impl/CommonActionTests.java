@@ -33,7 +33,7 @@ public class CommonActionTests {
         Action clone = action.createRunnableClone(context);
         System.out.println("original: " + action);
         System.out.println("clone   : " + clone);
-        assertThat(clone).isEqualToIgnoringGivenFields(action, "actionContext");
+        assertThat(clone).isEqualToIgnoringGivenFields(action, "commandRequest");
         assertThat(clone.getActionContext()).isEqualTo(context);
 
     }
