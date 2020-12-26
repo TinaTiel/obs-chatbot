@@ -8,6 +8,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 
+import java.util.ArrayList;
+
 @SpringBootApplication
 public class App {
 
@@ -19,7 +21,7 @@ public class App {
         ActionServiceFactory factory = context.getBean(ActionServiceFactory.class);
 
         Action action = new ObsSourceVisibilityAction(
-                new ActionContext(), factory,
+                new ActionContext("", "", new ArrayList<>()), factory,
                 "Scene",
                 "someTextSource",
                 false

@@ -43,14 +43,12 @@ public class ActionEnumeratorImpl implements ActionEnumerator {
     }
 
     @Override
-    public void checkForCyclicalActions(Command command) {
-        try {
-            List<Command> visited = new ArrayList<>();
+    public void checkForCyclicalActions(Command command) throws CyclicalActionsException {
+
+        List<Command> visited = new ArrayList<>();
             visited.add(command);
             checkForCyclicalActions(command, command, visited);
-        } catch (CyclicalActionsException e) {
-            throw e;
-        }
+
     }
 
     private void checkForCyclicalActions(Command rootCommand, Command currentCommand, List<Command> visitedCommands) {

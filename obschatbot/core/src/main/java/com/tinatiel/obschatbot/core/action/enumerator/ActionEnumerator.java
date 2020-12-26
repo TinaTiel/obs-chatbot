@@ -18,6 +18,6 @@ public interface ActionEnumerator {
      * @throws CyclicalActionsException if the actions cause a cyclical reference. Also sets the cyclical flag on the command.
      */
     List<Action> enumerate(Command command, ActionContext context) throws CyclicalActionsException;
-    void checkForCyclicalActions(Command command);
+    void checkForCyclicalActions(Command command) throws CyclicalActionsException;
 
 }
