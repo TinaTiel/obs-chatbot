@@ -1,4 +1,4 @@
-package com.tinatiel.obschatbot.core.action.enumerator;
+package com.tinatiel.obschatbot.core.error;
 
 import com.tinatiel.obschatbot.core.dispatch.CommandRequest;
 import com.tinatiel.obschatbot.core.command.Command;
@@ -6,13 +6,13 @@ import com.tinatiel.obschatbot.core.command.Command;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class CyclicalActionsException extends RuntimeException {
+public class CyclicalActionsException extends AbstractException {
     public CyclicalActionsException(String message, Throwable cause) {
-        super(message, cause);
+        super(Code.CYCLICAL_ACTION, message, cause);
     }
 
     public CyclicalActionsException(Command parentCommand, CommandRequest context, Throwable cause) {
-        super(
+        this(
                 "An unexpected infinite loop was detected on root command !" + parentCommand.getName()
                 + " when run with context " + context,
                 cause
@@ -20,7 +20,7 @@ public class CyclicalActionsException extends RuntimeException {
     }
 
     public CyclicalActionsException(Command parentCommand, List<Command> breadcrumbs) {
-        super(
+        this(
                 "An infinite loop was detected on root command !" + parentCommand.getName()
                         + "; execution chain was: " + breadcrumbs.stream()
                             .map(it -> "!" + it.getName())

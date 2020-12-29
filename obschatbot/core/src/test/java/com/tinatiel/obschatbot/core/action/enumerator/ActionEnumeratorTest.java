@@ -5,6 +5,7 @@ import com.tinatiel.obschatbot.core.dispatch.CommandRequest;
 import com.tinatiel.obschatbot.core.action.impl.ExecuteCommandAction;
 import com.tinatiel.obschatbot.core.action.sequencer.ActionSequencer;
 import com.tinatiel.obschatbot.core.command.Command;
+import com.tinatiel.obschatbot.core.error.CyclicalActionsException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
