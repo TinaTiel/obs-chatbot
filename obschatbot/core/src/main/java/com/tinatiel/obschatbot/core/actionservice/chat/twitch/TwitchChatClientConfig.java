@@ -8,6 +8,7 @@ import org.pircbotx.hooks.Listener;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 
 import javax.net.ssl.SSLSocketFactory;
 import java.io.IOException;
@@ -42,14 +43,15 @@ public class TwitchChatClientConfig {
     @Bean
     FooService fooService() { return new FooServiceImpl(); }
 
+    @Lazy
     @Bean
     MultiBotManager multiBotManager() {
         MultiBotManager manager = new MultiBotManager();
         manager.addBot(botConfiguration());
-        manager.start();
         return manager;
     }
 
+    @Lazy
     @Bean
     TwitchChatClient twitchChatClient() {
         return new TwitchChatClientImpl(multiBotManager());

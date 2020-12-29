@@ -37,7 +37,8 @@ public class App {
         User user = new User(Platform.TWITCH, "test");
         commandRepository.findByName("foo")
                 .ifPresent(cmd -> {
-                    actionEnumerator.enumerate(cmd, new CommandRequest(user, cmd, Arrays.asList("arg1", "arg2", "arg3"))).stream()
+                    actionEnumerator.enumerate(cmd,
+                            new CommandRequest(user, cmd, Arrays.asList("arg1", "arg2", "arg3"))).stream()
                             .forEach(action -> {
                                 action.run();
                             });

@@ -1,6 +1,9 @@
 package com.tinatiel.obschatbot.core.actionservice.obs;
 
+import com.tinatiel.obschatbot.core.error.ServiceNotInitializedException;
 import net.twasi.obsremotejava.OBSRemoteController;
+
+import javax.annotation.PostConstruct;
 
 public class ObsClientImpl implements ObsClient {
 
@@ -10,11 +13,20 @@ public class ObsClientImpl implements ObsClient {
         this.controller = obsRemoteController;
     }
 
+    @PostConstruct
+    public void init() {
+        connect(); // this is a blocking call
+    }
+
     @Override
     public void connect() {
-        controller.connect();
+        try {
+            controller.connect();
+        } catch (Exception e) {
+            throw new ServiceNotInitializedException("OBS Client failed to start", null);
+        }
         if(controller.isFailed()) {
-            System.out.println("Failed to connect");
+            throw new ServiceNotInitializedException("OBS Client failed to start", null);
         }
     }
 
