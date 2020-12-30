@@ -10,6 +10,8 @@
 ### Intellij ###
 **/.idea
 **/*.iml
+!**/.idea/scopes
+!**/.idea/copyright
 
 ### react ###
 .DS_*
