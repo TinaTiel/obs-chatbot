@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2020 TinaTiel. This file is part of the OBS Chatbot project which is released under
+ * GNU General Public License v3.0. See LICENSE or go to https://fsf.org/ for more details.
+ */
+
 package com.tinatiel.obschatbot.core.executor;
 
 import com.tinatiel.obschatbot.core.dispatch.CommandRequest;
@@ -25,17 +30,17 @@ public class OrderedKeyedRunnableCommandRequestImpl implements OrderedKeyedRunna
 
     @Override
     public CommandRequest getKey() {
-        return null;
+        return key;
     }
 
     @Override
-    public Queue<OrderedKeyedRunnable<CommandRequest>> getQueue() {
-        return null;
+    public Map<CommandRequest, Queue<KeyedFifoExecutor<CommandRequest>>> getSiblings() {
+        return keyedRunnables;
     }
 
     @Override
     public Executor getDelegate() {
-        return null;
+        return delegate;
     }
 
     @Override

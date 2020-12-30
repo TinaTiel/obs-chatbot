@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2020 TinaTiel. This file is part of the OBS Chatbot project which is released under
+ * GNU General Public License v3.0. See LICENSE or go to https://fsf.org/ for more details.
+ */
+
 package com.tinatiel.obschatbot.core.executor;
 
 import com.tinatiel.obschatbot.core.dispatch.CommandRequest;
@@ -18,7 +23,7 @@ public class KeyedFifoExecutorCommandRequestImplTest {
 
     KeyedFifoExecutor<CommandRequest> keyedFifoExecutor;
 
-    Map<CommandRequest, Queue<KeyedFifoExecutor<CommandRequest>>> keyedRunnables;
+    Map<CommandRequest, Queue<OrderedKeyedRunnable<CommandRequest>>> keyedRunnables;
     Executor delegate;
 
     @BeforeEach
@@ -26,6 +31,19 @@ public class KeyedFifoExecutorCommandRequestImplTest {
         keyedRunnables = new HashMap<>();
         delegate = mock(Executor.class);
         keyedFifoExecutor = spy(new KeyedFifoExecutorCommandRequestImpl(keyedRunnables, delegate));
+    }
+
+    @Test
+    void runnablesCannotBeNull() {
+
+        assertThatThrownBy(() -> {
+            keyedFifoExecutor.executeKeyedRunnable(null);
+        }).isInstanceOf(IllegalArgumentException.class);
+
+        assertThatThrownBy(() -> {
+            keyedFifoExecutor.execute(null);
+        }).isInstanceOf(IllegalArgumentException.class);
+
     }
 
     @Test
@@ -95,9 +113,10 @@ public class KeyedFifoExecutorCommandRequestImplTest {
         // Then the map will contain the expected qty of entries
         assertThat(keyedRunnables).hasSize(2);
 
-        // And the queue in each entry will contain the expected qty of keyed runnables
-        assertThat(keyedRunnables.get(key1)).hasSize(2);
-        assertThat(keyedRunnables.get(key2)).hasSize(1);
+        // And the queue in each entry will contain one fewer than the number of runnables executed
+        // because we always just execute the first entry
+        assertThat(keyedRunnables.get(key1)).hasSize(2-1);
+        assertThat(keyedRunnables.get(key2)).hasSize(1-1);
 
     }
 
@@ -113,7 +132,7 @@ public class KeyedFifoExecutorCommandRequestImplTest {
 
         // Then it has the same key, uses the map in the keyed fifo executor
         assertThat(orderedKeyedRunnable.getKey()).isEqualTo(key);
-        assertThat(orderedKeyedRunnable.getQueue()).isSameAs(keyedRunnables);
+        assertThat(orderedKeyedRunnable.getSiblings()).isSameAs(keyedRunnables);
         assertThat(orderedKeyedRunnable.getDelegate()).isSameAs(delegate);
 
     }
