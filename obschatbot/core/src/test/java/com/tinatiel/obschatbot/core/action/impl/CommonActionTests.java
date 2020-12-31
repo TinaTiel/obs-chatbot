@@ -6,7 +6,8 @@
 package com.tinatiel.obschatbot.core.action.impl;
 
 import com.tinatiel.obschatbot.core.action.Action;
-import com.tinatiel.obschatbot.core.dispatch.CommandRequest;
+import com.tinatiel.obschatbot.core.action.RunnableAction;
+import com.tinatiel.obschatbot.core.dispatch.CommandRequestContext;
 import com.tinatiel.obschatbot.core.action.ActionType;
 import com.tinatiel.obschatbot.core.client.ActionClientFactory;
 import com.tinatiel.obschatbot.core.command.Command;
@@ -25,21 +26,28 @@ public class CommonActionTests {
     @MethodSource("actionTypes")
     void actionTypeAsExpected(ActionType expected, Action action) {
 
+        // For each action, assert that it has the expected actionType
         assertThat(action.getActionType()).isEqualTo(expected);
 
     }
 
     @ParameterizedTest
     @MethodSource("actionTypes")
-    void cloneAsExpected(ActionType expected, Action action) {
+    void cloneAsExpected(ActionType expected, RunnableAction action) {
 
-        CommandRequest context = mock(CommandRequest.class);
+        // Given a request context
+        CommandRequestContext context = mock(CommandRequestContext.class);
 
-        Action clone = action.createRunnableClone(context);
+        // When an action is created as a runnable clone
+        RunnableAction clone = action.createRunnableClone(context);
         System.out.println("original: " + action);
         System.out.println("clone   : " + clone);
-        assertThat(clone).isEqualToIgnoringGivenFields(action, "commandRequest");
-        assertThat(clone.getActionContext()).isEqualTo(context);
+
+        // Then it has the same fields as the original
+        assertThat(clone).isEqualToIgnoringGivenFields(action, "commandRequestContext");
+
+        // And has the expected context
+        assertThat(clone.getRequestContext()).isEqualTo(context);
 
     }
 

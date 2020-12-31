@@ -5,7 +5,7 @@
 
 package com.tinatiel.obschatbot.core.error;
 
-import com.tinatiel.obschatbot.core.dispatch.CommandRequest;
+import com.tinatiel.obschatbot.core.dispatch.CommandRequestContext;
 import com.tinatiel.obschatbot.core.command.Command;
 
 import java.util.List;
@@ -16,7 +16,7 @@ public class CyclicalActionsException extends AbstractException {
         super(Code.CYCLICAL_ACTION, message, cause);
     }
 
-    public CyclicalActionsException(Command parentCommand, CommandRequest context, Throwable cause) {
+    public CyclicalActionsException(Command parentCommand, CommandRequestContext context, Throwable cause) {
         this(
                 "An unexpected infinite loop was detected on root command !" + parentCommand.getName()
                 + " when run with context " + context,

@@ -5,7 +5,7 @@
 
 package com.tinatiel.obschatbot.core.command;
 
-import com.tinatiel.obschatbot.core.action.Action;
+import com.tinatiel.obschatbot.core.action.RunnableAction;
 import com.tinatiel.obschatbot.core.action.impl.ObsSourceVisibilityAction;
 import com.tinatiel.obschatbot.core.sequencer.ActionSequencer;
 import com.tinatiel.obschatbot.core.sequencer.InOrderActionSequencer;
@@ -19,7 +19,7 @@ public class CommandRepositoryTestImpl implements CommandRepository {
 
     private final ActionClientFactory factory;
 
-    private List<Action> actions = new ArrayList<>();
+    private List<RunnableAction> actions = new ArrayList<>();
     private ActionSequencer actionSequencer;
     private Command command;
 

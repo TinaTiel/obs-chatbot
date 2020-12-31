@@ -8,7 +8,7 @@ package com.tinatiel.obschatbot;
 import com.tinatiel.obschatbot.core.dispatch.enumerator.ActionEnumerator;
 import com.tinatiel.obschatbot.core.client.Platform;
 import com.tinatiel.obschatbot.core.command.CommandRepository;
-import com.tinatiel.obschatbot.core.dispatch.CommandRequest;
+import com.tinatiel.obschatbot.core.dispatch.CommandRequestContext;
 import com.tinatiel.obschatbot.core.user.User;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -41,7 +41,7 @@ public class App {
         commandRepository.findByName("foo")
                 .ifPresent(cmd -> {
                     actionEnumerator.enumerate(cmd,
-                            new CommandRequest(user, cmd, Arrays.asList("arg1", "arg2", "arg3"))).stream()
+                            new CommandRequestContext(user, cmd, Arrays.asList("arg1", "arg2", "arg3"))).stream()
                             .forEach(action -> {
                                 action.run();
                             });

@@ -5,8 +5,8 @@
 
 package com.tinatiel.obschatbot.core.dispatch.enumerator;
 
-import com.tinatiel.obschatbot.core.action.Action;
-import com.tinatiel.obschatbot.core.dispatch.CommandRequest;
+import com.tinatiel.obschatbot.core.action.RunnableAction;
+import com.tinatiel.obschatbot.core.dispatch.CommandRequestContext;
 import com.tinatiel.obschatbot.core.command.Command;
 import com.tinatiel.obschatbot.core.error.CyclicalActionsException;
 
@@ -23,7 +23,7 @@ public interface ActionEnumerator {
      * @return Flattened list of immutable actions containing the information needed to be run by an executor.
      * @throws CyclicalActionsException if the actions cause a cyclical reference. Also sets the cyclical flag on the command.
      */
-    List<Action> enumerate(Command command, CommandRequest context) throws CyclicalActionsException;
+    List<RunnableAction> enumerate(Command command, CommandRequestContext context) throws CyclicalActionsException;
     void checkForCyclicalActions(Command command) throws CyclicalActionsException;
 
 }

@@ -5,30 +5,23 @@
 
 package com.tinatiel.obschatbot.core.dispatch;
 
-import com.tinatiel.obschatbot.core.command.Command;
 import com.tinatiel.obschatbot.core.user.User;
 
 import java.util.List;
 import java.util.Objects;
 
-public class CommandRequest {
+public class CommandRequestContext {
 
     private final User user;
-    private final Command command;
     private final List<String> arguments;
 
-    public CommandRequest(User user, Command command, List<String> arguments) {
+    public CommandRequestContext(User user, List<String> arguments) {
         this.user = user;
-        this.command = command;
         this.arguments = arguments;
     }
 
     public User getUser() {
         return user;
-    }
-
-    public Command getCommand() {
-        return command;
     }
 
     public List<String> getArguments() {
@@ -39,20 +32,19 @@ public class CommandRequest {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        CommandRequest context = (CommandRequest) o;
-        return Objects.equals(user, context.user) && Objects.equals(command, context.command) && Objects.equals(arguments, context.arguments);
+        CommandRequestContext that = (CommandRequestContext) o;
+        return Objects.equals(user, that.user) && Objects.equals(arguments, that.arguments);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(user, command, arguments);
+        return Objects.hash(user, arguments);
     }
 
     @Override
     public String toString() {
-        return "CommandRequest{" +
-                "command='" + command + '\'' +
-                ", user='" + user + '\'' +
+        return "RequestContext{" +
+                "user=" + user +
                 ", arguments=" + arguments +
                 '}';
     }

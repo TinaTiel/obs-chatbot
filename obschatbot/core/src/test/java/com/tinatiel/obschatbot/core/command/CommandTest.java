@@ -5,7 +5,7 @@
 
 package com.tinatiel.obschatbot.core.command;
 
-import com.tinatiel.obschatbot.core.action.Action;
+import com.tinatiel.obschatbot.core.action.RunnableAction;
 import com.tinatiel.obschatbot.core.sequencer.ActionSequencer;
 import org.junit.jupiter.api.Test;
 
@@ -58,17 +58,17 @@ public class CommandTest {
 
         // Given an action sequencer with actions
         ActionSequencer actionSequencer = mock(ActionSequencer.class);
-        Action action1 = mock(Action.class);
-        Action action2 = mock(Action.class);
-        Action action3 = mock(Action.class);
-        List<Action> actions = Arrays.asList(action1, action2, action3);
+        RunnableAction action1 = mock(RunnableAction.class);
+        RunnableAction action2 = mock(RunnableAction.class);
+        RunnableAction action3 = mock(RunnableAction.class);
+        List<RunnableAction> actions = Arrays.asList(action1, action2, action3);
         when(actionSequencer.listAll()).thenReturn(actions);
 
         // And a command is assigned the sequencer
         Command command = new Command().actionSequencer(actionSequencer);
 
         // When called for actions
-        List<Action> result = command.getActions();
+        List<RunnableAction> result = command.getActions();
 
         // Then the (immutable) result is delegated to the sequencer
         verify(actionSequencer, times(1)).listAll();

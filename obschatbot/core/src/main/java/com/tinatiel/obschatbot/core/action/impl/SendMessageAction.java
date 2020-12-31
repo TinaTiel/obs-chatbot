@@ -5,11 +5,11 @@
 
 package com.tinatiel.obschatbot.core.action.impl;
 
-import com.tinatiel.obschatbot.core.action.Action;
-import com.tinatiel.obschatbot.core.dispatch.CommandRequest;
+import com.tinatiel.obschatbot.core.action.RunnableAction;
+import com.tinatiel.obschatbot.core.dispatch.CommandRequestContext;
 import com.tinatiel.obschatbot.core.action.ActionType;
 
-public class SendMessageAction implements Action {
+public class SendMessageAction implements RunnableAction {
 
     private final String message;
 
@@ -32,12 +32,12 @@ public class SendMessageAction implements Action {
     }
 
     @Override
-    public CommandRequest getActionContext() {
+    public CommandRequestContext getRequestContext() {
         return null;
     }
 
     @Override
-    public Action createRunnableClone(CommandRequest context) {
+    public RunnableAction createRunnableClone(CommandRequestContext context) {
         return null;
     }
 }

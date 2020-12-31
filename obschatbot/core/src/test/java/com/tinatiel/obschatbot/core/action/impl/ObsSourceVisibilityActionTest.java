@@ -5,8 +5,8 @@
 
 package com.tinatiel.obschatbot.core.action.impl;
 
-import com.tinatiel.obschatbot.core.action.Action;
-import com.tinatiel.obschatbot.core.dispatch.CommandRequest;
+import com.tinatiel.obschatbot.core.action.RunnableAction;
+import com.tinatiel.obschatbot.core.dispatch.CommandRequestContext;
 import com.tinatiel.obschatbot.core.action.ActionType;
 import com.tinatiel.obschatbot.core.client.ActionClientFactory;
 import com.tinatiel.obschatbot.core.client.obs.ObsClient;
@@ -18,7 +18,7 @@ import static org.mockito.Mockito.*;
 
 public class ObsSourceVisibilityActionTest {
 
-    CommandRequest context;
+    CommandRequestContext context;
     ActionClientFactory factory;
     ObsClient client;
 
@@ -26,7 +26,7 @@ public class ObsSourceVisibilityActionTest {
     void setUp() {
 
         // Initialize dependencies and behavior
-        context = mock(CommandRequest.class);
+        context = mock(CommandRequestContext.class);
         factory = mock(ActionClientFactory.class);
         client = mock(ObsClient.class);
         when(factory.getService(ActionType.OBS)).thenReturn(client);
@@ -56,7 +56,7 @@ public class ObsSourceVisibilityActionTest {
     void sourceNameIsRequired() {
 
         // Given action with no source name
-        Action action = new ObsSourceVisibilityAction(context, factory,
+        RunnableAction action = new ObsSourceVisibilityAction(context, factory,
                 "foo", null, true);
 
         // When run, then an exception is thrown
@@ -68,7 +68,7 @@ public class ObsSourceVisibilityActionTest {
     void ContextRequiredToRun() {
 
         // Given action with no context
-        Action action = new ObsSourceVisibilityAction(null, factory,
+        RunnableAction action = new ObsSourceVisibilityAction(null, factory,
                 "foo", "bar", true);
 
         // When run, then an exception is thrown
@@ -80,7 +80,7 @@ public class ObsSourceVisibilityActionTest {
     void factoryRequiredToRun() {
 
         // Given action with no factory
-        Action action = new ObsSourceVisibilityAction(context, null,
+        RunnableAction action = new ObsSourceVisibilityAction(context, null,
                 "foo", "bar", true);
 
         // When run, then an exception is thrown

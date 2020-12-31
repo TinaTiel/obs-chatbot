@@ -5,7 +5,7 @@
 
 package com.tinatiel.obschatbot.core.sequencer;
 
-import com.tinatiel.obschatbot.core.action.Action;
+import com.tinatiel.obschatbot.core.action.RunnableAction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,13 +13,13 @@ import java.util.Random;
 
 public class RandomOrderActionSequencer implements ActionSequencer {
 
-    private final List<Action> original = new ArrayList<>();
-    private final List<Action> available = new ArrayList<>();
-    private final List<Action> sequenced = new ArrayList<>();
+    private final List<RunnableAction> original = new ArrayList<>();
+    private final List<RunnableAction> available = new ArrayList<>();
+    private final List<RunnableAction> sequenced = new ArrayList<>();
     private final Integer pickedPerExecution;
     private final Random random = new Random();
 
-    public RandomOrderActionSequencer(List<Action> actions, Integer pickedPerExecution) {
+    public RandomOrderActionSequencer(List<RunnableAction> actions, Integer pickedPerExecution) {
         // Sanitize
         if(actions == null) {
             throw new IllegalArgumentException("actions cannot be null");
@@ -39,10 +39,10 @@ public class RandomOrderActionSequencer implements ActionSequencer {
     }
 
     @Override
-    public List<Action> nextSequence() {
+    public List<RunnableAction> nextSequence() {
 
         // Init empty list of picks
-        List<Action> picked = new ArrayList<>();
+        List<RunnableAction> picked = new ArrayList<>();
 
         // Pick actions to sequence
         for(int i=0; i<pickedPerExecution; i++) {
@@ -53,7 +53,7 @@ public class RandomOrderActionSequencer implements ActionSequencer {
                 sequenced.clear();
             }
 
-            Action pick = available.remove(random.nextInt(available.size()));
+            RunnableAction pick = available.remove(random.nextInt(available.size()));
             sequenced.add(pick);
             picked.add(pick);
 
@@ -65,7 +65,7 @@ public class RandomOrderActionSequencer implements ActionSequencer {
     }
 
     @Override
-    public List<Action> listAll() {
+    public List<RunnableAction> listAll() {
         return original;
     }
 }

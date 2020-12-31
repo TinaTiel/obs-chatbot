@@ -5,7 +5,7 @@
 
 package com.tinatiel.obschatbot.core.command;
 
-import com.tinatiel.obschatbot.core.action.Action;
+import com.tinatiel.obschatbot.core.action.RunnableAction;
 import com.tinatiel.obschatbot.core.sequencer.ActionSequencer;
 
 import java.util.ArrayList;
@@ -43,7 +43,7 @@ public class Command {
         return actionSequencer;
     }
 
-    public List<Action> getActions() {
+    public List<RunnableAction> getActions() {
         return new ArrayList<>(actionSequencer.listAll());
     }
 

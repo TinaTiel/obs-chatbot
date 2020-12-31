@@ -5,7 +5,7 @@
 
 package com.tinatiel.obschatbot.core.sequencer;
 
-import com.tinatiel.obschatbot.core.action.Action;
+import com.tinatiel.obschatbot.core.action.RunnableAction;
 
 import java.util.List;
 
@@ -24,7 +24,7 @@ import java.util.List;
  */
 public interface ActionSequencer {
 
-    List<Action> nextSequence();
-    List<Action> listAll();
+    List<RunnableAction> nextSequence();
+    List<RunnableAction> listAll();
 
 }

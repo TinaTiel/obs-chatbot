@@ -5,8 +5,8 @@
 
 package com.tinatiel.obschatbot.core.dispatch.enumerator;
 
-import com.tinatiel.obschatbot.core.action.Action;
-import com.tinatiel.obschatbot.core.dispatch.CommandRequest;
+import com.tinatiel.obschatbot.core.action.RunnableAction;
+import com.tinatiel.obschatbot.core.dispatch.CommandRequestContext;
 import com.tinatiel.obschatbot.core.action.impl.ExecuteCommandAction;
 import com.tinatiel.obschatbot.core.command.Command;
 import com.tinatiel.obschatbot.core.error.CyclicalActionsException;
@@ -16,14 +16,14 @@ import java.util.stream.Collectors;
 
 public class ActionEnumeratorImpl implements ActionEnumerator {
     @Override
-    public List<Action> enumerate(Command command, CommandRequest context) throws CyclicalActionsException {
+    public List<RunnableAction> enumerate(Command command, CommandRequestContext context) throws CyclicalActionsException {
 
         // Check the command for cycles
         checkForCyclicalActions(command);
 
         // Attempt to list out all the actions sequenced for this execution
         try {
-           List<Action> results = new ArrayList<>();
+           List<RunnableAction> results = new ArrayList<>();
            enumerate(command, context, results);
            return results;
         } catch (StackOverflowError e) {
@@ -32,9 +32,9 @@ public class ActionEnumeratorImpl implements ActionEnumerator {
         }
     }
 
-    private void enumerate(Command command, CommandRequest context, List<Action> results) {
+    private void enumerate(Command command, CommandRequestContext context, List<RunnableAction> results) {
 
-        for(Action action:command.getActionSequencer().nextSequence()) {
+        for(RunnableAction action:command.getActionSequencer().nextSequence()) {
 
             if(action instanceof ExecuteCommandAction) {
                 ExecuteCommandAction castAction = (ExecuteCommandAction) action;
