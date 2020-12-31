@@ -8,6 +8,9 @@ package com.tinatiel.obschatbot.core.action.model;
 import com.tinatiel.obschatbot.core.action.Action;
 import com.tinatiel.obschatbot.core.action.ActionType;
 import com.tinatiel.obschatbot.core.action.RunnableAction;
+import com.tinatiel.obschatbot.core.action.runnable.RunnableObsSourceVisibilityAction;
+import com.tinatiel.obschatbot.core.client.ActionClient;
+import com.tinatiel.obschatbot.core.client.obs.ObsClient;
 import com.tinatiel.obschatbot.core.dispatch.CommandRequestContext;
 
 public class ObsSourceVisibilityAction implements Action<ObsSourceVisibilityAction> {
@@ -29,6 +32,21 @@ public class ObsSourceVisibilityAction implements Action<ObsSourceVisibilityActi
         return ACTION_TYPE;
     }
 
+    @Override
+    public ObsSourceVisibilityAction clone() {
+        return new ObsSourceVisibilityAction(sceneName, sourceName, visible);
+    }
+
+    @Override
+    public RunnableAction<ObsSourceVisibilityAction> createRunnableAction(ActionClient client, CommandRequestContext commandRequestContext) {
+        if(client == null || commandRequestContext == null) throw new IllegalArgumentException("arguments cannot be null");
+        if(client instanceof ObsClient) {
+            return new RunnableObsSourceVisibilityAction(clone(), (ObsClient) client, commandRequestContext);
+        } else {
+            throw new IllegalArgumentException("Unexpected client: " + client);
+        }
+    }
+
     public String getSceneName() {
         return sceneName;
     }
@@ -39,5 +57,14 @@ public class ObsSourceVisibilityAction implements Action<ObsSourceVisibilityActi
 
     public boolean isVisible() {
         return visible;
+    }
+
+    @Override
+    public String toString() {
+        return "ObsSourceVisibilityAction{" +
+                "sceneName='" + sceneName + '\'' +
+                ", sourceName='" + sourceName + '\'' +
+                ", visible=" + visible +
+                '}';
     }
 }

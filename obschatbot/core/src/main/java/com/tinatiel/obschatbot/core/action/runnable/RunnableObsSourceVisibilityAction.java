@@ -5,22 +5,24 @@
 
 package com.tinatiel.obschatbot.core.action.runnable;
 
+import com.tinatiel.obschatbot.core.action.Action;
 import com.tinatiel.obschatbot.core.action.RunnableAction;
 import com.tinatiel.obschatbot.core.action.model.ObsSourceVisibilityAction;
+import com.tinatiel.obschatbot.core.client.ActionClient;
 import com.tinatiel.obschatbot.core.dispatch.CommandRequestContext;
 import com.tinatiel.obschatbot.core.action.ActionType;
 import com.tinatiel.obschatbot.core.client.ActionClientFactory;
 import com.tinatiel.obschatbot.core.client.obs.ObsClient;
 
-public class ObsSourceVisibilityRunnableAction implements RunnableAction {
+public class RunnableObsSourceVisibilityAction implements RunnableAction<ObsSourceVisibilityAction> {
 
-    private final ObsClient obsClient;
     private final ObsSourceVisibilityAction action;
+    private final ObsClient obsClient;
     private final CommandRequestContext context;
 
-    public ObsSourceVisibilityRunnableAction(ObsClient obsClient, ObsSourceVisibilityAction action, CommandRequestContext context) {
-        this.obsClient = obsClient;
+    public RunnableObsSourceVisibilityAction(ObsSourceVisibilityAction action, ObsClient obsClient, CommandRequestContext context) {
         this.action = action;
+        this.obsClient = obsClient;
         this.context = context;
     }
 
@@ -34,13 +36,29 @@ public class ObsSourceVisibilityRunnableAction implements RunnableAction {
         if(action.getSourceName() == null) throw new IllegalStateException("Missing source name");
 
         // Get the client and invoke it
-//        ObsClient client = (ObsClient) actionClientFactory.getService(actionType);
-//        client.setSourceVisibility(sceneName, sourceName, visible);
+        obsClient.setSourceVisibility(action.getSceneName(), action.getSourceName(), action.isVisible());
 
     }
 
     @Override
     public CommandRequestContext getRequestContext() {
         return context;
+    }
+
+    @Override
+    public ObsSourceVisibilityAction getAction() {
+        return action;
+    }
+
+    @Override
+    public ActionClient getClient() { return obsClient; }
+
+    @Override
+    public String toString() {
+        return "RunnableObsSourceVisibilityAction{" +
+                "obsClient=" + obsClient +
+                ", action=" + action +
+                ", context=" + context +
+                '}';
     }
 }

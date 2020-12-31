@@ -7,6 +7,9 @@ package com.tinatiel.obschatbot.core.action.model;
 
 import com.tinatiel.obschatbot.core.action.Action;
 import com.tinatiel.obschatbot.core.action.RunnableAction;
+import com.tinatiel.obschatbot.core.action.runnable.RunnableSendMessageAction;
+import com.tinatiel.obschatbot.core.client.ActionClient;
+import com.tinatiel.obschatbot.core.client.chat.twitch.TwitchChatClient;
 import com.tinatiel.obschatbot.core.dispatch.CommandRequestContext;
 import com.tinatiel.obschatbot.core.action.ActionType;
 
@@ -28,4 +31,25 @@ public class SendMessageAction implements Action<SendMessageAction> {
         return ACTION_TYPE;
     }
 
+    @Override
+    public SendMessageAction clone() {
+        return new SendMessageAction(message);
+    }
+
+    @Override
+    public RunnableAction<SendMessageAction> createRunnableAction(ActionClient client, CommandRequestContext commandRequestContext) {
+        if(client == null || commandRequestContext == null) throw new IllegalArgumentException("arguments cannot be null");
+        if(client instanceof TwitchChatClient) {
+            return new RunnableSendMessageAction(clone(), (TwitchChatClient) client, commandRequestContext);
+        } else {
+            throw new IllegalArgumentException("Unexpected client: " + client);
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "SendMessageAction{" +
+                "message='" + message + '\'' +
+                '}';
+    }
 }

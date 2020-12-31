@@ -5,8 +5,11 @@
 
 package com.tinatiel.obschatbot.core.action;
 
+import com.tinatiel.obschatbot.core.client.ActionClient;
 import com.tinatiel.obschatbot.core.dispatch.CommandRequestContext;
 
-public interface RunnableAction extends Runnable {
+public interface RunnableAction<T extends Action<T>> extends Runnable {
     CommandRequestContext getRequestContext();
+    T getAction();
+    ActionClient getClient();
 }

@@ -9,6 +9,10 @@ import com.tinatiel.obschatbot.core.action.Action;
 import com.tinatiel.obschatbot.core.action.RunnableAction;
 import com.tinatiel.obschatbot.core.action.model.ExecuteCommandAction;
 import com.tinatiel.obschatbot.core.action.model.ObsSourceVisibilityAction;
+import com.tinatiel.obschatbot.core.action.model.SendMessageAction;
+import com.tinatiel.obschatbot.core.client.ActionClient;
+import com.tinatiel.obschatbot.core.client.chat.twitch.TwitchChatClient;
+import com.tinatiel.obschatbot.core.client.obs.ObsClient;
 import com.tinatiel.obschatbot.core.dispatch.CommandRequestContext;
 import com.tinatiel.obschatbot.core.action.ActionType;
 import com.tinatiel.obschatbot.core.client.ActionClientFactory;
@@ -20,6 +24,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 
 public class CommonActionTests {
@@ -33,35 +38,90 @@ public class CommonActionTests {
 
     }
 
-//    @ParameterizedTest
-//    @MethodSource("actionTypes")
-//    void cloneAsExpected(ActionType expected, RunnableAction action) {
-//
-//        // Given a request context
-//        CommandRequestContext context = mock(CommandRequestContext.class);
-//
-//        // When an action is created as a runnable clone
-//        RunnableAction clone = action.createRunnableClone(context);
-//        System.out.println("original: " + action);
-//        System.out.println("clone   : " + clone);
-//
-//        // Then it has the same fields as the original
-//        assertThat(clone).isEqualToIgnoringGivenFields(action, "commandRequestContext");
-//
-//        // And has the expected context
-//        assertThat(clone.getRequestContext()).isEqualTo(context);
-//
-//    }
+    @ParameterizedTest
+    @MethodSource("actionTypes")
+    void cloneAsExpected(ActionType ignored, Action action) {
+
+        // For each action, assert that its clone is identical
+        assertThat(action.clone()).isEqualToComparingFieldByField(action);
+
+    }
+
+    @ParameterizedTest
+    @MethodSource("runnableActions")
+    void createRunnableCloneAsExpected(Action action, ActionClient client) {
+
+        // Given a request context
+        CommandRequestContext context = mock(CommandRequestContext.class);
+
+        // When an action is created as a runnable clone
+        RunnableAction clone = action.createRunnableAction(client, context);
+        System.out.println("original: " + action);
+        System.out.println("clone   : " + clone);
+
+        // Then it has the expected properties
+        assertThat(clone.getAction()).isEqualToComparingFieldByField(action);
+        assertThat(clone.getClient()).isEqualTo(client);
+        assertThat(clone.getRequestContext()).isEqualTo(context);
+
+        // And attempts to create with the wrong client throw an exception
+        assertThatThrownBy(() -> {
+            action.createRunnableAction(mock(ActionClient.class), context);
+        }).isInstanceOf(IllegalArgumentException.class);
+
+    }
+
+    @ParameterizedTest
+    @MethodSource("runnableActions")
+    void createRunnableCloneWithWrongClient(Action action, ActionClient client) {
+
+        // Given a request context
+        CommandRequestContext context = mock(CommandRequestContext.class);
+
+        // When cloned with the wrong client throw an exception
+        assertThatThrownBy(() -> {
+            action.createRunnableAction(mock(ActionClient.class), context);
+        }).isInstanceOf(IllegalArgumentException.class);
+
+    }
+
+    @ParameterizedTest
+    @MethodSource("runnableActions")
+    void createRunnableCloneNulls(Action action, ActionClient client) {
+
+        // Given a request context
+        CommandRequestContext context = mock(CommandRequestContext.class);
+
+        // When cloned with nulls then throw an exception
+        assertThatThrownBy(() -> {
+            action.createRunnableAction(null, context);
+        }).isInstanceOf(IllegalArgumentException.class);
+
+        assertThatThrownBy(() -> {
+            action.createRunnableAction(client, null);
+        }).isInstanceOf(IllegalArgumentException.class);
+
+    }
 
     static Stream<Arguments> actionTypes() {
 
-        ActionClientFactory factory = mock(ActionClientFactory.class);
-
         return Stream.of(
                 Arguments.of(ActionType.SYSTEM, new ExecuteCommandAction(mock(Command.class))),
-                Arguments.of(ActionType.OBS, new ObsSourceVisibilityAction( "foo", "bar", true))
+                Arguments.of(ActionType.OBS, new ObsSourceVisibilityAction( "foo", "bar", true)),
+                Arguments.of(ActionType.TWITCH_CHAT, new SendMessageAction("foo"))
         );
 
+    }
+
+    static Stream<Arguments> runnableActions() {
+
+        ObsClient obsClient = mock(ObsClient.class);
+        TwitchChatClient twitchChatClient = mock(TwitchChatClient.class);
+
+        return Stream.of(
+            Arguments.of(new ObsSourceVisibilityAction("foo", "bar", true), obsClient),
+            Arguments.of(new SendMessageAction("foo"), twitchChatClient)
+        );
     }
 
 }
