@@ -5,18 +5,18 @@
 
 package com.tinatiel.obschatbot.core.action.runnable;
 
-import com.tinatiel.obschatbot.core.action.Action;
-import com.tinatiel.obschatbot.core.action.RunnableAction;
+import com.tinatiel.obschatbot.core.action.*;
 import com.tinatiel.obschatbot.core.action.model.ExecuteCommandAction;
 import com.tinatiel.obschatbot.core.action.model.ObsSourceVisibilityAction;
 import com.tinatiel.obschatbot.core.action.model.SendMessageAction;
 import com.tinatiel.obschatbot.core.client.ActionClient;
+import com.tinatiel.obschatbot.core.client.ActionClientFactoryImpl;
 import com.tinatiel.obschatbot.core.client.chat.twitch.TwitchChatClient;
 import com.tinatiel.obschatbot.core.client.obs.ObsClient;
 import com.tinatiel.obschatbot.core.dispatch.CommandRequestContext;
-import com.tinatiel.obschatbot.core.action.ActionType;
 import com.tinatiel.obschatbot.core.client.ActionClientFactory;
 import com.tinatiel.obschatbot.core.command.Command;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -28,6 +28,25 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 
 public class CommonActionTests {
+
+    ObsClient obsClient;
+    TwitchChatClient twitchChatClient;
+
+    RunnableActionFactory runnableActionFactory;
+
+    @BeforeEach
+    void setUp() {
+
+        obsClient = mock(ObsClient.class);
+        twitchChatClient = mock(TwitchChatClient.class);
+
+        ActionClientFactory actionClientFactory = new ActionClientFactoryImpl(obsClient, twitchChatClient);
+
+        runnableActionFactory = new RunnableActionFactoryImpl(actionClientFactory);
+
+    }
+
+
 
     @ParameterizedTest
     @MethodSource("actionTypes")
