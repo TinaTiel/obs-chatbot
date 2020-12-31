@@ -5,7 +5,8 @@
 
 package com.tinatiel.obschatbot.core.sequencer;
 
-import com.tinatiel.obschatbot.core.action.RunnableAction;
+import com.tinatiel.obschatbot.core.action.Action;
+import com.tinatiel.obschatbot.core.action.Action;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
@@ -20,14 +21,14 @@ import static org.mockito.Mockito.*;
 
 public class ActionSequencerTest {
 
-    RunnableAction action1, action2, action3;
+    Action action1, action2, action3;
 
     @BeforeEach
     void setUp() {
 
-        action1 = mock(RunnableAction.class);
-        action2 = mock(RunnableAction.class);
-        action3 = mock(RunnableAction.class);
+        action1 = mock(Action.class);
+        action2 = mock(Action.class);
+        action3 = mock(Action.class);
 
     }
 
@@ -35,13 +36,13 @@ public class ActionSequencerTest {
     void sequenceActionsInOrder() {
 
         // Given actions to execute
-        List<RunnableAction> input = Arrays.asList(action1, action2, action3);
+        List<Action> input = Arrays.asList(action1, action2, action3);
 
         // Given an in-order sequencer
         ActionSequencer sequencer = new InOrderActionSequencer(input, false);
 
         // When sequenced
-        List<RunnableAction> sequence = sequencer.nextSequence();
+        List<Action> sequence = sequencer.nextSequence();
 
         // Then the actions are scheduled in the same order they went in
         assertThat(sequence).containsExactly(action1, action2, action3);
@@ -63,13 +64,13 @@ public class ActionSequencerTest {
     void executeActionsInReverseOrder() {
 
         // Given actions to execute
-        List<RunnableAction> input = Arrays.asList(action1, action2, action3);
+        List<Action> input = Arrays.asList(action1, action2, action3);
 
         // Given an in-order scheduler, but reversed
         ActionSequencer sequencer = new InOrderActionSequencer(input, true);
 
         // When scheduled
-        List<RunnableAction> sequence = sequencer.nextSequence();
+        List<Action> sequence = sequencer.nextSequence();
 
         // Then the actions are scheduled in the opposite order they went in
         assertThat(sequence).containsExactly(action3, action2, action1);
@@ -91,22 +92,22 @@ public class ActionSequencerTest {
     void executeRandomActionsIsPseudoRandomAndCyclical() {
 
         // Given actions to execute
-        List<RunnableAction> input = Arrays.asList(action1, action2, action3);
-        Map<RunnableAction, Integer> sequenceResults = new HashMap<>();
-        for(RunnableAction action:input) sequenceResults.put(action, 0);
+        List<Action> input = Arrays.asList(action1, action2, action3);
+        Map<Action, Integer> sequenceResults = new HashMap<>();
+        for(Action action:input) sequenceResults.put(action, 0);
 
         // Given sequencer will randomly execute at most two of the actions provided
         ActionSequencer sequencer = new RandomOrderActionSequencer(input, 2);
 
         // when sequenced
-        List<RunnableAction> sequence = sequencer.nextSequence();
+        List<Action> sequence = sequencer.nextSequence();
         System.out.println("First sequence : " + sequence);
 
         // Then there are two picked
         assertThat(sequence).hasSize(2);
 
         // And two of three will have been picked once
-        for(RunnableAction action:sequence) {
+        for(Action action:sequence) {
             sequenceResults.put(action, sequenceResults.get(action) + 1);
         }
         int matches = 0;
@@ -123,7 +124,7 @@ public class ActionSequencerTest {
         assertThat(sequence).hasSize(2);
 
         // And at least one of them will be picked twice (100% statistical certainty)
-        for(RunnableAction action:sequence) {
+        for(Action action:sequence) {
             sequenceResults.put(action, sequenceResults.get(action) + 1);
         }
         matches = 0;
@@ -138,13 +139,13 @@ public class ActionSequencerTest {
     void executeRandomActionsWhenNullExecutionsThenExecuteAll() {
 
         // Given actions to execute
-        List<RunnableAction> input = Arrays.asList(action1, action2, action3);
+        List<Action> input = Arrays.asList(action1, action2, action3);
 
         // Given random order sequencer with null args
         ActionSequencer sequencer = new RandomOrderActionSequencer(input, null);
 
         // when executed
-        List<RunnableAction> sequence = sequencer.nextSequence();
+        List<Action> sequence = sequencer.nextSequence();
 
         // Then all are sequenced
         assertThat(sequence).containsExactlyInAnyOrderElementsOf(input);
@@ -163,13 +164,13 @@ public class ActionSequencerTest {
     void executeRandomActionsWhenMoreExecutionsThanActionsThenExecuteAll() {
 
         // Given actions to execute
-        List<RunnableAction> input = Arrays.asList(action1, action2, action3);
+        List<Action> input = Arrays.asList(action1, action2, action3);
 
         // Given random order sequencer with null args
         ActionSequencer sequencer = new RandomOrderActionSequencer(input, 999);
 
         // when executed
-        List<RunnableAction> sequence = sequencer.nextSequence();
+        List<Action> sequence = sequencer.nextSequence();
 
         // Then all are sequenced
         assertThat(sequence).containsExactlyInAnyOrderElementsOf(input);
@@ -188,7 +189,7 @@ public class ActionSequencerTest {
     void randomSequenceRepeatedInvocationOfGetActionsReturnsSameResult() {
 
         // Given actions to execute
-        List<RunnableAction> input = Arrays.asList(action1, action2, action3);
+        List<Action> input = Arrays.asList(action1, action2, action3);
 
         // Given random order sequencer, where pick per execution is irrelevant
         ActionSequencer sequencer = new RandomOrderActionSequencer(input, 1);

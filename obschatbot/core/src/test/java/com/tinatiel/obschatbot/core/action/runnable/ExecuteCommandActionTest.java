@@ -3,8 +3,9 @@
  * GNU General Public License v3.0. See LICENSE or go to https://fsf.org/ for more details.
  */
 
-package com.tinatiel.obschatbot.core.action.impl;
+package com.tinatiel.obschatbot.core.action.runnable;
 
+import com.tinatiel.obschatbot.core.action.model.ExecuteCommandAction;
 import com.tinatiel.obschatbot.core.command.Command;
 import org.junit.jupiter.api.Test;
 
@@ -23,7 +24,7 @@ public class ExecuteCommandActionTest {
         Command command = mock(Command.class);
 
         // When action is built
-        ExecuteCommandAction action = new ExecuteCommandAction(null, command);
+        ExecuteCommandAction action = new ExecuteCommandAction(command);
 
         // Then it has the command specified
         assertThat(action.getTarget()).isEqualTo(command);
@@ -34,24 +35,8 @@ public class ExecuteCommandActionTest {
     void commandRequired() {
 
         assertThatThrownBy(() -> {
-            ExecuteCommandAction action = new ExecuteCommandAction(null, null);
+            ExecuteCommandAction action = new ExecuteCommandAction(null);
         }).isInstanceOf(IllegalArgumentException.class);
-
-    }
-
-    @Test
-    void runDoesNothing() {
-
-        // Given a command
-        Command command = mock(Command.class);
-
-        // And an action is built
-        ExecuteCommandAction action = new ExecuteCommandAction(null, command);
-
-        // When run
-        action.run();
-
-        // Then it runs; there is nothing else to check
 
     }
 

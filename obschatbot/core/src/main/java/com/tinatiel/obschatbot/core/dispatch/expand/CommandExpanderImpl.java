@@ -3,46 +3,47 @@
  * GNU General Public License v3.0. See LICENSE or go to https://fsf.org/ for more details.
  */
 
-package com.tinatiel.obschatbot.core.dispatch.enumerator;
+package com.tinatiel.obschatbot.core.dispatch.expand;
 
-import com.tinatiel.obschatbot.core.action.RunnableAction;
-import com.tinatiel.obschatbot.core.dispatch.CommandRequestContext;
-import com.tinatiel.obschatbot.core.action.impl.ExecuteCommandAction;
+import com.tinatiel.obschatbot.core.action.Action;
+import com.tinatiel.obschatbot.core.action.model.ExecuteCommandAction;
 import com.tinatiel.obschatbot.core.command.Command;
 import com.tinatiel.obschatbot.core.error.CyclicalActionsException;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class ActionEnumeratorImpl implements ActionEnumerator {
+public class CommandExpanderImpl implements CommandExpander {
+
     @Override
-    public List<RunnableAction> enumerate(Command command, CommandRequestContext context) throws CyclicalActionsException {
+    public List<Action> expand(Command command) throws CyclicalActionsException {
 
         // Check the command for cycles
         checkForCyclicalActions(command);
 
         // Attempt to list out all the actions sequenced for this execution
         try {
-           List<RunnableAction> results = new ArrayList<>();
-           enumerate(command, context, results);
+           List<Action> results = new ArrayList<>();
+           enumerate(command, results);
            return results;
         } catch (StackOverflowError e) {
             // If a cycle occurs, wrap the error in a CyclicalActionsException
-            throw new CyclicalActionsException(command, context, e);
+            //throw new CyclicalActionsException(command, e);
+            throw e;
         }
     }
 
-    private void enumerate(Command command, CommandRequestContext context, List<RunnableAction> results) {
+    private void enumerate(Command command, List<Action> results) {
 
-        for(RunnableAction action:command.getActionSequencer().nextSequence()) {
+        for(Action action:command.getActionSequencer().nextSequence()) {
 
             if(action instanceof ExecuteCommandAction) {
                 ExecuteCommandAction castAction = (ExecuteCommandAction) action;
                 results.addAll(
-                        enumerate(castAction.getTarget(), context)
+                        expand(castAction.getTarget())
                 );
             } else {
-                results.add(action.createRunnableClone(context));
+                results.add(action);
             }
         }
 

@@ -3,14 +3,16 @@
  * GNU General Public License v3.0. See LICENSE or go to https://fsf.org/ for more details.
  */
 
-package com.tinatiel.obschatbot.core.action.impl;
+package com.tinatiel.obschatbot.core.action.model;
 
+import com.tinatiel.obschatbot.core.action.Action;
 import com.tinatiel.obschatbot.core.action.RunnableAction;
 import com.tinatiel.obschatbot.core.dispatch.CommandRequestContext;
 import com.tinatiel.obschatbot.core.action.ActionType;
 
-public class SendMessageAction implements RunnableAction {
+public class SendMessageAction implements Action<SendMessageAction> {
 
+    private final ActionType ACTION_TYPE = ActionType.TWITCH_CHAT;
     private final String message;
 
     public SendMessageAction(String message) {
@@ -22,22 +24,8 @@ public class SendMessageAction implements RunnableAction {
     }
 
     @Override
-    public void run() {
-
-    }
-
-    @Override
     public ActionType getActionType() {
-        return null;
+        return ACTION_TYPE;
     }
 
-    @Override
-    public CommandRequestContext getRequestContext() {
-        return null;
-    }
-
-    @Override
-    public RunnableAction createRunnableClone(CommandRequestContext context) {
-        return null;
-    }
 }

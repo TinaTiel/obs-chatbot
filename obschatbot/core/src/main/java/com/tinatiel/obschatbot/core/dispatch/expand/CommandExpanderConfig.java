@@ -3,17 +3,17 @@
  * GNU General Public License v3.0. See LICENSE or go to https://fsf.org/ for more details.
  */
 
-package com.tinatiel.obschatbot.core.dispatch.enumerator;
+package com.tinatiel.obschatbot.core.dispatch.expand;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class EnumeratorConfig {
+public class CommandExpanderConfig {
 
     @Bean
-    public ActionEnumerator actionEnumerator() {
-        return new ActionEnumeratorImpl();
+    public CommandExpander actionEnumerator() {
+        return new CommandExpanderImpl();
     }
 
 }

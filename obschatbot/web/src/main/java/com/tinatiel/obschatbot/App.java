@@ -5,7 +5,7 @@
 
 package com.tinatiel.obschatbot;
 
-import com.tinatiel.obschatbot.core.dispatch.enumerator.ActionEnumerator;
+import com.tinatiel.obschatbot.core.dispatch.expand.CommandExpander;
 import com.tinatiel.obschatbot.core.client.Platform;
 import com.tinatiel.obschatbot.core.command.CommandRepository;
 import com.tinatiel.obschatbot.core.dispatch.CommandRequestContext;
@@ -35,17 +35,16 @@ public class App {
 //        );
 //        action.run();
 
-        CommandRepository commandRepository = context.getBean(CommandRepository.class);
-        ActionEnumerator actionEnumerator = context.getBean(ActionEnumerator.class);
-        User user = new User(Platform.TWITCH, "test");
-        commandRepository.findByName("foo")
-                .ifPresent(cmd -> {
-                    actionEnumerator.enumerate(cmd,
-                            new CommandRequestContext(user, cmd, Arrays.asList("arg1", "arg2", "arg3"))).stream()
-                            .forEach(action -> {
-                                action.run();
-                            });
-                });
+//        CommandRepository commandRepository = context.getBean(CommandRepository.class);
+//        CommandExpander commandExpander = context.getBean(CommandExpander.class);
+//        User user = new User(Platform.TWITCH, "test");
+//        commandRepository.findByName("foo")
+//                .ifPresent(cmd -> {
+//                    commandExpander.expand(cmd).stream()
+//                            .forEach(action -> {
+//                                action.run();
+//                            });
+//                });
 
 //        System.out.println("You should see this message in the logs");
 //        TwitchChatClient client = context.getBean(TwitchChatClient.class);
