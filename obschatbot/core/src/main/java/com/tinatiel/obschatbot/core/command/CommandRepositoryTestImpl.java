@@ -7,8 +7,8 @@ package com.tinatiel.obschatbot.core.command;
 
 import com.tinatiel.obschatbot.core.action.Action;
 import com.tinatiel.obschatbot.core.action.impl.ObsSourceVisibilityAction;
-import com.tinatiel.obschatbot.core.action.sequencer.ActionSequencer;
-import com.tinatiel.obschatbot.core.action.sequencer.InOrderActionSequencer;
+import com.tinatiel.obschatbot.core.sequencer.ActionSequencer;
+import com.tinatiel.obschatbot.core.sequencer.InOrderActionSequencer;
 import com.tinatiel.obschatbot.core.client.ActionClientFactory;
 
 import java.util.ArrayList;

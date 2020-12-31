@@ -5,7 +5,7 @@
 
 package com.tinatiel.obschatbot;
 
-import com.tinatiel.obschatbot.core.action.enumerator.ActionEnumerator;
+import com.tinatiel.obschatbot.core.dispatch.enumerator.ActionEnumerator;
 import com.tinatiel.obschatbot.core.client.Platform;
 import com.tinatiel.obschatbot.core.command.CommandRepository;
 import com.tinatiel.obschatbot.core.dispatch.CommandRequest;

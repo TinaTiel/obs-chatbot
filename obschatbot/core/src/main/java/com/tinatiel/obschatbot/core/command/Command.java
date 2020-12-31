@@ -6,7 +6,7 @@
 package com.tinatiel.obschatbot.core.command;
 
 import com.tinatiel.obschatbot.core.action.Action;
-import com.tinatiel.obschatbot.core.action.sequencer.ActionSequencer;
+import com.tinatiel.obschatbot.core.sequencer.ActionSequencer;
 
 import java.util.ArrayList;
 import java.util.List;

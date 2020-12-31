@@ -3,7 +3,7 @@
  * GNU General Public License v3.0. See LICENSE or go to https://fsf.org/ for more details.
  */
 
-package com.tinatiel.obschatbot.core.action.sequencer;
+package com.tinatiel.obschatbot.core.sequencer;
 
 import com.tinatiel.obschatbot.core.action.Action;
 
