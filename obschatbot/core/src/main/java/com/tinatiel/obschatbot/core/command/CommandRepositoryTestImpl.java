@@ -9,7 +9,7 @@ import com.tinatiel.obschatbot.core.action.Action;
 import com.tinatiel.obschatbot.core.action.impl.ObsSourceVisibilityAction;
 import com.tinatiel.obschatbot.core.action.sequencer.ActionSequencer;
 import com.tinatiel.obschatbot.core.action.sequencer.InOrderActionSequencer;
-import com.tinatiel.obschatbot.core.actionservice.ActionServiceFactory;
+import com.tinatiel.obschatbot.core.client.ActionClientFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,13 +17,13 @@ import java.util.Optional;
 
 public class CommandRepositoryTestImpl implements CommandRepository {
 
-    private final ActionServiceFactory factory;
+    private final ActionClientFactory factory;
 
     private List<Action> actions = new ArrayList<>();
     private ActionSequencer actionSequencer;
     private Command command;
 
-    public CommandRepositoryTestImpl(ActionServiceFactory factory) {
+    public CommandRepositoryTestImpl(ActionClientFactory factory) {
         this.factory = factory;
 
         actions.add(

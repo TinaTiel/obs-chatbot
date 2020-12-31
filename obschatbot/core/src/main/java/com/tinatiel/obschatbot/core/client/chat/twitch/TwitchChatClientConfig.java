@@ -3,12 +3,10 @@
  * GNU General Public License v3.0. See LICENSE or go to https://fsf.org/ for more details.
  */
 
-package com.tinatiel.obschatbot.core.actionservice.chat.twitch;
+package com.tinatiel.obschatbot.core.client.chat.twitch;
 
 import org.pircbotx.MultiBotManager;
-import org.pircbotx.PircBotX;
 import org.pircbotx.UtilSSLSocketFactory;
-import org.pircbotx.exception.IrcException;
 import org.pircbotx.hooks.Listener;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -16,7 +14,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 
 import javax.net.ssl.SSLSocketFactory;
-import java.io.IOException;
 
 @Configuration
 public class TwitchChatClientConfig {

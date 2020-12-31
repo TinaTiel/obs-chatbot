@@ -8,7 +8,7 @@ package com.tinatiel.obschatbot.core.action.impl;
 import com.tinatiel.obschatbot.core.action.Action;
 import com.tinatiel.obschatbot.core.dispatch.CommandRequest;
 import com.tinatiel.obschatbot.core.action.ActionType;
-import com.tinatiel.obschatbot.core.actionservice.ActionServiceFactory;
+import com.tinatiel.obschatbot.core.client.ActionClientFactory;
 import com.tinatiel.obschatbot.core.command.Command;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -45,7 +45,7 @@ public class CommonActionTests {
 
     static Stream<Arguments> actionTypes() {
 
-        ActionServiceFactory factory = mock(ActionServiceFactory.class);
+        ActionClientFactory factory = mock(ActionClientFactory.class);
 
         return Stream.of(
                 Arguments.of(ActionType.SYSTEM, new ExecuteCommandAction(null, mock(Command.class))),

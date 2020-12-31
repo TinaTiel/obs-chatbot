@@ -8,8 +8,8 @@ package com.tinatiel.obschatbot.core.action.impl;
 import com.tinatiel.obschatbot.core.action.Action;
 import com.tinatiel.obschatbot.core.dispatch.CommandRequest;
 import com.tinatiel.obschatbot.core.action.ActionType;
-import com.tinatiel.obschatbot.core.actionservice.ActionServiceFactory;
-import com.tinatiel.obschatbot.core.actionservice.obs.ObsClient;
+import com.tinatiel.obschatbot.core.client.ActionClientFactory;
+import com.tinatiel.obschatbot.core.client.obs.ObsClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -19,7 +19,7 @@ import static org.mockito.Mockito.*;
 public class ObsSourceVisibilityActionTest {
 
     CommandRequest context;
-    ActionServiceFactory factory;
+    ActionClientFactory factory;
     ObsClient client;
 
     @BeforeEach
@@ -27,7 +27,7 @@ public class ObsSourceVisibilityActionTest {
 
         // Initialize dependencies and behavior
         context = mock(CommandRequest.class);
-        factory = mock(ActionServiceFactory.class);
+        factory = mock(ActionClientFactory.class);
         client = mock(ObsClient.class);
         when(factory.getService(ActionType.OBS)).thenReturn(client);
 

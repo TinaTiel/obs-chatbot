@@ -3,24 +3,24 @@
  * GNU General Public License v3.0. See LICENSE or go to https://fsf.org/ for more details.
  */
 
-package com.tinatiel.obschatbot.core.actionservice;
+package com.tinatiel.obschatbot.core.client;
 
 import com.tinatiel.obschatbot.core.action.ActionType;
-import com.tinatiel.obschatbot.core.actionservice.obs.ObsClient;
-import com.tinatiel.obschatbot.core.actionservice.chat.twitch.TwitchChatClient;
+import com.tinatiel.obschatbot.core.client.obs.ObsClient;
+import com.tinatiel.obschatbot.core.client.chat.twitch.TwitchChatClient;
 
-public class ActionServiceFactoryImpl implements ActionServiceFactory {
+public class ActionClientFactoryImpl implements ActionClientFactory {
 
     private final ObsClient obsClient;
     private final TwitchChatClient twitchChatClient;
 
-    public ActionServiceFactoryImpl(ObsClient obsClient, TwitchChatClient twitchChatClient) {
+    public ActionClientFactoryImpl(ObsClient obsClient, TwitchChatClient twitchChatClient) {
         this.obsClient = obsClient;
         this.twitchChatClient = twitchChatClient;
     }
 
     @Override
-    public ActionService getService(ActionType actionType) {
+    public ActionClient getService(ActionType actionType) {
         if(actionType == null) {
             throw new IllegalArgumentException("ActionType cannot be null");
         }

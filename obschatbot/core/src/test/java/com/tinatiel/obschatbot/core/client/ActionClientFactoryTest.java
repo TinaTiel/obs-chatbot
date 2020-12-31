@@ -3,11 +3,11 @@
  * GNU General Public License v3.0. See LICENSE or go to https://fsf.org/ for more details.
  */
 
-package com.tinatiel.obschatbot.core.actionservice;
+package com.tinatiel.obschatbot.core.client;
 
 import com.tinatiel.obschatbot.core.action.ActionType;
-import com.tinatiel.obschatbot.core.actionservice.obs.ObsClient;
-import com.tinatiel.obschatbot.core.actionservice.chat.twitch.TwitchChatClient;
+import com.tinatiel.obschatbot.core.client.obs.ObsClient;
+import com.tinatiel.obschatbot.core.client.chat.twitch.TwitchChatClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -15,12 +15,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 
-public class ActionServiceFactoryTest {
+public class ActionClientFactoryTest {
 
     ObsClient obsClient;
     TwitchChatClient twitchChatClient;
 
-    ActionServiceFactory factory;
+    ActionClientFactory factory;
 
     @BeforeEach
     void setUp() {
@@ -28,7 +28,7 @@ public class ActionServiceFactoryTest {
         obsClient = mock(ObsClient.class);
         twitchChatClient = mock(TwitchChatClient.class);
 
-        factory = new ActionServiceFactoryImpl(obsClient, twitchChatClient);
+        factory = new ActionClientFactoryImpl(obsClient, twitchChatClient);
 
     }
 

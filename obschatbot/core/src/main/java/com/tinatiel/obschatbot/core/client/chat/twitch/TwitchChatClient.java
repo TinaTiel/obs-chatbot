@@ -3,11 +3,11 @@
  * GNU General Public License v3.0. See LICENSE or go to https://fsf.org/ for more details.
  */
 
-package com.tinatiel.obschatbot.core.actionservice.chat.twitch;
+package com.tinatiel.obschatbot.core.client.chat.twitch;
 
-import com.tinatiel.obschatbot.core.actionservice.ActionService;
+import com.tinatiel.obschatbot.core.client.ActionClient;
 
-public interface TwitchChatClient extends ActionService {
+public interface TwitchChatClient extends ActionClient {
 
     void sendMessage(String message);
 

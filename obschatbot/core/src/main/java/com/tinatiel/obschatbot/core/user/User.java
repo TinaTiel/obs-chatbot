@@ -5,7 +5,7 @@
 
 package com.tinatiel.obschatbot.core.user;
 
-import com.tinatiel.obschatbot.core.actionservice.Platform;
+import com.tinatiel.obschatbot.core.client.Platform;
 
 import java.util.Objects;
 

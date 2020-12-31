@@ -3,9 +3,7 @@
  * GNU General Public License v3.0. See LICENSE or go to https://fsf.org/ for more details.
  */
 
-package com.tinatiel.obschatbot.core.actionservice;
+package com.tinatiel.obschatbot.core.client;
 
-public enum Platform {
-    LOCAL,
-    TWITCH
+public interface ActionClient {
 }
