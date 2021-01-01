@@ -21,6 +21,11 @@ public class CommandExpanderImpl implements CommandExpander {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
     private final long recursionTimeout;
 
+    /**
+     * Constructs the CommandExpander
+     * @param recursionTimeout how long to wait when expanding a command. Throws an IllegalArgumentException is 0 or less.
+     *                         Generally speaking, 1000ms should be more-than sufficient.
+     */
     public CommandExpanderImpl(long recursionTimeout) {
         if(recursionTimeout <= 0) throw new IllegalArgumentException("Recursion timeout must be greater than zero.");
         this.recursionTimeout = recursionTimeout;
@@ -80,27 +85,6 @@ public class CommandExpanderImpl implements CommandExpander {
         }
 
     }
-
-//    private static class ExpandWorker implements Runnable {
-//
-//        private final Command command;
-//        private List<Action> results = new ArrayList<>();
-//
-//        public ExpandWorker(Command command) {
-//            this.command = command;
-//        }
-//
-//        @Override
-//        public void run() {
-//            this.results.addAll(privateExpand(command));
-//        }
-//
-//        public List<Action> get() {
-//            return results;
-//        }
-//
-//
-//    }
 
     @Override
     public void checkForCyclicalActions(Command command) throws CyclicalActionsException {

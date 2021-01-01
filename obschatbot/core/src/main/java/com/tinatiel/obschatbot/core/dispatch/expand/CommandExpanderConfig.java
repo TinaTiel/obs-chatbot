@@ -13,7 +13,7 @@ public class CommandExpanderConfig {
 
     @Bean
     public CommandExpander actionEnumerator() {
-        return new CommandExpanderImpl(3000);
+        return new CommandExpanderImpl(1000);
     }
 
 }
