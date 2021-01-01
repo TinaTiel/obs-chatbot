@@ -16,10 +16,9 @@ public class CyclicalActionsException extends AbstractException {
         super(Code.CYCLICAL_ACTION, message, cause);
     }
 
-    public CyclicalActionsException(Command parentCommand, CommandRequestContext context, Throwable cause) {
+    public CyclicalActionsException(Command parentCommand, Throwable cause) {
         this(
-                "An unexpected infinite loop was detected on root command !" + parentCommand.getName()
-                + " when run with context " + context,
+                "An unexpected infinite loop was detected on root command !" + parentCommand.getName(),
                 cause
         );
     }

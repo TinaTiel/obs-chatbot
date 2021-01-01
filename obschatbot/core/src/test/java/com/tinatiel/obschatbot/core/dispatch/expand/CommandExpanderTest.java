@@ -14,6 +14,7 @@ import com.tinatiel.obschatbot.core.error.CyclicalActionsException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -69,7 +70,7 @@ public class CommandExpanderTest {
         List<Action> results = commandExpander.expand(command);
 
         // And three actions are returned
-        assertThat(results).hasSize(3);
+        assertThat(results).containsExactly(action1, action2, action3);
 
     }
 
@@ -97,7 +98,7 @@ public class CommandExpanderTest {
         List<Action> results = commandExpander.expand(command);
 
         // Then the three actions are returned (excluding the ExecuteCommandAction itself)
-        assertThat(results).hasSize(3);
+        assertThat(results).containsExactly(action1, action2, action3);
 
     }
 
@@ -123,19 +124,15 @@ public class CommandExpanderTest {
     @Test
     void worstCaseScenarioThrowsWrappedExceptionIfCycleOccursDuringEnumeration() {
 
-        // Given a context
-        CommandRequestContext context = mock(CommandRequestContext.class);
-
         // And given an existing command
         ActionSequencer existingSequencer = mock(ActionSequencer.class);
         Command command = spy(new Command().actionSequencer(existingSequencer));
 
         // And given one of the actions references the command it lives in
         Action action1 = mock(Action.class);
-        Action action2 = new ExecuteCommandAction(command);
+        Action action2 = new ExecuteCommandAction(command); // <- Returns action1, action2, action3
         Action action3 = mock(Action.class);
         when(existingSequencer.nextSequence()).thenReturn(Arrays.asList(action1, action2, action3));
-        when(existingSequencer.listAll()).thenReturn(Arrays.asList(action1, action2, action3));
 
         // When enumerated, then an exception is thrown
         assertThatThrownBy(() -> {
@@ -146,9 +143,6 @@ public class CommandExpanderTest {
 
     @Test
     void checkingCommandForCyclicalActionsThrowsExceptionAsExpected() {
-
-        // Given a context
-        CommandRequestContext context = mock(CommandRequestContext.class);
 
         // Given some commands exist
         ActionSequencer sequencer1 = mock(ActionSequencer.class);
@@ -163,8 +157,7 @@ public class CommandExpanderTest {
         ActionSequencer sequencer4 = mock(ActionSequencer.class);
         Command command4 = spy(new Command().name("command4").actionSequencer(sequencer4));
 
-        // And given the commands are connected by actions in a chain, with on causing a loop
-
+        // And given the commands are connected by actions in a chain, with one causing a loop
         Action action1 = new ExecuteCommandAction(command2);
         givenSequencerReturns(sequencer1, Collections.singletonList(action1));
 

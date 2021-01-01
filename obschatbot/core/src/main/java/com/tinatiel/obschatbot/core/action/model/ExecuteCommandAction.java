@@ -18,6 +18,7 @@ public class ExecuteCommandAction implements Action<ExecuteCommandAction> {
     private final Command target;
 
     public ExecuteCommandAction(Command target) {
+        if(target == null) throw new IllegalArgumentException("arguments cannot be null");
         this.target = target;
     }
 

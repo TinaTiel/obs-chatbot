@@ -28,8 +28,7 @@ public class CommandExpanderImpl implements CommandExpander {
            return results;
         } catch (StackOverflowError e) {
             // If a cycle occurs, wrap the error in a CyclicalActionsException
-            //throw new CyclicalActionsException(command, e);
-            throw e;
+            throw new CyclicalActionsException(command, e);
         }
     }
 
