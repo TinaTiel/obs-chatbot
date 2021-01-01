@@ -6,9 +6,11 @@
 package com.tinatiel.obschatbot.core.client;
 
 import com.tinatiel.obschatbot.core.action.ActionType;
+import com.tinatiel.obschatbot.core.error.ClientNotRegisteredException;
 
 public interface ActionClientFactory {
 
     ActionClient getService(ActionType actionType);
+    ActionClient getClient(Class<? extends ActionClient> clientType) throws ClientNotRegisteredException;
 
 }

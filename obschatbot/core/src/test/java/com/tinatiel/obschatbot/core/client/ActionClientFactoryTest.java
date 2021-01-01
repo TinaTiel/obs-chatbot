@@ -8,8 +8,14 @@ package com.tinatiel.obschatbot.core.client;
 import com.tinatiel.obschatbot.core.action.ActionType;
 import com.tinatiel.obschatbot.core.client.obs.ObsClient;
 import com.tinatiel.obschatbot.core.client.chat.twitch.TwitchChatClient;
+import com.tinatiel.obschatbot.core.error.ClientNotRegisteredException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
@@ -41,6 +47,7 @@ public class ActionClientFactoryTest {
 
     }
 
+
     @Test
     void returnObsClient() {
         assertThat(factory.getService(ActionType.OBS))
@@ -53,6 +60,41 @@ public class ActionClientFactoryTest {
         assertThat(factory.getService(ActionType.TWITCH_CHAT))
                 .isInstanceOf(TwitchChatClient.class)
                 .isEqualTo(twitchChatClient);
+    }
+
+    @ParameterizedTest
+    @MethodSource("expectedClients")
+    void serviceReturnsExpectedClients(Class<? extends ActionClient> request) {
+        assertThat(factory.getClient(request))
+                .isNotNull()
+                .isInstanceOf(request);
+    }
+
+    @Test
+    void unregisteredClientThrowsException() {
+
+        // Given a client class we know that isn't registered
+        Class<? extends ActionClient> clientClass = UnregisteredClient.class;
+
+        // When requested, then an exception will be thrown
+        assertThatThrownBy(() -> {
+            factory.getClient(clientClass);
+        }).isInstanceOf(ClientNotRegisteredException.class);
+    }
+
+    private static class UnregisteredClient implements ActionClient {
+
+        @Override
+        public ActionType getActionType() {
+            return null;
+        }
+    }
+
+    static Stream<Arguments> expectedClients() {
+        return Stream.of(
+                Arguments.of(ObsClient.class),
+                Arguments.of(TwitchChatClient.class)
+        );
     }
 
 }

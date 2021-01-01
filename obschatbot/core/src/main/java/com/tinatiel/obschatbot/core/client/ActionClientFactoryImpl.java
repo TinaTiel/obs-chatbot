@@ -5,9 +5,11 @@
 
 package com.tinatiel.obschatbot.core.client;
 
+import com.tinatiel.obschatbot.core.action.Action;
 import com.tinatiel.obschatbot.core.action.ActionType;
 import com.tinatiel.obschatbot.core.client.obs.ObsClient;
 import com.tinatiel.obschatbot.core.client.chat.twitch.TwitchChatClient;
+import com.tinatiel.obschatbot.core.error.ClientNotRegisteredException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,14 +19,15 @@ public class ActionClientFactoryImpl implements ActionClientFactory {
     private final ObsClient obsClient;
     private final TwitchChatClient twitchChatClient;
 
-    private final Map<Class<? extends ActionClient>, Object> registry = new HashMap<>();
+    private final Map<Class<? extends ActionClient>, ActionClient> registry = new HashMap<>();
 
     public ActionClientFactoryImpl(ObsClient obsClient, TwitchChatClient twitchChatClient) {
         this.obsClient = obsClient;
         this.twitchChatClient = twitchChatClient;
 
-        registry.put(obsClient.getClass(), obsClient);
-        registry.put(twitchChatClient.getClass(), twitchChatClient);
+        registry.put(ObsClient.class, obsClient);
+        registry.put(TwitchChatClient.class, twitchChatClient);
+
     }
 
     @Override
@@ -43,6 +46,13 @@ public class ActionClientFactoryImpl implements ActionClientFactory {
             default:
                 throw new UnsupportedOperationException("No service defined for actionType: " + actionType);
         }
+    }
+
+    @Override
+    public ActionClient getClient(Class<? extends ActionClient> clientType)  throws ClientNotRegisteredException {
+        ActionClient found = registry.get(clientType);
+        if(found == null) throw new ClientNotRegisteredException("No client registered of type: " + clientType.getSimpleName());
+        return found;
     }
 
 }
