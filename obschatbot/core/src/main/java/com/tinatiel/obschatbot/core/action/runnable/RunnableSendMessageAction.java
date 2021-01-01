@@ -7,7 +7,6 @@ package com.tinatiel.obschatbot.core.action.runnable;
 
 import com.tinatiel.obschatbot.core.action.RunnableAction;
 import com.tinatiel.obschatbot.core.action.model.SendMessageAction;
-import com.tinatiel.obschatbot.core.client.ActionClient;
 import com.tinatiel.obschatbot.core.client.chat.twitch.TwitchChatClient;
 import com.tinatiel.obschatbot.core.dispatch.CommandRequestContext;
 

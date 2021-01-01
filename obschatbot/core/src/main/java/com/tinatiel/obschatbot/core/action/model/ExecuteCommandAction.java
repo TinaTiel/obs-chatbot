@@ -6,26 +6,18 @@
 package com.tinatiel.obschatbot.core.action.model;
 
 import com.tinatiel.obschatbot.core.action.Action;
-import com.tinatiel.obschatbot.core.action.ActionType;
 import com.tinatiel.obschatbot.core.action.RunnableAction;
-import com.tinatiel.obschatbot.core.client.ActionClient;
 import com.tinatiel.obschatbot.core.client.NoOpClient;
 import com.tinatiel.obschatbot.core.command.Command;
 import com.tinatiel.obschatbot.core.dispatch.CommandRequestContext;
 
 public class ExecuteCommandAction implements Action<NoOpClient, ExecuteCommandAction> {
 
-    private final ActionType ACTION_TYPE = ActionType.SYSTEM;
     private final Command target;
 
     public ExecuteCommandAction(Command target) {
         if(target == null) throw new IllegalArgumentException("arguments cannot be null");
         this.target = target;
-    }
-
-    @Override
-    public ActionType getActionType() {
-        return ACTION_TYPE;
     }
 
     @Override

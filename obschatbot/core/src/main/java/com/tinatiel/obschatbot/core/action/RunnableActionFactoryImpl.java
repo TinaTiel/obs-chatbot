@@ -23,8 +23,9 @@ public class RunnableActionFactoryImpl implements RunnableActionFactory {
         if(action == null || context == null) throw new IllegalArgumentException("arguments cannot be null");
 
         // Get the correct client
-        ActionClient client = actionClientFactory.getService(action.getActionType());
-        if(client == null) throw new IllegalStateException("Could not find instance of client for type: " + action.getActionType());
+//        ActionClient client = actionClientFactory.getService(action.getActionType());
+        ActionClient client = actionClientFactory.getClient(action.acceptsClientType());
+        if(client == null) throw new IllegalStateException("Could not find instance of client for type: " + action.acceptsClientType().getSimpleName());
 
         // Return the runnable action
         return action.createRunnableAction(client, context);

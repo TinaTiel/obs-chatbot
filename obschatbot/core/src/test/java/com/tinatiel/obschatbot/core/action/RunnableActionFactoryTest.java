@@ -28,14 +28,18 @@ public class RunnableActionFactoryTest {
     }
 
     @Test
-    void whenClientNotFoundThenThrowException() {
+    void whenClientNullThenThrowException() {
+
+        // Given an action stub
+        Action actionStub = mock(Action.class);
+        when(actionStub.acceptsClientType()).thenReturn(Object.class);
 
         // Given ActionClientFactory doesn't find a client
-        when(actionClientFactory.getService(any())).thenReturn(null);
+        when(actionClientFactory.getClient(any())).thenReturn(null);
 
         // When called, then an exception is thrown
         assertThatThrownBy(() ->  {
-            runnableActionFactory.createForContext(mock(Action.class), mock(CommandRequestContext.class));
+            runnableActionFactory.createForContext(actionStub, mock(CommandRequestContext.class));
         }).isInstanceOf(IllegalStateException.class);
 
     }

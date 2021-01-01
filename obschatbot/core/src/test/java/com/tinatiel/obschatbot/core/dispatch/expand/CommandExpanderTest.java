@@ -203,7 +203,7 @@ public class CommandExpanderTest {
     @Test
     void multiThreadedReturnsActionListsAsExpected() {
 
-        int maxNumCommands = 1000;
+        int maxNumCommands = 100;
         int minNumActions = 50;
         int maxNumActions = 500;
         int numClients = 750;

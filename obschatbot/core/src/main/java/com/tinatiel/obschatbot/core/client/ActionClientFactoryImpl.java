@@ -5,8 +5,6 @@
 
 package com.tinatiel.obschatbot.core.client;
 
-import com.tinatiel.obschatbot.core.action.Action;
-import com.tinatiel.obschatbot.core.action.ActionType;
 import com.tinatiel.obschatbot.core.client.obs.ObsClient;
 import com.tinatiel.obschatbot.core.client.chat.twitch.TwitchChatClient;
 import com.tinatiel.obschatbot.core.error.ClientNotRegisteredException;
@@ -30,26 +28,27 @@ public class ActionClientFactoryImpl implements ActionClientFactory {
 
     }
 
-    @Override
-    public ActionClient getService(ActionType actionType) {
-        if(actionType == null) {
-            throw new IllegalArgumentException("ActionType cannot be null");
-        }
-
-        switch (actionType) {
-            case OBS:
-                return obsClient;
-
-            case TWITCH_CHAT:
-                return twitchChatClient;
-
-            default:
-                throw new UnsupportedOperationException("No service defined for actionType: " + actionType);
-        }
-    }
+//    @Override
+//    public ActionClient getService(ActionType actionType) {
+//        if(actionType == null) {
+//            throw new IllegalArgumentException("ActionType cannot be null");
+//        }
+//
+//        switch (actionType) {
+//            case OBS:
+//                return obsClient;
+//
+//            case TWITCH_CHAT:
+//                return twitchChatClient;
+//
+//            default:
+//                throw new UnsupportedOperationException("No service defined for actionType: " + actionType);
+//        }
+//    }
 
     @Override
     public ActionClient getClient(Class<? extends ActionClient> clientType)  throws ClientNotRegisteredException {
+        if(clientType == null) throw new IllegalArgumentException("clientType cannot be null");
         ActionClient found = registry.get(clientType);
         if(found == null) throw new ClientNotRegisteredException("No client registered of type: " + clientType.getSimpleName());
         return found;

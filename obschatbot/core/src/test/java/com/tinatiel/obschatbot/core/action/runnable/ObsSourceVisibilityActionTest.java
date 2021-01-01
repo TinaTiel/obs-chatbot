@@ -5,13 +5,10 @@
 
 package com.tinatiel.obschatbot.core.action.runnable;
 
-import com.tinatiel.obschatbot.core.action.RunnableAction;
 import com.tinatiel.obschatbot.core.dispatch.CommandRequestContext;
-import com.tinatiel.obschatbot.core.action.ActionType;
 import com.tinatiel.obschatbot.core.client.ActionClientFactory;
 import com.tinatiel.obschatbot.core.client.obs.ObsClient;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.Mockito.*;
@@ -29,7 +26,8 @@ public class ObsSourceVisibilityActionTest {
         context = mock(CommandRequestContext.class);
         factory = mock(ActionClientFactory.class);
         client = mock(ObsClient.class);
-        when(factory.getService(ActionType.OBS)).thenReturn(client);
+//        when(factory.getService(ActionType.OBS)).thenReturn(client);
+        when(factory.getClient(ObsClient.class)).thenReturn(client);
 
     }
 

@@ -6,16 +6,12 @@
 package com.tinatiel.obschatbot.core.action.model;
 
 import com.tinatiel.obschatbot.core.action.Action;
-import com.tinatiel.obschatbot.core.action.ActionType;
 import com.tinatiel.obschatbot.core.action.RunnableAction;
 import com.tinatiel.obschatbot.core.action.runnable.RunnableObsSourceVisibilityAction;
-import com.tinatiel.obschatbot.core.client.ActionClient;
 import com.tinatiel.obschatbot.core.client.obs.ObsClient;
 import com.tinatiel.obschatbot.core.dispatch.CommandRequestContext;
 
 public class ObsSourceVisibilityAction implements Action<ObsClient, ObsSourceVisibilityAction> {
-
-    private final ActionType ACTION_TYPE = ActionType.OBS;
 
     private final String sceneName;
     private final String sourceName;
@@ -25,11 +21,6 @@ public class ObsSourceVisibilityAction implements Action<ObsClient, ObsSourceVis
         this.sceneName = sceneName;
         this.sourceName = sourceName;
         this.visible = visible;
-    }
-
-    @Override
-    public ActionType getActionType() {
-        return ACTION_TYPE;
     }
 
     @Override

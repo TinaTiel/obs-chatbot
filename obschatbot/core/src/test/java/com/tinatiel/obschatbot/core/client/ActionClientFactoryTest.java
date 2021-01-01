@@ -5,7 +5,6 @@
 
 package com.tinatiel.obschatbot.core.client;
 
-import com.tinatiel.obschatbot.core.action.ActionType;
 import com.tinatiel.obschatbot.core.client.obs.ObsClient;
 import com.tinatiel.obschatbot.core.client.chat.twitch.TwitchChatClient;
 import com.tinatiel.obschatbot.core.error.ClientNotRegisteredException;
@@ -42,24 +41,9 @@ public class ActionClientFactoryTest {
     void nullArgThrowsException() {
 
         assertThatThrownBy(() -> {
-            factory.getService(null);
+            factory.getClient(null);
         }).isInstanceOf(IllegalArgumentException.class);
 
-    }
-
-
-    @Test
-    void returnObsClient() {
-        assertThat(factory.getService(ActionType.OBS))
-                .isInstanceOf(ObsClient.class)
-                .isEqualTo(obsClient);
-    }
-
-    @Test
-    void returnTwitchChatClient() {
-        assertThat(factory.getService(ActionType.TWITCH_CHAT))
-                .isInstanceOf(TwitchChatClient.class)
-                .isEqualTo(twitchChatClient);
     }
 
     @ParameterizedTest
@@ -83,11 +67,6 @@ public class ActionClientFactoryTest {
     }
 
     private static class UnregisteredClient implements ActionClient {
-
-        @Override
-        public ActionType getActionType() {
-            return null;
-        }
     }
 
     static Stream<Arguments> expectedClients() {

@@ -5,7 +5,6 @@
 
 package com.tinatiel.obschatbot.core.client.obs;
 
-import com.tinatiel.obschatbot.core.action.ActionType;
 import com.tinatiel.obschatbot.core.error.ServiceNotReadyException;
 import net.twasi.obsremotejava.OBSRemoteController;
 
@@ -46,8 +45,4 @@ public class ObsClientImpl implements ObsClient {
         });
     }
 
-    @Override
-    public ActionType getActionType() {
-        return ActionType.OBS;
-    }
 }

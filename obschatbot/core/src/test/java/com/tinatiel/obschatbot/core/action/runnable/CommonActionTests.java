@@ -46,17 +46,6 @@ public class CommonActionTests {
 
     }
 
-
-
-    @ParameterizedTest
-    @MethodSource("actionTypes")
-    void actionTypeAsExpected(ActionType expected, Action action) {
-
-        // For each action, assert that it has the expected actionType
-        assertThat(action.getActionType()).isEqualTo(expected);
-
-    }
-
     @ParameterizedTest
     @MethodSource("actionTypes")
     void cloneAsExpected(ActionType ignored, Action action) {
@@ -83,26 +72,7 @@ public class CommonActionTests {
         assertThat(clone.getClient()).isEqualTo(client);
         assertThat(clone.getRequestContext()).isEqualTo(context);
 
-//        // And attempts to create with the wrong client throw an exception
-//        assertThatThrownBy(() -> {
-//            action.createRunnableAction(mock(ActionClient.class), context);
-//        }).isInstanceOf(IllegalArgumentException.class);
-
     }
-
-//    @ParameterizedTest
-//    @MethodSource("runnableActions")
-//    void createRunnableCloneWithWrongClient(Action action, ActionClient client) {
-//
-//        // Given a request context
-//        CommandRequestContext context = mock(CommandRequestContext.class);
-//
-//        // When cloned with the wrong client throw an exception
-//        assertThatThrownBy(() -> {
-//            action.createRunnableAction(mock(ActionClient.class), context);
-//        }).isInstanceOf(IllegalArgumentException.class);
-//
-//    }
 
     @ParameterizedTest
     @MethodSource("runnableActions")

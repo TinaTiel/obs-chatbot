@@ -5,11 +5,4 @@
 
 package com.tinatiel.obschatbot.core.client;
 
-import com.tinatiel.obschatbot.core.action.ActionType;
-
-public class NoOpClient implements ActionClient {
-    @Override
-    public ActionType getActionType() {
-        return null;
-    }
-}
+public class NoOpClient implements ActionClient { }

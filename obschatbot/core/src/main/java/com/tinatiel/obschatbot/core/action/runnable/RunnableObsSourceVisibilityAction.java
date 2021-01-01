@@ -5,13 +5,9 @@
 
 package com.tinatiel.obschatbot.core.action.runnable;
 
-import com.tinatiel.obschatbot.core.action.Action;
 import com.tinatiel.obschatbot.core.action.RunnableAction;
 import com.tinatiel.obschatbot.core.action.model.ObsSourceVisibilityAction;
-import com.tinatiel.obschatbot.core.client.ActionClient;
 import com.tinatiel.obschatbot.core.dispatch.CommandRequestContext;
-import com.tinatiel.obschatbot.core.action.ActionType;
-import com.tinatiel.obschatbot.core.client.ActionClientFactory;
 import com.tinatiel.obschatbot.core.client.obs.ObsClient;
 
 public class RunnableObsSourceVisibilityAction implements RunnableAction<ObsClient, ObsSourceVisibilityAction> {

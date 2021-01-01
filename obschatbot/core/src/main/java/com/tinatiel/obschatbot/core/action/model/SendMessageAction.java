@@ -8,14 +8,11 @@ package com.tinatiel.obschatbot.core.action.model;
 import com.tinatiel.obschatbot.core.action.Action;
 import com.tinatiel.obschatbot.core.action.RunnableAction;
 import com.tinatiel.obschatbot.core.action.runnable.RunnableSendMessageAction;
-import com.tinatiel.obschatbot.core.client.ActionClient;
 import com.tinatiel.obschatbot.core.client.chat.twitch.TwitchChatClient;
 import com.tinatiel.obschatbot.core.dispatch.CommandRequestContext;
-import com.tinatiel.obschatbot.core.action.ActionType;
 
 public class SendMessageAction implements Action<TwitchChatClient, SendMessageAction> {
 
-    private final ActionType ACTION_TYPE = ActionType.TWITCH_CHAT;
     private final String message;
 
     public SendMessageAction(String message) {
@@ -24,11 +21,6 @@ public class SendMessageAction implements Action<TwitchChatClient, SendMessageAc
 
     public String getMessage() {
         return message;
-    }
-
-    @Override
-    public ActionType getActionType() {
-        return ACTION_TYPE;
     }
 
     @Override
