@@ -9,37 +9,70 @@ import com.tinatiel.obschatbot.core.action.Action;
 import com.tinatiel.obschatbot.core.action.model.ExecuteCommandAction;
 import com.tinatiel.obschatbot.core.command.Command;
 import com.tinatiel.obschatbot.core.error.CyclicalActionsException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
+import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
 public class CommandExpanderImpl implements CommandExpander {
+
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
+    private final long recursionTimeout;
+
+    public CommandExpanderImpl(long recursionTimeout) {
+        if(recursionTimeout <= 0) throw new IllegalArgumentException("Recursion timeout must be greater than zero.");
+        this.recursionTimeout = recursionTimeout;
+    }
 
     @Override
     public List<Action> expand(Command command) throws CyclicalActionsException {
 
         // Check the command for cycles
         checkForCyclicalActions(command);
-
-        // Attempt to list out all the actions sequenced for this execution
+        List<Action> results = new ArrayList<>();
         try {
-           List<Action> results = new ArrayList<>();
-           enumerate(command, results);
-           return results;
-        } catch (StackOverflowError e) {
-            // If a cycle occurs, wrap the error in a CyclicalActionsException
+
+            // Define a thread that will do the enumeration, so that a StackOverflow won't
+            // bring the current thread to a halt, and we can set a timeout on it.
+            ExecutorService executorService = Executors.newSingleThreadExecutor();
+            executorService.submit(() -> {
+               results.addAll(privateExpand(command));
+            }).get(recursionTimeout, TimeUnit.MILLISECONDS);
+
+        } catch (StackOverflowError | TimeoutException | InterruptedException e) {
+            // If a cycle occurs or it times out, wrap the error in a CyclicalActionsException
+            log.warn("Command '" + command.getName() + "' appears to have cyclical execution", e);
             throw new CyclicalActionsException(command, e);
+        } catch (ExecutionException executionException) {
+            log.info("Abandoned execution of enumerating command '" + command.getName() + "'. Cause: " + executionException.getCause());
         }
+
+        return results;
     }
 
-    private void enumerate(Command command, List<Action> results) {
+    private List<Action> privateExpand(Command command) {
+        List<Action> results = new ArrayList<>();
+        try {
+            enumerate(command, results);
+        } catch (InterruptedException ignore) {
+            results.clear(); // Return nothing rather than partial result
+        }
+        return results;
+    }
 
+    private void enumerate(Command command, List<Action> results) throws InterruptedException {
+        if(Thread.currentThread().isInterrupted()) {
+            Thread.currentThread().interrupt();
+            throw new InterruptedException(Thread.currentThread().getName() + " was interrupted");
+        }
         for(Action action:command.getActionSequencer().nextSequence()) {
 
             if(action instanceof ExecuteCommandAction) {
                 ExecuteCommandAction castAction = (ExecuteCommandAction) action;
                 results.addAll(
-                        expand(castAction.getTarget())
+                        privateExpand(castAction.getTarget())
                 );
             } else {
                 results.add(action);
@@ -47,6 +80,27 @@ public class CommandExpanderImpl implements CommandExpander {
         }
 
     }
+
+//    private static class ExpandWorker implements Runnable {
+//
+//        private final Command command;
+//        private List<Action> results = new ArrayList<>();
+//
+//        public ExpandWorker(Command command) {
+//            this.command = command;
+//        }
+//
+//        @Override
+//        public void run() {
+//            this.results.addAll(privateExpand(command));
+//        }
+//
+//        public List<Action> get() {
+//            return results;
+//        }
+//
+//
+//    }
 
     @Override
     public void checkForCyclicalActions(Command command) throws CyclicalActionsException {

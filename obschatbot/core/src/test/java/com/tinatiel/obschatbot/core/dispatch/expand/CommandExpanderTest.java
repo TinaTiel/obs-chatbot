@@ -14,10 +14,11 @@ import com.tinatiel.obschatbot.core.error.CyclicalActionsException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
@@ -26,10 +27,28 @@ import static org.mockito.Mockito.*;
 public class CommandExpanderTest {
 
     CommandExpander commandExpander;
+    Long recursionTimeout = 500L;
 
     @BeforeEach
     void setUp() {
-        commandExpander = new CommandExpanderImpl();
+        commandExpander = new CommandExpanderImpl(recursionTimeout);
+    }
+
+    @Test
+    void recursionTimeoutLessThanOrZero() {
+
+        // given a recursion timeout is less than zero
+        // Then an exception will be thrown
+        assertThatThrownBy(() -> {
+            new CommandExpanderImpl(-1L);
+        }).isInstanceOf(IllegalArgumentException.class);
+
+        // given a recursion timeout is zero
+        // Then an exception will be thrown
+        assertThatThrownBy(() -> {
+            new CommandExpanderImpl(0L);
+        }).isInstanceOf(IllegalArgumentException.class);
+
     }
 
     @Test
@@ -178,6 +197,52 @@ public class CommandExpanderTest {
                 .hasMessageContaining(command2.getName())
                 .hasMessageContaining(command3.getName())
                 .hasMessageNotContaining(command4.getName()); // we don't visit here because the loop was earlier in the chain
+
+    }
+
+    @Test
+    void multiThreadedReturnsActionListsAsExpected() {
+
+        int maxNumCommands = 100;
+        int maxNumActions = 100;
+        int numThreads = 50;
+
+        // Given a f**k ton of some randomly generated commands
+        Random random = new Random();
+        ConcurrentHashMap<Command, List<Action>> mapCommandsToEnumeratedActions = new ConcurrentHashMap<>();
+        int numCommands = random.nextInt(maxNumCommands);
+        for(int c=0; c < numCommands; c++) {
+            int numActions = random.nextInt(maxNumActions);
+
+            ActionSequencer actionSequencer = mock(ActionSequencer.class);
+            List<Action> actions = new ArrayList<>();
+            for(int a=0; a < numActions; a++) actions.add(mock(Action.class));
+            givenSequencerReturns(actionSequencer, actions);
+            Command command = new Command()
+                    .name("command-" + (c+1))
+                    .actionSequencer(actionSequencer);
+            mapCommandsToEnumeratedActions.put(command, new ArrayList<>());
+        }
+
+        // When a pool of threads enumerates all these commands into actions
+        ExecutorService executorService = Executors.newFixedThreadPool(numThreads);
+        for(Command command: mapCommandsToEnumeratedActions.keySet()) {
+            executorService.submit(() -> {
+                List<Action> enumeratedActions = commandExpander.expand(command);
+                mapCommandsToEnumeratedActions.put(command, enumeratedActions);
+            });
+        }
+        executorService.shutdown();
+        try {
+            executorService.awaitTermination(Long.MAX_VALUE, TimeUnit.MILLISECONDS);
+        } catch (InterruptedException interruptedException) {
+            interruptedException.printStackTrace();
+        }
+
+        // Then each command has the expected actions
+        for(Map.Entry<Command, List<Action>> entry:mapCommandsToEnumeratedActions.entrySet()) {
+            assertThat(entry.getValue()).containsExactlyElementsOf(entry.getKey().getActionSequencer().listAll());
+        }
 
     }
 
