@@ -14,7 +14,7 @@ import com.tinatiel.obschatbot.core.action.ActionType;
 import com.tinatiel.obschatbot.core.client.ActionClientFactory;
 import com.tinatiel.obschatbot.core.client.obs.ObsClient;
 
-public class RunnableObsSourceVisibilityAction implements RunnableAction<ObsSourceVisibilityAction> {
+public class RunnableObsSourceVisibilityAction implements RunnableAction<ObsClient, ObsSourceVisibilityAction> {
 
     private final ObsSourceVisibilityAction action;
     private final ObsClient obsClient;
@@ -51,7 +51,7 @@ public class RunnableObsSourceVisibilityAction implements RunnableAction<ObsSour
     }
 
     @Override
-    public ActionClient getClient() { return obsClient; }
+    public ObsClient getClient() { return obsClient; }
 
     @Override
     public String toString() {

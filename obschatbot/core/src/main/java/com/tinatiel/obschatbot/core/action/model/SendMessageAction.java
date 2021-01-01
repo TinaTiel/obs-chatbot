@@ -13,7 +13,7 @@ import com.tinatiel.obschatbot.core.client.chat.twitch.TwitchChatClient;
 import com.tinatiel.obschatbot.core.dispatch.CommandRequestContext;
 import com.tinatiel.obschatbot.core.action.ActionType;
 
-public class SendMessageAction implements Action<SendMessageAction> {
+public class SendMessageAction implements Action<TwitchChatClient, SendMessageAction> {
 
     private final ActionType ACTION_TYPE = ActionType.TWITCH_CHAT;
     private final String message;
@@ -32,18 +32,19 @@ public class SendMessageAction implements Action<SendMessageAction> {
     }
 
     @Override
+    public Class<TwitchChatClient> acceptsClientType() {
+        return TwitchChatClient.class;
+    }
+
+    @Override
     public SendMessageAction clone() {
         return new SendMessageAction(message);
     }
 
     @Override
-    public RunnableAction<SendMessageAction> createRunnableAction(ActionClient client, CommandRequestContext commandRequestContext) {
+    public RunnableAction<TwitchChatClient, SendMessageAction> createRunnableAction(TwitchChatClient client, CommandRequestContext commandRequestContext) {
         if(client == null || commandRequestContext == null) throw new IllegalArgumentException("arguments cannot be null");
-        if(client instanceof TwitchChatClient) {
-            return new RunnableSendMessageAction(clone(), (TwitchChatClient) client, commandRequestContext);
-        } else {
-            throw new IllegalArgumentException("Unexpected client: " + client);
-        }
+        return new RunnableSendMessageAction(clone(), client, commandRequestContext);
     }
 
     @Override

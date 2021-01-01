@@ -8,8 +8,9 @@ package com.tinatiel.obschatbot.core.action;
 import com.tinatiel.obschatbot.core.client.ActionClient;
 import com.tinatiel.obschatbot.core.dispatch.CommandRequestContext;
 
-public interface Action<T extends Action<T>> extends Cloneable {
+public interface Action<C extends ActionClient, T extends Action<C, T>> {
     ActionType getActionType();
+    Class<C> acceptsClientType();
     T clone();
-    RunnableAction<T> createRunnableAction(ActionClient client, CommandRequestContext commandRequestContext);
+    RunnableAction<C, T> createRunnableAction(C client, CommandRequestContext commandRequestContext);
 }

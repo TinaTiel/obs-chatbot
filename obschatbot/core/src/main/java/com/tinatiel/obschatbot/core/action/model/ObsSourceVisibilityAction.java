@@ -13,7 +13,7 @@ import com.tinatiel.obschatbot.core.client.ActionClient;
 import com.tinatiel.obschatbot.core.client.obs.ObsClient;
 import com.tinatiel.obschatbot.core.dispatch.CommandRequestContext;
 
-public class ObsSourceVisibilityAction implements Action<ObsSourceVisibilityAction> {
+public class ObsSourceVisibilityAction implements Action<ObsClient, ObsSourceVisibilityAction> {
 
     private final ActionType ACTION_TYPE = ActionType.OBS;
 
@@ -33,18 +33,19 @@ public class ObsSourceVisibilityAction implements Action<ObsSourceVisibilityActi
     }
 
     @Override
+    public Class<ObsClient> acceptsClientType() {
+        return ObsClient.class;
+    }
+
+    @Override
     public ObsSourceVisibilityAction clone() {
         return new ObsSourceVisibilityAction(sceneName, sourceName, visible);
     }
 
     @Override
-    public RunnableAction<ObsSourceVisibilityAction> createRunnableAction(ActionClient client, CommandRequestContext commandRequestContext) {
+    public RunnableAction<ObsClient, ObsSourceVisibilityAction> createRunnableAction(ObsClient client, CommandRequestContext commandRequestContext) {
         if(client == null || commandRequestContext == null) throw new IllegalArgumentException("arguments cannot be null");
-        if(client instanceof ObsClient) {
-            return new RunnableObsSourceVisibilityAction(clone(), (ObsClient) client, commandRequestContext);
-        } else {
-            throw new IllegalArgumentException("Unexpected client: " + client);
-        }
+        return new RunnableObsSourceVisibilityAction(clone(), client, commandRequestContext);
     }
 
     public String getSceneName() {

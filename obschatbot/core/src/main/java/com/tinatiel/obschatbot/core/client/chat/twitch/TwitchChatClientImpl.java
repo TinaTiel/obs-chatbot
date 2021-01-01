@@ -5,6 +5,7 @@
 
 package com.tinatiel.obschatbot.core.client.chat.twitch;
 
+import com.tinatiel.obschatbot.core.action.ActionType;
 import org.pircbotx.MultiBotManager;
 import org.pircbotx.PircBotX;
 
@@ -20,5 +21,10 @@ public class TwitchChatClientImpl implements TwitchChatClient {
     public void sendMessage(String message) {
         System.out.println("Sending your message: " + message);
         pircBotX.sendIRC().message("#tinatiel", message);
+    }
+
+    @Override
+    public ActionType getActionType() {
+        return ActionType.TWITCH_CHAT;
     }
 }

@@ -11,7 +11,7 @@ import com.tinatiel.obschatbot.core.client.ActionClient;
 import com.tinatiel.obschatbot.core.client.chat.twitch.TwitchChatClient;
 import com.tinatiel.obschatbot.core.dispatch.CommandRequestContext;
 
-public class RunnableSendMessageAction implements RunnableAction<SendMessageAction> {
+public class RunnableSendMessageAction implements RunnableAction<TwitchChatClient, SendMessageAction> {
 
     private final SendMessageAction action;
     private final TwitchChatClient twitchChatClient;
@@ -34,7 +34,7 @@ public class RunnableSendMessageAction implements RunnableAction<SendMessageActi
     }
 
     @Override
-    public ActionClient getClient() {
+    public TwitchChatClient getClient() {
         return twitchChatClient;
     }
 

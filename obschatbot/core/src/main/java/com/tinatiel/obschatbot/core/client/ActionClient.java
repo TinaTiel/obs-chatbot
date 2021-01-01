@@ -5,5 +5,8 @@
 
 package com.tinatiel.obschatbot.core.client;
 
+import com.tinatiel.obschatbot.core.action.ActionType;
+
 public interface ActionClient {
+    ActionType getActionType();
 }
