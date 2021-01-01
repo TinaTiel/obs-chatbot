@@ -19,6 +19,8 @@ import java.util.stream.Collectors;
 public class CommandExpanderImpl implements CommandExpander {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
+
+    private final ExecutorService executorService = Executors.newSingleThreadExecutor();
     private final long recursionTimeout;
 
     /**
@@ -41,7 +43,6 @@ public class CommandExpanderImpl implements CommandExpander {
 
             // Define a thread that will do the enumeration, so that a StackOverflow won't
             // bring the current thread to a halt, and we can set a timeout on it.
-            ExecutorService executorService = Executors.newSingleThreadExecutor();
             executorService.submit(() -> {
                results.addAll(privateExpand(command));
             }).get(recursionTimeout, TimeUnit.MILLISECONDS);

@@ -203,17 +203,17 @@ public class CommandExpanderTest {
     @Test
     void multiThreadedReturnsActionListsAsExpected() {
 
-        int maxNumCommands = 100;
-        int maxNumActions = 100;
-        int numThreads = 50;
+        int maxNumCommands = 1000;
+        int minNumActions = 50;
+        int maxNumActions = 500;
+        int numClients = 750;
 
         // Given a f**k ton of some randomly generated commands
         Random random = new Random();
         ConcurrentHashMap<Command, List<Action>> mapCommandsToEnumeratedActions = new ConcurrentHashMap<>();
         int numCommands = random.nextInt(maxNumCommands);
         for(int c=0; c < numCommands; c++) {
-            int numActions = random.nextInt(maxNumActions);
-
+            int numActions = random.nextInt(maxNumActions) + minNumActions;
             ActionSequencer actionSequencer = mock(ActionSequencer.class);
             List<Action> actions = new ArrayList<>();
             for(int a=0; a < numActions; a++) actions.add(mock(Action.class));
@@ -222,16 +222,19 @@ public class CommandExpanderTest {
                     .name("command-" + (c+1))
                     .actionSequencer(actionSequencer);
             mapCommandsToEnumeratedActions.put(command, new ArrayList<>());
+            assertThat(command.getActionSequencer().listAll()).hasSizeGreaterThanOrEqualTo(minNumActions);
         }
 
-        // When a pool of threads enumerates all these commands into actions
-        ExecutorService executorService = Executors.newFixedThreadPool(numThreads);
+        // When a ton of clients try to use this class to enumerate the commands
+        ExecutorService executorService = Executors.newFixedThreadPool(numClients);
         for(Command command: mapCommandsToEnumeratedActions.keySet()) {
             executorService.submit(() -> {
                 List<Action> enumeratedActions = commandExpander.expand(command);
                 mapCommandsToEnumeratedActions.put(command, enumeratedActions);
             });
         }
+
+        // And when we wait for all of them to finish doing their work
         executorService.shutdown();
         try {
             executorService.awaitTermination(Long.MAX_VALUE, TimeUnit.MILLISECONDS);
@@ -239,9 +242,12 @@ public class CommandExpanderTest {
             interruptedException.printStackTrace();
         }
 
-        // Then each command has the expected actions
+        // Then each command is enumerated into the expected number of actions
         for(Map.Entry<Command, List<Action>> entry:mapCommandsToEnumeratedActions.entrySet()) {
-            assertThat(entry.getValue()).containsExactlyElementsOf(entry.getKey().getActionSequencer().listAll());
+            List<Action> actualActions = entry.getValue();
+            List<Action> expectedActions = entry.getKey().getActionSequencer().listAll();
+            System.out.println(entry.getKey().getName() + " initialized with " + expectedActions.size() + " actions -- Expanded to " + actualActions.size() + " actions");
+            assertThat(actualActions).containsExactlyElementsOf(expectedActions);
         }
 
     }
