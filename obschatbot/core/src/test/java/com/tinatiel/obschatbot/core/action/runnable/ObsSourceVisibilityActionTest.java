@@ -5,10 +5,12 @@
 
 package com.tinatiel.obschatbot.core.action.runnable;
 
+import com.tinatiel.obschatbot.core.action.model.ObsSourceVisibilityAction;
 import com.tinatiel.obschatbot.core.dispatch.CommandRequestContext;
 import com.tinatiel.obschatbot.core.client.ActionClientFactory;
 import com.tinatiel.obschatbot.core.client.obs.ObsClient;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.Mockito.*;
@@ -16,7 +18,6 @@ import static org.mockito.Mockito.*;
 public class ObsSourceVisibilityActionTest {
 
     CommandRequestContext context;
-    ActionClientFactory factory;
     ObsClient client;
 
     @BeforeEach
@@ -24,65 +25,62 @@ public class ObsSourceVisibilityActionTest {
 
         // Initialize dependencies and behavior
         context = mock(CommandRequestContext.class);
-        factory = mock(ActionClientFactory.class);
         client = mock(ObsClient.class);
-//        when(factory.getService(ActionType.OBS)).thenReturn(client);
-        when(factory.getClient(ObsClient.class)).thenReturn(client);
 
     }
 
-//    @Test
-//    void runInvokesObsClient() {
-//
-//        // Given an action
-//        String scene = "some scene";
-//        String source = "some source";
-//        boolean visible = true;
-//        ObsSourceVisibilityRunnableAction action = new ObsSourceVisibilityRunnableAction(context, factory,
-//                scene, source, visible);
-//
-//        // When run
-//        action.run();
-//
-//        // Then the OBS Client is invoked
-//        verify(factory).getService(ActionType.OBS);
-//        verify(client).setSourceVisibility(scene, source, visible);
-//
-//    }
-//
-//    @Test
-//    void sourceNameIsRequired() {
-//
-//        // Given action with no source name
-//        RunnableAction action = new ObsSourceVisibilityRunnableAction(context, factory,
-//                "foo", null, true);
-//
-//        // When run, then an exception is thrown
-//        assertThatThrownBy(action::run).isInstanceOf(IllegalStateException.class);
-//
-//    }
-//
-//    @Test
-//    void ContextRequiredToRun() {
-//
-//        // Given action with no context
-//        RunnableAction action = new ObsSourceVisibilityRunnableAction(null, factory,
-//                "foo", "bar", true);
-//
-//        // When run, then an exception is thrown
-//        assertThatThrownBy(action::run).isInstanceOf(IllegalStateException.class);
-//
-//    }
-//
-//    @Test
-//    void factoryRequiredToRun() {
-//
-//        // Given action with no factory
-//        RunnableAction action = new ObsSourceVisibilityRunnableAction(context, null,
-//                "foo", "bar", true);
-//
-//        // When run, then an exception is thrown
-//        assertThatThrownBy(action::run).isInstanceOf(IllegalStateException.class);
-//
-//    }
+    @Test
+    void runInvokesObsClient() {
+
+        // Given an action
+        String scene = "some scene";
+        String source = "some source";
+        boolean visible = true;
+        ObsSourceVisibilityAction action = new ObsSourceVisibilityAction(scene, source, visible);
+        RunnableObsSourceVisibilityAction runnableAction = new RunnableObsSourceVisibilityAction(
+                action,
+                client,
+                context
+        );
+
+        // When run
+        runnableAction.run();
+
+        // Then the OBS Client is invoked
+        verify(client).setSourceVisibility(scene, source, visible);
+
+    }
+
+    @Test
+    void sourceNameIsRequired() {
+
+        // Given action with no source name
+        ObsSourceVisibilityAction action = new ObsSourceVisibilityAction("some scene", null, true);
+        RunnableObsSourceVisibilityAction runnableAction = new RunnableObsSourceVisibilityAction(
+                action,
+                client,
+                context
+        );
+
+        // When run, then an exception is thrown
+        assertThatThrownBy(runnableAction::run).isInstanceOf(IllegalStateException.class);
+
+    }
+
+    @Test
+    void ContextRequiredToRun() {
+
+        // Given action with no context
+        ObsSourceVisibilityAction action = new ObsSourceVisibilityAction("foo", "bar", true);
+        RunnableObsSourceVisibilityAction runnableAction = new RunnableObsSourceVisibilityAction(
+                action,
+                client,
+                null
+        );
+
+        // When run, then an exception is thrown
+        assertThatThrownBy(runnableAction::run).isInstanceOf(IllegalStateException.class);
+
+    }
+
 }
