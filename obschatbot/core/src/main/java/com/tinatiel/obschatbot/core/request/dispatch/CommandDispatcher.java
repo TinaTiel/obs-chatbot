@@ -5,8 +5,8 @@
 
 package com.tinatiel.obschatbot.core.request.dispatch;
 
-import com.tinatiel.obschatbot.core.request.ObsChatbotRequestContext;
+import com.tinatiel.obschatbot.core.request.RequestContext;
 
 public interface CommandDispatcher {
-    void submit(ObsChatbotRequestContext obsChatbotRequestContext);
+    void submit(RequestContext requestContext);
 }

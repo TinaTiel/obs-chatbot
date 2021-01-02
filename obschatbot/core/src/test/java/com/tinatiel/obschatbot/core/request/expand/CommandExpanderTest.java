@@ -7,7 +7,7 @@ package com.tinatiel.obschatbot.core.request.expand;
 
 import com.tinatiel.obschatbot.core.action.Action;
 import com.tinatiel.obschatbot.core.action.model.ExecuteCommandAction;
-import com.tinatiel.obschatbot.core.request.ObsChatbotRequestContext;
+import com.tinatiel.obschatbot.core.request.RequestContext;
 import com.tinatiel.obschatbot.core.sequencer.ActionSequencer;
 import com.tinatiel.obschatbot.core.command.Command;
 import com.tinatiel.obschatbot.core.error.CyclicalActionsException;
@@ -97,7 +97,7 @@ public class CommandExpanderTest {
     void commandWithActionsPointingToOtherCommandReturnsFlatListOfActions() {
 
         // Given a context
-        ObsChatbotRequestContext context = mock(ObsChatbotRequestContext.class);
+        RequestContext context = mock(RequestContext.class);
 
         // And given an existing command
         ActionSequencer existingSequencer = mock(ActionSequencer.class);

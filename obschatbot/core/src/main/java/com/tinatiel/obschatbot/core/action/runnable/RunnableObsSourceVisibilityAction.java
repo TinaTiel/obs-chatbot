@@ -7,16 +7,17 @@ package com.tinatiel.obschatbot.core.action.runnable;
 
 import com.tinatiel.obschatbot.core.action.RunnableAction;
 import com.tinatiel.obschatbot.core.action.model.ObsSourceVisibilityAction;
-import com.tinatiel.obschatbot.core.request.ObsChatbotRequestContext;
+import com.tinatiel.obschatbot.core.request.RequestContext;
 import com.tinatiel.obschatbot.core.client.obs.ObsClient;
 
 public class RunnableObsSourceVisibilityAction implements RunnableAction<ObsClient, ObsSourceVisibilityAction> {
 
     private final ObsSourceVisibilityAction action;
     private final ObsClient obsClient;
-    private final ObsChatbotRequestContext context;
+    private final RequestContext context;
 
-    public RunnableObsSourceVisibilityAction(ObsSourceVisibilityAction action, ObsClient obsClient, ObsChatbotRequestContext context) {
+    public RunnableObsSourceVisibilityAction(ObsSourceVisibilityAction action, ObsClient obsClient, RequestContext context) {
+        if(action == null || obsClient == null || context == null) throw new IllegalArgumentException("arguments cannot be null");
         this.action = action;
         this.obsClient = obsClient;
         this.context = context;
@@ -25,10 +26,6 @@ public class RunnableObsSourceVisibilityAction implements RunnableAction<ObsClie
     @Override
     public void run() {
 
-        // Sanitize before the run
-        if(obsClient == null || context == null) {
-            throw new IllegalStateException("Missing ActionContext or ActionServiceFactory");
-        }
         if(action.getSourceName() == null) throw new IllegalStateException("Missing source name");
 
         // Get the client and invoke it
@@ -37,7 +34,7 @@ public class RunnableObsSourceVisibilityAction implements RunnableAction<ObsClie
     }
 
     @Override
-    public ObsChatbotRequestContext getRequestContext() {
+    public RequestContext getRequestContext() {
         return context;
     }
 

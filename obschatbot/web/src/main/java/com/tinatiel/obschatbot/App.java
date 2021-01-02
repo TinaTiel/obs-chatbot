@@ -5,18 +5,9 @@
 
 package com.tinatiel.obschatbot;
 
-import com.tinatiel.obschatbot.core.action.model.ObsSourceVisibilityAction;
-import com.tinatiel.obschatbot.core.action.runnable.RunnableObsSourceVisibilityAction;
-import com.tinatiel.obschatbot.core.client.ActionClientFactory;
-import com.tinatiel.obschatbot.core.client.obs.ObsClient;
-import com.tinatiel.obschatbot.core.user.Platform;
-import com.tinatiel.obschatbot.core.request.ObsChatbotRequestContext;
-import com.tinatiel.obschatbot.core.user.User;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
-
-import java.util.ArrayList;
 
 @SpringBootApplication
 public class App {

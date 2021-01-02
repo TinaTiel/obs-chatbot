@@ -10,12 +10,12 @@ import com.tinatiel.obschatbot.core.user.User;
 import java.util.List;
 import java.util.Objects;
 
-public class ObsChatbotRequestContext {
+public class RequestContext {
 
     private final User user;
     private final List<String> arguments;
 
-    public ObsChatbotRequestContext(User user, List<String> arguments) {
+    public RequestContext(User user, List<String> arguments) {
         this.user = user;
         this.arguments = arguments;
     }
@@ -32,7 +32,7 @@ public class ObsChatbotRequestContext {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ObsChatbotRequestContext that = (ObsChatbotRequestContext) o;
+        RequestContext that = (RequestContext) o;
         return Objects.equals(user, that.user) && Objects.equals(arguments, that.arguments);
     }
 

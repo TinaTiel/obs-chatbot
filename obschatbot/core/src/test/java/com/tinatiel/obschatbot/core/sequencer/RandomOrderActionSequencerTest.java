@@ -6,7 +6,6 @@
 package com.tinatiel.obschatbot.core.sequencer;
 
 import com.tinatiel.obschatbot.core.action.Action;
-import com.tinatiel.obschatbot.core.action.Action;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
@@ -17,9 +16,9 @@ import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
 
-public class ActionSequencerTest {
+public class RandomOrderActionSequencerTest {
 
     Action action1, action2, action3;
 
@@ -29,62 +28,6 @@ public class ActionSequencerTest {
         action1 = mock(Action.class);
         action2 = mock(Action.class);
         action3 = mock(Action.class);
-
-    }
-
-    @Test
-    void sequenceActionsInOrder() {
-
-        // Given actions to execute
-        List<Action> input = Arrays.asList(action1, action2, action3);
-
-        // Given an in-order sequencer
-        ActionSequencer sequencer = new InOrderActionSequencer(input, false);
-
-        // When sequenced
-        List<Action> sequence = sequencer.nextSequence();
-
-        // Then the actions are scheduled in the same order they went in
-        assertThat(sequence).containsExactly(action1, action2, action3);
-        assertThat(sequence).isNotSameAs(input);
-
-        // And when sequenced again
-        sequence = sequencer.nextSequence();
-
-        // Then the actions are still sequenced in the same order
-        assertThat(sequence).containsExactly(action1, action2, action3);
-        assertThat(sequence).isNotSameAs(input);
-
-        // And getActions returns the original input
-        assertThat(sequencer.listAll()).containsExactlyElementsOf(input);
-
-    }
-
-    @Test
-    void executeActionsInReverseOrder() {
-
-        // Given actions to execute
-        List<Action> input = Arrays.asList(action1, action2, action3);
-
-        // Given an in-order scheduler, but reversed
-        ActionSequencer sequencer = new InOrderActionSequencer(input, true);
-
-        // When scheduled
-        List<Action> sequence = sequencer.nextSequence();
-
-        // Then the actions are scheduled in the opposite order they went in
-        assertThat(sequence).containsExactly(action3, action2, action1);
-        assertThat(sequence).isNotSameAs(input);
-
-        // And when sequenced again
-        sequence = sequencer.nextSequence();
-
-        // Then the actions are still sequenced in the same order
-        assertThat(sequence).containsExactly(action3, action2, action1);
-        assertThat(sequence).isNotSameAs(input);
-
-        // And getActions returns the original input
-        assertThat(sequencer.listAll()).containsExactlyElementsOf(input);
 
     }
 

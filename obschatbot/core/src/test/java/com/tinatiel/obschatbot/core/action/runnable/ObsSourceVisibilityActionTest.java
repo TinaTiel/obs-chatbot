@@ -6,7 +6,7 @@
 package com.tinatiel.obschatbot.core.action.runnable;
 
 import com.tinatiel.obschatbot.core.action.model.ObsSourceVisibilityAction;
-import com.tinatiel.obschatbot.core.request.ObsChatbotRequestContext;
+import com.tinatiel.obschatbot.core.request.RequestContext;
 import com.tinatiel.obschatbot.core.client.obs.ObsClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,14 +16,14 @@ import static org.mockito.Mockito.*;
 
 public class ObsSourceVisibilityActionTest {
 
-    ObsChatbotRequestContext context;
+    RequestContext context;
     ObsClient client;
 
     @BeforeEach
     void setUp() {
 
         // Initialize dependencies and behavior
-        context = mock(ObsChatbotRequestContext.class);
+        context = mock(RequestContext.class);
         client = mock(ObsClient.class);
 
     }
@@ -47,38 +47,6 @@ public class ObsSourceVisibilityActionTest {
 
         // Then the OBS Client is invoked
         verify(client).setSourceVisibility(scene, source, visible);
-
-    }
-
-    @Test
-    void sourceNameIsRequired() {
-
-        // Given action with no source name
-        ObsSourceVisibilityAction action = new ObsSourceVisibilityAction("some scene", null, true);
-        RunnableObsSourceVisibilityAction runnableAction = new RunnableObsSourceVisibilityAction(
-                action,
-                client,
-                context
-        );
-
-        // When run, then an exception is thrown
-        assertThatThrownBy(runnableAction::run).isInstanceOf(IllegalStateException.class);
-
-    }
-
-    @Test
-    void ContextRequiredToRun() {
-
-        // Given action with no context
-        ObsSourceVisibilityAction action = new ObsSourceVisibilityAction("foo", "bar", true);
-        RunnableObsSourceVisibilityAction runnableAction = new RunnableObsSourceVisibilityAction(
-                action,
-                client,
-                null
-        );
-
-        // When run, then an exception is thrown
-        assertThatThrownBy(runnableAction::run).isInstanceOf(IllegalStateException.class);
 
     }
 

@@ -7,7 +7,7 @@ package com.tinatiel.obschatbot.core.request.handler.chat;
 
 import com.tinatiel.obschatbot.core.command.CommandRepository;
 import com.tinatiel.obschatbot.core.request.dispatch.CommandDispatcher;
-import com.tinatiel.obschatbot.core.request.ObsChatbotRequestContext;
+import com.tinatiel.obschatbot.core.request.RequestContext;
 import com.tinatiel.obschatbot.core.user.User;
 
 public class ChatRequestHandlerImpl implements ChatRequestHandler {
@@ -28,7 +28,7 @@ public class ChatRequestHandlerImpl implements ChatRequestHandler {
                 .ifPresent(result -> {
                     commandRepository.findByName(result.getCommandName())
                             .ifPresent(command -> {
-                                dispatcher.submit(new ObsChatbotRequestContext(
+                                dispatcher.submit(new RequestContext(
                                         user, result.getArgs()
                                 ));
                             });

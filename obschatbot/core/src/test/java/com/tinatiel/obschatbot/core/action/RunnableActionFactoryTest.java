@@ -6,7 +6,7 @@
 package com.tinatiel.obschatbot.core.action;
 
 import com.tinatiel.obschatbot.core.client.ActionClientFactory;
-import com.tinatiel.obschatbot.core.request.ObsChatbotRequestContext;
+import com.tinatiel.obschatbot.core.request.RequestContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -39,7 +39,7 @@ public class RunnableActionFactoryTest {
 
         // When called, then an exception is thrown
         assertThatThrownBy(() ->  {
-            runnableActionFactory.createForContext(actionStub, mock(ObsChatbotRequestContext.class));
+            runnableActionFactory.createForContext(actionStub, mock(RequestContext.class));
         }).isInstanceOf(IllegalStateException.class);
 
     }
@@ -47,7 +47,7 @@ public class RunnableActionFactoryTest {
     @Test
     void nullArguments() {
         assertThatThrownBy(() ->  {
-            runnableActionFactory.createForContext(null, mock(ObsChatbotRequestContext.class));
+            runnableActionFactory.createForContext(null, mock(RequestContext.class));
         }).isInstanceOf(IllegalArgumentException.class);
 
         assertThatThrownBy(() ->  {

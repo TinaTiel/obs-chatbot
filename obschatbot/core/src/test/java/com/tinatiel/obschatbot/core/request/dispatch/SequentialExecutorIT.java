@@ -8,9 +8,8 @@ package com.tinatiel.obschatbot.core.request.dispatch;
 import com.tinatiel.obschatbot.core.action.Action;
 import com.tinatiel.obschatbot.core.action.RunnableAction;
 import com.tinatiel.obschatbot.core.client.NoOpClient;
-import com.tinatiel.obschatbot.core.request.ObsChatbotRequest;
-import com.tinatiel.obschatbot.core.request.ObsChatbotRequestContext;
-import com.tinatiel.obschatbot.core.request.dispatch.SequentialExecutor;
+import com.tinatiel.obschatbot.core.request.Request;
+import com.tinatiel.obschatbot.core.request.RequestContext;
 import org.junit.jupiter.api.RepeatedTest;
 
 import java.sql.Timestamp;
@@ -27,7 +26,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.Fail.fail;
 import static org.mockito.Mockito.mock;
 
-public class ObsChatbotRequestIT {
+public class SequentialExecutorIT {
 
     private final ExecutorService parentExecutor = mock(ExecutorService.class);
 
@@ -41,7 +40,7 @@ public class ObsChatbotRequestIT {
         Random random = new Random();
 
         // given many random requests
-        List<ObsChatbotRequest> requests = new ArrayList<>();
+        List<Request> requests = new ArrayList<>();
         for(int r=0; r < numRequests; r++) {
             List<RunnableAction> actions = new ArrayList<>();
             int numActions = random.nextInt(maxNumActions) + minNumActions;
@@ -54,16 +53,16 @@ public class ObsChatbotRequestIT {
                         random.nextInt(maxExecTimeMs)
                 ));
             }
-            requests.add(new ObsChatbotRequest(new SequentialExecutor(parentExecutor),Long.MAX_VALUE, actions));
+            requests.add(new Request(new SequentialExecutor(parentExecutor),Long.MAX_VALUE, actions));
         }
 
         // (print out for sanity-checking)
-        for(ObsChatbotRequest obsChatbotRequest :requests) System.out.println("Generated " + obsChatbotRequest);
+        for(Request request :requests) System.out.println("Generated " + request);
 
         // when each are executed
         ExecutorService executorService = Executors.newFixedThreadPool(10);
-        for(ObsChatbotRequest obsChatbotRequest :requests) {
-            executorService.submit(obsChatbotRequest);
+        for(Request request :requests) {
+            executorService.submit(request);
         }
         System.out.println(Timestamp.from(Instant.now()) + " - started/scheduled executions");
 
@@ -78,7 +77,7 @@ public class ObsChatbotRequestIT {
         }
 
         // Then upon inspection we find the actions were run in order
-        for(ObsChatbotRequest request:requests) {
+        for(Request request:requests) {
             for(int i=1; i< request.getActions().size(); i++) {
                 StubRunnableAction first = (StubRunnableAction) request.getActions().get(i-1);
                 StubRunnableAction second = (StubRunnableAction) request.getActions().get(i);
@@ -145,7 +144,7 @@ public class ObsChatbotRequestIT {
         }
 
         @Override
-        public ObsChatbotRequestContext getRequestContext() {
+        public RequestContext getRequestContext() {
             return null;
         }
 
@@ -194,7 +193,7 @@ public class ObsChatbotRequestIT {
         }
 
         @Override
-        public RunnableAction<NoOpClient, StubAction> createRunnableAction(NoOpClient client, ObsChatbotRequestContext obsChatbotRequestContext) {
+        public RunnableAction<NoOpClient, StubAction> createRunnableAction(NoOpClient client, RequestContext requestContext) {
             return null;
         }
     }

@@ -5,8 +5,8 @@
 
 package com.tinatiel.obschatbot.core.action;
 
-import com.tinatiel.obschatbot.core.request.ObsChatbotRequestContext;
+import com.tinatiel.obschatbot.core.request.RequestContext;
 
 public interface RunnableActionFactory {
-    RunnableAction createForContext(Action action, ObsChatbotRequestContext context);
+    RunnableAction createForContext(Action action, RequestContext context);
 }

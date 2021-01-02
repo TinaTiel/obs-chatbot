@@ -12,7 +12,7 @@ import com.tinatiel.obschatbot.core.client.ActionClient;
 import com.tinatiel.obschatbot.core.client.ActionClientFactoryImpl;
 import com.tinatiel.obschatbot.core.client.chat.twitch.TwitchChatClient;
 import com.tinatiel.obschatbot.core.client.obs.ObsClient;
-import com.tinatiel.obschatbot.core.request.ObsChatbotRequestContext;
+import com.tinatiel.obschatbot.core.request.RequestContext;
 import com.tinatiel.obschatbot.core.client.ActionClientFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -23,9 +23,10 @@ import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.mock;
 
-public class CommonActionTests {
+public class CommonRunnableActionTests {
 
     ObsClient obsClient;
     TwitchChatClient twitchChatClient;
@@ -45,30 +46,24 @@ public class CommonActionTests {
     }
 
     @ParameterizedTest
-    @MethodSource("runnableActions")
-    void createRunnableCloneAsExpected(Action action, ActionClient client) {
+    @MethodSource("runnableActionArgs")
+    void createRunnableActionAsExpected(Action original, ActionClient client, RequestContext context) {
 
-        // Given a request context
-        ObsChatbotRequestContext context = mock(ObsChatbotRequestContext.class);
-
-        // When an action is created as a runnable clone
-        RunnableAction clone = action.createRunnableAction(client, context);
-        System.out.println("original: " + action);
-        System.out.println("clone   : " + clone);
+        // When a runnable action is created from an action
+        RunnableAction runnableClone = original.createRunnableAction(client, context);
+        System.out.println("original: " + original);
+        System.out.println("clone   : " + runnableClone);
 
         // Then it has the expected properties
-        assertThat(clone.getAction()).isEqualToComparingFieldByField(action);
-        assertThat(clone.getClient()).isEqualTo(client);
-        assertThat(clone.getRequestContext()).isEqualTo(context);
+        assertThat(runnableClone.getAction()).isEqualToComparingFieldByField(original);
+        assertThat(runnableClone.getClient()).isEqualTo(client);
+        assertThat(runnableClone.getRequestContext()).isEqualTo(context);
 
     }
 
     @ParameterizedTest
-    @MethodSource("runnableActions")
-    void createRunnableCloneNulls(Action action, ActionClient client) {
-
-        // Given a request context
-        ObsChatbotRequestContext context = mock(ObsChatbotRequestContext.class);
+    @MethodSource("runnableActionArgs")
+    void creatingRunnableClonesWithNullsThrowsExceptions(Action action, ActionClient client, RequestContext context) {
 
         // When cloned with nulls then throw an exception
         assertThatThrownBy(() -> {
@@ -81,14 +76,15 @@ public class CommonActionTests {
 
     }
 
-    static Stream<Arguments> runnableActions() {
+    static Stream<Arguments> runnableActionArgs() {
 
+        RequestContext context = mock(RequestContext.class);
         ObsClient obsClient = mock(ObsClient.class);
         TwitchChatClient twitchChatClient = mock(TwitchChatClient.class);
 
         return Stream.of(
-            Arguments.of(new ObsSourceVisibilityAction("foo", "bar", true), obsClient),
-            Arguments.of(new SendMessageAction("foo"), twitchChatClient)
+            Arguments.of(new ObsSourceVisibilityAction("foo", "bar", true), obsClient, context),
+            Arguments.of(new SendMessageAction("foo"), twitchChatClient, context)
         );
     }
 

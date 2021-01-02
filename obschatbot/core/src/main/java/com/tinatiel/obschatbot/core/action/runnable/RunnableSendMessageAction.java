@@ -8,22 +8,23 @@ package com.tinatiel.obschatbot.core.action.runnable;
 import com.tinatiel.obschatbot.core.action.RunnableAction;
 import com.tinatiel.obschatbot.core.action.model.SendMessageAction;
 import com.tinatiel.obschatbot.core.client.chat.twitch.TwitchChatClient;
-import com.tinatiel.obschatbot.core.request.ObsChatbotRequestContext;
+import com.tinatiel.obschatbot.core.request.RequestContext;
 
 public class RunnableSendMessageAction implements RunnableAction<TwitchChatClient, SendMessageAction> {
 
     private final SendMessageAction action;
     private final TwitchChatClient twitchChatClient;
-    private final ObsChatbotRequestContext context;
+    private final RequestContext context;
 
-    public RunnableSendMessageAction(SendMessageAction action, TwitchChatClient twitchChatClient, ObsChatbotRequestContext context) {
+    public RunnableSendMessageAction(SendMessageAction action, TwitchChatClient twitchChatClient, RequestContext context) {
+        if(action == null || twitchChatClient == null || context == null) throw new IllegalArgumentException("arguments cannot be null");
         this.action = action;
         this.twitchChatClient = twitchChatClient;
         this.context = context;
     }
 
     @Override
-    public ObsChatbotRequestContext getRequestContext() {
+    public RequestContext getRequestContext() {
         return context;
     }
 
@@ -39,6 +40,6 @@ public class RunnableSendMessageAction implements RunnableAction<TwitchChatClien
 
     @Override
     public void run() {
-
+        twitchChatClient.sendMessage(action.getMessage());
     }
 }

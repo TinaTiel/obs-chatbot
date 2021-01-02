@@ -7,7 +7,7 @@ package com.tinatiel.obschatbot.core.action;
 
 import com.tinatiel.obschatbot.core.client.ActionClient;
 import com.tinatiel.obschatbot.core.client.ActionClientFactory;
-import com.tinatiel.obschatbot.core.request.ObsChatbotRequestContext;
+import com.tinatiel.obschatbot.core.request.RequestContext;
 
 public class RunnableActionFactoryImpl implements RunnableActionFactory {
 
@@ -18,7 +18,7 @@ public class RunnableActionFactoryImpl implements RunnableActionFactory {
     }
 
     @Override
-    public RunnableAction createForContext(Action action, ObsChatbotRequestContext context) {
+    public RunnableAction createForContext(Action action, RequestContext context) {
         // Sanitize inputs
         if(action == null || context == null) throw new IllegalArgumentException("arguments cannot be null");
 

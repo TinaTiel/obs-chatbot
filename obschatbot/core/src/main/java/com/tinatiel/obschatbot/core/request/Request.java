@@ -12,13 +12,13 @@ import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 
-public class ObsChatbotRequest implements Runnable {
+public class Request implements Runnable {
 
     private final SequentialExecutor executor;
     private final long timoutMs;
     private final List<RunnableAction> actions;
 
-    public ObsChatbotRequest(SequentialExecutor executor, long timeoutMs, List<RunnableAction> actions) {
+    public Request(SequentialExecutor executor, long timeoutMs, List<RunnableAction> actions) {
         if(executor == null || actions == null) throw new IllegalArgumentException("arguments cannot be null");
         if(timeoutMs <= 0) throw new IllegalArgumentException("timeout must be greater than zero");
         this.executor = executor;

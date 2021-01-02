@@ -9,7 +9,7 @@ import com.tinatiel.obschatbot.core.action.Action;
 import com.tinatiel.obschatbot.core.action.RunnableAction;
 import com.tinatiel.obschatbot.core.client.NoOpClient;
 import com.tinatiel.obschatbot.core.command.Command;
-import com.tinatiel.obschatbot.core.request.ObsChatbotRequestContext;
+import com.tinatiel.obschatbot.core.request.RequestContext;
 
 public class ExecuteCommandAction implements Action<NoOpClient, ExecuteCommandAction> {
 
@@ -31,7 +31,7 @@ public class ExecuteCommandAction implements Action<NoOpClient, ExecuteCommandAc
     }
 
     @Override
-    public RunnableAction<NoOpClient, ExecuteCommandAction> createRunnableAction(NoOpClient client, ObsChatbotRequestContext obsChatbotRequestContext) {
+    public RunnableAction<NoOpClient, ExecuteCommandAction> createRunnableAction(NoOpClient client, RequestContext requestContext) {
         return null;
     }
 

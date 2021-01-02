@@ -9,7 +9,7 @@ import com.tinatiel.obschatbot.core.action.Action;
 import com.tinatiel.obschatbot.core.action.RunnableAction;
 import com.tinatiel.obschatbot.core.action.runnable.RunnableObsSourceVisibilityAction;
 import com.tinatiel.obschatbot.core.client.obs.ObsClient;
-import com.tinatiel.obschatbot.core.request.ObsChatbotRequestContext;
+import com.tinatiel.obschatbot.core.request.RequestContext;
 
 public class ObsSourceVisibilityAction implements Action<ObsClient, ObsSourceVisibilityAction> {
 
@@ -18,6 +18,7 @@ public class ObsSourceVisibilityAction implements Action<ObsClient, ObsSourceVis
     private final boolean visible;
 
     public ObsSourceVisibilityAction(String sceneName, String sourceName, boolean visible) {
+        if(sourceName == null) throw new IllegalArgumentException("source name cannot be null");
         this.sceneName = sceneName;
         this.sourceName = sourceName;
         this.visible = visible;
@@ -34,9 +35,9 @@ public class ObsSourceVisibilityAction implements Action<ObsClient, ObsSourceVis
     }
 
     @Override
-    public RunnableAction<ObsClient, ObsSourceVisibilityAction> createRunnableAction(ObsClient client, ObsChatbotRequestContext obsChatbotRequestContext) {
-        if(client == null || obsChatbotRequestContext == null) throw new IllegalArgumentException("arguments cannot be null");
-        return new RunnableObsSourceVisibilityAction(clone(), client, obsChatbotRequestContext);
+    public RunnableAction<ObsClient, ObsSourceVisibilityAction> createRunnableAction(ObsClient client, RequestContext requestContext) {
+        if(client == null || requestContext == null) throw new IllegalArgumentException("arguments cannot be null");
+        return new RunnableObsSourceVisibilityAction(clone(), client, requestContext);
     }
 
     public String getSceneName() {
