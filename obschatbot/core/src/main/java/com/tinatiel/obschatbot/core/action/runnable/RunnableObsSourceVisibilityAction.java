@@ -7,16 +7,16 @@ package com.tinatiel.obschatbot.core.action.runnable;
 
 import com.tinatiel.obschatbot.core.action.RunnableAction;
 import com.tinatiel.obschatbot.core.action.model.ObsSourceVisibilityAction;
-import com.tinatiel.obschatbot.core.dispatch.CommandRequestContext;
+import com.tinatiel.obschatbot.core.request.ObsChatbotRequestContext;
 import com.tinatiel.obschatbot.core.client.obs.ObsClient;
 
 public class RunnableObsSourceVisibilityAction implements RunnableAction<ObsClient, ObsSourceVisibilityAction> {
 
     private final ObsSourceVisibilityAction action;
     private final ObsClient obsClient;
-    private final CommandRequestContext context;
+    private final ObsChatbotRequestContext context;
 
-    public RunnableObsSourceVisibilityAction(ObsSourceVisibilityAction action, ObsClient obsClient, CommandRequestContext context) {
+    public RunnableObsSourceVisibilityAction(ObsSourceVisibilityAction action, ObsClient obsClient, ObsChatbotRequestContext context) {
         this.action = action;
         this.obsClient = obsClient;
         this.context = context;
@@ -37,7 +37,7 @@ public class RunnableObsSourceVisibilityAction implements RunnableAction<ObsClie
     }
 
     @Override
-    public CommandRequestContext getRequestContext() {
+    public ObsChatbotRequestContext getRequestContext() {
         return context;
     }
 

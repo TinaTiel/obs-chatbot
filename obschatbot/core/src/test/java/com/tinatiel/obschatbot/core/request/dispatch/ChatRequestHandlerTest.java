@@ -3,11 +3,11 @@
  * GNU General Public License v3.0. See LICENSE or go to https://fsf.org/ for more details.
  */
 
-package com.tinatiel.obschatbot.core.dispatch;
+package com.tinatiel.obschatbot.core.request.dispatch;
 
 import com.tinatiel.obschatbot.core.command.Command;
 import com.tinatiel.obschatbot.core.command.CommandRepository;
-import com.tinatiel.obschatbot.core.dispatch.chat.*;
+import com.tinatiel.obschatbot.core.request.handler.chat.*;
 import com.tinatiel.obschatbot.core.user.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

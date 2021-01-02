@@ -3,10 +3,10 @@
  * GNU General Public License v3.0. See LICENSE or go to https://fsf.org/ for more details.
  */
 
-package com.tinatiel.obschatbot.core.action;
+package com.tinatiel.obschatbot.core.request.dispatch;
 
 import com.tinatiel.obschatbot.core.request.ObsChatbotRequestContext;
 
-public interface RunnableActionFactory {
-    RunnableAction createForContext(Action action, ObsChatbotRequestContext context);
+public interface CommandDispatcher {
+    void submit(ObsChatbotRequestContext obsChatbotRequestContext);
 }

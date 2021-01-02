@@ -8,22 +8,22 @@ package com.tinatiel.obschatbot.core.action.runnable;
 import com.tinatiel.obschatbot.core.action.RunnableAction;
 import com.tinatiel.obschatbot.core.action.model.SendMessageAction;
 import com.tinatiel.obschatbot.core.client.chat.twitch.TwitchChatClient;
-import com.tinatiel.obschatbot.core.dispatch.CommandRequestContext;
+import com.tinatiel.obschatbot.core.request.ObsChatbotRequestContext;
 
 public class RunnableSendMessageAction implements RunnableAction<TwitchChatClient, SendMessageAction> {
 
     private final SendMessageAction action;
     private final TwitchChatClient twitchChatClient;
-    private final CommandRequestContext context;
+    private final ObsChatbotRequestContext context;
 
-    public RunnableSendMessageAction(SendMessageAction action, TwitchChatClient twitchChatClient, CommandRequestContext context) {
+    public RunnableSendMessageAction(SendMessageAction action, TwitchChatClient twitchChatClient, ObsChatbotRequestContext context) {
         this.action = action;
         this.twitchChatClient = twitchChatClient;
         this.context = context;
     }
 
     @Override
-    public CommandRequestContext getRequestContext() {
+    public ObsChatbotRequestContext getRequestContext() {
         return context;
     }
 

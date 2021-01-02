@@ -5,7 +5,6 @@
 
 package com.tinatiel.obschatbot.core.user;
 
-import com.tinatiel.obschatbot.core.client.Platform;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

@@ -5,7 +5,7 @@
 
 package com.tinatiel.obschatbot.core.action;
 
-import com.tinatiel.obschatbot.core.dispatch.CommandRequestContext;
+import com.tinatiel.obschatbot.core.request.ObsChatbotRequestContext;
 import com.tinatiel.obschatbot.core.user.User;
 import org.junit.jupiter.api.Test;
 
@@ -15,7 +15,7 @@ import java.util.Arrays;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
-public class CommandRequestContextTest {
+public class ObsChatbotRequestContextTest {
 
     @Test
     void contextUniqueByUser() {
@@ -24,8 +24,8 @@ public class CommandRequestContextTest {
         User user1 = mock(User.class);
 
         // Given contexts from the same user, everything else the same
-        CommandRequestContext context1 = new CommandRequestContext(user1, new ArrayList<>());
-        CommandRequestContext context1Copy = new CommandRequestContext(user1, new ArrayList<>());
+        ObsChatbotRequestContext context1 = new ObsChatbotRequestContext(user1, new ArrayList<>());
+        ObsChatbotRequestContext context1Copy = new ObsChatbotRequestContext(user1, new ArrayList<>());
 
         // Then they are equal
         assertThat(context1)
@@ -34,7 +34,7 @@ public class CommandRequestContextTest {
 
         // But given context from different user
         User user2 = mock(User.class);
-        CommandRequestContext context2 = new CommandRequestContext(user2, new ArrayList<>());
+        ObsChatbotRequestContext context2 = new ObsChatbotRequestContext(user2, new ArrayList<>());
 
         // Then they are not equal
         assertThat(context2).isNotEqualTo(context1);
@@ -48,8 +48,8 @@ public class CommandRequestContextTest {
         User user = mock(User.class);
 
         // Given contexts from the same user, everything else the same
-        CommandRequestContext context1 = new CommandRequestContext(user, Arrays.asList("arg1", "arg2", "arg3"));
-        CommandRequestContext context1Copy = new CommandRequestContext(user, Arrays.asList("arg1", "arg2", "arg3"));
+        ObsChatbotRequestContext context1 = new ObsChatbotRequestContext(user, Arrays.asList("arg1", "arg2", "arg3"));
+        ObsChatbotRequestContext context1Copy = new ObsChatbotRequestContext(user, Arrays.asList("arg1", "arg2", "arg3"));
 
         // Then they are equal
         assertThat(context1)
@@ -57,7 +57,7 @@ public class CommandRequestContextTest {
                 .isEqualTo(context1Copy);
 
         // But given context from same user with different args (order matters)
-        CommandRequestContext context2 = new CommandRequestContext(user, Arrays.asList("arg3", "arg2", "arg1"));
+        ObsChatbotRequestContext context2 = new ObsChatbotRequestContext(user, Arrays.asList("arg3", "arg2", "arg1"));
 
         // Then they are not equal
         assertThat(context2).isNotEqualTo(context1);

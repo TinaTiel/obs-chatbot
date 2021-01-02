@@ -9,7 +9,7 @@ import com.tinatiel.obschatbot.core.action.Action;
 import com.tinatiel.obschatbot.core.action.RunnableAction;
 import com.tinatiel.obschatbot.core.action.runnable.RunnableObsSourceVisibilityAction;
 import com.tinatiel.obschatbot.core.client.obs.ObsClient;
-import com.tinatiel.obschatbot.core.dispatch.CommandRequestContext;
+import com.tinatiel.obschatbot.core.request.ObsChatbotRequestContext;
 
 public class ObsSourceVisibilityAction implements Action<ObsClient, ObsSourceVisibilityAction> {
 
@@ -34,9 +34,9 @@ public class ObsSourceVisibilityAction implements Action<ObsClient, ObsSourceVis
     }
 
     @Override
-    public RunnableAction<ObsClient, ObsSourceVisibilityAction> createRunnableAction(ObsClient client, CommandRequestContext commandRequestContext) {
-        if(client == null || commandRequestContext == null) throw new IllegalArgumentException("arguments cannot be null");
-        return new RunnableObsSourceVisibilityAction(clone(), client, commandRequestContext);
+    public RunnableAction<ObsClient, ObsSourceVisibilityAction> createRunnableAction(ObsClient client, ObsChatbotRequestContext obsChatbotRequestContext) {
+        if(client == null || obsChatbotRequestContext == null) throw new IllegalArgumentException("arguments cannot be null");
+        return new RunnableObsSourceVisibilityAction(clone(), client, obsChatbotRequestContext);
     }
 
     public String getSceneName() {

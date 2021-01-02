@@ -6,16 +6,14 @@
 package com.tinatiel.obschatbot.core.action.runnable;
 
 import com.tinatiel.obschatbot.core.action.*;
-import com.tinatiel.obschatbot.core.action.model.ExecuteCommandAction;
 import com.tinatiel.obschatbot.core.action.model.ObsSourceVisibilityAction;
 import com.tinatiel.obschatbot.core.action.model.SendMessageAction;
 import com.tinatiel.obschatbot.core.client.ActionClient;
 import com.tinatiel.obschatbot.core.client.ActionClientFactoryImpl;
 import com.tinatiel.obschatbot.core.client.chat.twitch.TwitchChatClient;
 import com.tinatiel.obschatbot.core.client.obs.ObsClient;
-import com.tinatiel.obschatbot.core.dispatch.CommandRequestContext;
+import com.tinatiel.obschatbot.core.request.ObsChatbotRequestContext;
 import com.tinatiel.obschatbot.core.client.ActionClientFactory;
-import com.tinatiel.obschatbot.core.command.Command;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -51,7 +49,7 @@ public class CommonActionTests {
     void createRunnableCloneAsExpected(Action action, ActionClient client) {
 
         // Given a request context
-        CommandRequestContext context = mock(CommandRequestContext.class);
+        ObsChatbotRequestContext context = mock(ObsChatbotRequestContext.class);
 
         // When an action is created as a runnable clone
         RunnableAction clone = action.createRunnableAction(client, context);
@@ -70,7 +68,7 @@ public class CommonActionTests {
     void createRunnableCloneNulls(Action action, ActionClient client) {
 
         // Given a request context
-        CommandRequestContext context = mock(CommandRequestContext.class);
+        ObsChatbotRequestContext context = mock(ObsChatbotRequestContext.class);
 
         // When cloned with nulls then throw an exception
         assertThatThrownBy(() -> {

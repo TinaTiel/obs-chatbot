@@ -9,17 +9,14 @@ import com.tinatiel.obschatbot.core.action.model.ObsSourceVisibilityAction;
 import com.tinatiel.obschatbot.core.action.runnable.RunnableObsSourceVisibilityAction;
 import com.tinatiel.obschatbot.core.client.ActionClientFactory;
 import com.tinatiel.obschatbot.core.client.obs.ObsClient;
-import com.tinatiel.obschatbot.core.dispatch.expand.CommandExpander;
-import com.tinatiel.obschatbot.core.client.Platform;
-import com.tinatiel.obschatbot.core.command.CommandRepository;
-import com.tinatiel.obschatbot.core.dispatch.CommandRequestContext;
+import com.tinatiel.obschatbot.core.user.Platform;
+import com.tinatiel.obschatbot.core.request.ObsChatbotRequestContext;
 import com.tinatiel.obschatbot.core.user.User;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 @SpringBootApplication
 public class App {
@@ -63,7 +60,7 @@ public class App {
         ActionClientFactory actionClientFactory = context.getBean(ActionClientFactory.class);
         ObsSourceVisibilityAction action = new ObsSourceVisibilityAction("foo", "bar", true);
         User user = new User(Platform.TWITCH, "mango");
-        CommandRequestContext requestContext = new CommandRequestContext(user, new ArrayList<>());
+        ObsChatbotRequestContext requestContext = new ObsChatbotRequestContext(user, new ArrayList<>());
         RunnableObsSourceVisibilityAction foo = new RunnableObsSourceVisibilityAction(
                 action,
                 (ObsClient) actionClientFactory.getService(action.getActionType()),

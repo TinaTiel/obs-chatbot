@@ -6,8 +6,7 @@
 package com.tinatiel.obschatbot.core.action.runnable;
 
 import com.tinatiel.obschatbot.core.action.model.ObsSourceVisibilityAction;
-import com.tinatiel.obschatbot.core.dispatch.CommandRequestContext;
-import com.tinatiel.obschatbot.core.client.ActionClientFactory;
+import com.tinatiel.obschatbot.core.request.ObsChatbotRequestContext;
 import com.tinatiel.obschatbot.core.client.obs.ObsClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,14 +16,14 @@ import static org.mockito.Mockito.*;
 
 public class ObsSourceVisibilityActionTest {
 
-    CommandRequestContext context;
+    ObsChatbotRequestContext context;
     ObsClient client;
 
     @BeforeEach
     void setUp() {
 
         // Initialize dependencies and behavior
-        context = mock(CommandRequestContext.class);
+        context = mock(ObsChatbotRequestContext.class);
         client = mock(ObsClient.class);
 
     }

@@ -3,13 +3,14 @@
  * GNU General Public License v3.0. See LICENSE or go to https://fsf.org/ for more details.
  */
 
-package com.tinatiel.obschatbot.core.dispatch;
+package com.tinatiel.obschatbot.core.request.dispatch;
 
 import com.tinatiel.obschatbot.core.action.Action;
 import com.tinatiel.obschatbot.core.action.RunnableAction;
 import com.tinatiel.obschatbot.core.client.NoOpClient;
+import com.tinatiel.obschatbot.core.request.ObsChatbotRequest;
+import com.tinatiel.obschatbot.core.request.ObsChatbotRequestContext;
 import org.junit.jupiter.api.RepeatedTest;
-import org.junit.jupiter.api.Test;
 
 import java.sql.Timestamp;
 import java.time.Instant;
@@ -25,7 +26,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.Fail.fail;
 import static org.mockito.Mockito.mock;
 
-public class CommandRequestIT {
+public class ObsChatbotRequestIT {
 
     private final ExecutorService parentExecutor = mock(ExecutorService.class);
 
@@ -39,7 +40,7 @@ public class CommandRequestIT {
         Random random = new Random();
 
         // given many random requests
-        List<CommandRequest> requests = new ArrayList<>();
+        List<ObsChatbotRequest> requests = new ArrayList<>();
         for(int r=0; r < numRequests; r++) {
             List<RunnableAction> actions = new ArrayList<>();
             int numActions = random.nextInt(maxNumActions) + minNumActions;
@@ -52,16 +53,16 @@ public class CommandRequestIT {
                         random.nextInt(maxExecTimeMs)
                 ));
             }
-            requests.add(new CommandRequest(new SequentialExecutor(parentExecutor),Long.MAX_VALUE, actions));
+            requests.add(new ObsChatbotRequest(new SequentialExecutor(parentExecutor),Long.MAX_VALUE, actions));
         }
 
         // (print out for sanity-checking)
-        for(CommandRequest commandRequest:requests) System.out.println("Generated " + commandRequest);
+        for(ObsChatbotRequest obsChatbotRequest :requests) System.out.println("Generated " + obsChatbotRequest);
 
         // when each are executed
         ExecutorService executorService = Executors.newFixedThreadPool(10);
-        for(CommandRequest commandRequest:requests) {
-            executorService.submit(commandRequest);
+        for(ObsChatbotRequest obsChatbotRequest :requests) {
+            executorService.submit(obsChatbotRequest);
         }
         System.out.println(Timestamp.from(Instant.now()) + " - started/scheduled executions");
 
@@ -77,7 +78,7 @@ public class CommandRequestIT {
 
 
         // Then upon inspection we find the actions were run in order
-        for(CommandRequest request:requests) {
+        for(ObsChatbotRequest request:requests) {
             for(int i=1; i< request.getActions().size(); i++) {
                 StubRunnableAction first = (StubRunnableAction) request.getActions().get(i-1);
                 StubRunnableAction second = (StubRunnableAction) request.getActions().get(i);
@@ -144,7 +145,7 @@ public class CommandRequestIT {
         }
 
         @Override
-        public CommandRequestContext getRequestContext() {
+        public ObsChatbotRequestContext getRequestContext() {
             return null;
         }
 
@@ -193,7 +194,7 @@ public class CommandRequestIT {
         }
 
         @Override
-        public RunnableAction<NoOpClient, StubAction> createRunnableAction(NoOpClient client, CommandRequestContext commandRequestContext) {
+        public RunnableAction<NoOpClient, StubAction> createRunnableAction(NoOpClient client, ObsChatbotRequestContext obsChatbotRequestContext) {
             return null;
         }
     }

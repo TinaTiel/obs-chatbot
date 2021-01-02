@@ -5,7 +5,6 @@
 
 package com.tinatiel.obschatbot.core.error;
 
-import com.tinatiel.obschatbot.core.dispatch.CommandRequestContext;
 import com.tinatiel.obschatbot.core.command.Command;
 
 import java.util.List;

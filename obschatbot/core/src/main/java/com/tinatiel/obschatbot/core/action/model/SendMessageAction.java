@@ -9,7 +9,7 @@ import com.tinatiel.obschatbot.core.action.Action;
 import com.tinatiel.obschatbot.core.action.RunnableAction;
 import com.tinatiel.obschatbot.core.action.runnable.RunnableSendMessageAction;
 import com.tinatiel.obschatbot.core.client.chat.twitch.TwitchChatClient;
-import com.tinatiel.obschatbot.core.dispatch.CommandRequestContext;
+import com.tinatiel.obschatbot.core.request.ObsChatbotRequestContext;
 
 public class SendMessageAction implements Action<TwitchChatClient, SendMessageAction> {
 
@@ -34,9 +34,9 @@ public class SendMessageAction implements Action<TwitchChatClient, SendMessageAc
     }
 
     @Override
-    public RunnableAction<TwitchChatClient, SendMessageAction> createRunnableAction(TwitchChatClient client, CommandRequestContext commandRequestContext) {
-        if(client == null || commandRequestContext == null) throw new IllegalArgumentException("arguments cannot be null");
-        return new RunnableSendMessageAction(clone(), client, commandRequestContext);
+    public RunnableAction<TwitchChatClient, SendMessageAction> createRunnableAction(TwitchChatClient client, ObsChatbotRequestContext obsChatbotRequestContext) {
+        if(client == null || obsChatbotRequestContext == null) throw new IllegalArgumentException("arguments cannot be null");
+        return new RunnableSendMessageAction(clone(), client, obsChatbotRequestContext);
     }
 
     @Override
