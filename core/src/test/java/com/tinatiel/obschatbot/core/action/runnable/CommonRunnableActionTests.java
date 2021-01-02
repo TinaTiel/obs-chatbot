@@ -26,6 +26,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.mock;
 
+@SuppressWarnings("unchecked")
 public class CommonRunnableActionTests {
 
     ObsClient obsClient;

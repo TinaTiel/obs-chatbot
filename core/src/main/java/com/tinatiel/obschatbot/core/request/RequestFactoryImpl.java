@@ -27,6 +27,7 @@ public class RequestFactoryImpl implements RequestFactory {
         this.commandExecutorService = commandExecutorService;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public Request build(Command command, RequestContext context) throws CyclicalActionsException {
 

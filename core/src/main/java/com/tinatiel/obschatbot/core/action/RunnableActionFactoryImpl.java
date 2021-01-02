@@ -17,13 +17,13 @@ public class RunnableActionFactoryImpl implements RunnableActionFactory {
         this.actionClientFactory = actionClientFactory;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public RunnableAction createForContext(Action action, RequestContext context) {
         // Sanitize inputs
         if(action == null || context == null) throw new IllegalArgumentException("arguments cannot be null");
 
         // Get the correct client
-//        ActionClient client = actionClientFactory.getService(action.getActionType());
         ActionClient client = actionClientFactory.getClient(action.acceptsClientType());
         if(client == null) throw new IllegalStateException("Could not find instance of client for type: " + action.acceptsClientType().getSimpleName());
 
