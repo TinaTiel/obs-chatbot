@@ -5,32 +5,82 @@
 
 package com.tinatiel.obschatbot.core.request.dispatch;
 
+import com.tinatiel.obschatbot.core.command.Command;
+import com.tinatiel.obschatbot.core.request.Request;
+import com.tinatiel.obschatbot.core.request.RequestContext;
+import com.tinatiel.obschatbot.core.request.RequestFactory;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 class CommandDispatcherImplTest {
 
-    @Test
-    void requestCannotBeNull() {
-        fail("to do");
+    RequestFactory requestFactory;
+    CommandExecutorService executorService;
+
+    CommandDispatcher commandDispatcher;
+
+    @BeforeEach
+    void setUp() {
+        requestFactory = mock(RequestFactory.class);
+        executorService = mock(CommandExecutorService.class);
+        commandDispatcher = new CommandDispatcherImpl(requestFactory, executorService);
     }
 
     @Test
-    void requestMustBeValid() {
-        fail("to do");
-
+    void commandAndContextRequired() {
+        assertThatThrownBy(() -> {
+            commandDispatcher.submit(null, mock(RequestContext.class));
+        }).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> {
+            commandDispatcher.submit(mock(Command.class), null);
+        }).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void executorInvokedWithExpectedRequest() {
-        fail("to do");
+
+        // Given the request factory returns a request
+        Request request = mock(Request.class);
+        when(requestFactory.build(any(), any())).thenReturn(request);
+
+        // When executed
+        commandDispatcher.submit(mock(Command.class), mock(RequestContext.class));
+
+        // Then the underlying executor is invoked with it
+        verify(executorService).submit(request);
 
     }
 
     @Test
-    void pauseAndResumeWorksAsExpected() {
-        fail("to do");
+    void pauseAndResumeWorksAreDelegatedToExecutor() {
+
+        // When pause and resume are called then they are delegated to the executor
+        commandDispatcher.pause();
+        verify(executorService).pause();
+
+        commandDispatcher.resume();
+        verify(executorService).resume();
+
+    }
+
+    @Test
+    void whenAnyExceptionsOccurThenExecutorIsNotInvoked() {
+
+        // Given factory throws exception
+        when(requestFactory.build(any(), any())).thenThrow(new RuntimeException("some exception, doesn't matter"));
+
+        // When executed
+        commandDispatcher.submit(mock(Command.class), mock(RequestContext.class));
+
+        // Then delegated executor is NOT invoked (but we should see logs!)
+        verifyNoInteractions(executorService);
 
     }
 }

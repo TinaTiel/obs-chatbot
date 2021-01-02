@@ -12,9 +12,20 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 
 public class RequestContextTest {
+
+    @Test
+    void userAndArgsAreRequired() {
+        assertThatThrownBy(() -> {
+            new RequestContext(null, new ArrayList<>());
+        }).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> {
+            new RequestContext(mock(User.class), null);
+        }).isInstanceOf(IllegalArgumentException.class);
+    }
 
     @Test
     void contextUniqueByUser() {
