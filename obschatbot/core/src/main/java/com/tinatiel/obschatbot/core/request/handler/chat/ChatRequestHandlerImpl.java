@@ -28,9 +28,10 @@ public class ChatRequestHandlerImpl implements ChatRequestHandler {
                 .ifPresent(result -> {
                     commandRepository.findByName(result.getCommandName())
                             .ifPresent(command -> {
-                                dispatcher.submit(new RequestContext(
-                                        user, result.getArgs()
-                                ));
+//                                dispatcher.submit(
+//                                        command,
+//                                        new RequestContext(user, result.getArgs()
+//                                ));
                             });
                 });
     }

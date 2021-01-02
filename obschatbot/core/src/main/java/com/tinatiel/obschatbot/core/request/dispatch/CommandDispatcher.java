@@ -5,8 +5,12 @@
 
 package com.tinatiel.obschatbot.core.request.dispatch;
 
+import com.tinatiel.obschatbot.core.command.Command;
+import com.tinatiel.obschatbot.core.request.Request;
 import com.tinatiel.obschatbot.core.request.RequestContext;
 
 public interface CommandDispatcher {
-    void submit(RequestContext requestContext);
+    void submit(Request request);
+    void pause();
+    void resume();
 }
