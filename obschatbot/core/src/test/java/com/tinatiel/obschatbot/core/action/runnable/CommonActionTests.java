@@ -47,15 +47,6 @@ public class CommonActionTests {
     }
 
     @ParameterizedTest
-    @MethodSource("actionTypes")
-    void cloneAsExpected(ActionType ignored, Action action) {
-
-        // For each action, assert that its clone is identical
-        assertThat(action.clone()).isEqualToComparingFieldByField(action);
-
-    }
-
-    @ParameterizedTest
     @MethodSource("runnableActions")
     void createRunnableCloneAsExpected(Action action, ActionClient client) {
 
@@ -89,16 +80,6 @@ public class CommonActionTests {
         assertThatThrownBy(() -> {
             action.createRunnableAction(client, null);
         }).isInstanceOf(IllegalArgumentException.class);
-
-    }
-
-    static Stream<Arguments> actionTypes() {
-
-        return Stream.of(
-                Arguments.of(ActionType.SYSTEM, new ExecuteCommandAction(mock(Command.class))),
-                Arguments.of(ActionType.OBS, new ObsSourceVisibilityAction( "foo", "bar", true)),
-                Arguments.of(ActionType.TWITCH_CHAT, new SendMessageAction("foo"))
-        );
 
     }
 
