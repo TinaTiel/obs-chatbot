@@ -5,13 +5,11 @@
 
 package com.tinatiel.obschatbot.core.request;
 
-import com.tinatiel.obschatbot.core.action.Action;
 import com.tinatiel.obschatbot.core.action.RunnableAction;
 import com.tinatiel.obschatbot.core.client.ActionClientFactory;
 import com.tinatiel.obschatbot.core.command.Command;
 import com.tinatiel.obschatbot.core.error.CyclicalActionsException;
-import com.tinatiel.obschatbot.core.request.dispatch.DelegatingExecutorService;
-import com.tinatiel.obschatbot.core.request.dispatch.SequentialExecutor;
+import com.tinatiel.obschatbot.core.request.dispatch.CommandExecutorService;
 import com.tinatiel.obschatbot.core.request.expand.CommandExpander;
 
 import java.util.List;
@@ -21,12 +19,12 @@ public class RequestFactoryImpl implements RequestFactory {
 
     private final CommandExpander commandExpander;
     private final ActionClientFactory clientFactory;
-    private final DelegatingExecutorService delegatingExecutorService;
+    private final CommandExecutorService commandExecutorService;
 
-    public RequestFactoryImpl(CommandExpander commandExpander, ActionClientFactory clientFactory, DelegatingExecutorService delegatingExecutorService) {
+    public RequestFactoryImpl(CommandExpander commandExpander, ActionClientFactory clientFactory, CommandExecutorService commandExecutorService) {
         this.commandExpander = commandExpander;
         this.clientFactory = clientFactory;
-        this.delegatingExecutorService = delegatingExecutorService;
+        this.commandExecutorService = commandExecutorService;
     }
 
     @Override
@@ -43,8 +41,8 @@ public class RequestFactoryImpl implements RequestFactory {
 
         // Return the request
         return new Request(
-                delegatingExecutorService.newSequentialExecutor(),
-                delegatingExecutorService.getCommandTimeoutMs(),
+                commandExecutorService.newSequentialExecutor(),
+                commandExecutorService.getRequestTimeoutMs(),
                 runnableActions
         );
     }

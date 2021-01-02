@@ -9,10 +9,9 @@ import com.tinatiel.obschatbot.core.action.Action;
 import com.tinatiel.obschatbot.core.client.ActionClientFactory;
 import com.tinatiel.obschatbot.core.command.Command;
 import com.tinatiel.obschatbot.core.error.CyclicalActionsException;
-import com.tinatiel.obschatbot.core.request.dispatch.DelegatingExecutorService;
+import com.tinatiel.obschatbot.core.request.dispatch.CommandExecutorService;
 import com.tinatiel.obschatbot.core.request.dispatch.SequentialExecutor;
 import com.tinatiel.obschatbot.core.request.expand.CommandExpander;
-import com.tinatiel.obschatbot.core.request.expand.CommandExpanderImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -21,7 +20,6 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -30,7 +28,7 @@ class RequestFactoryImplTest {
 
     CommandExpander commandExpander;
     ActionClientFactory clientFactory;
-    DelegatingExecutorService delegatingExecutorService;
+    CommandExecutorService commandExecutorService;
 
     RequestFactory factory;
 
@@ -38,10 +36,10 @@ class RequestFactoryImplTest {
     void setUp() {
         commandExpander = mock(CommandExpander.class);
         clientFactory = mock(ActionClientFactory.class);
-        delegatingExecutorService = mock(DelegatingExecutorService.class);
-        when(delegatingExecutorService.newSequentialExecutor()).thenReturn(mock(SequentialExecutor.class));
-        when(delegatingExecutorService.getCommandTimeoutMs()).thenReturn(69L);
-        factory = new RequestFactoryImpl(commandExpander, clientFactory, delegatingExecutorService);
+        commandExecutorService = mock(CommandExecutorService.class);
+        when(commandExecutorService.newSequentialExecutor()).thenReturn(mock(SequentialExecutor.class));
+        when(commandExecutorService.getRequestTimeoutMs()).thenReturn(69L);
+        factory = new RequestFactoryImpl(commandExpander, clientFactory, commandExecutorService);
     }
 
     @Test
