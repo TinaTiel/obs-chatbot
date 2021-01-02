@@ -22,7 +22,7 @@ public class RequestFactoryIT {
 
         // Then the expected request is returned
 
-        fail("to do");
+        fail("to do pending Spring integration");
 
     }
 }

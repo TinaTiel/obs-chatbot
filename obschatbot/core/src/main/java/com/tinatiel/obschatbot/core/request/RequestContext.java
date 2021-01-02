@@ -16,6 +16,7 @@ public class RequestContext {
     private final List<String> arguments;
 
     public RequestContext(User user, List<String> arguments) {
+        if(user == null || arguments == null) throw new IllegalArgumentException("arguments cannot be null");
         this.user = user;
         this.arguments = arguments;
     }

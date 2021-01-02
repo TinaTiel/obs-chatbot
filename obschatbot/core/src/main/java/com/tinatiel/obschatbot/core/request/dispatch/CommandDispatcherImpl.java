@@ -22,27 +22,33 @@ public class CommandDispatcherImpl implements CommandDispatcher {
     private final CommandExecutorService commandExecutorService;
 
     public CommandDispatcherImpl(RequestFactory requestFactory, CommandExecutorService commandExecutorService) {
+        if(requestFactory == null || commandExecutorService == null) throw new IllegalArgumentException("arguments cannot be null");
         this.requestFactory = requestFactory;
         this.commandExecutorService = commandExecutorService;
     }
 
     @Override
     public void submit(Command command, RequestContext requestContext) {
-//        try {
-//            Request request = requestFactory.build(command, requestContext);
-//            commandExecutorService.submit(request);
-//        } catch (CyclicalActionsException | ClientNotRegisteredException e) {
-//            log.error(String.format("Not able to execute command %s with context %s", command, requestContext), e);
-//        }
+        if(command == null || requestContext == null) throw new IllegalArgumentException("command and context are required");
+        try {
+            Request request = requestFactory.build(command, requestContext);
+            commandExecutorService.submit(request);
+        } catch (CyclicalActionsException | ClientNotRegisteredException e) {
+            log.error(String.format("Not able to execute command %s with context %s",
+                    command, requestContext), e);
+        } catch (Exception unexpected) {
+            log.error(String.format("Encountered unexpected exception while trying to execute command %s with context %s",
+                    command, requestContext), unexpected);
+        }
     }
 
     @Override
     public void pause() {
-
+        commandExecutorService.pause();
     }
 
     @Override
     public void resume() {
-
+        commandExecutorService.resume();
     }
 }
