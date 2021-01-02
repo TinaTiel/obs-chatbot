@@ -97,6 +97,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>${spring-version}</version>
             </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
@@ -143,6 +144,23 @@
                 <configuration>
                     <flattenMode>bom</flattenMode>
                 </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-site-plugin</artifactId>
+                <version>3.7.1</version>
+                <inherited>false</inherited>
+                <configuration>
+                    <generateReports>false</generateReports>
+                    <templateFile>src/site/dev-to-template.vm</templateFile>
+                    <relativizeDecorationLinks>false</relativizeDecorationLinks>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.maven.doxia</groupId>
+                        <artifactId>doxia-module-markdown</artifactId>
+                        <version>1.9.1</version>
+                    </dependency>
+                </dependencies>
             </plugin>
         </plugins>
     </build>
