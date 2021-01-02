@@ -57,15 +57,15 @@ public class App {
 //        }
 //        client.sendMessage("FOOOOO");
 
-        ActionClientFactory actionClientFactory = context.getBean(ActionClientFactory.class);
-        ObsSourceVisibilityAction action = new ObsSourceVisibilityAction("foo", "bar", true);
-        User user = new User(Platform.TWITCH, "mango");
-        ObsChatbotRequestContext requestContext = new ObsChatbotRequestContext(user, new ArrayList<>());
-        RunnableObsSourceVisibilityAction foo = new RunnableObsSourceVisibilityAction(
-                action,
-                (ObsClient) actionClientFactory.getService(action.getActionType()),
-                requestContext
-        );
+//        ActionClientFactory actionClientFactory = context.getBean(ActionClientFactory.class);
+//        ObsSourceVisibilityAction action = new ObsSourceVisibilityAction("foo", "bar", true);
+//        User user = new User(Platform.TWITCH, "mango");
+//        ObsChatbotRequestContext requestContext = new ObsChatbotRequestContext(user, new ArrayList<>());
+//        RunnableObsSourceVisibilityAction foo = new RunnableObsSourceVisibilityAction(
+//                action,
+//                (ObsClient) actionClientFactory.getService(action.getActionType()),
+//                requestContext
+//        );
 
 
     }

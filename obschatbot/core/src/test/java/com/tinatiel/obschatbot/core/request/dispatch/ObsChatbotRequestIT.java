@@ -10,6 +10,7 @@ import com.tinatiel.obschatbot.core.action.RunnableAction;
 import com.tinatiel.obschatbot.core.client.NoOpClient;
 import com.tinatiel.obschatbot.core.request.ObsChatbotRequest;
 import com.tinatiel.obschatbot.core.request.ObsChatbotRequestContext;
+import com.tinatiel.obschatbot.core.request.dispatch.SequentialExecutor;
 import org.junit.jupiter.api.RepeatedTest;
 
 import java.sql.Timestamp;
@@ -75,7 +76,6 @@ public class ObsChatbotRequestIT {
         } catch (InterruptedException interruptedException) {
             interruptedException.printStackTrace();
         }
-
 
         // Then upon inspection we find the actions were run in order
         for(ObsChatbotRequest request:requests) {
