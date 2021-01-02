@@ -7,21 +7,21 @@ package com.tinatiel.obschatbot.core.dispatch;
 
 import com.tinatiel.obschatbot.core.action.RunnableAction;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 public class CommandRequest implements Runnable {
 
-    private final ExecutorService executor;
+    private final SequentialExecutor executor;
+    private final long timoutMs;
     private final List<RunnableAction> actions;
 
-    public CommandRequest(ExecutorService executor, List<RunnableAction> actions) {
+    public CommandRequest(SequentialExecutor executor, long timeoutMs, List<RunnableAction> actions) {
         if(executor == null || actions == null) throw new IllegalArgumentException("arguments cannot be null");
+        if(timeoutMs <= 0) throw new IllegalArgumentException("timeout must be greater than zero");
         this.executor = executor;
+        this.timoutMs = timeoutMs;
         this.actions = actions;
     }
 
@@ -30,7 +30,7 @@ public class CommandRequest implements Runnable {
         for(RunnableAction action:actions) executor.execute(action);
         executor.shutdown();
         try {
-            executor.awaitTermination(Long.MAX_VALUE, TimeUnit.MILLISECONDS);
+            executor.awaitTermination(timoutMs, TimeUnit.MILLISECONDS);
         } catch (InterruptedException interruptedException) {
             interruptedException.printStackTrace();
         }
