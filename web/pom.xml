@@ -10,12 +10,14 @@
     <parent>
         <artifactId>obschatbot</artifactId>
         <groupId>com.tinatiel</groupId>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>${revision}</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.tinatiel.obschatbot</groupId>
     <artifactId>web</artifactId>
+    <version>${revision}</version>
+
     <dependencies>
         <dependency>
             <groupId>obschatbot</groupId>

@@ -14,7 +14,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>obschatbot</groupId>
+    <groupId>com.tinatiel</groupId>
     <artifactId>core</artifactId>
     <version>${revision}</version>
 
