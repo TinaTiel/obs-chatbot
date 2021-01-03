@@ -18,7 +18,7 @@ import javax.net.ssl.SSLSocketFactory;
 @Configuration
 public class TwitchChatClientConfig {
 
-    @Value("${TWITCH_AUTH}")
+    @Value("${TWITCH_AUTH:noauth}")
     private String twitchAuth;
 
     org.pircbotx.Configuration botConfiguration() {

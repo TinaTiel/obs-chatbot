@@ -15,17 +15,7 @@ import com.tinatiel.obschatbot.core.request.Request;
  * or returning the configured request timeout.
  */
 public interface CommandExecutorService extends Pausable {
-    /**
-     * Gets a new instance of a SequentialExecutor, which internally has a reference to this
-     * service (e.g. for propagating pause/resume commands if implemented later)
-     */
-    SequentialExecutor newSequentialExecutor();
 
-    /**
-     * Gets the maximum time a command will have to execute before it is interrupted.
-     * @return milliseconds timeout
-     */
-    long getCommandTimeoutMs();
 
     /**
      * Gets the maximum time a pause will be in effect before automatically resuming. If negative, then it will be forever.

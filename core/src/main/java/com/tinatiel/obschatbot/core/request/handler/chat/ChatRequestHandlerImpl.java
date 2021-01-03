@@ -9,8 +9,11 @@ import com.tinatiel.obschatbot.core.command.CommandRepository;
 import com.tinatiel.obschatbot.core.request.dispatch.CommandDispatcher;
 import com.tinatiel.obschatbot.core.request.RequestContext;
 import com.tinatiel.obschatbot.core.user.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ChatRequestHandlerImpl implements ChatRequestHandler {
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     private final ChatMessageParser parser;
     private final CommandRepository commandRepository;
@@ -24,16 +27,17 @@ public class ChatRequestHandlerImpl implements ChatRequestHandler {
 
     @Override
     public void handle(User user, String message) {
+        log.debug("Handling command from user " + user + " with message " + message);
         parser.parse(message)
-                .ifPresent(result -> {
-                    commandRepository.findByName(result.getCommandName())
-                            .ifPresent(command -> {
-                                dispatcher.submit(
-                                        command,
-                                        new RequestContext(user, result.getArgs()
-                                ));
-                            });
-                });
+            .ifPresent(result -> {
+                commandRepository.findByName(result.getCommandName())
+                    .ifPresent(command -> {
+                        dispatcher.submit(
+                                command,
+                                new RequestContext(user, result.getArgs())
+                        );
+                    });
+            });
     }
 
 }

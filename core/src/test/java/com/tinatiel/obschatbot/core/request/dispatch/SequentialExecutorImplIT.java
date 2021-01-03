@@ -53,7 +53,7 @@ public class SequentialExecutorImplIT {
                         random.nextInt(maxExecTimeMs)
                 ));
             }
-            requests.add(new Request(new SequentialExecutorImpl(parentExecutor),Long.MAX_VALUE, actions));
+            requests.add(new Request(new SequentialExecutorImpl(),Long.MAX_VALUE, actions));
         }
 
         // (print out for sanity-checking)

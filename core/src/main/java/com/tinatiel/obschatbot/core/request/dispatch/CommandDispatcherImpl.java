@@ -30,6 +30,7 @@ public class CommandDispatcherImpl implements CommandDispatcher {
     @Override
     public void submit(Command command, RequestContext requestContext) {
         if(command == null || requestContext == null) throw new IllegalArgumentException("command and context are required");
+        log.debug("Command " + command.getName() + " submitted with context " + requestContext);
         try {
             Request request = requestFactory.build(command, requestContext);
             commandExecutorService.submit(request);

@@ -18,7 +18,7 @@ import static org.mockito.Mockito.mock;
 
 public class RequestTest {
 
-    private final ExecutorService parentExecutor = mock(ExecutorService.class);
+//    private final ExecutorService parentExecutor = mock(ExecutorService.class);
 
     @Test
     void nullArgs() {
@@ -28,7 +28,7 @@ public class RequestTest {
         }).isInstanceOf(IllegalArgumentException.class);
 
         assertThatThrownBy(() -> {
-            new Request(new SequentialExecutorImpl(parentExecutor), 123, null);
+            new Request(new SequentialExecutorImpl(), 123, null);
         }).isInstanceOf(IllegalArgumentException.class);
 
     }

@@ -17,21 +17,19 @@ public class CommandExecutorServiceImpl implements CommandExecutorService {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     private final PausableExecutorService delegator;
-    private final long commandTimeoutMs;
     private final long pauseTimeoutMs;
     private final int maxConcurrentCommands;
 
     /**
      * Wraps the PausableExecutorServiceImpl and provides a centralized place for gathering information
      * about queue configuration and for generating new SequentialExecutor instances for new Requests.
-     * @param commandTimeoutMs The maximum time a list of RunnableActions (a Command) has to execute. See com.tinatiel.obschatbot.core.request.Request
      * @param pauseTimeoutMs The maximum time a pause will stay in effect before resuming automatically. To pause permanently, provide a negative value.
      * @param maxConcurrentCommands The maximum number of commands that can execute at the same time. This sets the size of the
      *                              underlying thread pool in PausableExecutorService
      */
-    public CommandExecutorServiceImpl(long commandTimeoutMs, long pauseTimeoutMs, int maxConcurrentCommands) {
+    public CommandExecutorServiceImpl(long pauseTimeoutMs, int maxConcurrentCommands) {
         if(maxConcurrentCommands <= 0) throw new IllegalArgumentException("Max concurrent commands must be greater than zero");
-        this.commandTimeoutMs = commandTimeoutMs;
+//        this.commandTimeoutMs = commandTimeoutMs;
         this.pauseTimeoutMs = pauseTimeoutMs;
         this.maxConcurrentCommands = maxConcurrentCommands;
         delegator = new PausableExecutorServiceImpl(
@@ -40,16 +38,6 @@ public class CommandExecutorServiceImpl implements CommandExecutorService {
                 new LinkedBlockingQueue<Runnable>(),
                 pauseTimeoutMs
         );
-    }
-
-    @Override
-    public SequentialExecutor newSequentialExecutor() {
-        return new SequentialExecutorImpl(delegator);
-    }
-
-    @Override
-    public long getCommandTimeoutMs() {
-        return commandTimeoutMs;
     }
 
     @Override
@@ -74,6 +62,7 @@ public class CommandExecutorServiceImpl implements CommandExecutorService {
 
     @Override
     public void submit(Request request) {
+        log.debug("CommandExecutorService request submitted: " + request);
         delegator.submit(request);
     }
 

@@ -17,11 +17,11 @@ public class ActionClientConfig {
     @Autowired
     ObsClient obsClient;
 
-    //@Autowired
+    @Autowired
     TwitchChatClient twitchChatClient;
 
     @Bean
-    ActionClientFactory actionServiceFactory() {
+    ActionClientFactory clientFactory() {
 
         return new ActionClientFactoryImpl(
                 obsClient,

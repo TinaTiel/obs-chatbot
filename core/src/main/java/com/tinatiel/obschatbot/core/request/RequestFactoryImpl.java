@@ -10,6 +10,8 @@ import com.tinatiel.obschatbot.core.client.ActionClientFactory;
 import com.tinatiel.obschatbot.core.command.Command;
 import com.tinatiel.obschatbot.core.error.CyclicalActionsException;
 import com.tinatiel.obschatbot.core.request.dispatch.CommandExecutorService;
+import com.tinatiel.obschatbot.core.request.dispatch.SequentialExecutor;
+import com.tinatiel.obschatbot.core.request.dispatch.SequentialExecutorImpl;
 import com.tinatiel.obschatbot.core.request.expand.CommandExpander;
 
 import java.util.List;
@@ -19,12 +21,29 @@ public class RequestFactoryImpl implements RequestFactory {
 
     private final CommandExpander commandExpander;
     private final ActionClientFactory clientFactory;
-    private final CommandExecutorService commandExecutorService;
+    private final long commandTimeoutMs;
 
-    public RequestFactoryImpl(CommandExpander commandExpander, ActionClientFactory clientFactory, CommandExecutorService commandExecutorService) {
+    /**
+     *
+     * @param commandExpander Takes a command and expands it into a list of actions (including when actions execute other commands)
+     * @param clientFactory Fetches the client needed for a given Action implementation
+     * @param commandTimeoutMs The maximum time a list of RunnableActions (a Command) has to execute. See com.tinatiel.obschatbot.core.request.Request
+     */
+    public RequestFactoryImpl(CommandExpander commandExpander, ActionClientFactory clientFactory, long commandTimeoutMs) {
+        if(commandExpander == null || clientFactory == null ) throw new IllegalArgumentException("arguments cannot be null");
         this.commandExpander = commandExpander;
         this.clientFactory = clientFactory;
-        this.commandExecutorService = commandExecutorService;
+        this.commandTimeoutMs = commandTimeoutMs;
+    }
+
+    @Override
+    public SequentialExecutor newSequentialExecutor() {
+        return new SequentialExecutorImpl();
+    }
+
+    @Override
+    public long getCommandTimeoutMs() {
+        return commandTimeoutMs;
     }
 
     @SuppressWarnings("unchecked")
@@ -42,8 +61,8 @@ public class RequestFactoryImpl implements RequestFactory {
 
         // Return the request
         return new Request(
-                commandExecutorService.newSequentialExecutor(),
-                commandExecutorService.getCommandTimeoutMs(),
+                newSequentialExecutor(),
+                commandTimeoutMs,
                 runnableActions
         );
     }

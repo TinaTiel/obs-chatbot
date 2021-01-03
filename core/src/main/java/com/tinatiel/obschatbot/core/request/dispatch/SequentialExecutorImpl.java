@@ -8,11 +8,11 @@ package com.tinatiel.obschatbot.core.request.dispatch;
 import java.util.concurrent.*;
 
 public class SequentialExecutorImpl extends ThreadPoolExecutor implements SequentialExecutor {
-    private final ExecutorService parentService;
-    public SequentialExecutorImpl(ExecutorService parentService) {
+//    private final ExecutorService parentService;
+    public SequentialExecutorImpl(/*ExecutorService parentService*/) {
         super(1, 1,
                 0L, TimeUnit.MILLISECONDS,
                 new LinkedBlockingQueue<Runnable>());
-        this.parentService = parentService;
+//        this.parentService = parentService;
     }
 }
