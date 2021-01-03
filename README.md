@@ -10,4 +10,5 @@ If you pull and run this, it ain't gonna work yet cowboy.
 
 This is a learning project for me, when it's done/ready I'll remove this header. 
 
-If you want to contribute, contact me at: github (at) tinatiel (dot) com.
+If you want to contribute, contact me at: 
+contact (at) tinatiel.com
