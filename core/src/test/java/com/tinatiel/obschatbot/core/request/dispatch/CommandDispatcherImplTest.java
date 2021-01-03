@@ -59,18 +59,6 @@ class CommandDispatcherImplTest {
     }
 
     @Test
-    void pauseAndResumeWorksAreDelegatedToExecutor() {
-
-        // When pause and resume are called then they are delegated to the executor
-        commandDispatcher.pause();
-        verify(executorService).pause();
-
-        commandDispatcher.resume();
-        verify(executorService).resume();
-
-    }
-
-    @Test
     void whenAnyExceptionsOccurThenExecutorIsNotInvoked() {
 
         // Given factory throws exception
@@ -83,4 +71,5 @@ class CommandDispatcherImplTest {
         verifyNoInteractions(executorService);
 
     }
+
 }

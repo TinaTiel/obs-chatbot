@@ -14,6 +14,5 @@ import com.tinatiel.obschatbot.core.request.RequestContext;
  */
 public interface CommandDispatcher {
     void submit(Command command, RequestContext requestContext);
-    void pause();
-    void resume();
+    CommandExecutorService getUnderlyingService();
 }

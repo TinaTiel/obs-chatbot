@@ -43,12 +43,8 @@ public class CommandDispatcherImpl implements CommandDispatcher {
     }
 
     @Override
-    public void pause() {
-        commandExecutorService.pause();
+    public CommandExecutorService getUnderlyingService() {
+        return commandExecutorService;
     }
 
-    @Override
-    public void resume() {
-        commandExecutorService.resume();
-    }
 }
