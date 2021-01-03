@@ -42,4 +42,13 @@ public class RunnableSendMessageAction implements RunnableAction<TwitchChatClien
     public void run() {
         twitchChatClient.sendMessage(action.getMessage());
     }
+
+    @Override
+    public String toString() {
+        return "RunnableSendMessageAction{" +
+                "action=" + action +
+                ", twitchChatClient=" + twitchChatClient +
+                ", context=" + context +
+                '}';
+    }
 }

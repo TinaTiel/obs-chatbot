@@ -13,11 +13,14 @@ import com.tinatiel.obschatbot.core.request.dispatch.CommandExecutorService;
 import com.tinatiel.obschatbot.core.request.dispatch.SequentialExecutor;
 import com.tinatiel.obschatbot.core.request.dispatch.SequentialExecutorImpl;
 import com.tinatiel.obschatbot.core.request.expand.CommandExpander;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class RequestFactoryImpl implements RequestFactory {
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     private final CommandExpander commandExpander;
     private final ActionClientFactory clientFactory;
@@ -49,6 +52,7 @@ public class RequestFactoryImpl implements RequestFactory {
     @SuppressWarnings("unchecked")
     @Override
     public Request build(Command command, RequestContext context) throws CyclicalActionsException {
+        log.debug("Building request from command " + command.getName() + " with context " + context);
 
         // sanitize inputs
         if(command == null || context == null) throw new IllegalArgumentException("arguments cannot be null");

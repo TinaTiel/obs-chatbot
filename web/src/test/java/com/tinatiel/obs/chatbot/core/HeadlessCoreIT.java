@@ -3,7 +3,7 @@
  * GNU General Public License v3.0. See LICENSE or go to https://fsf.org/ for more details.
  */
 
-package com.tinatiel.obs.chatbot;
+package com.tinatiel.obs.chatbot.core;
 
 import com.tinatiel.obschatbot.App;
 import com.tinatiel.obschatbot.core.action.model.ObsSourceVisibilityAction;
@@ -25,7 +25,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Primary;
 
 import java.util.Arrays;
 import java.util.Optional;
@@ -34,13 +39,14 @@ import java.util.Random;
 import static org.assertj.core.api.Fail.fail;
 import static org.mockito.Mockito.*;
 
+@Import(HeadlessCoreIT.HeadlessCoreITtestConfig.class)
 @SpringBootTest(classes = {App.class})
 public class HeadlessCoreIT {
 
-    @MockBean
+    @Autowired
     ObsClient obsClient;
 
-    @MockBean
+    @Autowired
     TwitchChatClient twitchChatClient;
 
     @MockBean
@@ -48,13 +54,6 @@ public class HeadlessCoreIT {
 
     @Autowired
     ChatRequestHandler chatRequestHandler;
-
-    @BeforeEach
-    void setUp() {
-        obsClient = spy(new TestObsClient());
-        twitchChatClient = spy(new TestTwitchChatClient());
-
-    }
 
     @Test
     void generateRequestAsExpected() {
@@ -81,6 +80,8 @@ public class HeadlessCoreIT {
 
         // Then the actions are executed in order as expected, without errors
         // (check the logs)
+
+        // These don't work due to Spring AOP proxies
         verify(twitchChatClient).sendMessage(action1.getMessage());
         verify(obsClient).setSourceVisibility(action2.getSceneName(), action2.getSourceName(), action2.isVisible());
         verify(twitchChatClient).sendMessage(action3.getMessage());
@@ -88,7 +89,6 @@ public class HeadlessCoreIT {
         verify(twitchChatClient).sendMessage(action5.getMessage());
 
     }
-
 
 
     private static class TestObsClient implements ObsClient {
@@ -114,6 +114,11 @@ public class HeadlessCoreIT {
             }
             log.info("...Done!");
         }
+
+        @Override
+        public String toString() {
+            return "TestObsClient";
+        }
     }
 
     private static class TestTwitchChatClient implements TwitchChatClient {
@@ -130,5 +135,28 @@ public class HeadlessCoreIT {
             }
             log.info("...Sent!");
         }
+
+        @Override
+        public String toString() {
+            return "TestTwitchChatClient";
+        }
     }
+
+    @TestConfiguration
+    public static class HeadlessCoreITtestConfig {
+
+        @Primary
+        @Bean
+        public ObsClient testObsClient() {
+            return spy(new TestObsClient());
+        }
+
+        @Primary
+        @Bean
+        public TwitchChatClient testTwitchChatClient() {
+            return spy(new TestTwitchChatClient());
+        }
+
+    }
+
 }
