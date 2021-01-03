@@ -25,4 +25,9 @@ public class SequentialExecutorImpl extends ThreadPoolExecutor implements Sequen
     public void resume() {
 
     }
+
+    @Override
+    public long getPauseTimeoutMs() {
+        return 0;
+    }
 }

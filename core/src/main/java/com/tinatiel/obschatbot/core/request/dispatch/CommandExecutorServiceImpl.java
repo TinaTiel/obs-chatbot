@@ -45,6 +45,11 @@ public class CommandExecutorServiceImpl extends ThreadPoolExecutor implements Co
     }
 
     @Override
+    public long getPauseTimeoutMs() {
+        return 0;
+    }
+
+    @Override
     protected void beforeExecute(Thread t, Runnable r) {
         super.beforeExecute(t, r);
 
