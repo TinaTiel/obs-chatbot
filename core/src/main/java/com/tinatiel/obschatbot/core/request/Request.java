@@ -19,10 +19,15 @@ public class Request implements Runnable {
     private final long timoutMs;
     private final List<RunnableAction> actions;
 
-    public Request(SequentialExecutor executor, long timeoutMs, List<RunnableAction> actions) {
-        if(executor == null || actions == null) throw new IllegalArgumentException("arguments cannot be null");
-        if(timeoutMs <= 0) throw new IllegalArgumentException("timeout must be greater than zero");
-        this.executor = executor;
+    /**
+     * Defines a runnable request, encompassing some run parameters and the actions/args themselves (RunnableAction).
+     * @param sequentialExecutor Instance of an executor that will execute the RunnableActions in-order
+     * @param timeoutMs The maximum time a list of RunnableActions has to execute. If less than zero, timeout is infinite.
+     * @param actions The list of RunnableActions that will be run.
+     */
+    public Request(SequentialExecutor sequentialExecutor, long timeoutMs, List<RunnableAction> actions) {
+        if(sequentialExecutor == null || actions == null) throw new IllegalArgumentException("arguments cannot be null");
+        this.executor = sequentialExecutor;
         this.timoutMs = timeoutMs;
         this.actions = actions;
     }
@@ -32,7 +37,11 @@ public class Request implements Runnable {
         for(RunnableAction action:actions) executor.execute(action);
         executor.shutdown();
         try {
-            executor.awaitTermination(timoutMs, TimeUnit.MILLISECONDS);
+            if(timoutMs < 0) {
+                executor.awaitTermination(Long.MAX_VALUE, TimeUnit.MILLISECONDS);
+            } else {
+                executor.awaitTermination(timoutMs, TimeUnit.MILLISECONDS);
+            }
         } catch (InterruptedException interruptedException) {
             interruptedException.printStackTrace();
         }

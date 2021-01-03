@@ -43,7 +43,7 @@ public class RequestFactoryImpl implements RequestFactory {
         // Return the request
         return new Request(
                 commandExecutorService.newSequentialExecutor(),
-                commandExecutorService.getRequestTimeoutMs(),
+                commandExecutorService.getCommandTimeoutMs(),
                 runnableActions
         );
     }

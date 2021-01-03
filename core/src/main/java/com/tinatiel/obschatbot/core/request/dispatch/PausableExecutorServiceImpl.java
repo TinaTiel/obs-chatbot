@@ -27,6 +27,10 @@ public class PausableExecutorServiceImpl extends ThreadPoolExecutor implements P
     private final Lock pauseLock = new ReentrantLock();
     private final Condition pauseCondition = pauseLock.newCondition();
 
+    /**
+     * Represents an extension of Java's ThreadPool executor, but with pausing capabilities.
+     * @param pauseTimeout Time to wait before resuming execution after a pause. If set to < 0, then it waits forever until interrupted.
+     */
     public PausableExecutorServiceImpl(int corePoolSize,
                                        int maximumPoolSize,
                                        long keepAliveTime,

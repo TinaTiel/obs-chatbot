@@ -7,8 +7,5 @@ package com.tinatiel.obschatbot.core.request.dispatch;
 
 import java.util.concurrent.ExecutorService;
 
-public interface PausableExecutorService extends ExecutorService {
-    void pause();
-    void resume();
-    long getPauseTimeoutMs();
+public interface PausableExecutorService extends ExecutorService, Pausable {
 }

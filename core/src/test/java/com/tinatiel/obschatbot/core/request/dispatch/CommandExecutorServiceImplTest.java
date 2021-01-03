@@ -7,30 +7,30 @@ package com.tinatiel.obschatbot.core.request.dispatch;
 
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Fail.fail;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
 public class CommandExecutorServiceImplTest {
 
     @Test
-    void onlyAcceptRequestTypes() {
-        fail("to do");
-    }
-
-    @Test
-    void timeoutMustBeGreaterThanZero() {
-        fail("to do");
-
-    }
-
-    @Test
-    void numberThreadsMustBeGreaterThanZero() {
-        fail("to do");
-
+    void numberConcurrentCommandsMustBeGreaterThanZero() {
+        assertThatThrownBy(() -> {
+            new CommandExecutorServiceImpl(123, 123, -1);
+        }).isInstanceOf(IllegalArgumentException.class).hasMessageContaining("commands");
     }
 
     @Test
     void createNewSequentialExecutor() {
-        fail("to do");
+
+        // Given a CommandExecutorService instance
+        CommandExecutorService executorService = new CommandExecutorServiceImpl(
+                123, 456, 5);
+
+        // When a new sequential executor is generator
+        SequentialExecutor result = executorService.newSequentialExecutor();
+
+        // Then it has the expected properties
+        assertThat(result).isNotNull().isInstanceOf(SequentialExecutor.class);
 
     }
 }

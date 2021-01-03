@@ -5,6 +5,8 @@
 
 package com.tinatiel.obschatbot.core.request.dispatch;
 
+import com.tinatiel.obschatbot.core.request.Request;
+
 /**
  * Executes a (Command) Request, validating the Runnable is a Request object
  * before attempting to execute it.
@@ -12,7 +14,10 @@ package com.tinatiel.obschatbot.core.request.dispatch;
  * Also provides factory and informational methods, such as providing a new SequentialExecutor
  * or returning the configured request timeout.
  */
-public interface CommandExecutorService extends PausableExecutorService {
+public interface CommandExecutorService extends Pausable{
     SequentialExecutor newSequentialExecutor();
-    long getRequestTimeoutMs();
+    long getCommandTimeoutMs();
+    long getPauseTimeoutMs();
+    int getMaxConcurrentCommands();
+    void submit(Request request);
 }

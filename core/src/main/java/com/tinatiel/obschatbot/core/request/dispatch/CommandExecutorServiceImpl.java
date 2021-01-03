@@ -6,55 +6,75 @@
 package com.tinatiel.obschatbot.core.request.dispatch;
 
 
+import com.tinatiel.obschatbot.core.request.Request;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.concurrent.*;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
-public class CommandExecutorServiceImpl extends ThreadPoolExecutor implements CommandExecutorService {
+public class CommandExecutorServiceImpl implements CommandExecutorService {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-    private final long requestTimeoutMs;
+    private final PausableExecutorService delegator;
+    private final long commandTimeoutMs;
+    private final long pauseTimeoutMs;
+    private final int maxConcurrentCommands;
 
-    public CommandExecutorServiceImpl(long requestTimeoutMs, int maxThreads) {
-        super(maxThreads, maxThreads, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>());
-        this.requestTimeoutMs = requestTimeoutMs;
+    /**
+     * Wraps the PausableExecutorServiceImpl and provides a centralized place for gathering information
+     * about queue configuration and for generating new SequentialExecutor instances for new Requests.
+     * @param commandTimeoutMs The maximum time a list of RunnableActions (a Command) has to execute. See com.tinatiel.obschatbot.core.request.Request
+     * @param pauseTimeoutMs The maximum time a pause will stay in effect before resuming automatically. To pause permanently, provide a negative value.
+     * @param maxConcurrentCommands The maximum number of commands that can execute at the same time. This sets the size of the
+     *                              underlying thread pool in PausableExecutorService
+     */
+    public CommandExecutorServiceImpl(long commandTimeoutMs, long pauseTimeoutMs, int maxConcurrentCommands) {
+        if(maxConcurrentCommands <= 0) throw new IllegalArgumentException("Max concurrent commands must be greater than zero");
+        this.commandTimeoutMs = commandTimeoutMs;
+        this.pauseTimeoutMs = pauseTimeoutMs;
+        this.maxConcurrentCommands = maxConcurrentCommands;
+        delegator = new PausableExecutorServiceImpl(
+                maxConcurrentCommands, maxConcurrentCommands,
+                0L, TimeUnit.MILLISECONDS,
+                new LinkedBlockingQueue<Runnable>(),
+                pauseTimeoutMs
+        );
     }
 
     @Override
     public SequentialExecutor newSequentialExecutor() {
-        return null;
+        return new SequentialExecutorImpl(delegator);
     }
 
     @Override
-    public long getRequestTimeoutMs() {
-        return requestTimeoutMs;
+    public long getCommandTimeoutMs() {
+        return commandTimeoutMs;
     }
 
     @Override
     public void pause() {
-
+        delegator.pause();
     }
 
     @Override
     public void resume() {
-
+        delegator.resume();
     }
 
     @Override
     public long getPauseTimeoutMs() {
-        return 0;
+        return pauseTimeoutMs;
     }
 
     @Override
-    protected void beforeExecute(Thread t, Runnable r) {
-        super.beforeExecute(t, r);
+    public int getMaxConcurrentCommands() {
+        return maxConcurrentCommands;
+    }
 
-        // Try to acquire the run lock
-
+    @Override
+    public void submit(Request request) {
+        delegator.submit(request);
     }
 
 }

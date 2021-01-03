@@ -38,7 +38,7 @@ class RequestFactoryImplTest {
         clientFactory = mock(ActionClientFactory.class);
         commandExecutorService = mock(CommandExecutorService.class);
         when(commandExecutorService.newSequentialExecutor()).thenReturn(mock(SequentialExecutorImpl.class));
-        when(commandExecutorService.getRequestTimeoutMs()).thenReturn(69L);
+        when(commandExecutorService.getCommandTimeoutMs()).thenReturn(69L);
         factory = new RequestFactoryImpl(commandExpander, clientFactory, commandExecutorService);
     }
 
