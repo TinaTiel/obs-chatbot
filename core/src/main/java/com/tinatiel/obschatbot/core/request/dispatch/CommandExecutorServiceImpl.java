@@ -16,8 +16,6 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class CommandExecutorServiceImpl extends ThreadPoolExecutor implements CommandExecutorService {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
-    private final Lock runLock = new ReentrantLock();
-    private final Condition runCondition = runLock.newCondition();
 
     private final long requestTimeoutMs;
 

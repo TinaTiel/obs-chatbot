@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (c) 2021 TinaTiel. This file is part of the OBS Chatbot project which is released under
+  ~ GNU General Public License v3.0. See LICENSE or go to https://fsf.org/ for more details.
+  -->
+
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/base.xml" />
+    <logger name="com.tinatiel.obschatbot.core.request.dispatch" level="TRACE"/>
+</configuration>

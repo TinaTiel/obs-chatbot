@@ -15,4 +15,14 @@ public class SequentialExecutorImpl extends ThreadPoolExecutor implements Sequen
                 new LinkedBlockingQueue<Runnable>());
         this.parentService = parentService;
     }
+
+    @Override
+    public void pause() {
+
+    }
+
+    @Override
+    public void resume() {
+
+    }
 }

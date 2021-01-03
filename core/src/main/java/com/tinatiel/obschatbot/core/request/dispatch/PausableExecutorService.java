@@ -6,9 +6,8 @@
 package com.tinatiel.obschatbot.core.request.dispatch;
 
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.ThreadPoolExecutor;
 
-public interface SequentialExecutor extends PausableExecutorService {
+public interface PausableExecutorService extends ExecutorService {
     void pause();
     void resume();
 }
