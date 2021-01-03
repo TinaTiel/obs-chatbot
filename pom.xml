@@ -26,7 +26,7 @@
     </modules>
 
     <properties>
-        <revision>1.0.0-SNAPSHOT</revision>
+        <revision>0.1.0-alpha</revision>
         <java.version>11</java.version>
     </properties>
 
