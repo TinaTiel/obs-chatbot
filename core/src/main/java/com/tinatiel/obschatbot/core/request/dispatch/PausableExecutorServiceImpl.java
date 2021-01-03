@@ -8,8 +8,6 @@ package com.tinatiel.obschatbot.core.request.dispatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.Timestamp;
-import java.time.Instant;
 import java.util.concurrent.*;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
@@ -71,6 +69,11 @@ public class PausableExecutorServiceImpl extends ThreadPoolExecutor implements P
         } finally {
             pauseLock.unlock();
         }
+    }
+
+    @Override
+    public long getPauseTimeoutMs() {
+        return pauseTimeout;
     }
 
     @Override
