@@ -5,12 +5,15 @@
 
 package com.tinatiel.obschatbot.core.request.handler.chat;
 
+import com.tinatiel.obschatbot.core.command.Command;
 import com.tinatiel.obschatbot.core.command.CommandRepository;
 import com.tinatiel.obschatbot.core.request.dispatch.CommandDispatcher;
 import com.tinatiel.obschatbot.core.request.RequestContext;
 import com.tinatiel.obschatbot.core.user.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Optional;
 
 public class ChatRequestHandlerImpl implements ChatRequestHandler {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
@@ -30,13 +33,15 @@ public class ChatRequestHandlerImpl implements ChatRequestHandler {
         log.debug("Handling command from user " + user + " with message " + message);
         parser.parse(message)
             .ifPresent(result -> {
-                commandRepository.findByName(result.getCommandName())
-                    .ifPresent(command -> {
-                        dispatcher.submit(
-                                command,
-                                new RequestContext(user, result.getArgs())
-                        );
-                    });
+                Optional<Command> command = commandRepository.findByName(result.getCommandName());
+                if(command.isPresent()) {
+                    dispatcher.submit(
+                            command.get(),
+                            new RequestContext(user, result.getArgs())
+                    );
+                } else {
+                    log.debug(String.format("A command by name '%s' was requested, but none was found", result.getCommandName()));
+                }
             });
     }
 

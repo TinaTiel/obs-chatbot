@@ -19,6 +19,7 @@ import com.tinatiel.obschatbot.core.user.Platform;
 import com.tinatiel.obschatbot.core.user.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
 import org.slf4j.Logger;
@@ -27,10 +28,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Primary;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Arrays;
 import java.util.Optional;
@@ -39,14 +43,14 @@ import java.util.Random;
 import static org.assertj.core.api.Fail.fail;
 import static org.mockito.Mockito.*;
 
-@Import(HeadlessCoreIT.HeadlessCoreITtestConfig.class)
-@SpringBootTest(classes = {App.class})
+@Import({HeadlessCoreIT.HeadlessCoreITtestConfig.class, App.class})
+@ExtendWith(SpringExtension.class)
 public class HeadlessCoreIT {
 
-    @Autowired
+    @SpyBean
     ObsClient obsClient;
 
-    @Autowired
+    @SpyBean
     TwitchChatClient twitchChatClient;
 
     @MockBean
@@ -148,13 +152,13 @@ public class HeadlessCoreIT {
         @Primary
         @Bean
         public ObsClient testObsClient() {
-            return spy(new TestObsClient());
+            return new TestObsClient();
         }
 
         @Primary
         @Bean
         public TwitchChatClient testTwitchChatClient() {
-            return spy(new TestTwitchChatClient());
+            return new TestTwitchChatClient();
         }
 
     }
