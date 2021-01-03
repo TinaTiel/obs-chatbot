@@ -5,18 +5,25 @@
 
 package com.tinatiel.obschatbot.core.request.dispatch;
 
-import java.util.Collection;
-import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.concurrent.*;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
-public class CommandExecutorServiceImpl implements CommandExecutorService {
+public class CommandExecutorServiceImpl extends ThreadPoolExecutor implements CommandExecutorService {
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
+    private final Lock runLock = new ReentrantLock();
+    private final Condition runCondition = runLock.newCondition();
 
-    private final ExecutorService delegate;
-    private final long requestTimeout;
+    private final long requestTimeoutMs;
 
-    public CommandExecutorServiceImpl(ExecutorService delegate, long requestTimeout) {
-        this.delegate = delegate;
-        this.requestTimeout = requestTimeout;
+    public CommandExecutorServiceImpl(long requestTimeoutMs, int maxThreads) {
+        super(maxThreads, maxThreads, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>());
+        this.requestTimeoutMs = requestTimeoutMs;
     }
 
     @Override
@@ -25,8 +32,8 @@ public class CommandExecutorServiceImpl implements CommandExecutorService {
     }
 
     @Override
-    public Long getRequestTimeoutMs() {
-        return null;
+    public long getRequestTimeoutMs() {
+        return requestTimeoutMs;
     }
 
     @Override
@@ -40,67 +47,11 @@ public class CommandExecutorServiceImpl implements CommandExecutorService {
     }
 
     @Override
-    public void shutdown() {
+    protected void beforeExecute(Thread t, Runnable r) {
+        super.beforeExecute(t, r);
+
+        // Try to acquire the run lock
 
     }
 
-    @Override
-    public List<Runnable> shutdownNow() {
-        return null;
-    }
-
-    @Override
-    public boolean isShutdown() {
-        return false;
-    }
-
-    @Override
-    public boolean isTerminated() {
-        return false;
-    }
-
-    @Override
-    public boolean awaitTermination(long timeout, TimeUnit unit) throws InterruptedException {
-        return false;
-    }
-
-    @Override
-    public <T> Future<T> submit(Callable<T> task) {
-        return null;
-    }
-
-    @Override
-    public <T> Future<T> submit(Runnable task, T result) {
-        return null;
-    }
-
-    @Override
-    public Future<?> submit(Runnable task) {
-        return null;
-    }
-
-    @Override
-    public <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks) throws InterruptedException {
-        return null;
-    }
-
-    @Override
-    public <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks, long timeout, TimeUnit unit) throws InterruptedException {
-        return null;
-    }
-
-    @Override
-    public <T> T invokeAny(Collection<? extends Callable<T>> tasks) throws InterruptedException, ExecutionException {
-        return null;
-    }
-
-    @Override
-    public <T> T invokeAny(Collection<? extends Callable<T>> tasks, long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
-        return null;
-    }
-
-    @Override
-    public void execute(Runnable command) {
-
-    }
 }

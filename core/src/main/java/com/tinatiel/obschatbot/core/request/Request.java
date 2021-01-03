@@ -7,6 +7,7 @@ package com.tinatiel.obschatbot.core.request;
 
 import com.tinatiel.obschatbot.core.action.RunnableAction;
 import com.tinatiel.obschatbot.core.request.dispatch.SequentialExecutor;
+import com.tinatiel.obschatbot.core.request.dispatch.SequentialExecutorImpl;
 
 import java.util.List;
 import java.util.concurrent.Executor;

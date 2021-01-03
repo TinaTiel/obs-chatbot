@@ -5,7 +5,7 @@
 
 package com.tinatiel.obschatbot.core.request;
 
-import com.tinatiel.obschatbot.core.request.dispatch.SequentialExecutor;
+import com.tinatiel.obschatbot.core.request.dispatch.SequentialExecutorImpl;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -28,7 +28,7 @@ public class RequestTest {
         }).isInstanceOf(IllegalArgumentException.class);
 
         assertThatThrownBy(() -> {
-            new Request(new SequentialExecutor(parentExecutor), 123, null);
+            new Request(new SequentialExecutorImpl(parentExecutor), 123, null);
         }).isInstanceOf(IllegalArgumentException.class);
 
     }
@@ -37,11 +37,11 @@ public class RequestTest {
     void timeoutMustBeGreaterThanZero() {
 
         assertThatThrownBy(() -> {
-            new Request(new SequentialExecutor(parentExecutor), -1, new ArrayList<>());
+            new Request(new SequentialExecutorImpl(parentExecutor), -1, new ArrayList<>());
         }).isInstanceOf(IllegalArgumentException.class).hasMessageContaining("timeout");
 
         assertThatThrownBy(() -> {
-            new Request(new SequentialExecutor(parentExecutor), 0, new ArrayList<>());
+            new Request(new SequentialExecutorImpl(parentExecutor), 0, new ArrayList<>());
         }).isInstanceOf(IllegalArgumentException.class).hasMessageContaining("timeout");;
 
     }

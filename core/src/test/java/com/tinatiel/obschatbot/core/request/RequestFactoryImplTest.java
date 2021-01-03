@@ -10,7 +10,7 @@ import com.tinatiel.obschatbot.core.client.ActionClientFactory;
 import com.tinatiel.obschatbot.core.command.Command;
 import com.tinatiel.obschatbot.core.error.CyclicalActionsException;
 import com.tinatiel.obschatbot.core.request.dispatch.CommandExecutorService;
-import com.tinatiel.obschatbot.core.request.dispatch.SequentialExecutor;
+import com.tinatiel.obschatbot.core.request.dispatch.SequentialExecutorImpl;
 import com.tinatiel.obschatbot.core.request.expand.CommandExpander;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -37,7 +37,7 @@ class RequestFactoryImplTest {
         commandExpander = mock(CommandExpander.class);
         clientFactory = mock(ActionClientFactory.class);
         commandExecutorService = mock(CommandExecutorService.class);
-        when(commandExecutorService.newSequentialExecutor()).thenReturn(mock(SequentialExecutor.class));
+        when(commandExecutorService.newSequentialExecutor()).thenReturn(mock(SequentialExecutorImpl.class));
         when(commandExecutorService.getRequestTimeoutMs()).thenReturn(69L);
         factory = new RequestFactoryImpl(commandExpander, clientFactory, commandExecutorService);
     }
@@ -63,7 +63,7 @@ class RequestFactoryImplTest {
         Request request = factory.build(command, context);
 
         // Then the request contains the expected
-        assertThat(request.getExecutor()).isNotNull().isInstanceOf(SequentialExecutor.class);
+        assertThat(request.getExecutor()).isNotNull().isInstanceOf(SequentialExecutorImpl.class);
         assertThat(request.getActions()).hasSameSizeAs(actions);
 
     }

@@ -26,7 +26,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.Fail.fail;
 import static org.mockito.Mockito.mock;
 
-public class SequentialExecutorIT {
+public class SequentialExecutorImplIT {
 
     private final ExecutorService parentExecutor = mock(ExecutorService.class);
 
@@ -53,7 +53,7 @@ public class SequentialExecutorIT {
                         random.nextInt(maxExecTimeMs)
                 ));
             }
-            requests.add(new Request(new SequentialExecutor(parentExecutor),Long.MAX_VALUE, actions));
+            requests.add(new Request(new SequentialExecutorImpl(parentExecutor),Long.MAX_VALUE, actions));
         }
 
         // (print out for sanity-checking)

@@ -16,7 +16,7 @@ import java.util.concurrent.ExecutorService;
  */
 public interface CommandExecutorService extends ExecutorService {
     SequentialExecutor newSequentialExecutor();
-    Long getRequestTimeoutMs();
+    long getRequestTimeoutMs();
     void pause();
     void resume();
 }
