@@ -6,6 +6,7 @@
 package com.tinatiel.obs.chatbot.core;
 
 import com.tinatiel.obschatbot.App;
+import com.tinatiel.obschatbot.core.action.Action;
 import com.tinatiel.obschatbot.core.action.model.ObsSourceVisibilityAction;
 import com.tinatiel.obschatbot.core.action.model.SendMessageAction;
 import com.tinatiel.obschatbot.core.client.chat.twitch.TwitchChatClient;
@@ -36,10 +37,12 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.Arrays;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
+import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.assertj.core.api.Fail.fail;
 import static org.mockito.Mockito.*;
 
@@ -47,11 +50,16 @@ import static org.mockito.Mockito.*;
 @ExtendWith(SpringExtension.class)
 public class HeadlessCoreIT {
 
-    @SpyBean
+//    @SpyBean
+    @Autowired
     ObsClient obsClient;
 
-    @SpyBean
+//    @SpyBean
+    @Autowired
     TwitchChatClient twitchChatClient;
+
+    @Autowired
+    List<String> invocations;
 
     @MockBean
     CommandRepository commandRepository;
@@ -83,14 +91,27 @@ public class HeadlessCoreIT {
         chatRequestHandler.handle(user, request);
 
         // Then the actions are executed in order as expected, without errors
-        // (check the logs)
 
-        // These don't work due to Spring AOP proxies
-        verify(twitchChatClient).sendMessage(action1.getMessage());
-        verify(obsClient).setSourceVisibility(action2.getSceneName(), action2.getSourceName(), action2.isVisible());
-        verify(twitchChatClient).sendMessage(action3.getMessage());
-        verify(obsClient).setSourceVisibility(action4.getSceneName(), action4.getSourceName(), action4.isVisible());
-        verify(twitchChatClient).sendMessage(action5.getMessage());
+        // Spy Beans don't work as expected, see https://github.com/spring-projects/spring-boot/issues/7033
+//        verify(twitchChatClient).sendMessage(action1.getMessage());
+//        verify(obsClient).setSourceVisibility(action2.getSceneName(), action2.getSourceName(), action2.isVisible());
+//        verify(twitchChatClient).sendMessage(action3.getMessage());
+//        verify(obsClient).setSourceVisibility(action4.getSceneName(), action4.getSourceName(), action4.isVisible());
+//        verify(twitchChatClient).sendMessage(action5.getMessage());
+
+        // As a workaround, we manually verify using a synchronized list
+        try {
+            Thread.sleep(1500); // should be plenty of time
+        } catch (InterruptedException interruptedException) {
+            interruptedException.printStackTrace();
+        }
+        System.out.println("INVOCATIONS: \n" + invocations.stream().collect(Collectors.joining("\n")));
+        assertThat(invocations).hasSize(5);
+        assertThat(invocations.get(0)).contains(action1.getMessage());
+        assertThat(invocations.get(1)).contains(action2.getSourceName());
+        assertThat(invocations.get(2)).contains(action3.getMessage());
+        assertThat(invocations.get(3)).contains(action4.getSourceName());
+        assertThat(invocations.get(4)).contains(action5.getMessage());
 
     }
 
@@ -99,6 +120,12 @@ public class HeadlessCoreIT {
         private final Logger log = LoggerFactory.getLogger(this.getClass());
         Random random = new Random();
 
+        private final List<String> invocations;
+
+        public TestObsClient(List<String> invocations) {
+            this.invocations = invocations;
+        }
+
         @Override
         public void connect() {
             log.info("Connecting/Connected to OBS");
@@ -106,6 +133,9 @@ public class HeadlessCoreIT {
 
         @Override
         public void setSourceVisibility(String scene, String source, boolean visibility) {
+
+            invocations.add(String.format("ObsClient: scene:%s, source:%s, visibility:%s", scene, source, visibility));
+
             log.info(String.format("%s source '%s' in scene '%s'",
                 visibility ? "Showing" : "Hiding",
                 source,
@@ -129,8 +159,17 @@ public class HeadlessCoreIT {
         private final Logger log = LoggerFactory.getLogger(this.getClass());
         Random random = new Random();
 
+        private final List<String> invocations;
+
+        public TestTwitchChatClient(List<String> invocations) {
+            this.invocations = invocations;
+        }
+
         @Override
         public void sendMessage(String message) {
+
+            invocations.add(String.format("TwitchChatClient: message:%s", message));
+
             log.info("Sending message: " + message);
             try {
                 Thread.sleep(random.nextInt(10) + 5);
@@ -149,16 +188,24 @@ public class HeadlessCoreIT {
     @TestConfiguration
     public static class HeadlessCoreITtestConfig {
 
+        @Bean
+        /**
+         * Workaround for not using SpyBeans due to https://github.com/spring-projects/spring-boot/issues/7033
+         */
+        public List<String> invocations() {
+            return Collections.synchronizedList(new ArrayList<>());
+        }
+
         @Primary
         @Bean
         public ObsClient testObsClient() {
-            return new TestObsClient();
+            return new TestObsClient(invocations());
         }
 
         @Primary
         @Bean
         public TwitchChatClient testTwitchChatClient() {
-            return new TestTwitchChatClient();
+            return new TestTwitchChatClient(invocations());
         }
 
     }
