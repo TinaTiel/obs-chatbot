@@ -25,6 +25,16 @@
         <module>web</module>
     </modules>
 
+    <developers>
+        <developer>
+            <name>TinaTiel</name>
+            <email>contact@tinatiel.com</email>
+            <organizationUrl>https://tinatiel.com</organizationUrl>
+            <organization>TinaTiel</organization>
+            <timezone>CET</timezone>
+        </developer>
+    </developers>
+
     <properties>
         <revision>0.1.0-alpha</revision>
         <java.version>11</java.version>
