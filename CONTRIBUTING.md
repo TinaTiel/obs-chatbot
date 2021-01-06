@@ -1,4 +1,10 @@
 # Contributing to OBS Chatbot
+## How To
+Simply fork, develop something, and then make a PR from your fork (you don't need special perms to do that).
+## Communication
+For now go ahead and just reach out to me (contact (at) tinatiel.com) to FYI me so efforts aren't duplicated.
+I have a Discord, but it's not geared towards this stuff atm. If there are more folks interested, that will change.
+
 ## Issues
 Issues are used both by developers to track work, and by others to file problems or suggestions.
 Use the `improvement` or `bug` labels for help requests, and use other labels as appropriate for 
