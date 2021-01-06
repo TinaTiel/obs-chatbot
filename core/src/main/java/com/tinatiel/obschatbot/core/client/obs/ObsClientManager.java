@@ -8,4 +8,8 @@ package com.tinatiel.obschatbot.core.client.obs;
 import com.tinatiel.obschatbot.core.request.queue.consumers.ActionCommandConsumer;
 
 public interface ObsClientManager extends ActionCommandConsumer {
+    void start();
+    void stop();
+    void reload();
+    ObsClient getClient();
 }

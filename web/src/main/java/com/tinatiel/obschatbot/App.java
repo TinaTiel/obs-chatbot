@@ -5,9 +5,19 @@
 
 package com.tinatiel.obschatbot;
 
+import com.tinatiel.obschatbot.core.client.obs.ObsActionCommandConsumer;
+import com.tinatiel.obschatbot.core.client.obs.ObsClient;
+import com.tinatiel.obschatbot.core.request.RequestContext;
+import com.tinatiel.obschatbot.core.request.queue.ActionCommand;
+import com.tinatiel.obschatbot.core.user.Platform;
+import com.tinatiel.obschatbot.core.user.User;
+import net.twasi.obsremotejava.OBSRemoteController;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
+import com.tinatiel.obschatbot.core.action.model.ObsSourceVisibilityAction;
+
+import java.util.ArrayList;
 
 @SpringBootApplication
 public class App {
@@ -49,15 +59,16 @@ public class App {
 //        client.sendMessage("FOOOOO");
 
 //        ActionClientFactory actionClientFactory = context.getBean(ActionClientFactory.class);
-//        ObsSourceVisibilityAction action = new ObsSourceVisibilityAction("foo", "bar", true);
-//        User user = new User(Platform.TWITCH, "mango");
-//        ObsChatbotRequestContext requestContext = new ObsChatbotRequestContext(user, new ArrayList<>());
-//        RunnableObsSourceVisibilityAction foo = new RunnableObsSourceVisibilityAction(
-//                action,
-//                (ObsClient) actionClientFactory.getService(action.getActionType()),
-//                requestContext
-//        );
 
+        ObsSourceVisibilityAction action = new ObsSourceVisibilityAction(null, "Image", false);
+        User user = new User(Platform.TWITCH, "mango");
+        RequestContext requestContext = new RequestContext(user, new ArrayList<>());
+        ActionCommand actionCommand = new ActionCommand(ObsClient.class, action, requestContext);
+
+        OBSRemoteController obsRemoteController = new OBSRemoteController("ws://localhost:4444", false);
+        ObsActionCommandConsumer actionCommandConsumer = new ObsActionCommandConsumer(obsRemoteController);
+
+        actionCommandConsumer.consume(actionCommand);
 
     }
 }

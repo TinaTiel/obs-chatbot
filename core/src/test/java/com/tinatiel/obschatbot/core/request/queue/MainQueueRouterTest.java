@@ -5,7 +5,6 @@
 
 package com.tinatiel.obschatbot.core.request.queue;
 
-import com.sun.tools.javac.Main;
 import com.tinatiel.obschatbot.core.action.Action;
 import com.tinatiel.obschatbot.core.client.ActionClient;
 import com.tinatiel.obschatbot.core.client.chat.twitch.TwitchChatClient;

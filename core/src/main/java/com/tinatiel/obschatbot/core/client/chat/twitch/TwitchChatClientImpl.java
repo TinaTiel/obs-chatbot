@@ -13,7 +13,7 @@ public class TwitchChatClientImpl implements TwitchChatClient {
     private final PircBotX pircBotX;
 
     public TwitchChatClientImpl(MultiBotManager manager) {
-        pircBotX = manager.getBots().first();
+        pircBotX = null;//manager.getBots().first();
     }
 
     @Override

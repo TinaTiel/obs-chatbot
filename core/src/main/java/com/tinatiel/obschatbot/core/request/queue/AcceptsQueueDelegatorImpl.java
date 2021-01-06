@@ -179,11 +179,6 @@ public class AcceptsQueueDelegatorImpl implements AcceptsQueueDelegator {
     }
 
     @Override
-    public <T> T[] toArray(IntFunction<T[]> generator) {
-        return delegate.toArray(generator);
-    }
-
-    @Override
     public boolean removeIf(Predicate<? super ActionCommand> filter) {
         return delegate.removeIf(filter);
     }

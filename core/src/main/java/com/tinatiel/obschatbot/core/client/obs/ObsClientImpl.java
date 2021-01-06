@@ -20,7 +20,7 @@ public class ObsClientImpl implements ObsClient {
 
     @PostConstruct
     public void init() {
-        connect(); // this is a blocking call
+//        connect(); // this is a blocking call
     }
 
     @Override

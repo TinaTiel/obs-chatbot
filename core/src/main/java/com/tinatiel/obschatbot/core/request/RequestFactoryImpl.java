@@ -52,6 +52,7 @@ public class RequestFactoryImpl implements RequestFactory {
     @SuppressWarnings("unchecked")
     @Override
     public Request build(Command command, RequestContext context) throws CyclicalActionsException {
+        if(command == null || context == null) throw new IllegalArgumentException("arguments cannot be null");
         log.debug("Building request from command " + command.getName() + " with context " + context);
 
         // sanitize inputs

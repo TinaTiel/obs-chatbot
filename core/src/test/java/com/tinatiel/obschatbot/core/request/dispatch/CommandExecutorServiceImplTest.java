@@ -15,7 +15,7 @@ public class CommandExecutorServiceImplTest {
     @Test
     void numberConcurrentCommandsMustBeGreaterThanZero() {
         assertThatThrownBy(() -> {
-            new CommandExecutorServiceImpl(123, 123);
+            new CommandExecutorServiceImpl(123, -1);
         }).isInstanceOf(IllegalArgumentException.class).hasMessageContaining("commands");
     }
 
