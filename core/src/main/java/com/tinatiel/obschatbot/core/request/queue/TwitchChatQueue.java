@@ -5,7 +5,8 @@
 
 package com.tinatiel.obschatbot.core.request.queue;
 
-import java.util.concurrent.BlockingQueue;
+import com.tinatiel.obschatbot.core.request.queue.type.TwitchChatActionQueueType;
+
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class TwitchChatQueue extends AcceptsQueueDelegatorImpl {

@@ -5,15 +5,13 @@
 
 package com.tinatiel.obschatbot.core.request.queue;
 
-import com.tinatiel.obschatbot.core.client.ActionClient;
 import com.tinatiel.obschatbot.core.client.chat.twitch.TwitchChatClient;
 import com.tinatiel.obschatbot.core.client.obs.ObsClient;
+import com.tinatiel.obschatbot.core.request.queue.type.ActionQueueType;
+import com.tinatiel.obschatbot.core.request.queue.type.AnyActionQueueType;
+import com.tinatiel.obschatbot.core.request.queue.type.ObsActionQueueType;
+import com.tinatiel.obschatbot.core.request.queue.type.TwitchChatActionQueueType;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
-
-import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

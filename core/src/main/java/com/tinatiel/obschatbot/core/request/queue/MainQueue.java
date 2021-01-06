@@ -5,10 +5,8 @@
 
 package com.tinatiel.obschatbot.core.request.queue;
 
-import com.tinatiel.obschatbot.core.client.ActionClient;
+import com.tinatiel.obschatbot.core.request.queue.type.AnyActionQueueType;
 
-import java.util.List;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class MainQueue extends AcceptsQueueDelegatorImpl {
