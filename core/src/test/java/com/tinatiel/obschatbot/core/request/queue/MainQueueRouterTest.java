@@ -49,9 +49,9 @@ public class MainQueueRouterTest {
         ActionCommand unknownAction = new ActionCommand(UnknownClient.class, mock(Action.class), mock(RequestContext.class));
 
         // And given those commands are added to the main queue
+        mainQueue.add(unknownAction);
         mainQueue.add(obsAction);
         mainQueue.add(twitchAction);
-        mainQueue.add(unknownAction);
 
         // When we run the router and let it finish
         ExecutorService executorService = Executors.newSingleThreadExecutor();

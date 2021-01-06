@@ -7,6 +7,7 @@ package com.tinatiel.obschatbot.core.request.queue.consumers;
 
 import com.tinatiel.obschatbot.core.client.obs.ObsClient;
 import com.tinatiel.obschatbot.core.client.obs.ObsClientManager;
+import com.tinatiel.obschatbot.core.request.queue.ActionCommand;
 import com.tinatiel.obschatbot.core.request.queue.ObsQueue;
 
 public class ObsQueueConsumer implements Runnable {
@@ -21,6 +22,13 @@ public class ObsQueueConsumer implements Runnable {
 
     @Override
     public void run() {
-
+        while(true) {
+            try{
+                ActionCommand actionCommand = obsQueue.take();
+                obsClientManager.consume(actionCommand);
+            } catch (InterruptedException interruptedException) {
+                Thread.currentThread().interrupt();
+            }
+        }
     }
 }
