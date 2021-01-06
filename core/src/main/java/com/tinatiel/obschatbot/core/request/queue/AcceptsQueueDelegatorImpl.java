@@ -5,6 +5,8 @@
 
 package com.tinatiel.obschatbot.core.request.queue;
 
+import com.tinatiel.obschatbot.core.error.RequestNotAcceptableException;
+
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.concurrent.BlockingQueue;
@@ -22,126 +24,146 @@ public class AcceptsQueueDelegatorImpl implements AcceptsQueueDelegator {
 
     @Override
     public boolean add(ActionCommand actionCommand) {
-        return false;
+        validateCanAccept(actionCommand);
+        return delegate.add(actionCommand);
     }
 
     @Override
     public boolean offer(ActionCommand actionCommand) {
-        return false;
+        validateCanAccept(actionCommand);
+        return delegate.offer(actionCommand);
     }
 
     @Override
     public ActionCommand remove() {
-        return null;
+        return delegate.remove();
     }
 
     @Override
     public ActionCommand poll() {
-        return null;
+        return delegate.poll();
     }
 
     @Override
     public ActionCommand element() {
-        return null;
+        return delegate.element();
     }
 
     @Override
     public ActionCommand peek() {
-        return null;
+        return delegate.peek();
     }
 
     @Override
     public void put(ActionCommand actionCommand) throws InterruptedException {
-
+        validateCanAccept(actionCommand);
+        delegate.put(actionCommand);
     }
 
     @Override
     public boolean offer(ActionCommand actionCommand, long timeout, TimeUnit unit) throws InterruptedException {
-        return false;
+        validateCanAccept(actionCommand);
+        return delegate.offer(actionCommand, timeout, unit);
     }
 
     @Override
     public ActionCommand take() throws InterruptedException {
-        return null;
+        return delegate.take();
     }
 
     @Override
     public ActionCommand poll(long timeout, TimeUnit unit) throws InterruptedException {
-        return null;
+        return delegate.poll(timeout, unit);
     }
 
     @Override
     public int remainingCapacity() {
-        return 0;
+        return delegate.remainingCapacity();
     }
 
     @Override
     public boolean remove(Object o) {
-        return false;
+        return delegate.remove(o);
     }
 
     @Override
     public boolean containsAll(Collection<?> c) {
-        return false;
+        return delegate.containsAll(c);
     }
 
     @Override
     public boolean addAll(Collection<? extends ActionCommand> c) {
-        return false;
+        for(ActionCommand actionCommand:c) validateCanAccept(actionCommand);
+        return delegate.addAll(c);
     }
 
     @Override
     public boolean removeAll(Collection<?> c) {
-        return false;
+        return delegate.removeAll(c);
     }
 
     @Override
     public boolean retainAll(Collection<?> c) {
-        return false;
+        for(Object obj:c) {
+            if(obj instanceof ActionCommand) {
+                validateCanAccept((ActionCommand) obj);
+            } else {
+                throw new RequestNotAcceptableException("Collection didn't contain ActionCommands: " + c, null);
+            }
+        }
+        return delegate.retainAll(c);
     }
 
     @Override
     public void clear() {
-
+        delegate.clear();
     }
 
     @Override
     public int size() {
-        return 0;
+        return delegate.size();
     }
 
     @Override
     public boolean isEmpty() {
-        return false;
+        return delegate.isEmpty();
     }
 
     @Override
     public boolean contains(Object o) {
-        return false;
+        return delegate.contains(o);
     }
 
     @Override
     public Iterator<ActionCommand> iterator() {
-        return null;
+        return delegate.iterator();
     }
 
     @Override
     public Object[] toArray() {
-        return new Object[0];
+        return delegate.toArray();
     }
 
     @Override
     public <T> T[] toArray(T[] a) {
-        return null;
+        return delegate.toArray(a);
     }
 
     @Override
     public int drainTo(Collection<? super ActionCommand> c) {
-        return 0;
+        return delegate.drainTo(c);
     }
 
     @Override
     public int drainTo(Collection<? super ActionCommand> c, int maxElements) {
-        return 0;
+        return delegate.drainTo(c, maxElements);
+    }
+
+    private void validateCanAccept(ActionCommand actionCommand) throws RequestNotAcceptableException {
+        if(!actionQueueType.canAccept(actionCommand.getRecipient())) {
+            throw new RequestNotAcceptableException(String.format(
+            "Cannot accept actionCommand of type %s into queue %s", actionCommand.getRecipient(), this.getClass().getSimpleName())
+            , null);
+        }
     }
 }

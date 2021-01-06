@@ -5,6 +5,7 @@
 
 package com.tinatiel.obschatbot.core.request.queue;
 
+import com.tinatiel.obschatbot.core.client.ActionClient;
 import com.tinatiel.obschatbot.core.error.RequestNotAcceptableException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -38,22 +39,29 @@ class AcceptsQueueDelegatorImplTest {
         // Given the delegate doesn't accept the given ActionCommand
         when(actionQueueType.canAccept(any())).thenReturn(false);
 
+        // And given some requests
+        ActionCommand single = mock(ActionCommand.class);
+        List<ActionCommand> many = Arrays.asList(mock(ActionCommand.class), mock(ActionCommand.class), mock(ActionCommand.class));
+
         // Then insertion calls will throw exceptions
         assertThatThrownBy(() -> {
-            delegator.add(mock(ActionCommand.class));
+            delegator.add(single);
         }).isInstanceOf(RequestNotAcceptableException.class);
 
         assertThatThrownBy(() -> {
-            delegator.addAll(Arrays.asList(mock(ActionCommand.class), mock(ActionCommand.class), mock(ActionCommand.class)));
+            delegator.addAll(many);
         }).isInstanceOf(RequestNotAcceptableException.class);
         assertThatThrownBy(() -> {
-            delegator.offer(mock(ActionCommand.class));
+            delegator.offer(single);
         }).isInstanceOf(RequestNotAcceptableException.class);
         assertThatThrownBy(() -> {
-            delegator.offer(mock(ActionCommand.class), 0L, TimeUnit.MILLISECONDS);
+            delegator.offer(single, 0L, TimeUnit.MILLISECONDS);
         }).isInstanceOf(RequestNotAcceptableException.class);
         assertThatThrownBy(() -> {
-            delegator.put(mock(ActionCommand.class));
+            delegator.put(single);
+        }).isInstanceOf(RequestNotAcceptableException.class);
+        assertThatThrownBy(() -> {
+            delegator.retainAll(many);
         }).isInstanceOf(RequestNotAcceptableException.class);
 
         // And underlying calls will not be invoked
@@ -65,7 +73,7 @@ class AcceptsQueueDelegatorImplTest {
     void delegateInsertionToDelegateWhenActionAccepted() throws InterruptedException {
 
         // Given the delegate accepts the given ActionCommand
-        when(actionQueueType.canAccept(any())).thenReturn(false);
+        when(actionQueueType.canAccept(any())).thenReturn(true);
 
         // And given some requests
         ActionCommand single = mock(ActionCommand.class);
@@ -86,6 +94,10 @@ class AcceptsQueueDelegatorImplTest {
 
         delegator.put(single);
         verify(delegate).put(single);
+
+    }
+
+    private static interface SomeClient extends ActionClient {
 
     }
 
