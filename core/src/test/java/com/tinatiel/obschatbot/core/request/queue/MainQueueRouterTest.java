@@ -7,6 +7,7 @@ package com.tinatiel.obschatbot.core.request.queue;
 
 import com.sun.tools.javac.Main;
 import com.tinatiel.obschatbot.core.action.Action;
+import com.tinatiel.obschatbot.core.client.chat.twitch.TwitchChatClient;
 import com.tinatiel.obschatbot.core.client.obs.ObsClient;
 import com.tinatiel.obschatbot.core.request.RequestContext;
 import com.tinatiel.obschatbot.core.request.queue.consumers.MainQueueRouter;
@@ -43,18 +44,18 @@ public class MainQueueRouterTest {
 
         // Given types of ActionCommands
         ActionCommand obsAction = new ActionCommand(ObsClient.class, mock(Action.class), mock(RequestContext.class));
-        ActionCommand twitchAction = new ActionCommand(ObsClient.class, mock(Action.class), mock(RequestContext.class));
+        ActionCommand twitchAction = new ActionCommand(TwitchChatClient.class, mock(Action.class), mock(RequestContext.class));
 
         // And given those commands are added to the main queue
         mainQueue.add(obsAction);
         mainQueue.add(twitchAction);
 
-        // When we run the router
+        // When we run the router and let it finish
         ExecutorService executorService = Executors.newSingleThreadExecutor();
         executorService.submit(router);
         executorService.shutdown();
         try {
-            executorService.awaitTermination(1000, TimeUnit.MILLISECONDS);
+            executorService.awaitTermination(1, TimeUnit.MILLISECONDS);
         } catch (InterruptedException interruptedException) {
             interruptedException.printStackTrace();
         }

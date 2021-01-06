@@ -5,7 +5,10 @@
 
 package com.tinatiel.obschatbot.core.request.queue;
 
+import com.tinatiel.obschatbot.core.request.queue.type.ActionQueueType;
+
 import java.util.concurrent.BlockingQueue;
 
 public interface AcceptsQueueDelegator extends BlockingQueue<ActionCommand> {
+    ActionQueueType getActionQueueType();
 }

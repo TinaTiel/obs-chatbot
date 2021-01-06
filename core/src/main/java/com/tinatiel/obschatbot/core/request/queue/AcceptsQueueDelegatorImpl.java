@@ -10,8 +10,13 @@ import com.tinatiel.obschatbot.core.request.queue.type.ActionQueueType;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.Spliterator;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
+import java.util.function.IntFunction;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 public class AcceptsQueueDelegatorImpl implements AcceptsQueueDelegator {
 
@@ -166,5 +171,40 @@ public class AcceptsQueueDelegatorImpl implements AcceptsQueueDelegator {
             "Cannot accept actionCommand of type %s into queue %s", actionCommand.getRecipient(), this.getClass().getSimpleName())
             , null);
         }
+    }
+
+    @Override
+    public ActionQueueType getActionQueueType() {
+        return actionQueueType;
+    }
+
+    @Override
+    public <T> T[] toArray(IntFunction<T[]> generator) {
+        return delegate.toArray(generator);
+    }
+
+    @Override
+    public boolean removeIf(Predicate<? super ActionCommand> filter) {
+        return delegate.removeIf(filter);
+    }
+
+    @Override
+    public Spliterator<ActionCommand> spliterator() {
+        return delegate.spliterator();
+    }
+
+    @Override
+    public Stream<ActionCommand> stream() {
+        return delegate.stream();
+    }
+
+    @Override
+    public Stream<ActionCommand> parallelStream() {
+        return delegate.parallelStream();
+    }
+
+    @Override
+    public void forEach(Consumer<? super ActionCommand> action) {
+        delegate.forEach(action);
     }
 }
