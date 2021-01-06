@@ -7,6 +7,7 @@ package com.tinatiel.obschatbot.core.request.queue;
 
 import com.tinatiel.obschatbot.core.client.ActionClient;
 import com.tinatiel.obschatbot.core.error.RequestNotAcceptableException;
+import com.tinatiel.obschatbot.core.request.queue.type.ActionQueueType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

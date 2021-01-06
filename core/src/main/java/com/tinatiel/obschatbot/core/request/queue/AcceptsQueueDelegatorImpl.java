@@ -6,6 +6,7 @@
 package com.tinatiel.obschatbot.core.request.queue;
 
 import com.tinatiel.obschatbot.core.error.RequestNotAcceptableException;
+import com.tinatiel.obschatbot.core.request.queue.type.ActionQueueType;
 
 import java.util.Collection;
 import java.util.Iterator;
