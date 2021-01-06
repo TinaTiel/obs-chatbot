@@ -7,7 +7,7 @@ package com.tinatiel.obschatbot.core.error;
 
 public enum Code {
     UNEXPECTED,
-    VALIDATION,
+    NOT_ACCEPTABLE,
     SERVICE_NOT_READY,
     CYCLICAL_ACTION,
     CLIENT_NOT_REGISTERED
