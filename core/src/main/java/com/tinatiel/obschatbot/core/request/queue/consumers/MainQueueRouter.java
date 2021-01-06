@@ -14,7 +14,7 @@ import com.tinatiel.obschatbot.core.request.queue.TwitchChatQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class MainQueueRouter implements ActionQueueConsumer {
+public class MainQueueRouter implements Runnable {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
@@ -41,7 +41,7 @@ public class MainQueueRouter implements ActionQueueConsumer {
                     twitchChatQueue.add(command);
                     log.debug("Moved to TwitchChat Queue: " + command);
                 } else {
-                    log.debug("Ignored command: " + command);
+                    log.warn("Main Queue Router ignored command due to unknown recipient type: " + command);
                 }
 
             } catch (InterruptedException interruptedException) {

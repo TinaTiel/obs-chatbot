@@ -5,5 +5,8 @@
 
 package com.tinatiel.obschatbot.core.request.queue.consumers;
 
-public interface ActionQueueConsumer extends Runnable {
+import com.tinatiel.obschatbot.core.request.queue.ActionCommand;
+
+public interface ActionCommandConsumer extends Runnable {
+    void consume(ActionCommand actionCommand);
 }

@@ -34,4 +34,13 @@ public class ActionCommand extends CompletableFuture<Void> {
     public RequestContext getContext() {
         return context;
     }
+
+    @Override
+    public String toString() {
+        return "ActionCommand{" +
+                "recipient=" + recipient +
+                ", action=" + action +
+                ", context=" + context +
+                '}';
+    }
 }
