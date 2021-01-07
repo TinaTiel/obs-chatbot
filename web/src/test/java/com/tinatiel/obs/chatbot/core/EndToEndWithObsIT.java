@@ -26,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 @Import({App.class})
 @ExtendWith(SpringExtension.class)
-public class ObsClientConnectDisconnectIT {
+public class EndToEndWithObsIT {
 
     @Autowired ObsClientManager obsClientManager;
 
@@ -48,6 +48,8 @@ public class ObsClientConnectDisconnectIT {
             obsClientManager.stop();
         } catch (ClientNotAvailableException e) {
             fail("Test requires instance of OBS", e);
+        } catch (Exception unexpected) {
+            fail("Exercising the clientManager should not throw unexpected exceptions", unexpected);
         }
 
     }

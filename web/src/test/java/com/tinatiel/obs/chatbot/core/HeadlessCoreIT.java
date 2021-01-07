@@ -14,6 +14,8 @@ import com.tinatiel.obschatbot.core.client.obs.ObsClient;
 import com.tinatiel.obschatbot.core.command.Command;
 import com.tinatiel.obschatbot.core.command.CommandRepository;
 import com.tinatiel.obschatbot.core.request.handler.chat.ChatRequestHandler;
+import com.tinatiel.obschatbot.core.request.queue.ActionCommand;
+import com.tinatiel.obschatbot.core.request.queue.MainQueue;
 import com.tinatiel.obschatbot.core.sequencer.ActionSequencer;
 import com.tinatiel.obschatbot.core.sequencer.InOrderActionSequencer;
 import com.tinatiel.obschatbot.core.user.Platform;
@@ -67,6 +69,9 @@ public class HeadlessCoreIT {
     @Autowired
     ChatRequestHandler chatRequestHandler;
 
+    @Autowired
+    MainQueue mainQueue;
+
     @Test
     void generateRequestAsExpected() {
 
@@ -83,15 +88,21 @@ public class HeadlessCoreIT {
         Command command = new Command().name("mango").actionSequencer(inOrderSequencer);
         when(commandRepository.findByName(command.getName())).thenReturn(Optional.of(command));
 
-        // And a real chat command
+        // And a chat command text
         String request = "!mango has arrived in chat! :D";
 
-        // When executed
+        // When handled by the chat request handler
         User user = new User(Platform.TWITCH, "mango");
         chatRequestHandler.handle(user, request);
 
-        // Then the actions are executed in order as expected, without errors
+        // Then the expected messages are added to the main queue, in order
+        List<Action> received =mainQueue.stream()
+                .map(ActionCommand::getAction)
+                .collect(Collectors.toList());
 
+        assertThat(received).containsExactly(action1, action2, action3, action4, action5);
+
+        // Then the actions are executed in order as expected, without errors
         // Spy Beans don't work as expected, see https://github.com/spring-projects/spring-boot/issues/7033
 //        verify(twitchChatClient).sendMessage(action1.getMessage());
 //        verify(obsClient).setSourceVisibility(action2.getSceneName(), action2.getSourceName(), action2.isVisible());
@@ -100,18 +111,18 @@ public class HeadlessCoreIT {
 //        verify(twitchChatClient).sendMessage(action5.getMessage());
 
         // As a workaround, we manually verify using a synchronized list
-        try {
-            Thread.sleep(1500); // should be plenty of time
-        } catch (InterruptedException interruptedException) {
-            interruptedException.printStackTrace();
-        }
-        System.out.println("INVOCATIONS: \n" + invocations.stream().collect(Collectors.joining("\n")));
-        assertThat(invocations).hasSize(5);
-        assertThat(invocations.get(0)).contains(action1.getMessage());
-        assertThat(invocations.get(1)).contains(action2.getSourceName());
-        assertThat(invocations.get(2)).contains(action3.getMessage());
-        assertThat(invocations.get(3)).contains(action4.getSourceName());
-        assertThat(invocations.get(4)).contains(action5.getMessage());
+//        try {
+//            Thread.sleep(1500); // should be plenty of time
+//        } catch (InterruptedException interruptedException) {
+//            interruptedException.printStackTrace();
+//        }
+//        System.out.println("INVOCATIONS: \n" + invocations.stream().collect(Collectors.joining("\n")));
+//        assertThat(invocations).hasSize(5);
+//        assertThat(invocations.get(0)).contains(action1.getMessage());
+//        assertThat(invocations.get(1)).contains(action2.getSourceName());
+//        assertThat(invocations.get(2)).contains(action3.getMessage());
+//        assertThat(invocations.get(3)).contains(action4.getSourceName());
+//        assertThat(invocations.get(4)).contains(action5.getMessage());
 
     }
 
