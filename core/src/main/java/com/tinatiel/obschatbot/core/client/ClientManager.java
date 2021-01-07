@@ -32,10 +32,4 @@ public interface ClientManager<T> {
      */
     void reload();
 
-    /**
-     * Returns the current instance of the client. WARNING - this reference can become stale due to a client being stopped
-     * or reloaded.
-     * @return Current instance of the client.
-     */
-    T getClient();
 }

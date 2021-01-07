@@ -118,10 +118,4 @@ public class ObsClientManagerImpl implements ObsClientManager {
         start();
     }
 
-    @Override
-    public OBSRemoteController getClient() {
-        if(obsRemoteController == null) throw new ClientNotAvailableException("Client not yet available");
-        return obsRemoteController;
-    }
-
 }

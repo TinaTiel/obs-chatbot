@@ -5,7 +5,6 @@
 
 package com.tinatiel.obschatbot.core.request.queue.consumers;
 
-import com.tinatiel.obschatbot.core.client.obs.ObsClient;
 import com.tinatiel.obschatbot.core.client.obs.ObsClientManager;
 import com.tinatiel.obschatbot.core.request.queue.ActionCommand;
 import com.tinatiel.obschatbot.core.request.queue.ObsQueue;
