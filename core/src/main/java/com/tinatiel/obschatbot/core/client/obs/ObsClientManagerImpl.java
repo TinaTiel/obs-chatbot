@@ -25,8 +25,8 @@ public class ObsClientManagerImpl implements ObsClientManager {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
     private final ObsSettings settings;
 
-    private final Lock connectedLock = new ReentrantLock();
-    private final Condition connectedCondition = connectedLock.newCondition();
+    CompletableFuture<Void> connected;
+    CompletableFuture<Void> disconnected;
 
     private ObsActionCommandConsumer consumer;
     private OBSRemoteController obsRemoteController;
@@ -49,8 +49,9 @@ public class ObsClientManagerImpl implements ObsClientManager {
     @Override
     public void start() {
         if(obsRemoteController == null) {
-            // Initialize the client
-            CompletableFuture<Void> connected = new CompletableFuture<>();
+            // Initialize the client and shared data
+            connected = new CompletableFuture<>();
+            disconnected = new CompletableFuture<>();
             obsRemoteController = new OBSRemoteController(
                     "ws://" + settings.getHost() + ":" + settings.getPort(),
                     false,
@@ -65,6 +66,7 @@ public class ObsClientManagerImpl implements ObsClientManager {
             obsRemoteController.registerCloseCallback((statusCode, reason) -> {
                 log.info(String.format("OBS Client closed with statusCode %s and reason '%s", statusCode, reason));
                 obsRemoteController = null;
+                disconnected.complete(null);
             });
             obsRemoteController.registerConnectionFailedCallback(message -> {
                 log.error("Connection to OBS failed: " + message);
@@ -95,6 +97,18 @@ public class ObsClientManagerImpl implements ObsClientManager {
         log.info("Stopping OBS Client");
         if(obsRemoteController == null) throw new ClientNotAvailableException("No client was available to stop");
         obsRemoteController.disconnect();
+        try {
+            disconnected.get(settings.getConnectionTimeoutMs(), TimeUnit.MILLISECONDS);
+        } catch (InterruptedException interruptedException) {
+            log.error("Disconnection interrupted", interruptedException);
+        } catch (ExecutionException executionException) {
+            throw new ClientNotAvailableException("Execution failed during stop", executionException);
+        } catch (TimeoutException e) {
+            throw new ClientNotAvailableException("OBS Client failed to stop within timeout (" + settings.getConnectionTimeoutMs() + "ms)", e);
+        } finally {
+            // Always dereference the controller so it gets garbage-collected
+            obsRemoteController = null;
+        }
     }
 
     @Override
