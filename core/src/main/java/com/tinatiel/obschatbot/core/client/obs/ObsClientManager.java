@@ -5,11 +5,10 @@
 
 package com.tinatiel.obschatbot.core.client.obs;
 
+import com.tinatiel.obschatbot.core.client.ClientManager;
 import com.tinatiel.obschatbot.core.request.queue.consumers.ActionCommandConsumer;
+import net.twasi.obsremotejava.OBSRemoteController;
 
-public interface ObsClientManager extends ActionCommandConsumer {
-    void start();
-    void stop();
-    void reload();
-    ObsClient getClient();
+public interface ObsClientManager extends ActionCommandConsumer, ClientManager<OBSRemoteController> {
+
 }

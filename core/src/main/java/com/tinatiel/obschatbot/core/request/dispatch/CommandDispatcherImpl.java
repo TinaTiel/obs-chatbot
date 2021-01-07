@@ -6,7 +6,7 @@
 package com.tinatiel.obschatbot.core.request.dispatch;
 
 import com.tinatiel.obschatbot.core.command.Command;
-import com.tinatiel.obschatbot.core.error.ClientNotRegisteredException;
+import com.tinatiel.obschatbot.core.error.ClientNotAvailableException;
 import com.tinatiel.obschatbot.core.error.CyclicalActionsException;
 import com.tinatiel.obschatbot.core.request.Request;
 import com.tinatiel.obschatbot.core.request.RequestContext;
@@ -34,7 +34,7 @@ public class CommandDispatcherImpl implements CommandDispatcher {
         try {
             Request request = requestFactory.build(command, requestContext);
             commandExecutorService.submit(request);
-        } catch (CyclicalActionsException | ClientNotRegisteredException e) {
+        } catch (CyclicalActionsException | ClientNotAvailableException e) {
             log.error(String.format("Not able to execute command %s with context %s",
                     command, requestContext), e);
         } catch (Exception unexpected) {

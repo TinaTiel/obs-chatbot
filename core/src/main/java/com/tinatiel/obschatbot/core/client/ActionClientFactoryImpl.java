@@ -7,7 +7,7 @@ package com.tinatiel.obschatbot.core.client;
 
 import com.tinatiel.obschatbot.core.client.obs.ObsClient;
 import com.tinatiel.obschatbot.core.client.chat.twitch.TwitchChatClient;
-import com.tinatiel.obschatbot.core.error.ClientNotRegisteredException;
+import com.tinatiel.obschatbot.core.error.ClientNotAvailableException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -47,10 +47,10 @@ public class ActionClientFactoryImpl implements ActionClientFactory {
 //    }
 
     @Override
-    public ActionClient getClient(Class<? extends ActionClient> clientType)  throws ClientNotRegisteredException {
+    public ActionClient getClient(Class<? extends ActionClient> clientType)  throws ClientNotAvailableException {
         if(clientType == null) throw new IllegalArgumentException("clientType cannot be null");
         ActionClient found = registry.get(clientType);
-        if(found == null) throw new ClientNotRegisteredException("No client registered of type: " + clientType.getSimpleName());
+        if(found == null) throw new ClientNotAvailableException("No client registered of type: " + clientType.getSimpleName());
         return found;
     }
 

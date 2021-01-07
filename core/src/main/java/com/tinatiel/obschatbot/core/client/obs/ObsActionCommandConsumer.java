@@ -9,9 +9,11 @@ import com.tinatiel.obschatbot.core.action.model.ObsSourceVisibilityAction;
 import com.tinatiel.obschatbot.core.request.queue.ActionCommand;
 import com.tinatiel.obschatbot.core.request.queue.consumers.ActionCommandConsumer;
 import net.twasi.obsremotejava.OBSRemoteController;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ObsActionCommandConsumer implements ActionCommandConsumer {
-
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
     private final OBSRemoteController client;
 
     public ObsActionCommandConsumer(OBSRemoteController client) {
@@ -20,11 +22,16 @@ public class ObsActionCommandConsumer implements ActionCommandConsumer {
 
     @Override
     public void consume(ActionCommand actionCommand) {
-        if(actionCommand.getAction() instanceof ObsSourceVisibilityAction) {
-            ObsSourceVisibilityAction action = (ObsSourceVisibilityAction) actionCommand.getAction();
-            client.setSourceVisibility(action.getSceneName(), action.getSourceName(), action.isVisible(), (result) -> {
-                actionCommand.complete(null);
-            });
+        try {
+            if(actionCommand.getAction() instanceof ObsSourceVisibilityAction) {
+                ObsSourceVisibilityAction action = (ObsSourceVisibilityAction) actionCommand.getAction();
+                client.setSourceVisibility(action.getSceneName(), action.getSourceName(), action.isVisible(), (result) -> {
+                    log.debug("Executed " + actionCommand + " with result " + result);
+                    actionCommand.complete(null);
+                });
+            }
+        } finally {
+            actionCommand.cancel(true);
         }
     }
 }

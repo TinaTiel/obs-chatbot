@@ -5,11 +5,11 @@
 
 package com.tinatiel.obschatbot.core.client;
 
-import com.tinatiel.obschatbot.core.error.ClientNotRegisteredException;
+import com.tinatiel.obschatbot.core.error.ClientNotAvailableException;
 
 public interface ActionClientFactory {
 
 //    ActionClient getService(ActionType actionType);
-    ActionClient getClient(Class<? extends ActionClient> clientType) throws ClientNotRegisteredException;
+    ActionClient getClient(Class<? extends ActionClient> clientType) throws ClientNotAvailableException;
 
 }

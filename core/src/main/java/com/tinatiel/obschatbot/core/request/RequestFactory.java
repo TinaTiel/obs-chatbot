@@ -6,7 +6,7 @@
 package com.tinatiel.obschatbot.core.request;
 
 import com.tinatiel.obschatbot.core.command.Command;
-import com.tinatiel.obschatbot.core.error.ClientNotRegisteredException;
+import com.tinatiel.obschatbot.core.error.ClientNotAvailableException;
 import com.tinatiel.obschatbot.core.error.CyclicalActionsException;
 import com.tinatiel.obschatbot.core.request.dispatch.SequentialExecutor;
 
@@ -23,5 +23,5 @@ public interface RequestFactory {
      */
     long getCommandTimeoutMs();
 
-    Request build(Command command, RequestContext context) throws CyclicalActionsException, ClientNotRegisteredException;
+    Request build(Command command, RequestContext context) throws CyclicalActionsException, ClientNotAvailableException;
 }

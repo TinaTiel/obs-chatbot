@@ -7,6 +7,7 @@ package com.tinatiel.obschatbot;
 
 import com.tinatiel.obschatbot.core.client.obs.ObsActionCommandConsumer;
 import com.tinatiel.obschatbot.core.client.obs.ObsClient;
+import com.tinatiel.obschatbot.core.client.obs.ObsClientManager;
 import com.tinatiel.obschatbot.core.request.RequestContext;
 import com.tinatiel.obschatbot.core.request.queue.ActionCommand;
 import com.tinatiel.obschatbot.core.user.Platform;
@@ -65,10 +66,16 @@ public class App {
         RequestContext requestContext = new RequestContext(user, new ArrayList<>());
         ActionCommand actionCommand = new ActionCommand(ObsClient.class, action, requestContext);
 
-        OBSRemoteController obsRemoteController = new OBSRemoteController("ws://localhost:4444", false);
-        ObsActionCommandConsumer actionCommandConsumer = new ObsActionCommandConsumer(obsRemoteController);
+//        OBSRemoteController obsRemoteController = new OBSRemoteController("ws://localhost:4444", false);
+//        ObsActionCommandConsumer actionCommandConsumer = new ObsActionCommandConsumer(obsRemoteController);
+//        actionCommandConsumer.consume(actionCommand);
 
-        actionCommandConsumer.consume(actionCommand);
+        ObsClientManager obsClientManager = context.getBean(ObsClientManager.class);
+        obsClientManager.start();
+        obsClientManager.consume(actionCommand);
+        obsClientManager.reload();
+        obsClientManager.consume(actionCommand);
+        obsClientManager.stop();
 
     }
 }

@@ -7,7 +7,7 @@ package com.tinatiel.obschatbot.core.client;
 
 import com.tinatiel.obschatbot.core.client.obs.ObsClient;
 import com.tinatiel.obschatbot.core.client.chat.twitch.TwitchChatClient;
-import com.tinatiel.obschatbot.core.error.ClientNotRegisteredException;
+import com.tinatiel.obschatbot.core.error.ClientNotAvailableException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -63,7 +63,7 @@ public class ActionClientFactoryTest {
         // When requested, then an exception will be thrown
         assertThatThrownBy(() -> {
             factory.getClient(clientClass);
-        }).isInstanceOf(ClientNotRegisteredException.class);
+        }).isInstanceOf(ClientNotAvailableException.class);
     }
 
     private static class UnregisteredClient implements ActionClient {
