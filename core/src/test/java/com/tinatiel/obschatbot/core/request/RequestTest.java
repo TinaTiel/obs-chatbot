@@ -18,8 +18,6 @@ import static org.mockito.Mockito.mock;
 
 public class RequestTest {
 
-//    private final ExecutorService parentExecutor = mock(ExecutorService.class);
-
     @Test
     void nullArgs() {
 
@@ -32,18 +30,5 @@ public class RequestTest {
         }).isInstanceOf(IllegalArgumentException.class);
 
     }
-
-//    @Test
-//    void timeoutMustBeGreaterThanZero() {
-//
-//        assertThatThrownBy(() -> {
-//            new Request(new SequentialExecutorImpl(parentExecutor), -1, new ArrayList<>());
-//        }).isInstanceOf(IllegalArgumentException.class).hasMessageContaining("timeout");
-//
-//        assertThatThrownBy(() -> {
-//            new Request(new SequentialExecutorImpl(parentExecutor), 0, new ArrayList<>());
-//        }).isInstanceOf(IllegalArgumentException.class).hasMessageContaining("timeout");;
-//
-//    }
 
 }

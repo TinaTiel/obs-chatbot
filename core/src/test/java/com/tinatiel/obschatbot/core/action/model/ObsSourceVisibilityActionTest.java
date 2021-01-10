@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class ObsSourceVisibilityActionTest {
 
     @Test
-    void sceneItemIsRequired() {
+    void sourceIsRequired() {
         assertThatThrownBy(() -> {
             new ObsSourceVisibilityAction("foo", null, true);
         }).isInstanceOf(IllegalArgumentException.class);

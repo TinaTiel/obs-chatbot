@@ -5,9 +5,7 @@
 
 package com.tinatiel.obschatbot.core.request;
 
-import com.tinatiel.obschatbot.core.action.RunnableAction;
 import com.tinatiel.obschatbot.core.request.dispatch.SequentialExecutor;
-import com.tinatiel.obschatbot.core.request.dispatch.SequentialExecutorImpl;
 import com.tinatiel.obschatbot.core.request.queue.ActionCommand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,6 +38,12 @@ public class Request implements Runnable {
 //        this.actionCommands = null;
 //    }
 
+    /**
+      * Defines a runnable request, encompassing some run parameters and the actions/args themselves (RunnableAction).
+      * @param sequentialExecutor Instance of an executor that will execute the actionCommands in-order (awaiting get() calls before each execution).
+      * @param timeoutMs The maximum time an individual actionCommand has to execute. If less than zero, there is no timeout.
+      * @param actionCommands The list of actionCommands (completableFutures) that will be run.
+      */
     public Request(SequentialExecutor sequentialExecutor, long timeoutMs, List<ActionCommand> actionCommands) {
         if(sequentialExecutor == null || actionCommands == null) throw new IllegalArgumentException("arguments cannot be null");
         this.executor = sequentialExecutor;
@@ -62,6 +66,7 @@ public class Request implements Runnable {
 //        }
         for(ActionCommand actionCommand:actionCommands) {
             try {
+                // TODO add intelligent logic here for Wait actions; wait at least as long as the wait, plus the specified timeout
                 actionCommand.get(timoutMs, TimeUnit.MILLISECONDS);
             } catch (InterruptedException interruptedException) {
                 log.warn("Interrupted request at: " + actionCommand, interruptedException);
