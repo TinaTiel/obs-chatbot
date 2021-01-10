@@ -55,7 +55,7 @@ public class TwitchChatQueueConsumerTest {
         executorService.submit(consumer);
         executorService.shutdown();
         try {
-            executorService.awaitTermination(1, TimeUnit.MILLISECONDS);
+            executorService.awaitTermination(10, TimeUnit.MILLISECONDS);
         } catch (InterruptedException interruptedException) {
             interruptedException.printStackTrace();
         }

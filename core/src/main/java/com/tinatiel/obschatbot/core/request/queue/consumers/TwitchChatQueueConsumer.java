@@ -6,6 +6,7 @@
 package com.tinatiel.obschatbot.core.request.queue.consumers;
 
 import com.tinatiel.obschatbot.core.client.chat.twitch.TwitchChatClientManager;
+import com.tinatiel.obschatbot.core.request.queue.ActionCommand;
 import com.tinatiel.obschatbot.core.request.queue.TwitchChatQueue;
 
 public class TwitchChatQueueConsumer implements Runnable {
@@ -20,6 +21,13 @@ public class TwitchChatQueueConsumer implements Runnable {
 
     @Override
     public void run() {
-
+        while(true) {
+            try{
+                ActionCommand actionCommand = twitchQueue.take();
+                twitchClientManager.consume(actionCommand);
+            } catch (InterruptedException interruptedException) {
+                Thread.currentThread().interrupt();
+            }
+        }
     }
 }
