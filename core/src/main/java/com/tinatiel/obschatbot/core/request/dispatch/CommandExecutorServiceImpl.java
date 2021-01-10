@@ -7,9 +7,11 @@ package com.tinatiel.obschatbot.core.request.dispatch;
 
 
 import com.tinatiel.obschatbot.core.request.Request;
+import com.tinatiel.obschatbot.core.request.queue.MainQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
@@ -35,7 +37,7 @@ public class CommandExecutorServiceImpl implements CommandExecutorService {
         delegator = new PausableExecutorServiceImpl(
                 maxConcurrentCommands, maxConcurrentCommands,
                 0L, TimeUnit.MILLISECONDS,
-                new LinkedBlockingQueue<Runnable>(),
+                new LinkedBlockingQueue<>(),
                 pauseTimeoutMs
         );
     }

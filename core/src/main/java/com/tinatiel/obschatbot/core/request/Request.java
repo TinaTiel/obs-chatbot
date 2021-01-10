@@ -7,6 +7,7 @@ package com.tinatiel.obschatbot.core.request;
 
 import com.tinatiel.obschatbot.core.request.dispatch.SequentialExecutor;
 import com.tinatiel.obschatbot.core.request.queue.ActionCommand;
+import com.tinatiel.obschatbot.core.request.queue.MainQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,7 +20,8 @@ import java.util.concurrent.TimeoutException;
 public class Request implements Runnable {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-    private final SequentialExecutor executor;
+//    private final SequentialExecutor executor;
+    private final MainQueue mainQueue;
     private final long timoutMs;
 //    private final List<RunnableAction> actions;
     private final List<ActionCommand> actionCommands;
@@ -40,13 +42,13 @@ public class Request implements Runnable {
 
     /**
       * Defines a runnable request, encompassing some run parameters and the actions/args themselves (RunnableAction).
-      * @param sequentialExecutor Instance of an executor that will execute the actionCommands in-order (awaiting get() calls before each execution).
+      * @param mainQueue Reference to main queue
       * @param timeoutMs The maximum time an individual actionCommand has to execute. If less than zero, there is no timeout.
       * @param actionCommands The list of actionCommands (completableFutures) that will be run.
       */
-    public Request(SequentialExecutor sequentialExecutor, long timeoutMs, List<ActionCommand> actionCommands) {
-        if(sequentialExecutor == null || actionCommands == null) throw new IllegalArgumentException("arguments cannot be null");
-        this.executor = sequentialExecutor;
+    public Request(MainQueue mainQueue, long timeoutMs, List<ActionCommand> actionCommands) {
+        if(mainQueue == null || actionCommands == null) throw new IllegalArgumentException("arguments cannot be null");
+        this.mainQueue = mainQueue;
         this.timoutMs = timeoutMs > 0 ? timeoutMs : Integer.MAX_VALUE;
         this.actionCommands = actionCommands;
     }
@@ -66,6 +68,7 @@ public class Request implements Runnable {
 //        }
         for(ActionCommand actionCommand:actionCommands) {
             try {
+                mainQueue.add(actionCommand);
                 // TODO add intelligent logic here for Wait actions; wait at least as long as the wait, plus the specified timeout
                 actionCommand.get(timoutMs, TimeUnit.MILLISECONDS);
             } catch (InterruptedException interruptedException) {
@@ -84,13 +87,12 @@ public class Request implements Runnable {
     }
 
     public Executor getExecutor() {
-        return executor;
+        return null;
     }
 
     @Override
     public String toString() {
         return "CommandRequest{" +
-                "executor=" + executor +
                 ", actionCommands=" + actionCommands +
                 '}';
     }

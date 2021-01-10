@@ -5,6 +5,7 @@
 
 package com.tinatiel.obschatbot.core.request.dispatch;
 
+import com.tinatiel.obschatbot.core.request.queue.MainQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,7 +38,7 @@ public class PausableExecutorServiceImpl extends ThreadPoolExecutor implements P
                                        TimeUnit unit,
                                        BlockingQueue<Runnable> workQueue,
                                        long pauseTimeout) {
-        super(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue);
+        super(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue, new LoggingRejectedExecutionHandler());
         this.pauseTimeout = pauseTimeout;
     }
 
@@ -110,6 +111,16 @@ public class PausableExecutorServiceImpl extends ThreadPoolExecutor implements P
             pauseLock.unlock();
         }
 
+    }
+
+    private static class LoggingRejectedExecutionHandler implements RejectedExecutionHandler {
+
+        private final Logger log = LoggerFactory.getLogger(this.getClass());
+
+        @Override
+        public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
+            log.error("Rejected execution of " + r + " for executor " + executor);
+        }
     }
 
 }

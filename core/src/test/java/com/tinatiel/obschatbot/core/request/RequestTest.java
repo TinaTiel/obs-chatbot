@@ -6,6 +6,7 @@
 package com.tinatiel.obschatbot.core.request;
 
 import com.tinatiel.obschatbot.core.request.dispatch.SequentialExecutorImpl;
+import com.tinatiel.obschatbot.core.request.queue.MainQueue;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -26,7 +27,7 @@ public class RequestTest {
         }).isInstanceOf(IllegalArgumentException.class);
 
         assertThatThrownBy(() -> {
-            new Request(new SequentialExecutorImpl(), 123, null);
+            new Request(mock(MainQueue.class), 123, null);
         }).isInstanceOf(IllegalArgumentException.class);
 
     }

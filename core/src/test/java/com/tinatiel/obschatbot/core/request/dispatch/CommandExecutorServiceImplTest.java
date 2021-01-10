@@ -5,10 +5,12 @@
 
 package com.tinatiel.obschatbot.core.request.dispatch;
 
+import com.tinatiel.obschatbot.core.request.queue.MainQueue;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
+import static org.mockito.Mockito.mock;
 
 public class CommandExecutorServiceImplTest {
 

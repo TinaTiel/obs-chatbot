@@ -3,25 +3,17 @@
  * GNU General Public License v3.0. See LICENSE or go to https://fsf.org/ for more details.
  */
 
-package com.tinatiel.obschatbot.core.request.queue;
+package com.tinatiel.obschatbot.core.client.chat.twitch;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class QueueConfig {
+public class TwitchChatClientManagerConfig {
 
     @Bean
-    MainQueue mainQueue() {
-        return new MainQueue();
+    TwitchChatClientManager twitchChatClientManager() {
+        return new TwitchChatClientManagerImpl();
     }
-
-    @Bean
-    ObsQueue obsQueue() {
-        return new ObsQueue();
-    }
-
-    @Bean
-    TwitchChatQueue twitchChatQueue() { return new TwitchChatQueue(); }
 
 }

@@ -41,6 +41,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -72,8 +73,11 @@ public class HeadlessCoreIT {
     @Autowired
     MainQueue mainQueue;
 
+    @MockBean
+    ExecutorService queueConsumerMainExecutor; // stub out the consumer executor so we let things build in MainQueue
+
     @Test
-    void generateRequestAsExpected() {
+    void whenNoConsumptionThenMainQueueOnlyContainsFirstAction() {
 
         // Given a real command with actions returned by the repository
         SendMessageAction action1 = new SendMessageAction("Check out this mango!");
@@ -95,12 +99,19 @@ public class HeadlessCoreIT {
         User user = new User(Platform.TWITCH, "mango");
         chatRequestHandler.handle(user, request);
 
-        // Then the expected messages are added to the main queue, in order
+        // Then the expected messages are added to the main queue, in order (if we wait for them to filter through)
+        try {
+            System.out.println("Waiting");
+            Thread.sleep(5000 + 100); // RequestConfig states timeout is 1000ms per command
+        } catch (InterruptedException interruptedException) {
+            interruptedException.printStackTrace();
+        }
         List<Action> received =mainQueue.stream()
                 .map(ActionCommand::getAction)
                 .collect(Collectors.toList());
+        System.out.println("Main queue: " + received);
 
-        assertThat(received).containsExactly(action1, action2, action3, action4, action5);
+        assertThat(received).containsExactly(action1, action2, action3, action4, action5); // Assuming the actions timeout here, since we have no consumers
 
         // Then the actions are executed in order as expected, without errors
         // Spy Beans don't work as expected, see https://github.com/spring-projects/spring-boot/issues/7033

@@ -12,6 +12,7 @@ import com.tinatiel.obschatbot.core.error.CyclicalActionsException;
 import com.tinatiel.obschatbot.core.request.dispatch.CommandExecutorService;
 import com.tinatiel.obschatbot.core.request.dispatch.SequentialExecutorImpl;
 import com.tinatiel.obschatbot.core.request.expand.CommandExpander;
+import com.tinatiel.obschatbot.core.request.queue.MainQueue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -29,6 +30,7 @@ class RequestFactoryImplTest {
     CommandExpander commandExpander;
     ActionClientFactory clientFactory;
     CommandExecutorService commandExecutorService;
+    MainQueue mainQueue;
 
     RequestFactory factory;
 
@@ -37,7 +39,8 @@ class RequestFactoryImplTest {
         commandExpander = mock(CommandExpander.class);
         clientFactory = mock(ActionClientFactory.class);
         commandExecutorService = mock(CommandExecutorService.class);
-        factory = new RequestFactoryImpl(commandExpander, clientFactory, 69L);
+        mainQueue = mock(MainQueue.class);
+        factory = new RequestFactoryImpl(commandExpander,69L, mainQueue);
     }
 
     @Test
@@ -61,7 +64,7 @@ class RequestFactoryImplTest {
         Request request = factory.build(command, context);
 
         // Then the request contains the expected
-        assertThat(request.getExecutor()).isNotNull().isInstanceOf(SequentialExecutorImpl.class);
+//        assertThat(request.getExecutor()).isNotNull().isInstanceOf(SequentialExecutorImpl.class);
         assertThat(request.getActionCommands()).hasSameSizeAs(actions);
 
     }
