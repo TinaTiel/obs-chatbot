@@ -9,6 +9,7 @@ import com.tinatiel.obschatbot.core.command.Command;
 import com.tinatiel.obschatbot.core.error.ClientNotAvailableException;
 import com.tinatiel.obschatbot.core.error.CyclicalActionsException;
 import com.tinatiel.obschatbot.core.request.dispatch.SequentialExecutor;
+import com.tinatiel.obschatbot.core.request.queue.ActionCommand;
 
 public interface RequestFactory {
     /**
@@ -24,4 +25,5 @@ public interface RequestFactory {
     long getCommandTimeoutMs();
 
     Request build(Command command, RequestContext context) throws CyclicalActionsException, ClientNotAvailableException;
+
 }

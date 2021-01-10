@@ -10,16 +10,16 @@ import com.tinatiel.obschatbot.core.action.RunnableAction;
 import com.tinatiel.obschatbot.core.client.NoOpClient;
 import com.tinatiel.obschatbot.core.request.Request;
 import com.tinatiel.obschatbot.core.request.RequestContext;
+import com.tinatiel.obschatbot.core.request.queue.ActionCommand;
 import org.junit.jupiter.api.RepeatedTest;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -42,18 +42,18 @@ public class SequentialExecutorImplIT {
         // given many random requests
         List<Request> requests = new ArrayList<>();
         for(int r=0; r < numRequests; r++) {
-            List<RunnableAction> actions = new ArrayList<>();
+            List<ActionCommand> actions = new ArrayList<>();
             int numActions = random.nextInt(maxNumActions) + minNumActions;
             for(int a=0; a < numActions; a++) {
                 final int currRequest = r+1;
                 final int currAction = a+1;
-                actions.add(new StubRunnableAction(
+                actions.add(new StubActionCommand(
                         currRequest,
                         currAction,
                         random.nextInt(maxExecTimeMs)
                 ));
             }
-            requests.add(new Request(new SequentialExecutorImpl(),Long.MAX_VALUE, actions));
+            requests.add(new Request(new SequentialExecutorImpl(),10L, actions));
         }
 
         // (print out for sanity-checking)
@@ -78,9 +78,10 @@ public class SequentialExecutorImplIT {
 
         // Then upon inspection we find the actions were run in order
         for(Request request:requests) {
-            for(int i=1; i< request.getActions().size(); i++) {
-                StubRunnableAction first = (StubRunnableAction) request.getActions().get(i-1);
-                StubRunnableAction second = (StubRunnableAction) request.getActions().get(i);
+            System.out.println(request);
+            for(int i = 1; i< request.getActionCommands().size(); i++) {
+                StubActionCommand first = (StubActionCommand) request.getActionCommands().get(i-1);
+                StubActionCommand second = (StubActionCommand) request.getActionCommands().get(i);
                 long delta = second.getExecRecord().getStart() - first.getExecRecord().getStart();
                 try {
                     // The actions are run in-order
@@ -121,6 +122,7 @@ public class SequentialExecutorImplIT {
             return start;
         }
 
+
         @Override
         public String toString() {
             return "ExecRecord{" +
@@ -130,32 +132,18 @@ public class SequentialExecutorImplIT {
         }
     }
 
-    private static class StubRunnableAction implements RunnableAction<NoOpClient, StubAction> {
+    private static class StubActionCommand extends ActionCommand {
 
         private final long requestNum;
         private final long actionNum;
 
         private final ExecRecord execRecord;
 
-        public StubRunnableAction(long requestNum, long actionNum, long execTime) {
+        public StubActionCommand(long requestNum, long actionNum, long execTime) {
+            super(NoOpClient.class, mock(Action.class), mock(RequestContext.class));
             this.requestNum = requestNum;
             this.actionNum = actionNum;
             this.execRecord = new ExecRecord(execTime);
-        }
-
-        @Override
-        public RequestContext getRequestContext() {
-            return null;
-        }
-
-        @Override
-        public StubAction getAction() {
-            return null;
-        }
-
-        @Override
-        public NoOpClient getClient() {
-            return null;
         }
 
         public ExecRecord getExecRecord() {
@@ -163,15 +151,15 @@ public class SequentialExecutorImplIT {
         }
 
         @Override
-        public void run() {
-            long currTime = System.currentTimeMillis();
-            System.out.println(new Timestamp(currTime) + " - Executing " + this + " for " + execRecord.getExpectedDuration() + "ms");
-            try {
-                execRecord.setStart(currTime);
-                Thread.sleep(execRecord.getExpectedDuration());
-            } catch (InterruptedException interruptedException) {
-                interruptedException.printStackTrace();
-            }
+        public Void get() throws InterruptedException, ExecutionException {
+            execRecord.setStart(System.currentTimeMillis());
+            return super.get();
+        }
+
+        @Override
+        public Void get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
+            execRecord.setStart(System.currentTimeMillis());
+            return super.get(timeout, unit);
         }
 
         @Override

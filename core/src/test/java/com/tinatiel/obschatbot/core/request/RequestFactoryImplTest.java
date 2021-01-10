@@ -64,7 +64,7 @@ class RequestFactoryImplTest {
 
         // Then the request contains the expected
         assertThat(request.getExecutor()).isNotNull().isInstanceOf(SequentialExecutorImpl.class);
-        assertThat(request.getActions()).hasSameSizeAs(actions);
+        assertThat(request.getActionCommands()).hasSameSizeAs(actions);
 
     }
 

@@ -5,14 +5,17 @@
 
 package com.tinatiel.obschatbot.core.request;
 
+import com.tinatiel.obschatbot.core.action.Action;
 import com.tinatiel.obschatbot.core.action.RunnableAction;
 import com.tinatiel.obschatbot.core.client.ActionClientFactory;
 import com.tinatiel.obschatbot.core.command.Command;
+import com.tinatiel.obschatbot.core.error.ClientNotAvailableException;
 import com.tinatiel.obschatbot.core.error.CyclicalActionsException;
 import com.tinatiel.obschatbot.core.request.dispatch.CommandExecutorService;
 import com.tinatiel.obschatbot.core.request.dispatch.SequentialExecutor;
 import com.tinatiel.obschatbot.core.request.dispatch.SequentialExecutorImpl;
 import com.tinatiel.obschatbot.core.request.expand.CommandExpander;
+import com.tinatiel.obschatbot.core.request.queue.ActionCommand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,16 +62,23 @@ public class RequestFactoryImpl implements RequestFactory {
         if(command == null || context == null) throw new IllegalArgumentException("arguments cannot be null");
 
         // Generate the list of runnable actions for the command
-        List<RunnableAction> runnableActions = commandExpander.expand(command).stream()
-                .map(action->
-                    action.createRunnableAction(clientFactory.getClient(action.acceptsClientType()), context)
-                ).collect(Collectors.toList());
+//        List<RunnableAction> runnableActions = commandExpander.expand(command).stream()
+//                .map(action->
+//                    action.createRunnableAction(clientFactory.getClient(action.acceptsClientType()), context)
+//                ).collect(Collectors.toList());
 
         // Return the request
-        return new Request(
-                newSequentialExecutor(),
-                commandTimeoutMs,
-                runnableActions
-        );
+//        return new Request(
+//                newSequentialExecutor(),
+//                commandTimeoutMs,
+//                runnableActions
+//        );
+
+        List<ActionCommand> actionCommands = commandExpander.expand(command).stream()
+                .map(action -> new ActionCommand(action.acceptsClientType(), action, context))
+                .collect(Collectors.toList());
+
+        return new Request(newSequentialExecutor(), commandTimeoutMs, actionCommands);
     }
+
 }
