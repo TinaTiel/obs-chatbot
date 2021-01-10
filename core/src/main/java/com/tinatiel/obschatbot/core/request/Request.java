@@ -20,25 +20,9 @@ import java.util.concurrent.TimeoutException;
 public class Request implements Runnable {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-//    private final SequentialExecutor executor;
     private final MainQueue mainQueue;
     private final long timoutMs;
-//    private final List<RunnableAction> actions;
     private final List<ActionCommand> actionCommands;
-
-//    /**
-//     * Defines a runnable request, encompassing some run parameters and the actions/args themselves (RunnableAction).
-//     * @param sequentialExecutor Instance of an executor that will execute the RunnableActions in-order
-//     * @param timeoutMs The maximum time a list of RunnableActions has to execute. If less than zero, timeout is infinite.
-//     * @param actions The list of RunnableActions that will be run.
-//     */
-//    public Request(SequentialExecutor sequentialExecutor, long timeoutMs, List<RunnableAction> actions) {
-//        if(sequentialExecutor == null || actions == null) throw new IllegalArgumentException("arguments cannot be null");
-//        this.executor = sequentialExecutor;
-//        this.timoutMs = timeoutMs;
-//        this.actions = actions;
-//        this.actionCommands = null;
-//    }
 
     /**
       * Defines a runnable request, encompassing some run parameters and the actions/args themselves (RunnableAction).
@@ -55,17 +39,6 @@ public class Request implements Runnable {
 
     @Override
     public void run() {
-//        for(RunnableAction action:actions) executor.execute(action);
-//        executor.shutdown();
-//        try {
-//            if(timoutMs < 0) {
-//                executor.awaitTermination(Long.MAX_VALUE, TimeUnit.MILLISECONDS);
-//            } else {
-//                executor.awaitTermination(timoutMs, TimeUnit.MILLISECONDS);
-//            }
-//        } catch (InterruptedException interruptedException) {
-//            interruptedException.printStackTrace();
-//        }
         for(ActionCommand actionCommand:actionCommands) {
             try {
                 mainQueue.add(actionCommand);
@@ -82,12 +55,12 @@ public class Request implements Runnable {
         }
     }
 
-    public List<ActionCommand> getActionCommands() {
-        return actionCommands;
+    public long getTimoutMs() {
+        return timoutMs;
     }
 
-    public Executor getExecutor() {
-        return null;
+    public List<ActionCommand> getActionCommands() {
+        return actionCommands;
     }
 
     @Override

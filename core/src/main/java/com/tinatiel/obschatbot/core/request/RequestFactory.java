@@ -12,11 +12,6 @@ import com.tinatiel.obschatbot.core.request.dispatch.SequentialExecutor;
 import com.tinatiel.obschatbot.core.request.queue.ActionCommand;
 
 public interface RequestFactory {
-    /**
-     * Gets a new instance of a SequentialExecutor, which internally has a reference to this
-     * service (e.g. for propagating pause/resume commands if implemented later)
-     */
-    SequentialExecutor newSequentialExecutor();
 
     /**
      * Gets the maximum time a command will have to execute before it is interrupted.

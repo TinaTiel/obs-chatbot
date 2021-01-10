@@ -6,7 +6,6 @@
 package com.tinatiel.obschatbot.core.request.dispatch;
 
 import com.tinatiel.obschatbot.core.action.Action;
-import com.tinatiel.obschatbot.core.action.RunnableAction;
 import com.tinatiel.obschatbot.core.client.NoOpClient;
 import com.tinatiel.obschatbot.core.request.Request;
 import com.tinatiel.obschatbot.core.request.RequestContext;
@@ -14,7 +13,6 @@ import com.tinatiel.obschatbot.core.request.queue.ActionCommand;
 import com.tinatiel.obschatbot.core.request.queue.MainQueue;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.RepeatedTest;
-import org.junit.jupiter.api.Test;
 
 import java.sql.Timestamp;
 import java.time.Instant;
@@ -28,7 +26,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.Fail.fail;
 import static org.mockito.Mockito.mock;
 
-@Disabled
+@Disabled // TODO: Re-use parts of this test to verify in-order execution on Request execution
 public class SequentialExecutorImplIT {
 
     private final ExecutorService parentExecutor = mock(ExecutorService.class);
@@ -184,10 +182,6 @@ public class SequentialExecutorImplIT {
             return null;
         }
 
-        @Override
-        public RunnableAction<NoOpClient, StubAction> createRunnableAction(NoOpClient client, RequestContext requestContext) {
-            return null;
-        }
     }
 
 }

@@ -17,9 +17,6 @@ public class DispatchConfig {
     @Autowired
     RequestFactory requestFactory;
 
-    @Autowired
-    MainQueue mainQueue;
-
     @Bean
     CommandDispatcher commandDispatcher() {
         return new CommandDispatcherImpl(

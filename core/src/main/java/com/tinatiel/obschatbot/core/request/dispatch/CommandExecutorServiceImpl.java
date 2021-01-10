@@ -7,11 +7,9 @@ package com.tinatiel.obschatbot.core.request.dispatch;
 
 
 import com.tinatiel.obschatbot.core.request.Request;
-import com.tinatiel.obschatbot.core.request.queue.MainQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
@@ -31,7 +29,6 @@ public class CommandExecutorServiceImpl implements CommandExecutorService {
      */
     public CommandExecutorServiceImpl(long pauseTimeoutMs, int maxConcurrentCommands) {
         if(maxConcurrentCommands <= 0) throw new IllegalArgumentException("Max concurrent commands must be greater than zero");
-//        this.commandTimeoutMs = commandTimeoutMs;
         this.pauseTimeoutMs = pauseTimeoutMs;
         this.maxConcurrentCommands = maxConcurrentCommands;
         delegator = new PausableExecutorServiceImpl(

@@ -11,5 +11,4 @@ import com.tinatiel.obschatbot.core.request.RequestContext;
 public interface Action<C extends ActionClient, T extends Action<C, T>> {
     Class<C> acceptsClientType();
     T clone();
-    RunnableAction<C, T> createRunnableAction(C client, RequestContext requestContext);
 }

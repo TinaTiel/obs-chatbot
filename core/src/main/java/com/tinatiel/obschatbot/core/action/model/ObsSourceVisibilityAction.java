@@ -6,10 +6,7 @@
 package com.tinatiel.obschatbot.core.action.model;
 
 import com.tinatiel.obschatbot.core.action.Action;
-import com.tinatiel.obschatbot.core.action.RunnableAction;
-import com.tinatiel.obschatbot.core.action.runnable.RunnableObsSourceVisibilityAction;
 import com.tinatiel.obschatbot.core.client.obs.ObsClient;
-import com.tinatiel.obschatbot.core.request.RequestContext;
 
 public class ObsSourceVisibilityAction implements Action<ObsClient, ObsSourceVisibilityAction> {
 
@@ -32,12 +29,6 @@ public class ObsSourceVisibilityAction implements Action<ObsClient, ObsSourceVis
     @Override
     public ObsSourceVisibilityAction clone() {
         return new ObsSourceVisibilityAction(sceneName, sourceName, visible);
-    }
-
-    @Override
-    public RunnableAction<ObsClient, ObsSourceVisibilityAction> createRunnableAction(ObsClient client, RequestContext requestContext) {
-        if(client == null || requestContext == null) throw new IllegalArgumentException("arguments cannot be null");
-        return new RunnableObsSourceVisibilityAction(clone(), client, requestContext);
     }
 
     public String getSceneName() {

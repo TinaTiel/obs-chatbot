@@ -5,7 +5,6 @@
 
 package com.tinatiel.obschatbot.core.request.dispatch;
 
-import com.tinatiel.obschatbot.core.request.queue.MainQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

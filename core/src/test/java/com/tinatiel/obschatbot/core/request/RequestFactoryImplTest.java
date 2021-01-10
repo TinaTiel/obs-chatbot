@@ -6,11 +6,9 @@
 package com.tinatiel.obschatbot.core.request;
 
 import com.tinatiel.obschatbot.core.action.Action;
-import com.tinatiel.obschatbot.core.client.ActionClientFactory;
 import com.tinatiel.obschatbot.core.command.Command;
 import com.tinatiel.obschatbot.core.error.CyclicalActionsException;
 import com.tinatiel.obschatbot.core.request.dispatch.CommandExecutorService;
-import com.tinatiel.obschatbot.core.request.dispatch.SequentialExecutorImpl;
 import com.tinatiel.obschatbot.core.request.expand.CommandExpander;
 import com.tinatiel.obschatbot.core.request.queue.MainQueue;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,7 +26,6 @@ import static org.mockito.Mockito.when;
 class RequestFactoryImplTest {
 
     CommandExpander commandExpander;
-    ActionClientFactory clientFactory;
     CommandExecutorService commandExecutorService;
     MainQueue mainQueue;
 
@@ -37,7 +34,6 @@ class RequestFactoryImplTest {
     @BeforeEach
     void setUp() {
         commandExpander = mock(CommandExpander.class);
-        clientFactory = mock(ActionClientFactory.class);
         commandExecutorService = mock(CommandExecutorService.class);
         mainQueue = mock(MainQueue.class);
         factory = new RequestFactoryImpl(commandExpander,69L, mainQueue);

@@ -49,20 +49,9 @@ import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.assertj.core.api.Fail.fail;
 import static org.mockito.Mockito.*;
 
-@Import({HeadlessCoreIT.HeadlessCoreITtestConfig.class, App.class})
+@Import({App.class})
 @ExtendWith(SpringExtension.class)
 public class HeadlessCoreIT {
-
-//    @SpyBean
-    @Autowired
-    ObsClient obsClient;
-
-//    @SpyBean
-    @Autowired
-    TwitchChatClient twitchChatClient;
-
-    @Autowired
-    List<String> invocations;
 
     @MockBean
     CommandRepository commandRepository;
@@ -77,7 +66,7 @@ public class HeadlessCoreIT {
     ExecutorService queueConsumerMainExecutor; // stub out the consumer executor so we let things build in MainQueue
 
     @Test
-    void whenNoConsumptionThenMainQueueOnlyContainsFirstAction() {
+    void whenActionCommandsTimeoutThenMainQueueContainsThem() {
 
         // Given a real command with actions returned by the repository
         SendMessageAction action1 = new SendMessageAction("Check out this mango!");
@@ -112,123 +101,6 @@ public class HeadlessCoreIT {
         System.out.println("Main queue: " + received);
 
         assertThat(received).containsExactly(action1, action2, action3, action4, action5); // Assuming the actions timeout here, since we have no consumers
-
-        // Then the actions are executed in order as expected, without errors
-        // Spy Beans don't work as expected, see https://github.com/spring-projects/spring-boot/issues/7033
-//        verify(twitchChatClient).sendMessage(action1.getMessage());
-//        verify(obsClient).setSourceVisibility(action2.getSceneName(), action2.getSourceName(), action2.isVisible());
-//        verify(twitchChatClient).sendMessage(action3.getMessage());
-//        verify(obsClient).setSourceVisibility(action4.getSceneName(), action4.getSourceName(), action4.isVisible());
-//        verify(twitchChatClient).sendMessage(action5.getMessage());
-
-        // As a workaround, we manually verify using a synchronized list
-//        try {
-//            Thread.sleep(1500); // should be plenty of time
-//        } catch (InterruptedException interruptedException) {
-//            interruptedException.printStackTrace();
-//        }
-//        System.out.println("INVOCATIONS: \n" + invocations.stream().collect(Collectors.joining("\n")));
-//        assertThat(invocations).hasSize(5);
-//        assertThat(invocations.get(0)).contains(action1.getMessage());
-//        assertThat(invocations.get(1)).contains(action2.getSourceName());
-//        assertThat(invocations.get(2)).contains(action3.getMessage());
-//        assertThat(invocations.get(3)).contains(action4.getSourceName());
-//        assertThat(invocations.get(4)).contains(action5.getMessage());
-
-    }
-
-
-    private static class TestObsClient implements ObsClient {
-        private final Logger log = LoggerFactory.getLogger(this.getClass());
-        Random random = new Random();
-
-        private final List<String> invocations;
-
-        public TestObsClient(List<String> invocations) {
-            this.invocations = invocations;
-        }
-
-        @Override
-        public void connect() {
-            log.info("Connecting/Connected to OBS");
-        }
-
-        @Override
-        public void setSourceVisibility(String scene, String source, boolean visibility) {
-
-            invocations.add(String.format("ObsClient: scene:%s, source:%s, visibility:%s", scene, source, visibility));
-
-            log.info(String.format("%s source '%s' in scene '%s'",
-                visibility ? "Showing" : "Hiding",
-                source,
-                scene == null ? "(current scene)": scene
-            ));
-            try {
-                Thread.sleep(random.nextInt(5) + 5);
-            } catch (InterruptedException interruptedException) {
-                interruptedException.printStackTrace();
-            }
-            log.info("...Done!");
-        }
-
-        @Override
-        public String toString() {
-            return "TestObsClient";
-        }
-    }
-
-    private static class TestTwitchChatClient implements TwitchChatClient {
-        private final Logger log = LoggerFactory.getLogger(this.getClass());
-        Random random = new Random();
-
-        private final List<String> invocations;
-
-        public TestTwitchChatClient(List<String> invocations) {
-            this.invocations = invocations;
-        }
-
-        @Override
-        public void sendMessage(String message) {
-
-            invocations.add(String.format("TwitchChatClient: message:%s", message));
-
-            log.info("Sending message: " + message);
-            try {
-                Thread.sleep(random.nextInt(10) + 5);
-            } catch (InterruptedException interruptedException) {
-                interruptedException.printStackTrace();
-            }
-            log.info("...Sent!");
-        }
-
-        @Override
-        public String toString() {
-            return "TestTwitchChatClient";
-        }
-    }
-
-    @TestConfiguration
-    public static class HeadlessCoreITtestConfig {
-
-        @Bean
-        /**
-         * Workaround for not using SpyBeans due to https://github.com/spring-projects/spring-boot/issues/7033
-         */
-        public List<String> invocations() {
-            return Collections.synchronizedList(new ArrayList<>());
-        }
-
-        @Primary
-        @Bean
-        public ObsClient testObsClient() {
-            return new TestObsClient(invocations());
-        }
-
-        @Primary
-        @Bean
-        public TwitchChatClient testTwitchChatClient() {
-            return new TestTwitchChatClient(invocations());
-        }
 
     }
 
