@@ -14,8 +14,14 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class ClientConfig {
 
+    @Value("${TWITCH_TARGET_CHANNEL:noauth}")
+    private String targetChannel;
+
+    @Value("${TWITCH_USER:noauth}")
+    private String twitchUsername;
+
     @Value("${TWITCH_PASS:noauth}")
-    private String twitchAuth;
+    private String twitchPassword;
 
     @Bean
     ClientSettingsFactory clientSettingsFactory() {
@@ -25,7 +31,7 @@ public class ClientConfig {
             public TwitchChatSettings getTwitchChatSettings() {
                 return new TwitchChatSettings(
                         "irc.chat.twitch.tv", 6697,
-                        "robotiel", twitchAuth, "tinatiel",
+                        twitchUsername, twitchPassword, targetChannel,
                         5000
                 );
             }
