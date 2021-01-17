@@ -7,4 +7,5 @@
 <configuration>
     <include resource="org/springframework/boot/logging/logback/base.xml" />
     <logger name="com.tinatiel.obschatbot.core" level="DEBUG"/>
+    <logger name="org.pircbotx.output" level="OFF"/> <!-- PircBotX WILL LOG CREDENTIALS if at INFO or higher! -->
 </configuration>

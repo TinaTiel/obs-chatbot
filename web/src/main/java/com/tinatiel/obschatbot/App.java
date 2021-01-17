@@ -6,20 +6,14 @@
 package com.tinatiel.obschatbot;
 
 import com.tinatiel.obschatbot.core.action.model.SendMessageAction;
-import com.tinatiel.obschatbot.core.client.chat.twitch.TwitchChatClient;
 import com.tinatiel.obschatbot.core.client.chat.twitch.TwitchChatClientManager;
-import com.tinatiel.obschatbot.core.client.obs.ObsActionCommandConsumer;
-import com.tinatiel.obschatbot.core.client.obs.ObsClient;
-import com.tinatiel.obschatbot.core.client.obs.ObsClientManager;
 import com.tinatiel.obschatbot.core.request.RequestContext;
 import com.tinatiel.obschatbot.core.request.queue.ActionCommand;
 import com.tinatiel.obschatbot.core.user.Platform;
 import com.tinatiel.obschatbot.core.user.User;
-import net.twasi.obsremotejava.OBSRemoteController;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
-import com.tinatiel.obschatbot.core.action.model.ObsSourceVisibilityAction;
 
 import java.util.ArrayList;
 import java.util.Date;

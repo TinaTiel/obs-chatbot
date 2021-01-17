@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class ClientConfig {
 
-    @Value("${TWITCH_AUTH:noauth}")
+    @Value("${TWITCH_PASS:noauth}")
     private String twitchAuth;
 
     @Bean
