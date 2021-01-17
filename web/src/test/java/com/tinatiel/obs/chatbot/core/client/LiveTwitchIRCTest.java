@@ -5,6 +5,7 @@
 
 package com.tinatiel.obs.chatbot.core.client;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -48,19 +49,19 @@ public class LiveTwitchIRCTest {
     Configuration.Builder buildConfiguration;
     String username;
     String password;
-    String badUsername = "tYKgnnZHA9K37L5n7ytiS3oPBDwKrOWMs8hpsQoJ9GvYRGUZDE"; // unlikely somebody will create an account with this name
-    String badPassword = "thisPasswordIsNotValid";
+    String badUsername;
+    String badPassword;
 
     @BeforeEach
     void setUp() {
 
         // Get the credentials from the system environment
+        badUsername = RandomStringUtils.random(50);
+        badPassword = RandomStringUtils.random(50);
         username = System.getenv(TWITCH_USER);
         password = System.getenv(TWITCH_PASS);
         assertThat(username).withFailMessage(() -> "Expecting environment variable: " + TWITCH_USER).isNotNull();
         assertThat(password).withFailMessage(() -> "Expecting environment variable: " + TWITCH_PASS).isNotNull();
-        assertThat(username).isNotEqualTo(badUsername);
-        assertThat(password).isNotEqualTo(badPassword);
 
         buildConfiguration = new Configuration.Builder()
                 .addServer("irc.chat.twitch.tv", 6697)
