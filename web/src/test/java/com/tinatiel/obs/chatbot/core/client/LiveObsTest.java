@@ -26,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 @Import({App.class})
 @ExtendWith(SpringExtension.class)
-public class EndToEndWithObsIT {
+public class LiveObsTest {
 
     @Autowired ObsClientManager obsClientManager;
 
