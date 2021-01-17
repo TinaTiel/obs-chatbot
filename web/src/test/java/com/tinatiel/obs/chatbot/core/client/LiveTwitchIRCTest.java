@@ -5,9 +5,11 @@
 
 package com.tinatiel.obs.chatbot.core.client;
 
+import com.tinatiel.obschatbot.core.client.chat.twitch.TwitchChatSettings;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.pircbotx.Configuration;
 import org.pircbotx.MultiBotManager;
@@ -64,7 +66,7 @@ public class LiveTwitchIRCTest {
         assertThat(password).withFailMessage(() -> "Expecting environment variable: " + TWITCH_PASS).isNotNull();
 
         buildConfiguration = new Configuration.Builder()
-                .addServer("irc.chat.twitch.tv", 6697)
+                .addServer(TwitchChatSettings.DEFAULT_HOST, TwitchChatSettings.DEFAULT_PORT)
                 .setSocketFactory(new UtilSSLSocketFactory())
                 .addAutoJoinChannel("#" + username)
                 .setName(username)
@@ -190,6 +192,10 @@ public class LiveTwitchIRCTest {
 
     }
 
+    /**
+     * BEWARE: This test WILL print credentials. Do NOT enable in any Live CI/CD processes;
+     * this is for LOCAL development sanity-checking ONLY.
+     */
     @Disabled
     @Test
     void logAllEventsThroughSuccessfulLogin() throws IOException {

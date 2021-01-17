@@ -30,7 +30,7 @@ public class ClientConfig {
             @Override
             public TwitchChatSettings getTwitchChatSettings() {
                 return new TwitchChatSettings(
-                        "irc.chat.twitch.tv", 6697,
+                        TwitchChatSettings.DEFAULT_HOST, TwitchChatSettings.DEFAULT_PORT,
                         twitchUsername, twitchPassword, targetChannel,
                         5000
                 );

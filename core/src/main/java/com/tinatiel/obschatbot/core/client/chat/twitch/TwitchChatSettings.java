@@ -7,6 +7,9 @@ package com.tinatiel.obschatbot.core.client.chat.twitch;
 
 public class TwitchChatSettings {
 
+    public static final String DEFAULT_HOST = "irc.chat.twitch.tv";
+    public static final int DEFAULT_PORT = 6697;
+
     private final String host;
     private final int port;
     private final String username;
