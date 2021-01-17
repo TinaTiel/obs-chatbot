@@ -5,6 +5,9 @@
 
 package com.tinatiel.obschatbot.core.client.chat.twitch;
 
+import com.tinatiel.obschatbot.core.client.ClientFactory;
+import com.tinatiel.obschatbot.core.client.ClientSettingsFactory;
+import org.pircbotx.PircBotX;
 import org.pircbotx.UtilSSLSocketFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,8 +19,8 @@ import javax.net.ssl.SSLSocketFactory;
 @Configuration
 public class TwitchChatClientManagerConfig {
 
-    @Value("${TWITCH_AUTH:noauth}")
-    private String twitchAuth;
+    @Autowired
+    ClientSettingsFactory clientSettingsFactory;
 
     @Bean
     SSLSocketFactory sslSocketFactory() {
@@ -25,15 +28,13 @@ public class TwitchChatClientManagerConfig {
     }
 
     @Bean
-    TwitchChatSettings twitchChatSettings() {
-        return new TwitchChatSettings(
-                "robotiel", twitchAuth, "tinatiel", 5000
-        );
+    ClientFactory<PircBotX> twitchChatClientFactory() {
+        return new TwitchChatClientFactory(clientSettingsFactory, sslSocketFactory());
     }
 
     @Bean
     TwitchChatClientManager twitchChatClientManager() {
-        return new TwitchChatClientManagerImpl(twitchChatSettings(), sslSocketFactory());
+        return new TwitchChatClientManagerImpl(twitchChatClientFactory(), clientSettingsFactory);
     }
 
 }

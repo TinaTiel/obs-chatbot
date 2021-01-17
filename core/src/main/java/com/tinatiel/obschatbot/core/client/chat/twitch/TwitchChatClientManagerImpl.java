@@ -6,6 +6,8 @@
 package com.tinatiel.obschatbot.core.client.chat.twitch;
 
 import com.tinatiel.obschatbot.core.action.model.SendMessageAction;
+import com.tinatiel.obschatbot.core.client.ClientFactory;
+import com.tinatiel.obschatbot.core.client.ClientSettingsFactory;
 import com.tinatiel.obschatbot.core.error.ClientNotAvailableException;
 import com.tinatiel.obschatbot.core.request.queue.ActionCommand;
 import org.pircbotx.PircBotX;
@@ -25,38 +27,27 @@ public class TwitchChatClientManagerImpl implements TwitchChatClientManager {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-    CompletableFuture<Void> connected;
-    CompletableFuture<Void> disconnected;
+    private final ClientFactory<PircBotX> clientFactory;
+    private final ClientSettingsFactory clientSettingsFactory;
 
-    private final TwitchChatSettings settings;
-    private final SSLSocketFactory sslSocketFactory;
+    private CompletableFuture<Void> ready;
+    private CompletableFuture<Void> disconnected;
     private PircBotX bot;
+    private TwitchChatSettings settings;
 
-    public TwitchChatClientManagerImpl(TwitchChatSettings settings, SSLSocketFactory sslSocketFactory) {
-        this.settings = settings;
-        this.sslSocketFactory = sslSocketFactory;
-    }
-
-    private org.pircbotx.Configuration buildConfig() {
-         return new org.pircbotx.Configuration.Builder()
-                .addServer("irc.chat.twitch.tv", 6697) // Twitch's IRC url
-                .setSocketFactory(sslSocketFactory)
-                .addAutoJoinChannel("#" + settings.getBroadcasterChannel()) // channel is same as streamer's username
-                //                 .addAutoJoinChannel("asdlfjasldheowpoasiefjl")
-                .setName(settings.getUsername())             // account we're connecting as
-                .setServerPassword(settings.getPassword())   // generated with TMI for now
-                //                 .setServerPassword("wrong")
-                .addListener(new ChatListener())   // have to register the listener!
-                .setOnJoinWhoEnabled(false) // Twitch does not support WHO
-                .buildConfiguration();
+    public TwitchChatClientManagerImpl(ClientFactory<PircBotX> clientFactory, ClientSettingsFactory clientSettingsFactory) {
+        this.clientFactory = clientFactory;
+        this.clientSettingsFactory = clientSettingsFactory;
     }
 
     @Override
     public void start() {
-//        connected = new CompletableFuture<>();
-//        disconnected = new CompletableFuture<>();
 
-        bot = new PircBotX(buildConfig());
+        ready = new CompletableFuture<>();
+        disconnected = new CompletableFuture<>();
+        bot = clientFactory.generate(ready, disconnected);
+        settings = clientSettingsFactory.getTwitchChatSettings();
+
         ExecutorService executor = Executors.newFixedThreadPool(1);
         executor.submit(() -> {
             try {
@@ -110,50 +101,4 @@ public class TwitchChatClientManagerImpl implements TwitchChatClientManager {
         }
     }
 
-    private static class ChatListener extends ListenerAdapter {
-        private final Logger log = LoggerFactory.getLogger(this.getClass());
-
-//        private final CompletableFuture<Void> connected;
-//        private final CompletableFuture<Void> disconnected;
-
-//        public ChatListener(CompletableFuture<Void> connected, CompletableFuture<Void> disconnected) {
-//            this.connected = connected;
-//            this.disconnected = disconnected;
-//        }
-
-        @Override
-        public void onConnect(ConnectEvent event) throws Exception { // Connecting to the IRC server (no auth yet)
-            log.info("ON CONNECT event: " + event);
-        }
-
-        @Override
-        public void onJoin(JoinEvent event) throws Exception { // joining the channel
-            log.info("ON JOIN event: " + event);
-
-            // Request tags capability so we can determine if a mod, subscriber, etc.
-            event.getBot().sendCAP().request("twitch.tv/tags");
-
-            // Request commands capability so we can respond to RECONNECT if issued by Twitch IRC server
-            //event.getBot().sendCAP().request("twitch.tv/commands");
-
-        }
-
-        @Override
-        public void onNotice(NoticeEvent event) throws Exception {
-            log.info("ON NOTICE event: " + event);
-        }
-
-        @Override
-        public void onException(ExceptionEvent event) throws Exception {
-            log.error("Exception occurred on event " + event, event.getException());
-        }
-
-        @Override
-        public void onMessage(MessageEvent event) throws Exception {
-            log.debug("ON MESSAGE event: " + event);
-            log.info("Received Message from user '" + event.getUser().getNick() + "' : '" + event.getMessage() + "'");
-            log.info("Tags: " + event.getTags());
-        }
-
-    }
 }

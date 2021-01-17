@@ -88,12 +88,12 @@ public class App {
         TwitchChatClientManager chatClientManager = context.getBean(TwitchChatClientManager.class);
         chatClientManager.start();
 
-//        try {
-//            Thread.sleep(2000);
-//        } catch (InterruptedException interruptedException) {
-//            interruptedException.printStackTrace();
-//        }
-//        chatClientManager.consume(actionCommand);
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException interruptedException) {
+            interruptedException.printStackTrace();
+        }
+        chatClientManager.consume(actionCommand);
 //        chatClientManager.stop();
 
     }
