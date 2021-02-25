@@ -80,7 +80,11 @@ public class App {
         RequestContext requestContext = new RequestContext(user, new ArrayList<>());
         ActionCommand actionCommand = new ActionCommand(action.acceptsClientType(), action, requestContext);
         TwitchChatClientManager chatClientManager = context.getBean(TwitchChatClientManager.class);
-        chatClientManager.start();
+        try {
+            chatClientManager.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         try {
             Thread.sleep(2000);

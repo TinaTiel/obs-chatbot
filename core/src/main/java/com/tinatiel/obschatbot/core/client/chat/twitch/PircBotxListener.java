@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.CompletableFuture;
 
-class PircBotxListener extends ListenerAdapter {
+public class PircBotxListener extends ListenerAdapter {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     private final CompletableFuture<Void> ready;
@@ -48,6 +48,7 @@ class PircBotxListener extends ListenerAdapter {
 
         event.getBot().sendIRC().message("#tinatiel", "Obs Chatbot has joined the chat!");
 
+        ready.complete(null);
     }
 
     @Override

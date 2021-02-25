@@ -6,6 +6,7 @@
 package com.tinatiel.obschatbot.core.client;
 
 import com.tinatiel.obschatbot.core.client.obs.ObsClient;
+import com.tinatiel.obschatbot.core.error.ClientException;
 
 /**
  * Provides a way to manage a client. Implementations should be injected with a reference to the settings directly or
@@ -18,7 +19,7 @@ public interface ClientManager<T> {
     /**
      * Starts a new client instance. Implementations should be blocking until timeout expires.
       */
-    void start();
+    void start() throws ClientException;
 
     /**
      * Stops a client instance. Implementations should be blocking until timeout expires.
@@ -30,6 +31,6 @@ public interface ClientManager<T> {
      * be used when fresh settings should be loaded (the old client is destroyed, and the new client is created with the
      * updated settings.
      */
-    void reload();
+    void reload() throws ClientException;
 
 }

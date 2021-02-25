@@ -9,7 +9,7 @@ import com.tinatiel.obschatbot.App;
 import com.tinatiel.obschatbot.core.action.model.ObsSourceVisibilityAction;
 import com.tinatiel.obschatbot.core.client.obs.ObsClient;
 import com.tinatiel.obschatbot.core.client.obs.ObsClientManager;
-import com.tinatiel.obschatbot.core.error.ClientNotAvailableException;
+import com.tinatiel.obschatbot.core.error.ClientException;
 import com.tinatiel.obschatbot.core.request.RequestContext;
 import com.tinatiel.obschatbot.core.request.queue.ActionCommand;
 import com.tinatiel.obschatbot.core.user.Platform;
@@ -46,7 +46,7 @@ public class LiveObsTest {
             obsClientManager.reload();
             obsClientManager.consume(actionCommand);
             obsClientManager.stop();
-        } catch (ClientNotAvailableException e) {
+        } catch (ClientException e) {
             fail("Test requires instance of OBS", e);
         } catch (Exception unexpected) {
             fail("Exercising the clientManager should not throw unexpected exceptions", unexpected);
