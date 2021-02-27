@@ -5,6 +5,8 @@
 
 package com.tinatiel.obschatbot.core.client.chat.twitch;
 
+import com.tinatiel.obschatbot.core.error.ClientException;
+import com.tinatiel.obschatbot.core.error.Code;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.*;
 import org.slf4j.Logger;
@@ -23,14 +25,6 @@ public class PircBotxListener extends ListenerAdapter {
         this.disconnected = disconnected;
     }
 
-    //        private final CompletableFuture<Void> connected;
-//        private final CompletableFuture<Void> disconnected;
-
-//        public ChatListener(CompletableFuture<Void> connected, CompletableFuture<Void> disconnected) {
-//            this.connected = connected;
-//            this.disconnected = disconnected;
-//        }
-
     @Override
     public void onConnect(ConnectEvent event) throws Exception { // Connecting to the IRC server (no auth yet)
         log.info("ON CONNECT event: " + event);
@@ -41,24 +35,32 @@ public class PircBotxListener extends ListenerAdapter {
         log.info("ON JOIN event: " + event);
 
         // Request tags capability so we can determine if a mod, subscriber, etc.
+        log.debug("Requesting tags capability");
         event.getBot().sendCAP().request("twitch.tv/tags");
 
         // Request commands capability so we can respond to RECONNECT if issued by Twitch IRC server
+        log.debug("Requesting commands capability");
         event.getBot().sendCAP().request("twitch.tv/commands");
 
+        // Drop a welcome message into chat to provide feedback to broadcaster
+        log.debug("Giving broadcaster a welcome message");
         event.getBot().sendIRC().message("#tinatiel", "Obs Chatbot has joined the chat!");
 
+        log.debug("startup complete");
         ready.complete(null);
     }
 
     @Override
     public void onNotice(NoticeEvent event) throws Exception {
-        log.info("ON NOTICE event: " + event);
+        log.debug("ON NOTICE event: " + event);
+        if(event.getNotice().contains("auth")) {
+            throw new ClientException(Code.CLIENT_BAD_CREDENTIALS, "Unable to start Twitch Bot, bad credentials", null);
+        }
     }
 
     @Override
     public void onException(ExceptionEvent event) throws Exception {
-        log.error("Exception occurred on event " + event, event.getException());
+        log.debug("Exception occurred on event " + event, event.getException());
     }
 
     @Override

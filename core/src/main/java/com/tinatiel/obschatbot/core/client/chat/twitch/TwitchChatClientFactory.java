@@ -29,10 +29,8 @@ public class TwitchChatClientFactory implements ClientFactory<PircBotX> {
                 .addServer(settings.getHost(), settings.getPort()) // Twitch's IRC url
                 .setSocketFactory(sslSocketFactory)
                 .addAutoJoinChannel("#" + settings.getBroadcasterChannel()) // channel is same as streamer's username
-                //                 .addAutoJoinChannel("asdlfjasldheowpoasiefjl")
                 .setName(settings.getUsername())             // account we're connecting as
                 .setServerPassword(settings.getPassword())   // generated with TMI for now
-                //                 .setServerPassword("wrong")
                 .addListener(new PircBotxListener(ready, disconnected))   // have to register the listener!
                 .setOnJoinWhoEnabled(false) // Twitch does not support WHO
                 .buildConfiguration()

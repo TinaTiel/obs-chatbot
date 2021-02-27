@@ -8,6 +8,7 @@ package com.tinatiel.obs.chatbot.core.client;
 import com.tinatiel.obschatbot.App;
 import com.tinatiel.obschatbot.core.client.ClientFactory;
 import com.tinatiel.obschatbot.core.client.ClientSettingsFactory;
+import com.tinatiel.obschatbot.core.client.chat.twitch.PircBotxListener;
 import com.tinatiel.obschatbot.core.client.chat.twitch.TwitchChatClientManager;
 import com.tinatiel.obschatbot.core.client.chat.twitch.TwitchChatClientManagerImpl;
 import com.tinatiel.obschatbot.core.error.ClientException;
@@ -19,6 +20,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.pircbotx.PircBotX;
 import org.pircbotx.exception.IrcException;
+import org.pircbotx.hooks.events.NoticeEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
@@ -94,18 +96,18 @@ public class TwitchClientManagerIT {
     @Test
     void whenBadAuthThenThrowClientException() {
 
-        // Given bad auth; e.g. specific NOTICE event emitted by IRC
-        // how...
+        // Given bad auth; e.g. specific NOTICE event emitted by IRC; TODO: Continuous test to verify this stays true
+        PircBotxListener listener = new PircBotxListener(null, null);
+        NoticeEvent badAuthNoticeEvent = mock(NoticeEvent.class);
+        when(badAuthNoticeEvent.getNotice()).thenReturn("Login authentication failed");
 
-        // Then a helpful exception should be thrown
-        Throwable thrown = catchThrowable(() -> {
-            clientManager.start();
-        });
-        assertThat(thrown)
-                .isInstanceOf(ClientException.class)
-                .hasCauseInstanceOf(UnknownHostException.class)
-                .hasMessageMatching("network");
-        assertThat(((ClientException) thrown).getCode()).isEqualTo(Code.CLIENT_BAD_CREDENTIALS);
+        // When notice emitted, then a ClientException is thrown
+        assertThatThrownBy(() -> {
+            listener.onNotice(badAuthNoticeEvent);
+        }).isInstanceOf(ClientException.class)
+                .hasMessageContaining("bad credentials");
+
+        // Then...
 
     }
 

@@ -55,6 +55,7 @@ public class TwitchChatClientManagerImpl implements TwitchChatClientManager {
             public Void call() throws Exception {
                 try {
                     bot.startBot();
+                    log.debug("AFter start bot");
                     return null;
                 } catch (ConnectException connectException) {
                     throw new ClientException(Code.CLIENT_UNREACHABLE, "Could not connect with Twitch IRC over the network; check Twitch's uptime status, or your internet connection.", connectException);
@@ -69,7 +70,8 @@ public class TwitchChatClientManagerImpl implements TwitchChatClientManager {
         // Try to start the bot
         try {
             ExecutorService executorService = Executors.newCachedThreadPool();
-            executorService.submit(exceptionThrowingStartBotTask).get(settings.getConnectionTimeoutMs(), TimeUnit.MILLISECONDS);
+            executorService.submit(exceptionThrowingStartBotTask);//.get();  // if we get() then it waits forever?
+//                    .get(settings.getConnectionTimeoutMs(), TimeUnit.MILLISECONDS);
             ready.get(settings.getConnectionTimeoutMs(), TimeUnit.MILLISECONDS);
             log.info("Successfully started the Twitch Chat Bot");
         }
