@@ -19,18 +19,18 @@ public interface ClientManager<T> {
     /**
      * Starts a new client instance. Implementations should be blocking until timeout expires.
       */
-    void start() throws ClientException;
+    void startClient() throws ClientException;
 
     /**
      * Stops a client instance. Implementations should be blocking until timeout expires.
      */
-    void stop();
+    void stopClient();
 
     /**
      * Convenience method to stop and then start a client. Since a new client is spun up on each start, this method can
      * be used when fresh settings should be loaded (the old client is destroyed, and the new client is created with the
      * updated settings.
      */
-    void reload() throws ClientException;
+    void reloadClient() throws ClientException;
 
 }

@@ -43,7 +43,7 @@ public class ObsClientManagerImpl implements ObsClientManager {
     }
 
     @Override
-    public void start() {
+    public void startClient() {
         if(obsRemoteController == null) {
             // Initialize the client and shared data
             connected = new CompletableFuture<>();
@@ -89,7 +89,7 @@ public class ObsClientManagerImpl implements ObsClientManager {
     }
 
     @Override
-    public void stop() {
+    public void stopClient() {
         log.info("Stopping OBS Client");
         if(obsRemoteController == null) throw new ClientException("No client was available to stop");
         obsRemoteController.disconnect();
@@ -108,10 +108,10 @@ public class ObsClientManagerImpl implements ObsClientManager {
     }
 
     @Override
-    public void reload() {
+    public void reloadClient() {
         log.info("Reloading OBS Client");
-        stop();
-        start();
+        stopClient();
+        startClient();
     }
 
 }

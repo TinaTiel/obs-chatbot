@@ -41,11 +41,11 @@ public class LiveObsTest {
 
         // Then we can start/stop/reload the manager and consume messages without exceptions
         try {
-            obsClientManager.start();
+            obsClientManager.startClient();
             obsClientManager.consume(actionCommand);
-            obsClientManager.reload();
+            obsClientManager.reloadClient();
             obsClientManager.consume(actionCommand);
-            obsClientManager.stop();
+            obsClientManager.stopClient();
         } catch (ClientException e) {
             fail("Test requires instance of OBS", e);
         } catch (Exception unexpected) {

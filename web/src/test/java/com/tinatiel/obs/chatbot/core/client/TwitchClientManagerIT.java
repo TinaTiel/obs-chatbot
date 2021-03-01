@@ -13,9 +13,7 @@ import com.tinatiel.obschatbot.core.client.chat.twitch.TwitchChatClientManager;
 import com.tinatiel.obschatbot.core.client.chat.twitch.TwitchChatClientManagerImpl;
 import com.tinatiel.obschatbot.core.error.ClientException;
 import com.tinatiel.obschatbot.core.error.Code;
-import com.tinatiel.obschatbot.core.error.UnexpectedException;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.pircbotx.PircBotX;
@@ -66,7 +64,7 @@ public class TwitchClientManagerIT {
 
         // When started then a client exception is thrown
         Throwable thrown = catchThrowable(() -> {
-            clientManager.start();
+            clientManager.startClient();
         });
         assertThat(thrown)
                 .isInstanceOf(ClientException.class)
@@ -84,7 +82,7 @@ public class TwitchClientManagerIT {
 
         // When started then a client exception is thrown
         Throwable thrown = catchThrowable(() -> {
-            clientManager.start();
+            clientManager.startClient();
         });
         assertThat(thrown)
                 .isInstanceOf(ClientException.class)

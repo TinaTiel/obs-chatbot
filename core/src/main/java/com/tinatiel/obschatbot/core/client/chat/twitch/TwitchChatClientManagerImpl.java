@@ -40,7 +40,7 @@ public class TwitchChatClientManagerImpl implements TwitchChatClientManager {
     }
 
     @Override
-    public void start() throws ClientException {
+    public void startClient() throws ClientException {
 
         // initialize the startup states
         ready = new CompletableFuture<>();
@@ -82,28 +82,28 @@ public class TwitchChatClientManagerImpl implements TwitchChatClientManager {
                 throw (ClientException) e.getCause();
             } else {
                 log.error("Encountered unexpected problems while starting the Twitch Chat Client", e);
-                stop();
+                stopClient();
             }
         }
         // Finally catch any interrupts or timeouts
         catch (InterruptedException | TimeoutException e) {
             log.error("Unable to start Twitch Chat Bot after " + settings.getConnectionTimeoutMs() + "ms", e);
-            stop();
+            stopClient();
         }
 
     }
 
     @Override
-    public void stop() {
+    public void stopClient() {
         bot.close();
         log.info("Successfully stopped the Twitch Chat Bot");
     }
 
     @Override
-    public void reload() throws ClientException {
+    public void reloadClient() throws ClientException {
         log.info("Reloading the Twitch Chat Bot");
-        stop();
-        start();
+        stopClient();
+        startClient();
     }
 
     @Override
