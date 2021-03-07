@@ -5,7 +5,7 @@
 
 package com.tinatiel.obschatbot.core.client.chat.twitch;
 
-import com.tinatiel.obschatbot.core.client.ClientFactory;
+import com.tinatiel.obschatbot.core.client.*;
 import com.tinatiel.obschatbot.core.error.ClientException;
 import com.tinatiel.obschatbot.core.request.queue.ActionCommand;
 import org.pircbotx.PircBotX;
@@ -19,18 +19,18 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-public class TwitchChatClientManagerQueueImpl implements StatefulTwitchChatClientManager {
+public class ClientManagerTwitchChatImpl implements ClientManager<PircBotX> {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     // State queue is read by the client manager, but written by the client implementations
-    private final BlockingQueue<TwitchStateMessage> stateMessages;
+    private final BlockingQueue<StateMessage> stateMessages;
 
     // Client factory produces new client instances
     private final ClientFactory<PircBotX> clientFactory;
 
     // Listener for firing events
-    private final Listener<PircBotX> listener;
+    private final Listener listener;
 
     // Executor for thread executing queue polling
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
@@ -41,7 +41,7 @@ public class TwitchChatClientManagerQueueImpl implements StatefulTwitchChatClien
     private volatile State state = State.STOPPED;
     private PircBotX client;
 
-    public TwitchChatClientManagerQueueImpl(BlockingQueue<TwitchStateMessage> stateMessages, ClientFactory<PircBotX> clientFactory, Listener<PircBotX> listener) {
+    public ClientManagerTwitchChatImpl(BlockingQueue<StateMessage> stateMessages, ClientFactory<PircBotX> clientFactory, Listener listener) {
         this.stateMessages = stateMessages;
         this.clientFactory = clientFactory;
         this.listener = listener;
@@ -56,8 +56,8 @@ public class TwitchChatClientManagerQueueImpl implements StatefulTwitchChatClien
         executorService.execute(() -> {
             while(true) {
                 try {
-                    TwitchStateMessage currentState = stateMessages.take();
-                    listener.onState(currentState);
+                    StateMessage currentState = stateMessages.take();
+                    listener.onState(this, currentState);
                     state = currentState.getState();
                 } catch (InterruptedException interruptedException) {
                     log.error("Client manager was interrupted while taking state", interruptedException);
@@ -70,22 +70,29 @@ public class TwitchChatClientManagerQueueImpl implements StatefulTwitchChatClien
 
     @Override
     public void startClient() throws ClientException {
-
+        if(getState() == State.STOPPED) {
+            client = clientFactory.generate();
+        } else {
+            throw new ClientException("Client must be stopped before it can be started");
+        }
     }
 
     @Override
     public void stopClient() {
-
+        client.stopBotReconnect();
+        client.close();
+        client = null;
     }
 
     @Override
     public void reloadClient() throws ClientException {
-
+        stopClient();
+        startClient();
     }
 
     @Override
     public void consume(ActionCommand actionCommand) {
-
+        log.info("Consuming: " + actionCommand);
     }
 
     @Override

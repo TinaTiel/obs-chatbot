@@ -5,19 +5,16 @@
 
 package com.tinatiel.obschatbot.core.client.chat.twitch;
 
-import com.tinatiel.obschatbot.core.client.ClientFactory;
-import com.tinatiel.obschatbot.core.client.ClientSettingsFactory;
+import com.tinatiel.obschatbot.core.client.*;
 import org.pircbotx.PircBotX;
 import org.pircbotx.UtilSSLSocketFactory;
-import org.pircbotx.hooks.Listener;
-import org.pircbotx.hooks.managers.ListenerManager;
-import org.pircbotx.hooks.managers.ThreadedListenerManager;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import javax.net.ssl.SSLSocketFactory;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 @Configuration
 public class TwitchChatClientManagerConfig {
@@ -32,12 +29,26 @@ public class TwitchChatClientManagerConfig {
 
     @Bean
     ClientFactory<PircBotX> twitchChatClientFactory() {
-        return new TwitchChatClientFactory(clientSettingsFactory, sslSocketFactory());
+        return new TwitchChatClientFactory(
+                clientSettingsFactory,
+                sslSocketFactory(),
+                clientManagerTwitchChatImpl(),
+                twitchListener());
     }
 
     @Bean
-    TwitchChatClientManager twitchChatClientManager() {
-        return new TwitchChatClientManagerImpl(twitchChatClientFactory(), clientSettingsFactory);
+    ClientManager<PircBotX> clientManagerTwitchChatImpl() {
+        return new ClientManagerTwitchChatImpl(twitchChatStateQueue(), twitchChatClientFactory(), twitchListener());
+    }
+
+    @Bean
+    BlockingQueue<StateMessage> twitchChatStateQueue() {
+        return new LinkedBlockingQueue<>();
+    }
+
+    @Bean
+    Listener twitchListener() {
+        return new TwitchListener();
     }
 
 }

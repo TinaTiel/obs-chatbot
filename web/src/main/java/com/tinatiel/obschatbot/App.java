@@ -6,7 +6,6 @@
 package com.tinatiel.obschatbot;
 
 import com.tinatiel.obschatbot.core.action.model.SendMessageAction;
-import com.tinatiel.obschatbot.core.client.chat.twitch.TwitchChatClientManager;
 import com.tinatiel.obschatbot.core.request.RequestContext;
 import com.tinatiel.obschatbot.core.request.queue.ActionCommand;
 import com.tinatiel.obschatbot.core.user.Platform;

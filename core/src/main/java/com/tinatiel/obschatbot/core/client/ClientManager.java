@@ -5,8 +5,8 @@
 
 package com.tinatiel.obschatbot.core.client;
 
-import com.tinatiel.obschatbot.core.client.obs.ObsClient;
 import com.tinatiel.obschatbot.core.error.ClientException;
+import com.tinatiel.obschatbot.core.request.queue.consumers.ActionCommandConsumer;
 
 /**
  * Provides a way to manage a client. Implementations should be injected with a reference to the settings directly or
@@ -14,7 +14,7 @@ import com.tinatiel.obschatbot.core.error.ClientException;
  * with those settings -- and when a client is stopped then the client is destroyed.
  * @param <T> Client class that is wrapped by the manager.
  */
-public interface ClientManager<T> {
+public interface ClientManager<T> extends ActionCommandConsumer {
 
     /**
      * Starts a new client instance. Implementations should be blocking until timeout expires.
@@ -32,5 +32,11 @@ public interface ClientManager<T> {
      * updated settings.
      */
     void reloadClient() throws ClientException;
+
+    /**
+     * Get the current state of the client managed by the client manager.
+     * @return State
+     */
+    State getState();
 
 }

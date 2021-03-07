@@ -5,16 +5,17 @@
 
 package com.tinatiel.obschatbot.core.request.queue.consumers;
 
-import com.tinatiel.obschatbot.core.client.chat.twitch.TwitchChatClientManager;
+import com.tinatiel.obschatbot.core.client.ClientManager;
 import com.tinatiel.obschatbot.core.request.queue.ActionCommand;
 import com.tinatiel.obschatbot.core.request.queue.TwitchChatQueue;
+import org.pircbotx.PircBotX;
 
 public class TwitchChatQueueConsumer implements Runnable {
 
     private final TwitchChatQueue twitchQueue;
-    private final TwitchChatClientManager twitchClientManager;
+    private final ClientManager<PircBotX> twitchClientManager;
 
-    public TwitchChatQueueConsumer(TwitchChatQueue twitchQueue, TwitchChatClientManager twitchClientManager) {
+    public TwitchChatQueueConsumer(TwitchChatQueue twitchQueue, ClientManager<PircBotX> twitchClientManager) {
         this.twitchQueue = twitchQueue;
         this.twitchClientManager = twitchClientManager;
     }

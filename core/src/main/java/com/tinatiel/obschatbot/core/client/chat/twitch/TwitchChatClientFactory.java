@@ -6,24 +6,32 @@
 package com.tinatiel.obschatbot.core.client.chat.twitch;
 
 import com.tinatiel.obschatbot.core.client.ClientFactory;
+import com.tinatiel.obschatbot.core.client.ClientManager;
 import com.tinatiel.obschatbot.core.client.ClientSettingsFactory;
+import com.tinatiel.obschatbot.core.client.Listener;
 import org.pircbotx.PircBotX;
 
 import javax.net.ssl.SSLSocketFactory;
-import java.util.concurrent.CompletableFuture;
 
 public class TwitchChatClientFactory implements ClientFactory<PircBotX> {
 
     private final ClientSettingsFactory clientSettingsFactory;
     private final SSLSocketFactory sslSocketFactory;
+    private final ClientManager<PircBotX> clientManager;
+    private final Listener listener;
 
-    public TwitchChatClientFactory(ClientSettingsFactory clientSettingsFactory, SSLSocketFactory sslSocketFactory) {
+    public TwitchChatClientFactory(ClientSettingsFactory clientSettingsFactory,
+                                   SSLSocketFactory sslSocketFactory,
+                                   ClientManager<PircBotX> clientManager,
+                                   Listener listener) {
         this.clientSettingsFactory = clientSettingsFactory;
         this.sslSocketFactory = sslSocketFactory;
+        this.clientManager = clientManager;
+        this.listener = listener;
     }
 
     @Override
-    public PircBotX generate(CompletableFuture<Void> ready, CompletableFuture<Void> disconnected) {
+    public PircBotX generate() {
         TwitchChatSettings settings = clientSettingsFactory.getTwitchChatSettings();
         PircBotX bot = new PircBotX(new org.pircbotx.Configuration.Builder()
                 .addServer(settings.getHost(), settings.getPort()) // Twitch's IRC url
@@ -31,7 +39,7 @@ public class TwitchChatClientFactory implements ClientFactory<PircBotX> {
                 .addAutoJoinChannel("#" + settings.getBroadcasterChannel()) // channel is same as streamer's username
                 .setName(settings.getUsername())             // account we're connecting as
                 .setServerPassword(settings.getPassword())   // generated with TMI for now
-                .addListener(new PircBotxListener(ready, disconnected))   // have to register the listener!
+                .addListener(new PircBotxListener(listener, clientManager))   // have to register the listener!
                 .setOnJoinWhoEnabled(false) // Twitch does not support WHO
                 .buildConfiguration()
         );

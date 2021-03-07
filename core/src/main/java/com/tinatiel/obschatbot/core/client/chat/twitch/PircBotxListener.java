@@ -5,29 +5,31 @@
 
 package com.tinatiel.obschatbot.core.client.chat.twitch;
 
-import com.tinatiel.obschatbot.core.error.ClientException;
-import com.tinatiel.obschatbot.core.error.Code;
+import com.tinatiel.obschatbot.core.client.ClientManager;
+import com.tinatiel.obschatbot.core.client.Listener;
+import com.tinatiel.obschatbot.core.client.State;
+import com.tinatiel.obschatbot.core.client.StateMessage;
+import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.concurrent.CompletableFuture;
-
 public class PircBotxListener extends ListenerAdapter {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-    private final CompletableFuture<Void> ready;
-    private final CompletableFuture<Void> disconnected;
+    private final Listener listener;
+    private final ClientManager<PircBotX> clientManager;
 
-    public PircBotxListener(CompletableFuture<Void> ready, CompletableFuture<Void> disconnected) {
-        this.ready = ready;
-        this.disconnected = disconnected;
+    public PircBotxListener(Listener listener, ClientManager<PircBotX> clientManager) {
+        this.listener = listener;
+        this.clientManager = clientManager;
     }
 
     @Override
     public void onConnect(ConnectEvent event) throws Exception { // Connecting to the IRC server (no auth yet)
         log.info("ON CONNECT event: " + event);
+        listener.onState(clientManager, new StateMessage(State.CONNECTED, "Connected"));
     }
 
     @Override
@@ -47,20 +49,23 @@ public class PircBotxListener extends ListenerAdapter {
         event.getBot().sendIRC().message("#tinatiel", "Obs Chatbot has joined the chat!");
 
         log.debug("startup complete");
-        ready.complete(null);
+        listener.onState(clientManager, new StateMessage(State.READY, "Ready"));
+
     }
 
     @Override
     public void onNotice(NoticeEvent event) throws Exception {
         log.debug("ON NOTICE event: " + event);
         if(event.getNotice().contains("auth")) {
-            throw new ClientException(Code.CLIENT_BAD_CREDENTIALS, "Unable to start Twitch Bot, bad credentials", null);
+            listener.onState(clientManager, new StateMessage(State.ERROR, "Unable to start Twitch Bot, bad credentials"));
+            //throw new ClientException(Code.CLIENT_BAD_CREDENTIALS, "Unable to start Twitch Bot, bad credentials", null);
         }
     }
 
     @Override
     public void onException(ExceptionEvent event) throws Exception {
         log.debug("Exception occurred on event " + event, event.getException());
+        listener.onState(clientManager, new StateMessage(State.ERROR, event.getException().getMessage()));
     }
 
     @Override

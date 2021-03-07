@@ -6,13 +6,14 @@
 package com.tinatiel.obschatbot.core.request.queue.consumers;
 
 import com.tinatiel.obschatbot.core.action.Action;
+import com.tinatiel.obschatbot.core.client.ClientManager;
 import com.tinatiel.obschatbot.core.client.chat.twitch.TwitchChatClient;
-import com.tinatiel.obschatbot.core.client.chat.twitch.TwitchChatClientManager;
 import com.tinatiel.obschatbot.core.request.RequestContext;
 import com.tinatiel.obschatbot.core.request.queue.ActionCommand;
 import com.tinatiel.obschatbot.core.request.queue.TwitchChatQueue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.pircbotx.PircBotX;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -24,14 +25,14 @@ import static org.mockito.Mockito.*;
 public class TwitchChatQueueConsumerTest {
 
     TwitchChatQueue twitchQueue;
-    TwitchChatClientManager twitchClientManager;
+    ClientManager<PircBotX> twitchClientManager;
 
     TwitchChatQueueConsumer consumer;
 
     @BeforeEach
     void setUp() {
         twitchQueue = new TwitchChatQueue();
-        twitchClientManager = mock(TwitchChatClientManager.class);
+        twitchClientManager = mock(ClientManager.class);
 
         consumer = new TwitchChatQueueConsumer(twitchQueue, twitchClientManager);
     }

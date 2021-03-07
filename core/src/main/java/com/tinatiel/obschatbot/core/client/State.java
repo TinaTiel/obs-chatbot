@@ -3,7 +3,7 @@
  * GNU General Public License v3.0. See LICENSE or go to https://fsf.org/ for more details.
  */
 
-package com.tinatiel.obschatbot.core.client.chat.twitch;
+package com.tinatiel.obschatbot.core.client;
 
 public enum State {
     STARTING,       // Request was sent to start the bot

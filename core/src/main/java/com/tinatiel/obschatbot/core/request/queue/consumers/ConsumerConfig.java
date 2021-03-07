@@ -5,11 +5,12 @@
 
 package com.tinatiel.obschatbot.core.request.queue.consumers;
 
-import com.tinatiel.obschatbot.core.client.chat.twitch.TwitchChatClientManager;
+import com.tinatiel.obschatbot.core.client.ClientManager;
 import com.tinatiel.obschatbot.core.client.obs.ObsClientManager;
 import com.tinatiel.obschatbot.core.request.queue.MainQueue;
 import com.tinatiel.obschatbot.core.request.queue.ObsQueue;
 import com.tinatiel.obschatbot.core.request.queue.TwitchChatQueue;
+import org.pircbotx.PircBotX;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -33,7 +34,7 @@ public class ConsumerConfig {
     TwitchChatQueue twitchChatQueue;
 
     @Autowired
-    TwitchChatClientManager twitchChatClientManager;
+    ClientManager<PircBotX> twitchChatClientManager;
 
     @Bean
     MainQueueRouter mainQueueRouter() {
