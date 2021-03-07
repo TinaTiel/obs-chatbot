@@ -6,6 +6,7 @@
 package com.tinatiel.obschatbot.core.client.obs;
 
 import com.tinatiel.obschatbot.core.client.State;
+import com.tinatiel.obschatbot.core.client.StateEvent;
 import com.tinatiel.obschatbot.core.error.ClientException;
 import com.tinatiel.obschatbot.core.request.queue.ActionCommand;
 import net.twasi.obsremotejava.OBSRemoteController;
@@ -116,8 +117,7 @@ public class ObsClientManagerImpl implements ObsClientManager {
     }
 
     @Override
-    public State getState() {
-        return null;
-    }
+    public void onEvent(StateEvent event) {
 
+    }
 }

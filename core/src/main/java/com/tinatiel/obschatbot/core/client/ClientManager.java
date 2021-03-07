@@ -12,9 +12,8 @@ import com.tinatiel.obschatbot.core.request.queue.consumers.ActionCommandConsume
  * Provides a way to manage a client. Implementations should be injected with a reference to the settings directly or
  * to a data-store that provides them (settings are assumed mutable). When a client is started, a new instance is created
  * with those settings -- and when a client is stopped then the client is destroyed.
- * @param <T> Client class that is wrapped by the manager.
  */
-public interface ClientManager<T> extends ActionCommandConsumer {
+public interface ClientManager extends Listener<StateEvent>, ActionCommandConsumer {
 
     /**
      * Starts a new client instance. Implementations should be blocking until timeout expires.
@@ -32,11 +31,5 @@ public interface ClientManager<T> extends ActionCommandConsumer {
      * updated settings.
      */
     void reloadClient() throws ClientException;
-
-    /**
-     * Get the current state of the client managed by the client manager.
-     * @return State
-     */
-    State getState();
 
 }

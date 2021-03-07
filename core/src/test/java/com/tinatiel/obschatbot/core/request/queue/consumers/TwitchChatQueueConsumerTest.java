@@ -13,6 +13,7 @@ import com.tinatiel.obschatbot.core.request.queue.ActionCommand;
 import com.tinatiel.obschatbot.core.request.queue.TwitchChatQueue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InOrder;
 import org.pircbotx.PircBotX;
 
 import java.util.concurrent.ExecutorService;
@@ -25,7 +26,7 @@ import static org.mockito.Mockito.*;
 public class TwitchChatQueueConsumerTest {
 
     TwitchChatQueue twitchQueue;
-    ClientManager<PircBotX> twitchClientManager;
+    ClientManager twitchClientManager;
 
     TwitchChatQueueConsumer consumer;
 
@@ -58,7 +59,7 @@ public class TwitchChatQueueConsumerTest {
             interruptedException.printStackTrace();
         }
 
-        // Then the client manager was invoked three times
+        // Then the client manager was invoked three times, in order
         verify(twitchClientManager, times(3)).consume(any(ActionCommand.class));
 
     }

@@ -5,11 +5,11 @@
 
 package com.tinatiel.obschatbot.core.client;
 
-public class StateMessage {
+public class StateEvent {
     private final State state;
     private final String message;
 
-    public StateMessage(State state, String message) {
+    public StateEvent(State state, String message) {
         this.state = state;
         this.message = message;
     }

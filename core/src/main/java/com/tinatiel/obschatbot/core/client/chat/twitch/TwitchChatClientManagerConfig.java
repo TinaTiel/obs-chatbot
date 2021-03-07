@@ -31,24 +31,18 @@ public class TwitchChatClientManagerConfig {
     ClientFactory<PircBotX> twitchChatClientFactory() {
         return new TwitchChatClientFactory(
                 clientSettingsFactory,
-                sslSocketFactory(),
-                clientManagerTwitchChatImpl(),
-                twitchListener());
+                sslSocketFactory()
+        );
     }
 
     @Bean
-    ClientManager<PircBotX> clientManagerTwitchChatImpl() {
-        return new ClientManagerTwitchChatImpl(twitchChatStateQueue(), twitchChatClientFactory(), twitchListener());
+    ClientManager clientManagerTwitchChatImpl() {
+        return new ClientManagerTwitchChatImpl(twitchChatClientFactory());
     }
 
     @Bean
-    BlockingQueue<StateMessage> twitchChatStateQueue() {
+    BlockingQueue<StateEvent> twitchChatStateQueue() {
         return new LinkedBlockingQueue<>();
-    }
-
-    @Bean
-    Listener twitchListener() {
-        return new TwitchListener();
     }
 
 }

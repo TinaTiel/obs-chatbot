@@ -74,23 +74,23 @@ public class App {
 //        obsClientManager.consume(actionCommand);
 //        obsClientManager.stop();
 
-        SendMessageAction action = new SendMessageAction("Test message " + new Date());
-        User user = new User(Platform.TWITCH, "mango");
-        RequestContext requestContext = new RequestContext(user, new ArrayList<>());
-        ActionCommand actionCommand = new ActionCommand(action.acceptsClientType(), action, requestContext);
-        TwitchChatClientManager chatClientManager = context.getBean(TwitchChatClientManager.class);
-        try {
-            chatClientManager.startClient();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException interruptedException) {
-            interruptedException.printStackTrace();
-        }
-        chatClientManager.consume(actionCommand);
+//        SendMessageAction action = new SendMessageAction("Test message " + new Date());
+//        User user = new User(Platform.TWITCH, "mango");
+//        RequestContext requestContext = new RequestContext(user, new ArrayList<>());
+//        ActionCommand actionCommand = new ActionCommand(action.acceptsClientType(), action, requestContext);
+//        TwitchChatClientManager chatClientManager = context.getBean(TwitchChatClientManager.class);
+//        try {
+//            chatClientManager.startClient();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//
+//        try {
+//            Thread.sleep(2000);
+//        } catch (InterruptedException interruptedException) {
+//            interruptedException.printStackTrace();
+//        }
+//        chatClientManager.consume(actionCommand);
 //        chatClientManager.stop();
 
     }

@@ -8,7 +8,7 @@ package com.tinatiel.obschatbot.core.client.chat.twitch;
 import com.tinatiel.obschatbot.core.client.ClientManager;
 import com.tinatiel.obschatbot.core.client.Listener;
 import com.tinatiel.obschatbot.core.client.State;
-import com.tinatiel.obschatbot.core.client.StateMessage;
+import com.tinatiel.obschatbot.core.client.StateEvent;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.*;
@@ -18,18 +18,9 @@ import org.slf4j.LoggerFactory;
 public class PircBotxListener extends ListenerAdapter {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-    private final Listener listener;
-    private final ClientManager<PircBotX> clientManager;
-
-    public PircBotxListener(Listener listener, ClientManager<PircBotX> clientManager) {
-        this.listener = listener;
-        this.clientManager = clientManager;
-    }
-
     @Override
     public void onConnect(ConnectEvent event) throws Exception { // Connecting to the IRC server (no auth yet)
         log.info("ON CONNECT event: " + event);
-        listener.onState(clientManager, new StateMessage(State.CONNECTED, "Connected"));
     }
 
     @Override
@@ -49,7 +40,7 @@ public class PircBotxListener extends ListenerAdapter {
         event.getBot().sendIRC().message("#tinatiel", "Obs Chatbot has joined the chat!");
 
         log.debug("startup complete");
-        listener.onState(clientManager, new StateMessage(State.READY, "Ready"));
+//        listener.onEvent(clientManager, new StateEvent(State.READY, "Ready"));
 
     }
 
@@ -57,7 +48,7 @@ public class PircBotxListener extends ListenerAdapter {
     public void onNotice(NoticeEvent event) throws Exception {
         log.debug("ON NOTICE event: " + event);
         if(event.getNotice().contains("auth")) {
-            listener.onState(clientManager, new StateMessage(State.ERROR, "Unable to start Twitch Bot, bad credentials"));
+//            listener.onEvent(clientManager, new StateEvent(State.ERROR, "Unable to start Twitch Bot, bad credentials"));
             //throw new ClientException(Code.CLIENT_BAD_CREDENTIALS, "Unable to start Twitch Bot, bad credentials", null);
         }
     }
@@ -65,7 +56,7 @@ public class PircBotxListener extends ListenerAdapter {
     @Override
     public void onException(ExceptionEvent event) throws Exception {
         log.debug("Exception occurred on event " + event, event.getException());
-        listener.onState(clientManager, new StateMessage(State.ERROR, event.getException().getMessage()));
+//        listener.onEvent(clientManager, new StateEvent(State.ERROR, event.getException().getMessage()));
     }
 
     @Override

@@ -34,7 +34,7 @@ public class ConsumerConfig {
     TwitchChatQueue twitchChatQueue;
 
     @Autowired
-    ClientManager<PircBotX> twitchChatClientManager;
+    ClientManager twitchChatClientManager;
 
     @Bean
     MainQueueRouter mainQueueRouter() {

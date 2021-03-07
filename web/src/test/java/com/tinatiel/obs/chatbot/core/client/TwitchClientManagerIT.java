@@ -39,7 +39,7 @@ import static org.mockito.Mockito.doThrow;
 public class TwitchClientManagerIT {
 
     @Autowired
-    ClientManager<PircBotX> clientManager;
+    ClientManager clientManager;
 
     @Autowired
     ClientSettingsFactory clientSettingsFactory;

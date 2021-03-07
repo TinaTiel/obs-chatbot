@@ -13,9 +13,9 @@ import org.pircbotx.PircBotX;
 public class TwitchChatQueueConsumer implements Runnable {
 
     private final TwitchChatQueue twitchQueue;
-    private final ClientManager<PircBotX> twitchClientManager;
+    private final ClientManager twitchClientManager;
 
-    public TwitchChatQueueConsumer(TwitchChatQueue twitchQueue, ClientManager<PircBotX> twitchClientManager) {
+    public TwitchChatQueueConsumer(TwitchChatQueue twitchQueue, ClientManager twitchClientManager) {
         this.twitchQueue = twitchQueue;
         this.twitchClientManager = twitchClientManager;
     }
@@ -25,7 +25,7 @@ public class TwitchChatQueueConsumer implements Runnable {
         while(true) {
             try{
                 ActionCommand actionCommand = twitchQueue.take();
-                twitchClientManager.consume(actionCommand);
+//                twitchClientManager.consume(actionCommand);
             } catch (InterruptedException interruptedException) {
                 Thread.currentThread().interrupt();
             }

@@ -17,17 +17,11 @@ public class TwitchChatClientFactory implements ClientFactory<PircBotX> {
 
     private final ClientSettingsFactory clientSettingsFactory;
     private final SSLSocketFactory sslSocketFactory;
-    private final ClientManager<PircBotX> clientManager;
-    private final Listener listener;
 
     public TwitchChatClientFactory(ClientSettingsFactory clientSettingsFactory,
-                                   SSLSocketFactory sslSocketFactory,
-                                   ClientManager<PircBotX> clientManager,
-                                   Listener listener) {
+                                   SSLSocketFactory sslSocketFactory) {
         this.clientSettingsFactory = clientSettingsFactory;
         this.sslSocketFactory = sslSocketFactory;
-        this.clientManager = clientManager;
-        this.listener = listener;
     }
 
     @Override
@@ -39,7 +33,7 @@ public class TwitchChatClientFactory implements ClientFactory<PircBotX> {
                 .addAutoJoinChannel("#" + settings.getBroadcasterChannel()) // channel is same as streamer's username
                 .setName(settings.getUsername())             // account we're connecting as
                 .setServerPassword(settings.getPassword())   // generated with TMI for now
-                .addListener(new PircBotxListener(listener, clientManager))   // have to register the listener!
+//                .addListener(new PircBotxListener(listener, clientManager))   // have to register the listener!
                 .setOnJoinWhoEnabled(false) // Twitch does not support WHO
                 .buildConfiguration()
         );

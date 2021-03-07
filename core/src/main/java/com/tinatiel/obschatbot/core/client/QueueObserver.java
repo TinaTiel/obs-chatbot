@@ -5,6 +5,7 @@
 
 package com.tinatiel.obschatbot.core.client;
 
-public interface Listener<T> {
-    void onEvent(T event);
+public interface QueueObserver<T> {
+    void registerListener(Listener<T> listener);
+    void notifyListeners(T event);
 }
