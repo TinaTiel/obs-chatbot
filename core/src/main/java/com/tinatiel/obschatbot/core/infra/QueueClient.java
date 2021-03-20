@@ -3,9 +3,8 @@
  * GNU General Public License v3.0. See LICENSE or go to https://fsf.org/ for more details.
  */
 
-package com.tinatiel.obschatbot.core.client;
+package com.tinatiel.obschatbot.core.infra;
 
-public interface PausableQueueObserver<T> extends QueueObserver<T> {
-    void pause();
-    void resume();
+public interface QueueClient<T> {
+    void submit(T event);
 }
