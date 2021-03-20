@@ -6,6 +6,8 @@
 package com.tinatiel.obschatbot;
 
 import com.tinatiel.obschatbot.core.action.model.SendMessageAction;
+import com.tinatiel.obschatbot.core.client.ClientManager;
+import com.tinatiel.obschatbot.core.client.chat.twitch.ClientManagerTwitchChatImpl;
 import com.tinatiel.obschatbot.core.request.RequestContext;
 import com.tinatiel.obschatbot.core.request.queue.ActionCommand;
 import com.tinatiel.obschatbot.core.user.Platform;
@@ -74,24 +76,47 @@ public class App {
 //        obsClientManager.consume(actionCommand);
 //        obsClientManager.stop();
 
-//        SendMessageAction action = new SendMessageAction("Test message " + new Date());
-//        User user = new User(Platform.TWITCH, "mango");
-//        RequestContext requestContext = new RequestContext(user, new ArrayList<>());
-//        ActionCommand actionCommand = new ActionCommand(action.acceptsClientType(), action, requestContext);
-//        TwitchChatClientManager chatClientManager = context.getBean(TwitchChatClientManager.class);
-//        try {
-//            chatClientManager.startClient();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//
-//        try {
-//            Thread.sleep(2000);
-//        } catch (InterruptedException interruptedException) {
-//            interruptedException.printStackTrace();
-//        }
-//        chatClientManager.consume(actionCommand);
-//        chatClientManager.stop();
+        // Get the Twitch Client Manager, and start it
+        ClientManager chatClientManager = context.getBean(ClientManagerTwitchChatImpl.class);
+        try {
+            chatClientManager.startClient();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
+        // Wait for it to start
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException interruptedException) {
+            interruptedException.printStackTrace();
+        }
+
+        // Try an action
+        SendMessageAction action = new SendMessageAction("Test message " + new Date());
+        User user = new User(Platform.TWITCH, "mango");
+        RequestContext requestContext = new RequestContext(user, new ArrayList<>());
+        ActionCommand actionCommand = new ActionCommand(action.acceptsClientType(), action, requestContext);
+        chatClientManager.consume(actionCommand);
+
+        chatClientManager.stopClient();
+
+        // Wait for it to stop
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException interruptedException) {
+            interruptedException.printStackTrace();
+        }
+
+        chatClientManager.startClient(); // start it again
+
+        // Wait for it to start
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException interruptedException) {
+            interruptedException.printStackTrace();
+        }
+
+        // stop the client
+        chatClientManager.stopClient();
     }
 }

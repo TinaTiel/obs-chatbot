@@ -7,6 +7,8 @@ package com.tinatiel.obschatbot.core.client.chat.twitch;
 
 import com.tinatiel.obschatbot.core.client.ClientFactory;
 import com.tinatiel.obschatbot.core.client.ClientSettingsFactory;
+import com.tinatiel.obschatbot.core.messaging.QueueClient;
+import com.tinatiel.obschatbot.core.request.queue.ActionCommand;
 import org.pircbotx.PircBotX;
 
 import javax.net.ssl.SSLSocketFactory;
@@ -15,11 +17,17 @@ public class TwitchChatClientFactory implements ClientFactory<PircBotX> {
 
     private final ClientSettingsFactory clientSettingsFactory;
     private final SSLSocketFactory sslSocketFactory;
+    private final QueueClient<TwitchClientStateEvent> stateClient;
+    private final QueueClient<ActionCommand> requestClient;
 
     public TwitchChatClientFactory(ClientSettingsFactory clientSettingsFactory,
-                                   SSLSocketFactory sslSocketFactory) {
+                                   SSLSocketFactory sslSocketFactory,
+                                   QueueClient<TwitchClientStateEvent> stateClient,
+                                   QueueClient<ActionCommand> requestClient) {
         this.clientSettingsFactory = clientSettingsFactory;
         this.sslSocketFactory = sslSocketFactory;
+        this.stateClient = stateClient;
+        this.requestClient = requestClient;
     }
 
     @Override
@@ -31,7 +39,7 @@ public class TwitchChatClientFactory implements ClientFactory<PircBotX> {
                 .addAutoJoinChannel("#" + settings.getBroadcasterChannel()) // channel is same as streamer's username
                 .setName(settings.getUsername())             // account we're connecting as
                 .setServerPassword(settings.getPassword())   // generated with TMI for now
-//                .addListener(new PircBotxListener(listener, clientManager))   // have to register the listener!
+                .addListener(new PircBotxListener(stateClient, requestClient))   // have to register the listener!
                 .setOnJoinWhoEnabled(false) // Twitch does not support WHO
                 .buildConfiguration()
         );

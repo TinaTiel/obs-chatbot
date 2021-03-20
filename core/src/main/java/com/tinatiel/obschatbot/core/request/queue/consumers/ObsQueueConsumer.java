@@ -5,6 +5,7 @@
 
 package com.tinatiel.obschatbot.core.request.queue.consumers;
 
+import com.tinatiel.obschatbot.core.client.ClientManager;
 import com.tinatiel.obschatbot.core.client.obs.ObsClientManager;
 import com.tinatiel.obschatbot.core.request.queue.ActionCommand;
 import com.tinatiel.obschatbot.core.request.queue.ObsQueue;
@@ -12,9 +13,9 @@ import com.tinatiel.obschatbot.core.request.queue.ObsQueue;
 public class ObsQueueConsumer implements Runnable {
 
     private final ObsQueue obsQueue;
-    private final ObsClientManager obsClientManager;
+    private final ClientManager obsClientManager;
 
-    public ObsQueueConsumer(ObsQueue obsQueue, ObsClientManager obsClientManager) {
+    public ObsQueueConsumer(ObsQueue obsQueue, ClientManager obsClientManager) {
         this.obsQueue = obsQueue;
         this.obsClientManager = obsClientManager;
     }

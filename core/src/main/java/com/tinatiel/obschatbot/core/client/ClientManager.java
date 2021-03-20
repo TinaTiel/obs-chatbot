@@ -14,7 +14,7 @@ import com.tinatiel.obschatbot.core.request.queue.consumers.ActionCommandConsume
  * to a data-store that provides them (settings are assumed mutable). When a client is started, a new instance is created
  * with those settings -- and when a client is stopped then the client is destroyed.
  */
-public interface ClientManager extends Listener<StateEvent>, ActionCommandConsumer {
+public interface ClientManager<T> extends Listener<T>, ActionCommandConsumer {
 
     /**
      * Starts a new client instance. Implementations should be blocking until timeout expires.

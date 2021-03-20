@@ -5,8 +5,7 @@
 
 package com.tinatiel.obschatbot.core.client.obs;
 
-import com.tinatiel.obschatbot.core.client.State;
-import com.tinatiel.obschatbot.core.client.StateEvent;
+import com.tinatiel.obschatbot.core.client.ClientManager;
 import com.tinatiel.obschatbot.core.error.ClientException;
 import com.tinatiel.obschatbot.core.request.queue.ActionCommand;
 import net.twasi.obsremotejava.OBSRemoteController;
@@ -18,7 +17,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-public class ObsClientManagerImpl implements ObsClientManager {
+public class ObsClientManagerImpl implements ClientManager<ObsClientStateEvent> {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
     private final ObsSettings settings;
@@ -116,8 +115,9 @@ public class ObsClientManagerImpl implements ObsClientManager {
         startClient();
     }
 
+
     @Override
-    public void onEvent(StateEvent event) {
+    public void onEvent(ObsClientStateEvent event) {
 
     }
 }

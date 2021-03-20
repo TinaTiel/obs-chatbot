@@ -5,6 +5,13 @@
 
 package com.tinatiel.obschatbot.core.client.chat.twitch;
 
+import com.tinatiel.obschatbot.core.action.model.SendMessageAction;
+import com.tinatiel.obschatbot.core.client.ActionClient;
+import com.tinatiel.obschatbot.core.messaging.QueueClient;
+import com.tinatiel.obschatbot.core.request.RequestContext;
+import com.tinatiel.obschatbot.core.request.queue.ActionCommand;
+import com.tinatiel.obschatbot.core.request.queue.type.TwitchChatActionQueueType;
+import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.*;
 import org.slf4j.Logger;
@@ -13,45 +20,48 @@ import org.slf4j.LoggerFactory;
 public class PircBotxListener extends ListenerAdapter {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
+    private final QueueClient<TwitchClientStateEvent> stateClient;
+    private final QueueClient<ActionCommand> requestClient;
+
+    public PircBotxListener(QueueClient<TwitchClientStateEvent> stateClient, QueueClient<ActionCommand> requestClient) {
+        this.stateClient = stateClient;
+        this.requestClient = requestClient;
+    }
+
     @Override
     public void onConnect(ConnectEvent event) throws Exception { // Connecting to the IRC server (no auth yet)
-        log.info("ON CONNECT event: " + event);
+        stateClient.submit(new TwitchClientStateEvent(TwitchClientState.CONNECTED, event.toString()));
     }
 
     @Override
     public void onJoin(JoinEvent event) throws Exception { // joining the channel
-        log.info("ON JOIN event: " + event);
 
         // Request tags capability so we can determine if a mod, subscriber, etc.
-        log.debug("Requesting tags capability");
+        stateClient.submit(new TwitchClientStateEvent(TwitchClientState.JOINING, "Requesting Tags capability"));
         event.getBot().sendCAP().request("twitch.tv/tags");
 
         // Request commands capability so we can respond to RECONNECT if issued by Twitch IRC server
-        log.debug("Requesting commands capability");
+        stateClient.submit(new TwitchClientStateEvent(TwitchClientState.JOINING, "Requesting Commands capability"));
         event.getBot().sendCAP().request("twitch.tv/commands");
 
         // Drop a welcome message into chat to provide feedback to broadcaster
-        log.debug("Giving broadcaster a welcome message");
         event.getBot().sendIRC().message("#tinatiel", "Obs Chatbot has joined the chat!");
 
-        log.debug("startup complete");
-//        listener.onEvent(clientManager, new StateEvent(State.READY, "Ready"));
+        stateClient.submit(new TwitchClientStateEvent(TwitchClientState.JOINED, event.toString()));
+        stateClient.submit(new TwitchClientStateEvent(TwitchClientState.READY, event.toString()));
 
     }
 
     @Override
     public void onNotice(NoticeEvent event) throws Exception {
-        log.debug("ON NOTICE event: " + event);
         if(event.getNotice().contains("auth")) {
-//            listener.onEvent(clientManager, new StateEvent(State.ERROR, "Unable to start Twitch Bot, bad credentials"));
-            //throw new ClientException(Code.CLIENT_BAD_CREDENTIALS, "Unable to start Twitch Bot, bad credentials", null);
+            stateClient.submit(new TwitchClientStateEvent(TwitchClientState.ERROR, "Unable to start Twitch Bot, bad credentials"));
         }
     }
 
     @Override
     public void onException(ExceptionEvent event) throws Exception {
-        log.debug("Exception occurred on event " + event, event.getException());
-//        listener.onEvent(clientManager, new StateEvent(State.ERROR, event.getException().getMessage()));
+        stateClient.submit(new TwitchClientStateEvent(TwitchClientState.ERROR, event.getException().getMessage()));
     }
 
     @Override
@@ -61,4 +71,14 @@ public class PircBotxListener extends ListenerAdapter {
         log.info("Tags: " + event.getTags());
     }
 
+    @Override
+    public void onDisconnect(DisconnectEvent event) throws Exception {
+        stateClient.submit(new TwitchClientStateEvent(TwitchClientState.DISCONNECTED));
+    }
+
+    @Override
+    public void onEvent(Event event) throws Exception {
+        log.trace("EVENT: " + event);
+        super.onEvent(event);
+    }
 }
