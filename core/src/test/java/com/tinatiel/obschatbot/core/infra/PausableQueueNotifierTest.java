@@ -11,8 +11,8 @@ import java.util.concurrent.TimeUnit;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
-@Timeout(value = PausableConsumerTest.TIMEOUT, unit = TimeUnit.MILLISECONDS)
-public class PausableConsumerTest {
+@Timeout(value = PausableQueueNotifierTest.TIMEOUT, unit = TimeUnit.MILLISECONDS)
+public class PausableQueueNotifierTest {
 
     public final static long TIMEOUT = 500L;
 
@@ -180,7 +180,37 @@ public class PausableConsumerTest {
 
     }
 
-    private void waitReasonably() {
+    @Test
+    public void regularQueueConsumerAlwaysConsumes() {
+
+        // Given the queue is empty
+        assertThat(queue).isEmpty();
+
+        // When a new consumer is created
+        QueueNotifierImpl consumer = new QueueNotifierImpl(queue);
+        consumer.addListener(listener1);
+        consumer.addListener(listener2);
+        consumer.addListener(listener3);
+
+        // And we wait
+        waitReasonably();
+
+        // And then we add items to the queue
+        populateQueue();
+        assertThat(queue).isNotEmpty(); // we cannot guarantee size here. It could be three, but should at least not be empty
+
+        // And then wait
+        waitReasonably();
+
+        // Then the queue will have been consumed and listeners notified
+        assertThat(queue).isEmpty();
+        assertListenerCalledWith(listener1, item1, item2, item3);
+        assertListenerCalledWith(listener2, item1, item2, item3);
+        assertListenerCalledWith(listener3, item1, item2, item3);
+
+    }
+
+    void waitReasonably() {
         try {
             Thread.sleep(100);
         } catch (InterruptedException interruptedException) {
@@ -188,23 +218,23 @@ public class PausableConsumerTest {
         }
     }
 
-    private void populateQueue() {
+    void populateQueue() {
         queue.add(item1);
         queue.add(item2);
         queue.add(item3);
     }
 
-    private void assertListenerCalledWith(Listener listener, QueueItem... items) {
+    void assertListenerCalledWith(Listener listener, QueueItem... items) {
         for(QueueItem item:items) {
             verify(listener).onEvent(item);
         }
     }
 
-    private void assertListenerNotCalled(Listener listener) {
+    void assertListenerNotCalled(Listener listener) {
         verifyNoInteractions(listener);
     }
 
-    private void assertListenerNotCalledWith(Listener listener, QueueItem... items) {
+    void assertListenerNotCalledWith(Listener listener, QueueItem... items) {
         for(QueueItem item:items) {
             verify(listener, times(0)).onEvent(item);
         }
