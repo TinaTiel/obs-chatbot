@@ -5,11 +5,6 @@
 
 package com.tinatiel.obschatbot.core.client.chat.twitch;
 
-import com.tinatiel.obschatbot.core.client.ClientManager;
-import com.tinatiel.obschatbot.core.client.Listener;
-import com.tinatiel.obschatbot.core.client.State;
-import com.tinatiel.obschatbot.core.client.StateEvent;
-import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.*;
 import org.slf4j.Logger;

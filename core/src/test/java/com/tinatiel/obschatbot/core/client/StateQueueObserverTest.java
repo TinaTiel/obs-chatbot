@@ -5,6 +5,7 @@
 
 package com.tinatiel.obschatbot.core.client;
 
+import com.tinatiel.obschatbot.core.infra.Listener;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

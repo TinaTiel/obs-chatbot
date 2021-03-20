@@ -5,9 +5,7 @@
 
 package com.tinatiel.obschatbot.core.client;
 
-import com.tinatiel.obschatbot.core.action.Action;
-import com.tinatiel.obschatbot.core.client.chat.twitch.TwitchChatClient;
-import com.tinatiel.obschatbot.core.request.RequestContext;
+import com.tinatiel.obschatbot.core.infra.Listener;
 import com.tinatiel.obschatbot.core.request.queue.ActionCommand;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

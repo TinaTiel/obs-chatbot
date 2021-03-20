@@ -6,9 +6,7 @@
 package com.tinatiel.obschatbot.core.client.chat.twitch;
 
 import com.tinatiel.obschatbot.core.client.ClientFactory;
-import com.tinatiel.obschatbot.core.client.ClientManager;
 import com.tinatiel.obschatbot.core.client.ClientSettingsFactory;
-import com.tinatiel.obschatbot.core.client.Listener;
 import org.pircbotx.PircBotX;
 
 import javax.net.ssl.SSLSocketFactory;

@@ -5,7 +5,7 @@
 
 package com.tinatiel.obschatbot.core.client;
 
-import com.tinatiel.obschatbot.core.action.Action;
+import com.tinatiel.obschatbot.core.infra.Listener;
 import com.tinatiel.obschatbot.core.request.queue.ActionCommand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +18,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class RequestQueueObserver implements PausableQueueObserver<ActionCommand> {

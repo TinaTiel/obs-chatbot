@@ -9,29 +9,15 @@ import com.tinatiel.obschatbot.App;
 import com.tinatiel.obschatbot.core.client.ClientFactory;
 import com.tinatiel.obschatbot.core.client.ClientManager;
 import com.tinatiel.obschatbot.core.client.ClientSettingsFactory;
-import com.tinatiel.obschatbot.core.client.Listener;
-import com.tinatiel.obschatbot.core.client.chat.twitch.ClientManagerTwitchChatImpl;
-import com.tinatiel.obschatbot.core.client.chat.twitch.PircBotxListener;
-import com.tinatiel.obschatbot.core.error.ClientException;
-import com.tinatiel.obschatbot.core.error.Code;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import com.tinatiel.obschatbot.core.infra.Listener;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.pircbotx.PircBotX;
-import org.pircbotx.exception.IrcException;
-import org.pircbotx.hooks.events.NoticeEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.io.IOException;
-import java.net.ConnectException;
-import java.net.UnknownHostException;
-
-import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.doThrow;
 
 @Import({App.class})

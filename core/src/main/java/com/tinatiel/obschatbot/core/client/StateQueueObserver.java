@@ -5,6 +5,7 @@
 
 package com.tinatiel.obschatbot.core.client;
 
+import com.tinatiel.obschatbot.core.infra.Listener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

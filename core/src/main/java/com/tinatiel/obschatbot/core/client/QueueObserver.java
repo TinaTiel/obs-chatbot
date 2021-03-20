@@ -5,6 +5,8 @@
 
 package com.tinatiel.obschatbot.core.client;
 
+import com.tinatiel.obschatbot.core.infra.Listener;
+
 public interface QueueObserver<T> {
     void registerListener(Listener<T> listener);
     void notifyListeners(T event);
