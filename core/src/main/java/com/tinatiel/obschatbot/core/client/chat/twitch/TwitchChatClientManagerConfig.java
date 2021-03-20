@@ -36,12 +36,19 @@ public class TwitchChatClientManagerConfig {
     }
 
     @Bean
-    ClientFactory<PircBotX> twitchChatClientFactory() {
-        return new TwitchChatClientFactory(
-                clientSettingsFactory,
-                sslSocketFactory(),
+    PircBotxListener pircBotxListener() {
+        return new PircBotxListener(
                 stateClient(),
                 requestClient()
+        );
+    }
+
+    @Bean
+    ClientFactory<PircBotX> twitchChatClientFactory() {
+        return new TwitchChatClientFactory(
+            clientSettingsFactory,
+            sslSocketFactory(),
+            pircBotxListener()
         );
     }
 
