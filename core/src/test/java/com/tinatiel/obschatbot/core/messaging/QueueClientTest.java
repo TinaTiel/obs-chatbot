@@ -38,7 +38,6 @@ public class QueueClientTest {
         // Given two different queue items
         Object existingItem = new Object();
         Object newItem = new Object();
-
         assertThat(existingItem).isNotEqualTo(newItem);
 
         // Given a bounded full queue
