@@ -28,14 +28,20 @@ public class PircBotxListener extends ListenerAdapter {
         this.requestClient = requestClient;
     }
 
+    /**
+     * When we have successfully reached Twitch's server.
+     */
     @Override
     public void onSocketConnect(SocketConnectEvent event) throws Exception {
         stateClient.submit(new TwitchClientStateEvent(TwitchClientState.CONNECTED, event.toString()));
     }
 
+    /**
+     * When we have successfully reached the server, AND successfully authenticated.
+     */
     @Override
-    public void onConnect(ConnectEvent event) throws Exception { // Connecting to the IRC server (no auth yet)
-        log.debug("SOME OTHER KIND OF CONNECT", event);
+    public void onConnect(ConnectEvent event) throws Exception {
+        stateClient.submit(new TwitchClientStateEvent(TwitchClientState.AUTHENTICATED, event.toString()));
     }
 
     @Override

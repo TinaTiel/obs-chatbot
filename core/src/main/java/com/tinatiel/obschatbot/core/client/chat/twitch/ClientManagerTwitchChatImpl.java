@@ -15,7 +15,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.net.ConnectException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.locks.ReentrantLock;
@@ -54,6 +53,7 @@ public class ClientManagerTwitchChatImpl implements ClientManager<TwitchClientSt
         // startBot blocks the calling thread, so we're putting it in its own executor thread
         executorService.execute(() -> {
             try {
+                stateClient.submit(new TwitchClientStateEvent(TwitchClientState.CONNECTING));
                 client.startBot();
             } catch (IOException | IrcException e) {
                 log.error("Unable to start the Twitch Client", e);
@@ -83,10 +83,14 @@ public class ClientManagerTwitchChatImpl implements ClientManager<TwitchClientSt
         stateClient.submit(new TwitchClientStateEvent(TwitchClientState.STOPPING));
         client.stopBotReconnect();
 
-        // If the bot was connected to the server, close the socket
-        if(state.ordinal() < TwitchClientState.CONNECTED.ordinal()) {
+        // Try to close the connection
+        try {
             client.close();
+        } catch (Exception e) {
+            log.warn("Could not close the connection", e);
         }
+
+        // Note the rest of the close process will be completed in the listener!
 
     }
 
@@ -109,8 +113,8 @@ public class ClientManagerTwitchChatImpl implements ClientManager<TwitchClientSt
                 privateStop("Stopping due to error: " + event.getMessage());
                 break;
             case DISCONNECTED:
-                client = null;
                 stateClient.submit(new TwitchClientStateEvent(TwitchClientState.STOPPED));
+                client = null;
         }
     }
 
