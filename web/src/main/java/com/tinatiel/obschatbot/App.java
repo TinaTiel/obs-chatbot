@@ -78,14 +78,12 @@ public class App {
 
         // Get the Twitch Client Manager, and start it
         ClientManager chatClientManager = context.getBean(ClientManagerTwitchChatImpl.class);
-        try {
-            chatClientManager.startClient();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
+        chatClientManager.startClient();
 
         // Wait for it to start
         try {
+            System.out.println("Waiting 2 seconds");
             Thread.sleep(2000);
         } catch (InterruptedException interruptedException) {
             interruptedException.printStackTrace();
@@ -102,6 +100,7 @@ public class App {
 
         // Wait for it to stop
         try {
+            System.out.println("Waiting 2 seconds");
             Thread.sleep(2000);
         } catch (InterruptedException interruptedException) {
             interruptedException.printStackTrace();
@@ -111,6 +110,7 @@ public class App {
 
         // Wait for it to start
         try {
+            System.out.println("Waiting 2 seconds");
             Thread.sleep(2000);
         } catch (InterruptedException interruptedException) {
             interruptedException.printStackTrace();

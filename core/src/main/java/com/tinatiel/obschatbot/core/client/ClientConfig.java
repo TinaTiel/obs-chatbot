@@ -32,7 +32,8 @@ public class ClientConfig {
                 return new TwitchChatSettings(
                         TwitchChatSettings.DEFAULT_HOST, TwitchChatSettings.DEFAULT_PORT,
                         twitchUsername, twitchPassword, targetChannel,
-                        6000
+                        1000,
+                        1
                 );
             }
 

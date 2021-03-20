@@ -41,6 +41,8 @@ public class TwitchChatClientFactory implements ClientFactory<PircBotX> {
                 .setServerPassword(settings.getPassword())   // generated with TMI for now
                 .addListener(new PircBotxListener(stateClient, requestClient))   // have to register the listener!
                 .setOnJoinWhoEnabled(false) // Twitch does not support WHO
+                .setAutoReconnectAttempts(settings.getConnectionAttempts())
+                .setSocketConnectTimeout(Long.valueOf(settings.getConnectionTimeoutMs()).intValue()) // millis timeout, weirdly supplied as int
                 .buildConfiguration()
         );
 

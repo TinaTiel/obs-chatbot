@@ -15,11 +15,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.net.ConnectException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class ClientManagerTwitchChatImpl implements ClientManager<TwitchClientStateEvent> {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
+    ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     // Client factory produces new client instances
     private final QueueClient<TwitchClientStateEvent> stateClient;
@@ -46,19 +50,24 @@ public class ClientManagerTwitchChatImpl implements ClientManager<TwitchClientSt
 
         stateClient.submit(new TwitchClientStateEvent(TwitchClientState.STARTING));
         client = clientFactory.generate();
-        try {
-            client.startBot();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (IrcException e) {
-            e.printStackTrace();
-        }
+
+        // startBot blocks the calling thread, so we're putting it in its own executor thread
+        executorService.execute(() -> {
+            try {
+                client.startBot();
+            } catch (IOException | IrcException e) {
+                log.error("Unable to start the Twitch Client", e);
+                stateClient.submit(new TwitchClientStateEvent(TwitchClientState.ERROR, "Unable to start the Twitch Client: "
+                        + e.getMessage()
+                ));
+            }
+        });
 
     }
 
     @Override
     public void stopClient() {
-        privateStop(null);
+        privateStop("Stop request by user");
     }
 
     private void privateStop(String message) {

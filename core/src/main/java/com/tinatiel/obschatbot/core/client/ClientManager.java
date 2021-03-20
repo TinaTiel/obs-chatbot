@@ -19,7 +19,7 @@ public interface ClientManager<T> extends Listener<T>, ActionCommandConsumer {
     /**
      * Starts a new client instance. Implementations should be blocking until timeout expires.
       */
-    void startClient() throws ClientException;
+    void startClient();
 
     /**
      * Stops a client instance. Implementations should be blocking until timeout expires.
@@ -31,6 +31,6 @@ public interface ClientManager<T> extends Listener<T>, ActionCommandConsumer {
      * be used when fresh settings should be loaded (the old client is destroyed, and the new client is created with the
      * updated settings.
      */
-    void reloadClient() throws ClientException;
+    void reloadClient();
 
 }

@@ -29,8 +29,13 @@ public class PircBotxListener extends ListenerAdapter {
     }
 
     @Override
-    public void onConnect(ConnectEvent event) throws Exception { // Connecting to the IRC server (no auth yet)
+    public void onSocketConnect(SocketConnectEvent event) throws Exception {
         stateClient.submit(new TwitchClientStateEvent(TwitchClientState.CONNECTED, event.toString()));
+    }
+
+    @Override
+    public void onConnect(ConnectEvent event) throws Exception { // Connecting to the IRC server (no auth yet)
+        log.debug("SOME OTHER KIND OF CONNECT", event);
     }
 
     @Override
@@ -55,7 +60,7 @@ public class PircBotxListener extends ListenerAdapter {
     @Override
     public void onNotice(NoticeEvent event) throws Exception {
         if(event.getNotice().contains("auth")) {
-            stateClient.submit(new TwitchClientStateEvent(TwitchClientState.ERROR, "Unable to start Twitch Bot, bad credentials"));
+            stateClient.submit(new TwitchClientStateEvent(TwitchClientState.ERROR, "Unable to connect to Twitch: bad credentials"));
         }
     }
 
@@ -78,7 +83,22 @@ public class PircBotxListener extends ListenerAdapter {
 
     @Override
     public void onEvent(Event event) throws Exception {
-        log.trace("EVENT: " + event);
+        log.debug("EVENT: " + event);
         super.onEvent(event);
+    }
+
+    @Override
+    public void onOutput(OutputEvent event) throws Exception {
+        if(event.getRawLine().startsWith("PASS")) {
+            stateClient.submit(new TwitchClientStateEvent(TwitchClientState.AUTHENTICATING));
+        }
+        super.onOutput(event);
+    }
+
+    @Override
+    public void onConnectAttemptFailed(ConnectAttemptFailedEvent event) throws Exception {
+        stateClient.submit(new TwitchClientStateEvent(TwitchClientState.ERROR, "Could not connect to Twitch, "
+            + "your (1) network connection, (2) that Twitch is up, and (3) verify the port and host are correct"
+        ));
     }
 }

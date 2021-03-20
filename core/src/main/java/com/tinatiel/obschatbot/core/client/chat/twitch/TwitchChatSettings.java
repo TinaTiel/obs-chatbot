@@ -16,14 +16,17 @@ public class TwitchChatSettings {
     private final String password;
     private final String broadcasterChannel;
     private final long connectionTimeoutMs;
+    private final int connectionAttempts;
 
-    public TwitchChatSettings(String host, int port, String username, String password, String broadcasterChannel, long connectionTimeoutMs) {
+    public TwitchChatSettings(String host, int port, String username, String password, String broadcasterChannel,
+                              long connectionTimeoutMs, int connectionAttempts) {
         this.host = host;
         this.port = port;
         this.username = username;
         this.password = password;
         this.broadcasterChannel = broadcasterChannel;
         this.connectionTimeoutMs = connectionTimeoutMs;
+        this.connectionAttempts = connectionAttempts;
     }
 
     public String getHost() {
@@ -48,5 +51,9 @@ public class TwitchChatSettings {
 
     public long getConnectionTimeoutMs() {
         return connectionTimeoutMs;
+    }
+
+    public int getConnectionAttempts() {
+        return connectionAttempts;
     }
 }

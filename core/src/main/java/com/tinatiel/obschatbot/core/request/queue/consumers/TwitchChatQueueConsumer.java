@@ -25,7 +25,7 @@ public class TwitchChatQueueConsumer implements Runnable {
         while(true) {
             try{
                 ActionCommand actionCommand = twitchQueue.take();
-//                twitchClientManager.consume(actionCommand);
+                twitchClientManager.consume(actionCommand);
             } catch (InterruptedException interruptedException) {
                 Thread.currentThread().interrupt();
             }
