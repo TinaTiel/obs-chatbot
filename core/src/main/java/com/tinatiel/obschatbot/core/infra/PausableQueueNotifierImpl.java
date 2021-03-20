@@ -9,7 +9,7 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-public class PausableQueueNotifierImpl {
+public class PausableQueueNotifierImpl implements PausableQueueNotifier {
 
     private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
     private final Lock rLock = lock.readLock();
@@ -21,9 +21,8 @@ public class PausableQueueNotifierImpl {
 
     private volatile boolean running = false;
 
-    public PausableQueueNotifierImpl(BlockingQueue queue, Listener... listeners) {
+    public PausableQueueNotifierImpl(BlockingQueue queue) {
         this.queue = queue;
-        this.listeners.addAll(Arrays.asList(listeners));
         Executors.newSingleThreadExecutor().execute(() -> {
             while(true) {
                 run();
@@ -75,7 +74,18 @@ public class PausableQueueNotifierImpl {
 
     }
 
-    private void notifyListeners(Object item) {
+    @Override
+    public void addListener(Listener listener) {
+        this.listeners.add(listener);
+    }
+
+    @Override
+    public void removeListener(Listener listener) {
+        this.listeners.remove(listener);
+    }
+
+    @Override
+    public void notifyListeners(Object item) {
         for(Listener listener:listeners) listener.onEvent(item);
     }
 

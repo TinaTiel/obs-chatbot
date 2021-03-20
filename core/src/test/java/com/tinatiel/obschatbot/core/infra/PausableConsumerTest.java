@@ -6,11 +6,12 @@ import org.junit.jupiter.api.Timeout;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
-@Timeout(PausableConsumerTest.TIMEOUT)
+@Timeout(value = PausableConsumerTest.TIMEOUT, unit = TimeUnit.MILLISECONDS)
 public class PausableConsumerTest {
 
     public final static long TIMEOUT = 500L;
@@ -39,7 +40,10 @@ public class PausableConsumerTest {
         assertThat(queue).hasSize(3);
 
         // When a new consumer is created
-        PausableQueueNotifierImpl consumer = new PausableQueueNotifierImpl(queue, listener1, listener2, listener3);
+        PausableQueueNotifierImpl consumer = new PausableQueueNotifierImpl(queue);
+        consumer.addListener(listener1);
+        consumer.addListener(listener2);
+        consumer.addListener(listener3);
 
         // And we wait
         waitReasonably();
@@ -56,7 +60,10 @@ public class PausableConsumerTest {
     public void dontConsumeWhenPaused() {
 
         // Given a new consumer
-        PausableQueueNotifierImpl consumer = new PausableQueueNotifierImpl(queue, listener1, listener2, listener3);
+        PausableQueueNotifierImpl consumer = new PausableQueueNotifierImpl(queue);
+        consumer.addListener(listener1);
+        consumer.addListener(listener2);
+        consumer.addListener(listener3);
 
         // When we pause it
         consumer.pause();
@@ -80,7 +87,10 @@ public class PausableConsumerTest {
     public void consumeWhenResumed() {
 
         // Given a new consumer
-        PausableQueueNotifierImpl consumer = new PausableQueueNotifierImpl(queue, listener1, listener2, listener3);
+        PausableQueueNotifierImpl consumer = new PausableQueueNotifierImpl(queue);
+        consumer.addListener(listener1);
+        consumer.addListener(listener2);
+        consumer.addListener(listener3);
 
         // When we pause it
         consumer.pause();
@@ -106,12 +116,15 @@ public class PausableConsumerTest {
 
     }
 
-    @Timeout(TIMEOUT*2) // we wait longer since there are many pauses/resumes with waits between
+    @Timeout(value = TIMEOUT*2, unit = TimeUnit.MILLISECONDS) // we wait longer since there are many pauses/resumes with waits between
     @Test
     public void pauseResumePauseResumeWorksAsExpected() {
 
         // Given a new consumer
-        PausableQueueNotifierImpl consumer = new PausableQueueNotifierImpl(queue, listener1, listener2, listener3);
+        PausableQueueNotifierImpl consumer = new PausableQueueNotifierImpl(queue);
+        consumer.addListener(listener1);
+        consumer.addListener(listener2);
+        consumer.addListener(listener3);
 
         // When we pause it
         consumer.pause();
