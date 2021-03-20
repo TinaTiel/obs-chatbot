@@ -1,4 +1,4 @@
-package com.tinatiel.obschatbot.core.infra;
+package com.tinatiel.obschatbot.core.messaging;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,8 +11,8 @@ import java.util.concurrent.TimeUnit;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
-@Timeout(value = PausableQueueNotifierTest.TIMEOUT, unit = TimeUnit.MILLISECONDS)
-public class PausableQueueNotifierTest {
+@Timeout(value = QueueNotifierTests.TIMEOUT, unit = TimeUnit.MILLISECONDS)
+public class QueueNotifierTests {
 
     public final static long TIMEOUT = 500L;
 

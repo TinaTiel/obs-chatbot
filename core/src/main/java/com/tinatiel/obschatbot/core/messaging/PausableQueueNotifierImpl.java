@@ -1,7 +1,6 @@
-package com.tinatiel.obschatbot.core.infra;
+package com.tinatiel.obschatbot.core.messaging;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executors;

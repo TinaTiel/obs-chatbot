@@ -6,7 +6,7 @@
 package com.tinatiel.obschatbot.core.client;
 
 import com.tinatiel.obschatbot.core.error.ClientException;
-import com.tinatiel.obschatbot.core.infra.Listener;
+import com.tinatiel.obschatbot.core.messaging.Listener;
 import com.tinatiel.obschatbot.core.request.queue.consumers.ActionCommandConsumer;
 
 /**

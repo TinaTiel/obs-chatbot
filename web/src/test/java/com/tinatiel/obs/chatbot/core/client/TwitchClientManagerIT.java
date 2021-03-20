@@ -9,7 +9,7 @@ import com.tinatiel.obschatbot.App;
 import com.tinatiel.obschatbot.core.client.ClientFactory;
 import com.tinatiel.obschatbot.core.client.ClientManager;
 import com.tinatiel.obschatbot.core.client.ClientSettingsFactory;
-import com.tinatiel.obschatbot.core.infra.Listener;
+import com.tinatiel.obschatbot.core.messaging.Listener;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.pircbotx.PircBotX;
 import org.springframework.beans.factory.annotation.Autowired;
