@@ -84,7 +84,7 @@ public class TwitchChatClientManagerConfig {
 
             @Override
             public void onEvent(TwitchClientStateEvent event) {
-                log.info(event.toString());
+                log.debug(event.toString());
             }
         };
     }

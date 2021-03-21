@@ -49,11 +49,11 @@ public class ClientManagerTwitchChatImpl implements ClientManager<TwitchClientSt
 
         stateClient.submit(new TwitchClientStateEvent(TwitchClientState.STARTING));
         client = clientFactory.generate();
+        stateClient.submit(new TwitchClientStateEvent(TwitchClientState.CONNECTING));
 
         // startBot blocks the calling thread, so we're putting it in its own executor thread
         executorService.execute(() -> {
             try {
-                stateClient.submit(new TwitchClientStateEvent(TwitchClientState.CONNECTING));
                 client.startBot();
             } catch (IOException | IrcException e) {
                 log.error("Unable to start the Twitch Client", e);
