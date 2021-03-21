@@ -63,13 +63,13 @@ public class TwitchChatClientManagerConfig {
     }
 
     @Bean
-    QueueClient<TwitchClientStateEvent> stateClient() {
+    QueueClient<TwitchClientEvent> stateClient() {
         return new QueueClientImpl(twitchChatStateQueue());
     }
 
     @Bean
-    QueueNotifier<TwitchClientStateEvent> notifier() {
-        QueueNotifier<TwitchClientStateEvent> notifier = new QueueNotifierImpl(twitchChatStateQueue());
+    QueueNotifier<TwitchClientEvent> notifier() {
+        QueueNotifier<TwitchClientEvent> notifier = new QueueNotifierImpl(twitchChatStateQueue());
         notifier.addListener(eventLogger());
         notifier.addListener(clientManagerTwitchChatImpl());
 
@@ -77,13 +77,13 @@ public class TwitchChatClientManagerConfig {
     }
 
     @Bean
-    Listener<TwitchClientStateEvent> eventLogger() {
-        return new Listener<TwitchClientStateEvent>() {
+    Listener<TwitchClientEvent> eventLogger() {
+        return new Listener<TwitchClientEvent>() {
 
             private final Logger log = LoggerFactory.getLogger(this.getClass());
 
             @Override
-            public void onEvent(TwitchClientStateEvent event) {
+            public void onEvent(TwitchClientEvent event) {
                 log.debug(event.toString());
             }
         };

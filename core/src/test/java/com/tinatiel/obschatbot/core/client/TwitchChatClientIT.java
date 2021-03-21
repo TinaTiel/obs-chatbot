@@ -7,20 +7,16 @@ package com.tinatiel.obschatbot.core.client;
 
 import com.tinatiel.obschatbot.core.CoreConfig;
 import com.tinatiel.obschatbot.core.client.chat.twitch.PircBotxListener;
-import com.tinatiel.obschatbot.core.client.chat.twitch.TwitchChatClientFactory;
 import com.tinatiel.obschatbot.core.client.chat.twitch.TwitchClientState;
-import com.tinatiel.obschatbot.core.client.chat.twitch.TwitchClientStateEvent;
 import com.tinatiel.obschatbot.core.messaging.Listener;
 import com.tinatiel.obschatbot.core.messaging.QueueNotifier;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.events.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
@@ -44,7 +40,7 @@ public class TwitchChatClientIT {
     private final static String TWITCH_AUTH_FAILED_MESSAGE = "Login authentication failed";
 
     @Autowired
-    QueueNotifier<TwitchClientStateEvent> notifier;
+    QueueNotifier<TwitchClientEvent> notifier;
 
     TestListener testListener;
 
@@ -55,7 +51,7 @@ public class TwitchChatClientIT {
     PircBotxListener pircBotxListener;
 
     @Autowired
-    ClientManager<TwitchClientStateEvent> sut;
+    ClientManager<TwitchClientEvent> sut;
 
     @BeforeEach
     void setUp() {
@@ -93,11 +89,11 @@ public class TwitchChatClientIT {
         waitReasonably();
 
         // When we examine the log
-        List<TwitchClientStateEvent> events = testListener.getLog();
+        List<TwitchClientEvent> events = testListener.getLog();
 
         // Then we find the expected order of events
         events.forEach(System.out::println);
-        assertThat(events.stream().map(TwitchClientStateEvent::getState)).containsExactly(
+        assertThat(events.stream().map(TwitchClientEvent::getState)).containsExactly(
                 TwitchClientState.START_REQUESTED,
                 TwitchClientState.STARTING,
                 TwitchClientState.CONNECTING,
@@ -145,11 +141,11 @@ public class TwitchChatClientIT {
         waitReasonably();
 
         // When we examine the log
-        List<TwitchClientStateEvent> events = testListener.getLog();
+        List<TwitchClientEvent> events = testListener.getLog();
 
         // Then we find the expected order of events
         events.forEach(System.out::println);
-        assertThat(events.stream().map(TwitchClientStateEvent::getState)).containsExactly(
+        assertThat(events.stream().map(TwitchClientEvent::getState)).containsExactly(
                 TwitchClientState.START_REQUESTED,
                 TwitchClientState.STARTING,
                 TwitchClientState.CONNECTING,
@@ -210,11 +206,11 @@ public class TwitchChatClientIT {
         waitReasonably();
 
         // When we examine the log
-        List<TwitchClientStateEvent> events = testListener.getLog();
+        List<TwitchClientEvent> events = testListener.getLog();
 
         // Then we find the expected order of events
         events.forEach(System.out::println);
-        assertThat(events.stream().map(TwitchClientStateEvent::getState)).containsExactly(
+        assertThat(events.stream().map(TwitchClientEvent::getState)).containsExactly(
                 TwitchClientState.START_REQUESTED,
                 TwitchClientState.STARTING,
                 TwitchClientState.CONNECTING,
@@ -236,16 +232,16 @@ public class TwitchChatClientIT {
      * Simple listener that puts each event into a history log so we can
      * view it later and verify the events that executed.
      */
-    static class TestListener implements Listener<TwitchClientStateEvent> {
+    static class TestListener implements Listener<TwitchClientEvent> {
 
-        List<TwitchClientStateEvent> log = new ArrayList<>();
+        List<TwitchClientEvent> log = new ArrayList<>();
 
         @Override
-        public void onEvent(TwitchClientStateEvent event) {
+        public void onEvent(TwitchClientEvent event) {
             log.add(event);
         }
 
-        public List<TwitchClientStateEvent> getLog() {
+        public List<TwitchClientEvent> getLog() {
             return log;
         }
     }

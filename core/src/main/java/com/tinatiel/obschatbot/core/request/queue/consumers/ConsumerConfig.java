@@ -6,13 +6,10 @@
 package com.tinatiel.obschatbot.core.request.queue.consumers;
 
 import com.tinatiel.obschatbot.core.client.ClientManager;
-import com.tinatiel.obschatbot.core.client.chat.twitch.TwitchClientStateEvent;
-import com.tinatiel.obschatbot.core.client.obs.ObsClientManager;
-import com.tinatiel.obschatbot.core.client.obs.ObsClientStateEvent;
+import com.tinatiel.obschatbot.core.client.obs.ObsClientEvent;
 import com.tinatiel.obschatbot.core.request.queue.MainQueue;
 import com.tinatiel.obschatbot.core.request.queue.ObsQueue;
 import com.tinatiel.obschatbot.core.request.queue.TwitchChatQueue;
-import org.pircbotx.PircBotX;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,13 +27,13 @@ public class ConsumerConfig {
     ObsQueue obsQueue;
 
     @Autowired
-    ClientManager<ObsClientStateEvent> obsClientManager;
+    ClientManager<ObsClientEvent> obsClientManager;
 
     @Autowired
     TwitchChatQueue twitchChatQueue;
 
     @Autowired
-    ClientManager<TwitchClientStateEvent> twitchChatClientManager;
+    ClientManager<TwitchClientEvent> twitchChatClientManager;
 
     @Bean
     MainQueueRouter mainQueueRouter() {

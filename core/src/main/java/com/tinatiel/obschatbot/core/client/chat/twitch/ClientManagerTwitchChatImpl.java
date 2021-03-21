@@ -19,20 +19,20 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class ClientManagerTwitchChatImpl implements ClientManager<TwitchClientStateEvent> {
+public class ClientManagerTwitchChatImpl implements ClientManager<TwitchClientEvent> {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
     ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     // Client factory produces new client instances
-    private final QueueClient<TwitchClientStateEvent> stateClient;
+    private final QueueClient<TwitchClientEvent> stateClient;
     private final ClientFactory<PircBotX> clientFactory;
 
     private final ReentrantLock lock = new ReentrantLock();
     private volatile PircBotX client;
     private TwitchClientState state;
 
-    public ClientManagerTwitchChatImpl(QueueClient<TwitchClientStateEvent> stateClient, ClientFactory<PircBotX> clientFactory) {
+    public ClientManagerTwitchChatImpl(QueueClient<TwitchClientEvent> stateClient, ClientFactory<PircBotX> clientFactory) {
         this.stateClient = stateClient;
         this.clientFactory = clientFactory;
     }
@@ -41,15 +41,15 @@ public class ClientManagerTwitchChatImpl implements ClientManager<TwitchClientSt
     public void startClient() throws ClientException {
 
         if(client == null) {
-            stateClient.submit(new TwitchClientStateEvent(TwitchClientState.START_REQUESTED));
+            stateClient.submit(new TwitchClientEvent(TwitchClientState.START_REQUESTED));
         } else {
-            stateClient.submit(new TwitchClientStateEvent(TwitchClientState.START_REQUESTED, "Client already starting/started, ignoring"));
+            stateClient.submit(new TwitchClientEvent(TwitchClientState.START_REQUESTED, "Client already starting/started, ignoring"));
             return;
         }
 
-        stateClient.submit(new TwitchClientStateEvent(TwitchClientState.STARTING));
+        stateClient.submit(new TwitchClientEvent(TwitchClientState.STARTING));
         client = clientFactory.generate();
-        stateClient.submit(new TwitchClientStateEvent(TwitchClientState.CONNECTING));
+        stateClient.submit(new TwitchClientEvent(TwitchClientState.CONNECTING));
 
         // startBot blocks the calling thread, so we're putting it in its own executor thread
         executorService.execute(() -> {
@@ -57,7 +57,7 @@ public class ClientManagerTwitchChatImpl implements ClientManager<TwitchClientSt
                 client.startBot();
             } catch (IOException | IrcException e) {
                 log.error("Unable to start the Twitch Client", e);
-                stateClient.submit(new TwitchClientStateEvent(TwitchClientState.ERROR, "Unable to start the Twitch Client: "
+                stateClient.submit(new TwitchClientEvent(TwitchClientState.ERROR, "Unable to start the Twitch Client: "
                         + e.getMessage()
                 ));
             }
@@ -74,13 +74,13 @@ public class ClientManagerTwitchChatImpl implements ClientManager<TwitchClientSt
 
         // Stop the client if present
         if(client == null) {
-            stateClient.submit(new TwitchClientStateEvent(TwitchClientState.STOP_REQUESTED, "Client wasn't running, ignoring"));
+            stateClient.submit(new TwitchClientEvent(TwitchClientState.STOP_REQUESTED, "Client wasn't running, ignoring"));
             return;
         } else {
-            stateClient.submit(new TwitchClientStateEvent(TwitchClientState.STOP_REQUESTED, message));
+            stateClient.submit(new TwitchClientEvent(TwitchClientState.STOP_REQUESTED, message));
         }
 
-        stateClient.submit(new TwitchClientStateEvent(TwitchClientState.STOPPING));
+        stateClient.submit(new TwitchClientEvent(TwitchClientState.STOPPING));
         client.stopBotReconnect();
 
         // Try to close the connection
@@ -106,14 +106,14 @@ public class ClientManagerTwitchChatImpl implements ClientManager<TwitchClientSt
     }
 
     @Override
-    public void onEvent(TwitchClientStateEvent event) {
+    public void onEvent(TwitchClientEvent event) {
         state = event.getState();
         switch (state) {
             case ERROR:
                 privateStop("Stopping due to error: " + event.getMessage());
                 break;
             case DISCONNECTED:
-                stateClient.submit(new TwitchClientStateEvent(TwitchClientState.STOPPED));
+                stateClient.submit(new TwitchClientEvent(TwitchClientState.STOPPED));
                 client = null;
         }
     }

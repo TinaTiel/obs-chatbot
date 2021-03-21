@@ -5,12 +5,8 @@
 
 package com.tinatiel.obschatbot.core.client.chat.twitch;
 
-import com.tinatiel.obschatbot.core.action.model.SendMessageAction;
-import com.tinatiel.obschatbot.core.client.ActionClient;
 import com.tinatiel.obschatbot.core.messaging.QueueClient;
-import com.tinatiel.obschatbot.core.request.RequestContext;
 import com.tinatiel.obschatbot.core.request.queue.ActionCommand;
-import com.tinatiel.obschatbot.core.request.queue.type.TwitchChatActionQueueType;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.*;
@@ -20,10 +16,10 @@ import org.slf4j.LoggerFactory;
 public class PircBotxListener extends ListenerAdapter {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-    private final QueueClient<TwitchClientStateEvent> stateClient;
+    private final QueueClient<TwitchClientEvent> stateClient;
     private final QueueClient<ActionCommand> requestClient;
 
-    public PircBotxListener(QueueClient<TwitchClientStateEvent> stateClient, QueueClient<ActionCommand> requestClient) {
+    public PircBotxListener(QueueClient<TwitchClientEvent> stateClient, QueueClient<ActionCommand> requestClient) {
         this.stateClient = stateClient;
         this.requestClient = requestClient;
     }
@@ -33,7 +29,7 @@ public class PircBotxListener extends ListenerAdapter {
      */
     @Override
     public void onSocketConnect(SocketConnectEvent event) throws Exception {
-        stateClient.submit(new TwitchClientStateEvent(TwitchClientState.CONNECTED, event.toString()));
+        stateClient.submit(new TwitchClientEvent(TwitchClientState.CONNECTED, event.toString()));
     }
 
     /**
@@ -41,38 +37,38 @@ public class PircBotxListener extends ListenerAdapter {
      */
     @Override
     public void onConnect(ConnectEvent event) throws Exception {
-        stateClient.submit(new TwitchClientStateEvent(TwitchClientState.AUTHENTICATED, event.toString()));
+        stateClient.submit(new TwitchClientEvent(TwitchClientState.AUTHENTICATED, event.toString()));
     }
 
     @Override
     public void onJoin(JoinEvent event) throws Exception { // joining the channel
 
         // Request tags capability so we can determine if a mod, subscriber, etc.
-        stateClient.submit(new TwitchClientStateEvent(TwitchClientState.JOINING, "Requesting Tags capability"));
+        stateClient.submit(new TwitchClientEvent(TwitchClientState.JOINING, "Requesting Tags capability"));
         event.getBot().sendCAP().request("twitch.tv/tags");
 
         // Request commands capability so we can respond to RECONNECT if issued by Twitch IRC server
-        stateClient.submit(new TwitchClientStateEvent(TwitchClientState.JOINING, "Requesting Commands capability"));
+        stateClient.submit(new TwitchClientEvent(TwitchClientState.JOINING, "Requesting Commands capability"));
         event.getBot().sendCAP().request("twitch.tv/commands");
 
         // Drop a welcome message into chat to provide feedback to broadcaster
         event.getBot().sendIRC().message("#tinatiel", "Obs Chatbot has joined the chat!");
 
-        stateClient.submit(new TwitchClientStateEvent(TwitchClientState.JOINED, event.toString()));
-        stateClient.submit(new TwitchClientStateEvent(TwitchClientState.READY, event.toString()));
+        stateClient.submit(new TwitchClientEvent(TwitchClientState.JOINED, event.toString()));
+        stateClient.submit(new TwitchClientEvent(TwitchClientState.READY, event.toString()));
 
     }
 
     @Override
     public void onNotice(NoticeEvent event) throws Exception {
         if(event.getNotice().contains("auth")) {
-            stateClient.submit(new TwitchClientStateEvent(TwitchClientState.ERROR, "Unable to connect to Twitch: bad credentials"));
+            stateClient.submit(new TwitchClientEvent(TwitchClientState.ERROR, "Unable to connect to Twitch: bad credentials"));
         }
     }
 
     @Override
     public void onException(ExceptionEvent event) throws Exception {
-        stateClient.submit(new TwitchClientStateEvent(TwitchClientState.ERROR, event.getException().getMessage()));
+        stateClient.submit(new TwitchClientEvent(TwitchClientState.ERROR, event.getException().getMessage()));
     }
 
     @Override
@@ -84,7 +80,7 @@ public class PircBotxListener extends ListenerAdapter {
 
     @Override
     public void onDisconnect(DisconnectEvent event) throws Exception {
-        stateClient.submit(new TwitchClientStateEvent(TwitchClientState.DISCONNECTED));
+        stateClient.submit(new TwitchClientEvent(TwitchClientState.DISCONNECTED));
     }
 
     @Override
@@ -96,14 +92,14 @@ public class PircBotxListener extends ListenerAdapter {
     @Override
     public void onOutput(OutputEvent event) throws Exception {
         if(event.getRawLine().startsWith("PASS")) {
-            stateClient.submit(new TwitchClientStateEvent(TwitchClientState.AUTHENTICATING));
+            stateClient.submit(new TwitchClientEvent(TwitchClientState.AUTHENTICATING));
         }
         super.onOutput(event);
     }
 
     @Override
     public void onConnectAttemptFailed(ConnectAttemptFailedEvent event) throws Exception {
-        stateClient.submit(new TwitchClientStateEvent(TwitchClientState.ERROR, "Could not connect to Twitch, "
+        stateClient.submit(new TwitchClientEvent(TwitchClientState.ERROR, "Could not connect to Twitch, "
             + "your (1) network connection, (2) that Twitch is up, and (3) verify the port and host are correct"
         ));
     }

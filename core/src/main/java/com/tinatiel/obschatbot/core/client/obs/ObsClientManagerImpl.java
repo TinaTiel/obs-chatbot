@@ -17,7 +17,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-public class ObsClientManagerImpl implements ClientManager<ObsClientStateEvent> {
+public class ObsClientManagerImpl implements ClientManager<ObsClientEvent> {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
     private final ObsSettings settings;
@@ -117,7 +117,7 @@ public class ObsClientManagerImpl implements ClientManager<ObsClientStateEvent> 
 
 
     @Override
-    public void onEvent(ObsClientStateEvent event) {
+    public void onEvent(ObsClientEvent event) {
 
     }
 }
