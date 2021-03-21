@@ -11,7 +11,7 @@ import java.util.UUID;
 /**
  * Describes a generic event, such as during client start/stop
  */
-public interface Event extends Comparable<Event> {
+public interface ObsChatbotEvent extends Comparable<ObsChatbotEvent> {
 
     /**
      * Gets the timestamp the event was created

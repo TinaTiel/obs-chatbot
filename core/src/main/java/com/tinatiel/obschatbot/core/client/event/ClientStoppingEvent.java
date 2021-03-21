@@ -5,11 +5,11 @@
 
 package com.tinatiel.obschatbot.core.client.event;
 
-import com.tinatiel.obschatbot.core.messaging.AbstractEvent;
+import com.tinatiel.obschatbot.core.messaging.AbstractObsChatbotEvent;
 
-public class StoppingEvent extends AbstractEvent {
+public class ClientStoppingEvent extends AbstractObsChatbotEvent {
 
-    public StoppingEvent() {
+    public ClientStoppingEvent() {
         super();
     }
 

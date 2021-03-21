@@ -10,6 +10,8 @@ import com.tinatiel.obschatbot.core.command.Command;
 import com.tinatiel.obschatbot.core.error.CyclicalActionsException;
 import com.tinatiel.obschatbot.core.request.dispatch.CommandExecutorService;
 import com.tinatiel.obschatbot.core.request.expand.CommandExpander;
+import com.tinatiel.obschatbot.core.request.factory.RequestFactory;
+import com.tinatiel.obschatbot.core.request.factory.RequestFactoryImpl;
 import com.tinatiel.obschatbot.core.request.queue.MainQueue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -7,7 +7,7 @@ package com.tinatiel.obschatbot;
 
 import com.tinatiel.obschatbot.core.action.model.SendMessageAction;
 import com.tinatiel.obschatbot.core.client.ClientManager;
-import com.tinatiel.obschatbot.core.client.chat.twitch.ClientManagerTwitchChatImpl;
+import com.tinatiel.obschatbot.core.client.chat.twitch.TwitchChatClientManager;
 import com.tinatiel.obschatbot.core.request.RequestContext;
 import com.tinatiel.obschatbot.core.request.queue.ActionCommand;
 import com.tinatiel.obschatbot.core.user.Platform;
@@ -77,7 +77,7 @@ public class App {
 //        obsClientManager.stop();
 
         // Get the Twitch Client Manager, and start it
-        ClientManager chatClientManager = context.getBean(ClientManagerTwitchChatImpl.class);
+        ClientManager chatClientManager = context.getBean(TwitchChatClientManager.class);
 
         chatClientManager.startClient();
 

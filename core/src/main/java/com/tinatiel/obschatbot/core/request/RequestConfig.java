@@ -5,31 +5,10 @@
 
 package com.tinatiel.obschatbot.core.request;
 
-import com.tinatiel.obschatbot.core.request.expand.CommandExpander;
-import com.tinatiel.obschatbot.core.request.expand.CommandExpanderImpl;
-import com.tinatiel.obschatbot.core.request.queue.MainQueue;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
+@ComponentScan
 @Configuration
 public class RequestConfig {
-
-    @Autowired
-    MainQueue mainQueue;
-
-    @Bean
-    RequestFactory requestFactory() {
-        return new RequestFactoryImpl(
-                commandExpander(),
-                1000,
-                mainQueue
-        );
-    }
-
-    @Bean
-    CommandExpander commandExpander() {
-        return new CommandExpanderImpl(500);
-    }
-
 }

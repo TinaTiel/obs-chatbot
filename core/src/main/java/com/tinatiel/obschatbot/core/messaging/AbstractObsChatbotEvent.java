@@ -15,17 +15,17 @@ import java.util.UUID;
  * We use UUIDs as this would work better in distributed scenarios, and
  * we use LocalDateTime to account for location of server that is deployed.
  */
-public abstract class AbstractEvent implements Event {
+public abstract class AbstractObsChatbotEvent implements ObsChatbotEvent {
 
     private final LocalDateTime timestamp;
     private final UUID id;
 
-    public AbstractEvent() {
+    public AbstractObsChatbotEvent() {
         timestamp = LocalDateTime.now();
         id = UUID.randomUUID();
     }
 
-    protected AbstractEvent(LocalDateTime timestamp, UUID id) {
+    protected AbstractObsChatbotEvent(LocalDateTime timestamp, UUID id) {
         this.timestamp = timestamp;
         this.id = id;
     }
@@ -41,10 +41,10 @@ public abstract class AbstractEvent implements Event {
     }
 
     @Override
-    public int compareTo(Event o) {
+    public int compareTo(ObsChatbotEvent o) {
         return Comparator
-                .comparing(Event::getTimestamp)
-                .thenComparing(Event::getId)
+                .comparing(ObsChatbotEvent::getTimestamp)
+                .thenComparing(ObsChatbotEvent::getId)
                 .compare(this, o);
     }
 

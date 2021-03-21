@@ -5,17 +5,14 @@
 
 package com.tinatiel.obschatbot.core.client.event;
 
-import com.tinatiel.obschatbot.core.messaging.AbstractEvent;
+import com.tinatiel.obschatbot.core.messaging.AbstractObsChatbotEvent;
 
-import java.time.LocalDateTime;
-import java.util.UUID;
-
-public class ErrorEvent extends AbstractEvent {
+public class ClientErrorEvent extends AbstractObsChatbotEvent {
 
     private final Throwable cause;
     private final String message;
 
-    public ErrorEvent(Throwable cause, String message) {
+    public ClientErrorEvent(Throwable cause, String message) {
         super();
         this.cause = cause;
         this.message = message;

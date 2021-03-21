@@ -5,16 +5,15 @@
 
 package com.tinatiel.obschatbot.core.client.event;
 
-import com.tinatiel.obschatbot.core.messaging.AbstractEvent;
+import com.tinatiel.obschatbot.core.messaging.AbstractObsChatbotEvent;
 
-public class StoppedEvent extends AbstractEvent {
-
-    public StoppedEvent() {
+public class ClientConnectedEvent extends AbstractObsChatbotEvent {
+    public ClientConnectedEvent() {
         super();
     }
 
     @Override
     public String toString() {
-        return "StoppedEvent{" + super.toString() + "}";
+        return "ConnectedEvent{" + super.toString() + "}";
     }
 }

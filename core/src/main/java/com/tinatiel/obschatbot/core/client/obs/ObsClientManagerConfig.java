@@ -6,6 +6,7 @@
 package com.tinatiel.obschatbot.core.client.obs;
 
 import com.tinatiel.obschatbot.core.client.ClientManager;
+import com.tinatiel.obschatbot.core.messaging.ObsChatbotEvent;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -17,7 +18,7 @@ public class ObsClientManagerConfig {
     }
 
     @Bean
-    public ClientManager<ObsClientEvent> obsClientManager() {
+    public ClientManager<ObsChatbotEvent> obsClientManager() {
         return new ObsClientManagerImpl(obsSettings());
     }
 

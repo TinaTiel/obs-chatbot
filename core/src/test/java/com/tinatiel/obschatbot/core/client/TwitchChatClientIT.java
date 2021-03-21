@@ -5,11 +5,13 @@
 
 package com.tinatiel.obschatbot.core.client;
 
-import com.tinatiel.obschatbot.core.CoreConfig;
 import com.tinatiel.obschatbot.core.client.chat.twitch.PircBotxListener;
-import com.tinatiel.obschatbot.core.client.chat.twitch.TwitchClientState;
+import com.tinatiel.obschatbot.core.client.chat.twitch.TwitchChatClientConfig;
+import com.tinatiel.obschatbot.core.client.event.*;
 import com.tinatiel.obschatbot.core.messaging.Listener;
+import com.tinatiel.obschatbot.core.messaging.ObsChatbotEvent;
 import com.tinatiel.obschatbot.core.messaging.QueueNotifier;
+import com.tinatiel.obschatbot.core.request.queue.QueueConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -22,6 +24,7 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -33,14 +36,14 @@ import static org.mockito.Mockito.when;
  * There needs to be a separate continuous test that verifies this with a real bot for the case that Twitch
  * changes how login to their IRC servers changes.
  */
-@Import(CoreConfig.class)
+@Import({TwitchChatClientConfig.class, QueueConfig.class}) // todo: reorganize where queues etc are packaged
 @SpringJUnitConfig
 public class TwitchChatClientIT {
 
     private final static String TWITCH_AUTH_FAILED_MESSAGE = "Login authentication failed";
 
     @Autowired
-    QueueNotifier<TwitchClientEvent> notifier;
+    QueueNotifier<ObsChatbotEvent> twitchChatEventQueueNotifier;
 
     TestListener testListener;
 
@@ -51,14 +54,14 @@ public class TwitchChatClientIT {
     PircBotxListener pircBotxListener;
 
     @Autowired
-    ClientManager<TwitchClientEvent> sut;
+    ClientManager<ObsChatbotEvent> twitchChatClientManager;
 
     @BeforeEach
     void setUp() {
 
         // Add the test listener so we can monitor events
         testListener = new TestListener();
-        notifier.addListener(testListener);
+        twitchChatEventQueueNotifier.addListener(testListener);
         assertThat(testListener.getLog()).isEmpty();
 
         // Stub the client factory so it returns fake bots
@@ -71,13 +74,13 @@ public class TwitchChatClientIT {
     void startupWithBadConnection() throws Exception {
 
         // Given we start the bot
-        sut.startClient();
+        twitchChatClientManager.startClient();
 
         // Wait
         waitReasonably();
 
         // But the connection is bad
-        pircBotxListener.onConnectAttemptFailed(mock(ConnectAttemptFailedEvent.class));
+        pircBotxListener.onConnectAttemptFailed(mock(ConnectAttemptFailedEvent.class, Mockito.RETURNS_DEEP_STUBS));
 
         // And wait for it to shutdown
         waitReasonably();
@@ -89,19 +92,22 @@ public class TwitchChatClientIT {
         waitReasonably();
 
         // When we examine the log
-        List<TwitchClientEvent> events = testListener.getLog();
+        List<ObsChatbotEvent> events = testListener.getLog();
 
         // Then we find the expected order of events
-        events.forEach(System.out::println);
-        assertThat(events.stream().map(TwitchClientEvent::getState)).containsExactly(
-                TwitchClientState.START_REQUESTED,
-                TwitchClientState.STARTING,
-                TwitchClientState.CONNECTING,
-                TwitchClientState.ERROR,
-                TwitchClientState.STOP_REQUESTED,
-                TwitchClientState.STOPPING,
-                TwitchClientState.DISCONNECTED,
-                TwitchClientState.STOPPED
+        List<Class> eventClasses = events.stream()
+                .map(ObsChatbotEvent::getClass)
+                .collect(Collectors.toList());
+        assertThat(eventClasses
+        ).containsExactly(
+                ClientStartRequestedEvent.class,
+                ClientStartingEvent.class,
+                ClientConnectingEvent.class,
+                ClientErrorEvent.class,
+                ClientStopRequestedEvent.class,
+                ClientStoppingEvent.class,
+                ClientDisconnectedEvent.class,
+                ClientStoppedEvent.class
         );
 
     }
@@ -110,7 +116,7 @@ public class TwitchChatClientIT {
     void startupWithBadCredentials() throws Exception {
 
         // Given we start the bot
-        sut.startClient();
+        twitchChatClientManager.startClient();
 
         // Wait
         waitReasonably();
@@ -141,28 +147,30 @@ public class TwitchChatClientIT {
         waitReasonably();
 
         // When we examine the log
-        List<TwitchClientEvent> events = testListener.getLog();
+        List<ObsChatbotEvent> events = testListener.getLog();
 
         // Then we find the expected order of events
-        events.forEach(System.out::println);
-        assertThat(events.stream().map(TwitchClientEvent::getState)).containsExactly(
-                TwitchClientState.START_REQUESTED,
-                TwitchClientState.STARTING,
-                TwitchClientState.CONNECTING,
-                TwitchClientState.CONNECTED,
-                TwitchClientState.AUTHENTICATING,
-                TwitchClientState.ERROR,
-                TwitchClientState.STOP_REQUESTED,
-                TwitchClientState.STOPPING,
-                TwitchClientState.DISCONNECTED,
-                TwitchClientState.STOPPED
+        List<Class> eventClasses = events.stream()
+                .map(ObsChatbotEvent::getClass)
+                .collect(Collectors.toList());
+        assertThat(eventClasses).containsExactly(
+                ClientStartRequestedEvent.class,
+                ClientStartingEvent.class,
+                ClientConnectingEvent.class,
+                ClientConnectedEvent.class,
+                ClientAuthenticatingEvent.class,
+                ClientErrorEvent.class,
+                ClientStopRequestedEvent.class,
+                ClientStoppingEvent.class,
+                ClientDisconnectedEvent.class,
+                ClientStoppedEvent.class
         );
     }
 
     @Test
     void successfulStartupAndShutdown() throws Exception {
         // Given we start the bot
-        sut.startClient();
+        twitchChatClientManager.startClient();
 
         // Wait
         waitReasonably();
@@ -194,7 +202,7 @@ public class TwitchChatClientIT {
         waitReasonably();
 
         // And then we request shutdown
-        sut.stopClient();
+        twitchChatClientManager.stopClient();
 
         // And we wait
         waitReasonably();
@@ -206,25 +214,27 @@ public class TwitchChatClientIT {
         waitReasonably();
 
         // When we examine the log
-        List<TwitchClientEvent> events = testListener.getLog();
+        List<ObsChatbotEvent> events = testListener.getLog();
 
         // Then we find the expected order of events
-        events.forEach(System.out::println);
-        assertThat(events.stream().map(TwitchClientEvent::getState)).containsExactly(
-                TwitchClientState.START_REQUESTED,
-                TwitchClientState.STARTING,
-                TwitchClientState.CONNECTING,
-                TwitchClientState.CONNECTED,
-                TwitchClientState.AUTHENTICATING,
-                TwitchClientState.AUTHENTICATED,
-                TwitchClientState.JOINING, // Request Tags capability
-                TwitchClientState.JOINING, // Request Command capability
-                TwitchClientState.JOINED,
-                TwitchClientState.READY,
-                TwitchClientState.STOP_REQUESTED,
-                TwitchClientState.STOPPING,
-                TwitchClientState.DISCONNECTED,
-                TwitchClientState.STOPPED
+        List<Class> eventClasses = events.stream()
+                .map(ObsChatbotEvent::getClass)
+                .collect(Collectors.toList());
+        assertThat(eventClasses).containsExactly(
+                ClientStartRequestedEvent.class,
+                ClientStartingEvent.class,
+                ClientConnectingEvent.class,
+                ClientConnectedEvent.class,
+                ClientAuthenticatingEvent.class,
+                ClientAuthenticatedEvent.class,
+                ClientJoiningEvent.class, // Request Tags capability
+                ClientJoiningEvent.class, // Request Command capability
+                ClientJoinedEvent.class,
+                ClientReadyEvent.class,
+                ClientStopRequestedEvent.class,
+                ClientStoppingEvent.class,
+                ClientDisconnectedEvent.class,
+                ClientStoppedEvent.class
         );
     }
 
@@ -232,16 +242,16 @@ public class TwitchChatClientIT {
      * Simple listener that puts each event into a history log so we can
      * view it later and verify the events that executed.
      */
-    static class TestListener implements Listener<TwitchClientEvent> {
+    static class TestListener implements Listener<ObsChatbotEvent> {
 
-        List<TwitchClientEvent> log = new ArrayList<>();
+        List<ObsChatbotEvent> log = new ArrayList<>();
 
         @Override
-        public void onEvent(TwitchClientEvent event) {
+        public void onEvent(ObsChatbotEvent event) {
             log.add(event);
         }
 
-        public List<TwitchClientEvent> getLog() {
+        public List<ObsChatbotEvent> getLog() {
             return log;
         }
     }

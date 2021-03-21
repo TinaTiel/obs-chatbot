@@ -14,6 +14,7 @@ import org.pircbotx.UtilSSLSocketFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -22,13 +23,37 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 @Configuration
-public class TwitchChatClientManagerConfig {
+public class TwitchChatClientConfig {
+
+    @Value("${TWITCH_TARGET_CHANNEL:noauth}")
+    private String targetChannel;
+
+    @Value("${TWITCH_USER:noauth}")
+    private String twitchUsername;
+
+    @Value("${TWITCH_PASS:noauth}")
+    private String twitchPassword;
 
     @Autowired
     ClientSettingsFactory clientSettingsFactory;
 
     @Autowired
     TwitchChatQueue requestQueue;
+
+    /**
+     * Until we have this stored in a Repository, just hard-code it here.
+     */
+    private TwitchChatSettings twitchChatSettings = new TwitchChatSettings(
+            TwitchChatSettings.DEFAULT_HOST, TwitchChatSettings.DEFAULT_PORT,
+            twitchUsername, twitchPassword, targetChannel,
+            1000,
+            1
+    );
+
+    @Bean
+    ClientSettingsFactory<TwitchChatSettings> twitchChatClientSettingsFactory() {
+        return new TwitchChatClientSettingsFactory(twitchChatSettings);
+    }
 
     @Bean
     SSLSocketFactory sslSocketFactory() {
@@ -38,59 +63,59 @@ public class TwitchChatClientManagerConfig {
     @Bean
     PircBotxListener pircBotxListener() {
         return new PircBotxListener(
-                stateClient(),
-                requestClient()
+                twitchChatEventQueueClient(),
+                twitchChatRequestQueueClient()
         );
     }
 
     @Bean
     ClientFactory<PircBotX> twitchChatClientFactory() {
         return new TwitchChatClientFactory(
-            clientSettingsFactory,
+            twitchChatClientSettingsFactory(),
             sslSocketFactory(),
             pircBotxListener()
         );
     }
 
     @Bean
-    ClientManager clientManagerTwitchChatImpl() {
-        return new ClientManagerTwitchChatImpl(stateClient(), twitchChatClientFactory());
+    ClientManager twitchChatClientManager() {
+        return new TwitchChatClientManager(twitchChatEventQueueClient(), twitchChatClientFactory());
     }
 
     @Bean
-    BlockingQueue<TwitchClientState> twitchChatStateQueue() {
+    BlockingQueue<ObsChatbotEvent> twitchChatEventQueue() {
         return new LinkedBlockingQueue<>();
     }
 
     @Bean
-    QueueClient<TwitchClientEvent> stateClient() {
-        return new QueueClientImpl(twitchChatStateQueue());
+    QueueClient<ObsChatbotEvent> twitchChatEventQueueClient() {
+        return new QueueClientImpl(twitchChatEventQueue());
     }
 
     @Bean
-    QueueNotifier<TwitchClientEvent> notifier() {
-        QueueNotifier<TwitchClientEvent> notifier = new QueueNotifierImpl(twitchChatStateQueue());
+    QueueNotifier<ObsChatbotEvent> twitchChatEventQueueNotifier() {
+        QueueNotifier<ObsChatbotEvent> notifier = new QueueNotifierImpl(twitchChatEventQueue());
         notifier.addListener(eventLogger());
-        notifier.addListener(clientManagerTwitchChatImpl());
+        notifier.addListener(twitchChatClientManager());
 
         return notifier;
     }
 
     @Bean
-    Listener<TwitchClientEvent> eventLogger() {
-        return new Listener<TwitchClientEvent>() {
+    Listener<ObsChatbotEvent> eventLogger() {
+        return new Listener<ObsChatbotEvent>() {
 
             private final Logger log = LoggerFactory.getLogger(this.getClass());
 
             @Override
-            public void onEvent(TwitchClientEvent event) {
-                log.debug(event.toString());
+            public void onEvent(ObsChatbotEvent event) {
+                log.debug("Logged Event: " + event.toString());
             }
         };
     }
 
     @Bean
-    QueueClient<ActionCommand> requestClient() {
+    QueueClient<ActionCommand> twitchChatRequestQueueClient() {
         return new QueueClientImpl(requestQueue);
     }
 

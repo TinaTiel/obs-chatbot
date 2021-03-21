@@ -5,15 +5,15 @@
 
 package com.tinatiel.obschatbot.core.client.event;
 
-import com.tinatiel.obschatbot.core.messaging.AbstractEvent;
+import com.tinatiel.obschatbot.core.messaging.AbstractObsChatbotEvent;
 
-public class JoinedEvent extends AbstractEvent {
-    public JoinedEvent() {
+public class ClientAuthenticatingEvent extends AbstractObsChatbotEvent {
+    public ClientAuthenticatingEvent() {
         super();
     }
 
     @Override
     public String toString() {
-        return "JoinedEvent{" + super.toString() + "}";
+        return "AuthenticatingEvent{" + super.toString() + "}";
     }
 }

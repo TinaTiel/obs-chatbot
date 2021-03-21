@@ -5,20 +5,23 @@
 
 package com.tinatiel.obschatbot.core.client.event;
 
-import com.tinatiel.obschatbot.core.messaging.AbstractEvent;
+import com.tinatiel.obschatbot.core.messaging.AbstractObsChatbotEvent;
 
-public class StopRequestedEvent extends AbstractEvent {
-
+public class ClientRequestIgnoredEvent extends AbstractObsChatbotEvent {
     private final String reason;
 
-    public StopRequestedEvent(String reason) {
+    public ClientRequestIgnoredEvent(String reason) {
         super();
         this.reason = reason;
     }
 
+    public String getReason() {
+        return reason;
+    }
+
     @Override
     public String toString() {
-        return "StopRequestedEvent{" +
+        return "IgnoredEvent{" +
                 super.toString() +
                 "reason='" + reason + '\'' +
                 '}';

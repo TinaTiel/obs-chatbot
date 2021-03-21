@@ -6,7 +6,9 @@
 package com.tinatiel.obschatbot.core.client.chat.twitch;
 
 import com.tinatiel.obschatbot.core.client.*;
+import com.tinatiel.obschatbot.core.client.event.*;
 import com.tinatiel.obschatbot.core.error.ClientException;
+import com.tinatiel.obschatbot.core.messaging.ObsChatbotEvent;
 import com.tinatiel.obschatbot.core.messaging.QueueClient;
 import com.tinatiel.obschatbot.core.request.queue.ActionCommand;
 import org.pircbotx.PircBotX;
@@ -19,20 +21,18 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class ClientManagerTwitchChatImpl implements ClientManager<TwitchClientEvent> {
+public class TwitchChatClientManager implements ClientManager<ObsChatbotEvent> {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
     ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     // Client factory produces new client instances
-    private final QueueClient<TwitchClientEvent> stateClient;
+    private final QueueClient<ObsChatbotEvent> stateClient;
     private final ClientFactory<PircBotX> clientFactory;
 
-    private final ReentrantLock lock = new ReentrantLock();
     private volatile PircBotX client;
-    private TwitchClientState state;
 
-    public ClientManagerTwitchChatImpl(QueueClient<TwitchClientEvent> stateClient, ClientFactory<PircBotX> clientFactory) {
+    public TwitchChatClientManager(QueueClient<ObsChatbotEvent> stateClient, ClientFactory<PircBotX> clientFactory) {
         this.stateClient = stateClient;
         this.clientFactory = clientFactory;
     }
@@ -40,24 +40,24 @@ public class ClientManagerTwitchChatImpl implements ClientManager<TwitchClientEv
     @Override
     public void startClient() throws ClientException {
 
-        if(client == null) {
-            stateClient.submit(new TwitchClientEvent(TwitchClientState.START_REQUESTED));
-        } else {
-            stateClient.submit(new TwitchClientEvent(TwitchClientState.START_REQUESTED, "Client already starting/started, ignoring"));
+        stateClient.submit(new ClientStartRequestedEvent());
+
+        if(client != null) {
+            stateClient.submit(new ClientRequestIgnoredEvent("Client already starting/started, ignoring"));
             return;
         }
 
-        stateClient.submit(new TwitchClientEvent(TwitchClientState.STARTING));
+        stateClient.submit(new ClientStartingEvent());
         client = clientFactory.generate();
-        stateClient.submit(new TwitchClientEvent(TwitchClientState.CONNECTING));
+        stateClient.submit(new ClientConnectingEvent());
 
         // startBot blocks the calling thread, so we're putting it in its own executor thread
         executorService.execute(() -> {
             try {
                 client.startBot();
             } catch (IOException | IrcException e) {
-                log.error("Unable to start the Twitch Client", e);
-                stateClient.submit(new TwitchClientEvent(TwitchClientState.ERROR, "Unable to start the Twitch Client: "
+                log.error("Twitch client encountered an unexpected error during start/run", e);
+                stateClient.submit(new ClientErrorEvent(e, "Twitch client encountered an unexpected error during start/run: "
                         + e.getMessage()
                 ));
             }
@@ -70,17 +70,16 @@ public class ClientManagerTwitchChatImpl implements ClientManager<TwitchClientEv
         privateStop("Stop request by user");
     }
 
-    private void privateStop(String message) {
+    private void privateStop(String stopReason) {
 
-        // Stop the client if present
+        // Stop the client if present, else exit
+        stateClient.submit(new ClientStopRequestedEvent(stopReason));
         if(client == null) {
-            stateClient.submit(new TwitchClientEvent(TwitchClientState.STOP_REQUESTED, "Client wasn't running, ignoring"));
+            stateClient.submit(new ClientRequestIgnoredEvent("Stop ignored: Client wasn't running"));
             return;
-        } else {
-            stateClient.submit(new TwitchClientEvent(TwitchClientState.STOP_REQUESTED, message));
         }
 
-        stateClient.submit(new TwitchClientEvent(TwitchClientState.STOPPING));
+        stateClient.submit(new ClientStoppingEvent());
         client.stopBotReconnect();
 
         // Try to close the connection
@@ -106,15 +105,15 @@ public class ClientManagerTwitchChatImpl implements ClientManager<TwitchClientEv
     }
 
     @Override
-    public void onEvent(TwitchClientEvent event) {
-        state = event.getState();
-        switch (state) {
-            case ERROR:
-                privateStop("Stopping due to error: " + event.getMessage());
-                break;
-            case DISCONNECTED:
-                stateClient.submit(new TwitchClientEvent(TwitchClientState.STOPPED));
-                client = null;
+    public void onEvent(ObsChatbotEvent event) {
+        if(event instanceof ClientErrorEvent) {
+            // Any error event must stop the client; something is wrong
+            privateStop("Stopping due to error: " + ((ClientErrorEvent) event).getMessage());
+        } else if (event instanceof ClientDisconnectedEvent) {
+            // When disconnected, we know the client is safely disengaged, so
+            // we can clear it out and send a Stopped event
+            stateClient.submit(new ClientStoppedEvent());
+            client = null;
         }
     }
 

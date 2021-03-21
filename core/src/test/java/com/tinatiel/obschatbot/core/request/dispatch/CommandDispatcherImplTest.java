@@ -8,14 +8,11 @@ package com.tinatiel.obschatbot.core.request.dispatch;
 import com.tinatiel.obschatbot.core.command.Command;
 import com.tinatiel.obschatbot.core.request.Request;
 import com.tinatiel.obschatbot.core.request.RequestContext;
-import com.tinatiel.obschatbot.core.request.RequestFactory;
+import com.tinatiel.obschatbot.core.request.factory.RequestFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
