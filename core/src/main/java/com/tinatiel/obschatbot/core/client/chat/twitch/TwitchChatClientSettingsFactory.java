@@ -7,16 +7,16 @@ package com.tinatiel.obschatbot.core.client.chat.twitch;
 
 import com.tinatiel.obschatbot.core.client.ClientSettingsFactory;
 
-public class TwitchChatClientSettingsFactory implements ClientSettingsFactory<TwitchChatSettings> {
+public class TwitchChatClientSettingsFactory implements ClientSettingsFactory<TwitchChatClientSettings> {
 
-    private final TwitchChatSettings settings;
+    private final TwitchChatClientSettings settings;
 
-    public TwitchChatClientSettingsFactory(TwitchChatSettings settings) {
+    public TwitchChatClientSettingsFactory(TwitchChatClientSettings settings) {
         this.settings = settings;
     }
 
     @Override
-    public TwitchChatSettings getSettings() {
+    public TwitchChatClientSettings getSettings() {
         return settings;
     }
 }

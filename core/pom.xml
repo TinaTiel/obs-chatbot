@@ -19,6 +19,7 @@
     <version>0.1.0-alpha</version>
 
     <dependencies>
+
         <dependency>
             <groupId>net.twasi</groupId>
             <artifactId>obs-websocket-java</artifactId>
@@ -49,10 +50,16 @@
             <artifactId>spring-boot-starter</artifactId>
         </dependency>
 
-        <!-- Logging dependencies            -->
+        <!-- Logging & Dev Tools dependencies            -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-logging</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.16</version>
+            <scope>provided</scope>
         </dependency>
 
         <!-- Test dependencies               -->
@@ -71,7 +78,6 @@
             <artifactId>junit-jupiter-engine</artifactId>
             <scope>test</scope>
         </dependency>
-
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>

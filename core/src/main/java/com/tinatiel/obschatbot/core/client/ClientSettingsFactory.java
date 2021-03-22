@@ -5,9 +5,6 @@
 
 package com.tinatiel.obschatbot.core.client;
 
-import com.tinatiel.obschatbot.core.client.chat.twitch.TwitchChatSettings;
-import com.tinatiel.obschatbot.core.client.obs.ObsSettings;
-
 /**
  * Returns immutable copies of settings from their source; e.g. would have dependencies on the database, but won't return mutable proxies.
  */

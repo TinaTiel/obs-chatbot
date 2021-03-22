@@ -13,7 +13,7 @@ import javax.net.ssl.SSLSocketFactory;
 
 public class TwitchChatClientFactory implements ClientFactory<PircBotX> {
 
-    private final ClientSettingsFactory<TwitchChatSettings> clientSettingsFactory;
+    private final ClientSettingsFactory<TwitchChatClientSettings> clientSettingsFactory;
     private final SSLSocketFactory sslSocketFactory;
     private final PircBotxListener pircBotxListener;
 
@@ -29,7 +29,7 @@ public class TwitchChatClientFactory implements ClientFactory<PircBotX> {
     public PircBotX generate() {
 
         // Get a fresh set of settings
-        TwitchChatSettings settings = clientSettingsFactory.getSettings();
+        TwitchChatClientSettings settings = clientSettingsFactory.getSettings();
 
         // Create a new bot with those settings
         PircBotX bot = new PircBotX(new org.pircbotx.Configuration.Builder()

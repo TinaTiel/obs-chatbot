@@ -5,7 +5,7 @@
 
 package com.tinatiel.obschatbot.core.client.chat.twitch;
 
-public class TwitchChatSettings {
+public class TwitchChatClientSettings {
 
     public static final String DEFAULT_HOST = "irc.chat.twitch.tv";
     public static final int DEFAULT_PORT = 6697;
@@ -18,8 +18,8 @@ public class TwitchChatSettings {
     private final long connectionTimeoutMs;
     private final int connectionAttempts;
 
-    public TwitchChatSettings(String host, int port, String username, String password, String broadcasterChannel,
-                              long connectionTimeoutMs, int connectionAttempts) {
+    public TwitchChatClientSettings(String host, int port, String username, String password, String broadcasterChannel,
+                                    long connectionTimeoutMs, int connectionAttempts) {
         this.host = host;
         this.port = port;
         this.username = username;

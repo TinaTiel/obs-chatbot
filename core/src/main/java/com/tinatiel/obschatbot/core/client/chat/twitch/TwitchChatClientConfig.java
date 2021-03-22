@@ -35,24 +35,21 @@ public class TwitchChatClientConfig {
     private String twitchPassword;
 
     @Autowired
-    ClientSettingsFactory clientSettingsFactory;
-
-    @Autowired
     TwitchChatQueue requestQueue;
 
     /**
      * Until we have this stored in a Repository, just hard-code it here.
      */
-    private TwitchChatSettings twitchChatSettings = new TwitchChatSettings(
-            TwitchChatSettings.DEFAULT_HOST, TwitchChatSettings.DEFAULT_PORT,
+    private TwitchChatClientSettings twitchChatClientSettings = new TwitchChatClientSettings(
+            TwitchChatClientSettings.DEFAULT_HOST, TwitchChatClientSettings.DEFAULT_PORT,
             twitchUsername, twitchPassword, targetChannel,
             1000,
             1
     );
 
     @Bean
-    ClientSettingsFactory<TwitchChatSettings> twitchChatClientSettingsFactory() {
-        return new TwitchChatClientSettingsFactory(twitchChatSettings);
+    ClientSettingsFactory<TwitchChatClientSettings> twitchChatClientSettingsFactory() {
+        return new TwitchChatClientSettingsFactory(twitchChatClientSettings);
     }
 
     @Bean

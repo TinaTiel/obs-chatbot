@@ -169,6 +169,7 @@ public class TwitchChatClientIT {
 
     @Test
     void successfulStartupAndShutdown() throws Exception {
+
         // Given we start the bot
         twitchChatClientManager.startClient();
 
