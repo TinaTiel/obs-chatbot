@@ -1,0 +1,6 @@
+logging:
+  level:
+    root: warn
+    com.tinatiel: debug
+    org.hibernate: warn
+    org.pircbotx: warn # WARNING: Prints credentials to log in Debug mode

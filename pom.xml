@@ -7,112 +7,96 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.4.1</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
     <modelVersion>4.0.0</modelVersion>
-
-    <groupId>com.tinatiel.obschatbot</groupId>
-    <artifactId>parent</artifactId>
+    <groupId>com.tinatiel</groupId>
+    <artifactId>obschatbot</artifactId>
     <version>0.1.0-alpha</version>
-    <packaging>pom</packaging>
-    <modules>
-        <module>core</module>
-        <module>web</module>
-    </modules>
-
-    <developers>
-        <developer>
-            <name>TinaTiel</name>
-            <email>contact@tinatiel.com</email>
-            <organizationUrl>https://tinatiel.com</organizationUrl>
-            <organization>TinaTiel</organization>
-            <timezone>CET</timezone>
-        </developer>
-    </developers>
-
-    <properties>
-        <java.version>11</java.version>
-    </properties>
 
     <dependencies>
 
+        <dependency>
+            <groupId>net.twasi</groupId>
+            <artifactId>obs-websocket-java</artifactId>
+            <version>1.2.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-simple</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.pircbotx</groupId>
+            <artifactId>pircbotx</artifactId>
+            <version>2.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.11</version>
+        </dependency>
+
+        <!-- Add the Spring Boot Starter     -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+        </dependency>
+
+        <!-- Logging & Dev Tools dependencies            -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-logging</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.16</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Test dependencies               -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <scope>test</scope>
+        </dependency>
 
     </dependencies>
 
-    <build>
-        <plugins>
-<!--            <plugin>-->
-<!--                <groupId>org.springframework.boot</groupId>-->
-<!--                <artifactId>spring-boot-maven-plugin</artifactId>-->
-<!--                <configuration>-->
-<!--                    <mainClass>com.tinatiel.obschatbot.App</mainClass>-->
-<!--                </configuration>-->
-<!--            </plugin>-->
-
-<!--            <plugin>-->
-<!--                <groupId>org.apache.maven.plugins</groupId>-->
-<!--                <artifactId>maven-surefire-plugin</artifactId>-->
-<!--                <version>${maven.surefire.version}</version>-->
-<!--            </plugin>-->
-<!--            <plugin>-->
-<!--                <groupId>org.apache.maven.plugins</groupId>-->
-<!--                <artifactId>maven-failsafe-plugin</artifactId>-->
-<!--                <version>${maven.surefire.version}</version>-->
-<!--                <executions>-->
-<!--                    <execution>-->
-<!--                        <configuration>-->
-<!--                            <phase>integration-test</phase>-->
-<!--                            <goals>-->
-<!--                                <goal>integration-test</goal>-->
-<!--                                <goal>verify</goal>-->
-<!--                            </goals>-->
-<!--                        </configuration>-->
-<!--                    </execution>-->
-<!--                </executions>-->
-<!--            </plugin>-->
-<!--            <plugin>-->
-<!--                <groupId>org.codehaus.mojo</groupId>-->
-<!--                <artifactId>flatten-maven-plugin</artifactId>-->
-<!--                <version>1.2.2</version>-->
-<!--                <executions>-->
-<!--                    &lt;!&ndash; enable flattening &ndash;&gt;-->
-<!--                    <execution>-->
-<!--                        <id>flatten</id>-->
-<!--                        <phase>process-resources</phase>-->
-<!--                        <goals>-->
-<!--                            <goal>flatten</goal>-->
-<!--                        </goals>-->
-<!--                    </execution>-->
-<!--                    &lt;!&ndash; ensure proper cleanup &ndash;&gt;-->
-<!--                    <execution>-->
-<!--                        <id>flatten.clean</id>-->
-<!--                        <phase>clean</phase>-->
-<!--                        <goals>-->
-<!--                            <goal>clean</goal>-->
-<!--                        </goals>-->
-<!--                    </execution>-->
-<!--                </executions>-->
-<!--                <configuration>-->
-<!--                    <flattenMode>bom</flattenMode>-->
-<!--                </configuration>-->
-<!--            </plugin>-->
-            <plugin>
-                <artifactId>maven-site-plugin</artifactId>
-                <version>3.7.1</version>
-                <inherited>false</inherited>
-                <configuration>
-                    <generateReports>false</generateReports>
-                    <templateFile>src/site/dev-to-template.vm</templateFile>
-                    <relativizeDecorationLinks>false</relativizeDecorationLinks>
-                </configuration>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.apache.maven.doxia</groupId>
-                        <artifactId>doxia-module-markdown</artifactId>
-                        <version>1.9.1</version>
-                    </dependency>
-                </dependencies>
-            </plugin>
-        </plugins>
-    </build>
+    <repositories>
+        <!-- PircBox repository isn't hosted on Maven Central -->
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+    </repositories>
 
 </project>
