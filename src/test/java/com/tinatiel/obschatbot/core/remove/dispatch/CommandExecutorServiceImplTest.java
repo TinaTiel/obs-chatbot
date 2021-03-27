@@ -5,12 +5,14 @@
 
 package com.tinatiel.obschatbot.core.remove.dispatch;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.mockito.Mockito.mock;
 
+@Disabled
 public class CommandExecutorServiceImplTest {
 
     @Test

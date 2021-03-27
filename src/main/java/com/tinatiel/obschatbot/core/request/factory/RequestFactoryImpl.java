@@ -43,7 +43,7 @@ public class RequestFactoryImpl implements RequestFactory {
 
         // Expand the command into Actions and map into actionCommands
         List<ActionRequest> actionRequests = commandExpander.expand(command).stream()
-                .map(action -> new ActionRequest(action.acceptsClientType(), action, context))
+                .map(action -> new ActionRequest(action, context))
                 .collect(Collectors.toList());
 
         return new CommandRequest(context, actionRequests);

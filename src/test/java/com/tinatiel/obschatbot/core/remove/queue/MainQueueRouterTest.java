@@ -13,6 +13,7 @@ import com.tinatiel.obschatbot.core.request.ActionRequest;
 import com.tinatiel.obschatbot.core.request.RequestContext;
 import com.tinatiel.obschatbot.core.remove.queue.consumers.MainQueueRouter;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.ExecutorService;
@@ -22,6 +23,7 @@ import java.util.concurrent.TimeUnit;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
+@Disabled
 public class MainQueueRouterTest {
 
     MainQueue mainQueue;
@@ -39,37 +41,37 @@ public class MainQueueRouterTest {
         router = new MainQueueRouter(mainQueue, obsQueue, twitchChatQueue);
     }
 
-    @Test
-    void requestsRoutedAsExpected() {
-
-        // Given types of ActionCommands
-        ActionRequest obsAction = new ActionRequest(ObsClient.class, mock(Action.class), mock(RequestContext.class));
-        ActionRequest twitchAction = new ActionRequest(TwitchChatClient.class, mock(Action.class), mock(RequestContext.class));
-        ActionRequest unknownAction = new ActionRequest(UnknownClient.class, mock(Action.class), mock(RequestContext.class));
-
-        // And given those commands are added to the main queue
-        mainQueue.add(unknownAction);
-        mainQueue.add(obsAction);
-        mainQueue.add(twitchAction);
-
-        // When we run the router and let it finish
-        ExecutorService executorService = Executors.newSingleThreadExecutor();
-        executorService.submit(router);
-        executorService.shutdown();
-        try {
-            executorService.awaitTermination(1, TimeUnit.MILLISECONDS);
-        } catch (InterruptedException interruptedException) {
-            interruptedException.printStackTrace();
-        }
-
-        // Then they are transferred to the correct queues (noting that the unknown action was simply dropped)
-        assertThat(obsQueue).contains(obsAction);
-        assertThat(twitchChatQueue).contains(twitchAction);
-        assertThat(mainQueue.toArray()).isEmpty();
-
-    }
-
-    private static interface UnknownClient extends ActionClient {
-
-    }
+//    @Test
+//    void requestsRoutedAsExpected() {
+//
+//        // Given types of ActionCommands
+//        ActionRequest obsAction = new ActionRequest(ObsClient.class, mock(Action.class), mock(RequestContext.class));
+//        ActionRequest twitchAction = new ActionRequest(TwitchChatClient.class, mock(Action.class), mock(RequestContext.class));
+//        ActionRequest unknownAction = new ActionRequest(UnknownClient.class, mock(Action.class), mock(RequestContext.class));
+//
+//        // And given those commands are added to the main queue
+//        mainQueue.add(unknownAction);
+//        mainQueue.add(obsAction);
+//        mainQueue.add(twitchAction);
+//
+//        // When we run the router and let it finish
+//        ExecutorService executorService = Executors.newSingleThreadExecutor();
+//        executorService.submit(router);
+//        executorService.shutdown();
+//        try {
+//            executorService.awaitTermination(1, TimeUnit.MILLISECONDS);
+//        } catch (InterruptedException interruptedException) {
+//            interruptedException.printStackTrace();
+//        }
+//
+//        // Then they are transferred to the correct queues (noting that the unknown action was simply dropped)
+//        assertThat(obsQueue).contains(obsAction);
+//        assertThat(twitchChatQueue).contains(twitchAction);
+//        assertThat(mainQueue.toArray()).isEmpty();
+//
+//    }
+//
+//    private static interface UnknownClient extends ActionClient {
+//
+//    }
 }

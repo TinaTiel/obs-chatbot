@@ -166,11 +166,11 @@ public class AcceptsQueueDelegatorImpl implements AcceptsQueueDelegator {
     }
 
     private void validateCanAccept(ActionRequest actionRequest) throws RequestNotAcceptableException {
-        if(!actionQueueType.canAccept(actionRequest.getRecipient())) {
-            throw new RequestNotAcceptableException(String.format(
-            "Cannot accept actionCommand of type %s into queue %s", actionRequest.getRecipient(), this.getClass().getSimpleName())
-            , null);
-        }
+//        if(!actionQueueType.canAccept(actionRequest.getRecipient())) {
+//            throw new RequestNotAcceptableException(String.format(
+//            "Cannot accept actionCommand of type %s into queue %s", actionRequest.getRecipient(), this.getClass().getSimpleName())
+//            , null);
+//        }
     }
 
     @Override

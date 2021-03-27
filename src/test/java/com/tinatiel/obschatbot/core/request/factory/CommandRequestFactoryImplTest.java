@@ -3,12 +3,14 @@
  * GNU General Public License v3.0. See LICENSE or go to https://fsf.org/ for more details.
  */
 
-package com.tinatiel.obschatbot.core.request;
+package com.tinatiel.obschatbot.core.request.factory;
 
 import com.tinatiel.obschatbot.core.action.Action;
 import com.tinatiel.obschatbot.core.command.Command;
 import com.tinatiel.obschatbot.core.error.CyclicalActionsException;
 import com.tinatiel.obschatbot.core.remove.dispatch.CommandExecutorService;
+import com.tinatiel.obschatbot.core.request.CommandRequest;
+import com.tinatiel.obschatbot.core.request.RequestContext;
 import com.tinatiel.obschatbot.core.request.expand.CommandExpander;
 import com.tinatiel.obschatbot.core.request.factory.RequestFactory;
 import com.tinatiel.obschatbot.core.request.factory.RequestFactoryImpl;

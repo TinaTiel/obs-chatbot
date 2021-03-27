@@ -12,19 +12,13 @@ import com.tinatiel.obschatbot.core.request.RequestContext;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 
-public class ActionRequest extends CompletableFuture<Void> {
-    private final Class<? extends ActionClient> recipient;
+public class ActionRequest {
     private final Action action;
     private final RequestContext context;
 
-    public ActionRequest(Class<? extends ActionClient> recipient, Action action, RequestContext context) {
-        this.recipient = recipient;
+    public ActionRequest(Action action, RequestContext context) {
         this.action = action;
         this.context = context;
-    }
-
-    public Class<? extends ActionClient> getRecipient() {
-        return recipient;
     }
 
     public Action getAction() {
@@ -38,7 +32,6 @@ public class ActionRequest extends CompletableFuture<Void> {
     @Override
     public String toString() {
         return "ActionCommand{" +
-                "recipient=" + recipient +
                 ", action=" + action +
                 ", context=" + context +
                 '}';

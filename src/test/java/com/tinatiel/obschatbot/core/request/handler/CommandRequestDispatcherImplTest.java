@@ -3,7 +3,7 @@
  * GNU General Public License v3.0. See LICENSE or go to https://fsf.org/ for more details.
  */
 
-package com.tinatiel.obschatbot.core.remove.dispatch;
+package com.tinatiel.obschatbot.core.request.handler;
 
 import com.tinatiel.obschatbot.core.command.Command;
 import com.tinatiel.obschatbot.core.messaging.QueueClient;

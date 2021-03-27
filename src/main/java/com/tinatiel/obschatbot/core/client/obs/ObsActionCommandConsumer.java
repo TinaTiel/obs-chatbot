@@ -22,16 +22,16 @@ public class ObsActionCommandConsumer implements ActionCommandConsumer {
 
     @Override
     public void consume(ActionRequest actionRequest) {
-        try {
-            if(actionRequest.getAction() instanceof ObsSourceVisibilityAction) {
-                ObsSourceVisibilityAction action = (ObsSourceVisibilityAction) actionRequest.getAction();
-                client.setSourceVisibility(action.getSceneName(), action.getSourceName(), action.isVisible(), (result) -> {
-                    log.debug("Executed " + actionRequest + " with result " + result);
-                    actionRequest.complete(null);
-                });
-            }
-        } finally {
-            actionRequest.cancel(true);
-        }
+//        try {
+//            if(actionRequest.getAction() instanceof ObsSourceVisibilityAction) {
+//                ObsSourceVisibilityAction action = (ObsSourceVisibilityAction) actionRequest.getAction();
+//                client.setSourceVisibility(action.getSceneName(), action.getSourceName(), action.isVisible(), (result) -> {
+//                    log.debug("Executed " + actionRequest + " with result " + result);
+//                    actionRequest.complete(null);
+//                });
+//            }
+//        } finally {
+//            actionRequest.cancel(true);
+//        }
     }
 }

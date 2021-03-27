@@ -5,6 +5,7 @@
 
 package com.tinatiel.obschatbot.core.remove.dispatch;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.RepeatedTest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +15,7 @@ import java.util.concurrent.TimeUnit;
 
 import static org.mockito.Mockito.*;
 
+@Disabled
 public class PausableExecutorImplTest {
     
     Logger log = LoggerFactory.getLogger(this.getClass());

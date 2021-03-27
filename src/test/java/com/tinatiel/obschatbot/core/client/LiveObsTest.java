@@ -39,7 +39,7 @@ public class LiveObsTest {
         ObsSourceVisibilityAction action = new ObsSourceVisibilityAction(null, "Image", false);
         User user = new User(Platform.TWITCH, "mango");
         RequestContext requestContext = new RequestContext(user, new ArrayList<>());
-        ActionRequest actionRequest = new ActionRequest(ObsClient.class, action, requestContext);
+        ActionRequest actionRequest = new ActionRequest(action, requestContext);
 
         // Then we can start/stop/reload the manager and consume messages without exceptions
         try {

@@ -40,7 +40,7 @@ public class ObsClientManagerImpl implements ClientManager<ObsChatbotEvent> {
             consumer.consume(actionRequest);
         } catch (Exception e) {
             log.error("Could not execute actionCommand " + actionRequest, e);
-            actionRequest.cancel(true);
+//            actionRequest.cancel(true);
         }
     }
 

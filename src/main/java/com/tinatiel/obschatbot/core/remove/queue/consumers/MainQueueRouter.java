@@ -29,23 +29,23 @@ public class MainQueueRouter implements Runnable {
 
     @Override
     public void run() {
-        while(true) {
-            try {
-                ActionRequest command = mainQueue.take();
-                Class<? extends ActionClient> recipient = command.getRecipient();
-                if(obsQueue.getActionQueueType().canAccept(recipient)) {
-                    obsQueue.add(command);
-                    log.debug("Moved to OBS Queue: " + command);
-                } else if(twitchChatQueue.getActionQueueType().canAccept(recipient)) {
-                    twitchChatQueue.add(command);
-                    log.debug("Moved to TwitchChat Queue: " + command);
-                } else {
-                    log.warn("Main Queue Router ignored command due to unknown recipient type: " + command);
-                }
-
-            } catch (InterruptedException interruptedException) {
-                Thread.currentThread().interrupt();
-            }
-        }
+//        while(true) {
+//            try {
+//                ActionRequest command = mainQueue.take();
+//                Class<? extends ActionClient> recipient = command.getRecipient();
+//                if(obsQueue.getActionQueueType().canAccept(recipient)) {
+//                    obsQueue.add(command);
+//                    log.debug("Moved to OBS Queue: " + command);
+//                } else if(twitchChatQueue.getActionQueueType().canAccept(recipient)) {
+//                    twitchChatQueue.add(command);
+//                    log.debug("Moved to TwitchChat Queue: " + command);
+//                } else {
+//                    log.warn("Main Queue Router ignored command due to unknown recipient type: " + command);
+//                }
+//
+//            } catch (InterruptedException interruptedException) {
+//                Thread.currentThread().interrupt();
+//            }
+//        }
     }
 }

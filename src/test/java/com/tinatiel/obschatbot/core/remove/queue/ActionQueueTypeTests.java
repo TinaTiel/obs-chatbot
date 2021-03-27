@@ -11,10 +11,12 @@ import com.tinatiel.obschatbot.core.remove.queue.type.ActionQueueType;
 import com.tinatiel.obschatbot.core.remove.queue.type.AnyActionQueueType;
 import com.tinatiel.obschatbot.core.remove.queue.type.ObsActionQueueType;
 import com.tinatiel.obschatbot.core.remove.queue.type.TwitchChatActionQueueType;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Disabled
 public class ActionQueueTypeTests {
 
     @Test

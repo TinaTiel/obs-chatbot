@@ -8,6 +8,8 @@ package com.tinatiel.obschatbot.core.request;
 import com.tinatiel.obschatbot.core.command.CommandRepository;
 import com.tinatiel.obschatbot.core.messaging.QueueClient;
 import com.tinatiel.obschatbot.core.messaging.QueueClientImpl;
+import com.tinatiel.obschatbot.core.messaging.QueueNotifier;
+import com.tinatiel.obschatbot.core.messaging.QueueNotifierImpl;
 import com.tinatiel.obschatbot.core.request.handler.CommandRequestDispatcher;
 import com.tinatiel.obschatbot.core.request.expand.CommandExpander;
 import com.tinatiel.obschatbot.core.request.expand.CommandExpanderImpl;
@@ -51,6 +53,14 @@ public class RequestConfig {
     @Bean
     QueueClient<CommandRequest> commandRequestQueueClient() {
         return new QueueClientImpl(commandRequestQueue());
+    }
+
+    @Bean
+    QueueNotifier<CommandRequest> commandRequestQueueNotifier() {
+        QueueNotifier<CommandRequest> notifier = new QueueNotifierImpl(commandRequestQueue());
+        // notifier.addListener(...);
+
+        return notifier;
     }
 
     @Bean

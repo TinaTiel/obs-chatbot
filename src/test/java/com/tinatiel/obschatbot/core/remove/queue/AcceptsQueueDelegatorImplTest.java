@@ -10,6 +10,7 @@ import com.tinatiel.obschatbot.core.error.RequestNotAcceptableException;
 import com.tinatiel.obschatbot.core.request.ActionRequest;
 import com.tinatiel.obschatbot.core.remove.queue.type.ActionQueueType;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
@@ -21,6 +22,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+@Disabled
 class AcceptsQueueDelegatorImplTest {
 
     BlockingQueue<ActionRequest> delegate;
