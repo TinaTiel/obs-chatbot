@@ -6,10 +6,7 @@
 package com.tinatiel.obschatbot.core.request;
 
 import com.tinatiel.obschatbot.core.command.CommandRepository;
-import com.tinatiel.obschatbot.core.messaging.QueueClient;
-import com.tinatiel.obschatbot.core.messaging.QueueClientImpl;
-import com.tinatiel.obschatbot.core.messaging.QueueNotifier;
-import com.tinatiel.obschatbot.core.messaging.QueueNotifierImpl;
+import com.tinatiel.obschatbot.core.messaging.*;
 import com.tinatiel.obschatbot.core.request.handler.CommandRequestDispatcher;
 import com.tinatiel.obschatbot.core.request.expand.CommandExpander;
 import com.tinatiel.obschatbot.core.request.expand.CommandExpanderImpl;
@@ -20,6 +17,7 @@ import com.tinatiel.obschatbot.core.request.handler.chat.ChatMessageParser;
 import com.tinatiel.obschatbot.core.request.handler.chat.ChatMessageParserImpl;
 import com.tinatiel.obschatbot.core.request.handler.chat.ChatRequestHandler;
 import com.tinatiel.obschatbot.core.request.handler.chat.ChatRequestHandlerImpl;
+import com.tinatiel.obschatbot.core.request.scheduler.CommandRequestScheduler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -47,7 +45,7 @@ public class RequestConfig {
 
     @Bean
     BlockingQueue<CommandRequest> commandRequestQueue() {
-        return new LinkedBlockingQueue<>();
+        return new LinkedBlockingQueue<CommandRequest>();
     }
 
     @Bean
@@ -58,9 +56,31 @@ public class RequestConfig {
     @Bean
     QueueNotifier<CommandRequest> commandRequestQueueNotifier() {
         QueueNotifier<CommandRequest> notifier = new QueueNotifierImpl(commandRequestQueue());
+        notifier.addListener(commandRequestScheduler());
+
+        return notifier;
+    }
+
+    @Bean
+    BlockingQueue<ActionRequest> actionRequestQueue() {
+        return new LinkedBlockingQueue<ActionRequest>();
+    }
+
+    @Bean
+    QueueClient<ActionRequest> actionRequestQueueClient() {
+        return new QueueClientImpl(actionRequestQueue());
+    }
+
+    @Bean
+    QueueNotifier<ActionRequest> actionRequestQueueNotifier() {
+        QueueNotifier<ActionRequest> notifier = new QueueNotifierImpl(actionRequestQueue());
         // notifier.addListener(...);
 
         return notifier;
+    }
+
+    Listener<CommandRequest> commandRequestScheduler() {
+        return new CommandRequestScheduler(actionRequestQueueClient());
     }
 
     @Bean
