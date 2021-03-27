@@ -6,9 +6,12 @@
 package com.tinatiel.obschatbot.core.remove.dispatch;
 
 import com.tinatiel.obschatbot.core.command.Command;
+import com.tinatiel.obschatbot.core.messaging.QueueClient;
 import com.tinatiel.obschatbot.core.request.CommandRequest;
 import com.tinatiel.obschatbot.core.request.RequestContext;
 import com.tinatiel.obschatbot.core.request.factory.RequestFactory;
+import com.tinatiel.obschatbot.core.request.handler.CommandRequestDispatcher;
+import com.tinatiel.obschatbot.core.request.handler.CommandRequestDispatcherImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -16,27 +19,27 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-class CommandDispatcherImplTest {
+class CommandRequestDispatcherImplTest {
 
     RequestFactory requestFactory;
-    CommandExecutorService executorService;
+    QueueClient<CommandRequest> commandRequestQueueClient;
 
-    CommandDispatcher commandDispatcher;
+    CommandRequestDispatcher commandRequestDispatcher;
 
     @BeforeEach
     void setUp() {
         requestFactory = mock(RequestFactory.class);
-        executorService = mock(CommandExecutorService.class);
-        commandDispatcher = new CommandDispatcherImpl(requestFactory, executorService);
+        commandRequestQueueClient = mock(QueueClient.class);
+        commandRequestDispatcher = new CommandRequestDispatcherImpl(requestFactory, commandRequestQueueClient);
     }
 
     @Test
     void commandAndContextRequired() {
         assertThatThrownBy(() -> {
-            commandDispatcher.submit(null, mock(RequestContext.class));
+            commandRequestDispatcher.submit(null, mock(RequestContext.class));
         }).isInstanceOf(IllegalArgumentException.class);
         assertThatThrownBy(() -> {
-            commandDispatcher.submit(mock(Command.class), null);
+            commandRequestDispatcher.submit(mock(Command.class), null);
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -48,10 +51,10 @@ class CommandDispatcherImplTest {
         when(requestFactory.build(any(), any())).thenReturn(commandRequest);
 
         // When executed
-        commandDispatcher.submit(mock(Command.class), mock(RequestContext.class));
+        commandRequestDispatcher.submit(mock(Command.class), mock(RequestContext.class));
 
         // Then the underlying executor is invoked with it
-        verify(executorService).submit(commandRequest);
+        verify(commandRequestQueueClient).submit(commandRequest);
 
     }
 
@@ -62,10 +65,10 @@ class CommandDispatcherImplTest {
         when(requestFactory.build(any(), any())).thenThrow(new RuntimeException("some exception, doesn't matter"));
 
         // When executed
-        commandDispatcher.submit(mock(Command.class), mock(RequestContext.class));
+        commandRequestDispatcher.submit(mock(Command.class), mock(RequestContext.class));
 
         // Then delegated executor is NOT invoked (but we should see logs!)
-        verifyNoInteractions(executorService);
+        verifyNoInteractions(commandRequestQueueClient);
 
     }
 

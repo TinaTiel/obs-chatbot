@@ -5,31 +5,26 @@
 
 package com.tinatiel.obschatbot.core.remove.dispatch;
 
-import com.tinatiel.obschatbot.core.request.factory.RequestFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-
-@Configuration
+//@Configuration
 public class DispatchConfig {
 
-    @Autowired
-    RequestFactory requestFactory;
-
-    @Bean
-    CommandDispatcher commandDispatcher() {
-        return new CommandDispatcherImpl(
-                requestFactory,
-                commandExecutorService()
-        );
-    }
-
-    @Bean
-    CommandExecutorService commandExecutorService() {
-        return new CommandExecutorServiceImpl(
-                -1,
-                25
-        );
-    }
+//    @Autowired
+//    RequestFactory requestFactory;
+//
+//    @Bean
+//    CommandDispatcher commandDispatcher() {
+//        return new CommandDispatcherImpl(
+//                requestFactory,
+//                commandExecutorService()
+//        );
+//    }
+//
+//    @Bean
+//    CommandExecutorService commandExecutorService() {
+//        return new CommandExecutorServiceImpl(
+//                -1,
+//                25
+//        );
+//    }
 
 }

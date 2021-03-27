@@ -7,7 +7,7 @@ package com.tinatiel.obschatbot.core.request.handler.chat;
 
 import com.tinatiel.obschatbot.core.command.Command;
 import com.tinatiel.obschatbot.core.command.CommandRepository;
-import com.tinatiel.obschatbot.core.remove.dispatch.CommandDispatcher;
+import com.tinatiel.obschatbot.core.request.handler.CommandRequestDispatcher;
 import com.tinatiel.obschatbot.core.request.RequestContext;
 import com.tinatiel.obschatbot.core.user.User;
 import org.slf4j.Logger;
@@ -20,9 +20,9 @@ public class ChatRequestHandlerImpl implements ChatRequestHandler {
 
     private final ChatMessageParser parser;
     private final CommandRepository commandRepository;
-    private final CommandDispatcher dispatcher;
+    private final CommandRequestDispatcher dispatcher;
 
-    public ChatRequestHandlerImpl(ChatMessageParser parser, CommandRepository commandRepository, CommandDispatcher dispatcher) {
+    public ChatRequestHandlerImpl(ChatMessageParser parser, CommandRepository commandRepository, CommandRequestDispatcher dispatcher) {
         this.parser = parser;
         this.commandRepository = commandRepository;
         this.dispatcher = dispatcher;

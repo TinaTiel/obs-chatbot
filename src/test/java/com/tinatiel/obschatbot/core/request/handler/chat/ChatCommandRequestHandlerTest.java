@@ -7,7 +7,7 @@ package com.tinatiel.obschatbot.core.request.handler.chat;
 
 import com.tinatiel.obschatbot.core.command.Command;
 import com.tinatiel.obschatbot.core.command.CommandRepository;
-import com.tinatiel.obschatbot.core.remove.dispatch.CommandDispatcher;
+import com.tinatiel.obschatbot.core.request.handler.CommandRequestDispatcher;
 import com.tinatiel.obschatbot.core.user.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,7 +24,7 @@ public class ChatCommandRequestHandlerTest {
 
     ChatMessageParser parser;
     CommandRepository commandRepository;
-    CommandDispatcher dispatcher;
+    CommandRequestDispatcher dispatcher;
 
     ChatRequestHandler handler;
 
@@ -34,7 +34,7 @@ public class ChatCommandRequestHandlerTest {
 
         parser = mock(ChatMessageParser.class);
         commandRepository = mock(CommandRepository.class);
-        dispatcher = mock(CommandDispatcher.class);
+        dispatcher = mock(CommandRequestDispatcher.class);
 
         handler = new ChatRequestHandlerImpl(parser, commandRepository, dispatcher);
 
