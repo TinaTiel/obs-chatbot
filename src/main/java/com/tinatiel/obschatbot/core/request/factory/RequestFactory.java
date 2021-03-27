@@ -8,7 +8,7 @@ package com.tinatiel.obschatbot.core.request.factory;
 import com.tinatiel.obschatbot.core.command.Command;
 import com.tinatiel.obschatbot.core.error.ClientException;
 import com.tinatiel.obschatbot.core.error.CyclicalActionsException;
-import com.tinatiel.obschatbot.core.request.Request;
+import com.tinatiel.obschatbot.core.request.CommandRequest;
 import com.tinatiel.obschatbot.core.request.RequestContext;
 
 public interface RequestFactory {
@@ -19,6 +19,6 @@ public interface RequestFactory {
      */
     long getCommandTimeoutMs();
 
-    Request build(Command command, RequestContext context) throws CyclicalActionsException, ClientException;
+    CommandRequest build(Command command, RequestContext context) throws CyclicalActionsException, ClientException;
 
 }

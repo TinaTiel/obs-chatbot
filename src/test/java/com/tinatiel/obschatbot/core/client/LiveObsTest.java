@@ -11,7 +11,7 @@ import com.tinatiel.obschatbot.core.client.obs.ObsClient;
 import com.tinatiel.obschatbot.core.client.obs.ObsClientManager;
 import com.tinatiel.obschatbot.core.error.ClientException;
 import com.tinatiel.obschatbot.core.request.RequestContext;
-import com.tinatiel.obschatbot.core.request.queue.ActionCommand;
+import com.tinatiel.obschatbot.core.request.ActionRequest;
 import com.tinatiel.obschatbot.core.user.Platform;
 import com.tinatiel.obschatbot.core.user.User;
 import org.junit.jupiter.api.Disabled;
@@ -39,14 +39,14 @@ public class LiveObsTest {
         ObsSourceVisibilityAction action = new ObsSourceVisibilityAction(null, "Image", false);
         User user = new User(Platform.TWITCH, "mango");
         RequestContext requestContext = new RequestContext(user, new ArrayList<>());
-        ActionCommand actionCommand = new ActionCommand(ObsClient.class, action, requestContext);
+        ActionRequest actionRequest = new ActionRequest(ObsClient.class, action, requestContext);
 
         // Then we can start/stop/reload the manager and consume messages without exceptions
         try {
             obsClientManager.startClient();
-            obsClientManager.consume(actionCommand);
+            obsClientManager.consume(actionRequest);
             obsClientManager.reloadClient();
-            obsClientManager.consume(actionCommand);
+            obsClientManager.consume(actionRequest);
             obsClientManager.stopClient();
         } catch (ClientException e) {
             fail("Test requires instance of OBS", e);

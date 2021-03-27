@@ -8,7 +8,7 @@ package com.tinatiel.obschatbot.core.client.obs;
 import com.tinatiel.obschatbot.core.client.ClientManager;
 import com.tinatiel.obschatbot.core.error.ClientException;
 import com.tinatiel.obschatbot.core.messaging.ObsChatbotEvent;
-import com.tinatiel.obschatbot.core.request.queue.ActionCommand;
+import com.tinatiel.obschatbot.core.request.ActionRequest;
 import net.twasi.obsremotejava.OBSRemoteController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,13 +34,13 @@ public class ObsClientManagerImpl implements ClientManager<ObsChatbotEvent> {
     }
 
     @Override
-    public void consume(ActionCommand actionCommand) throws ClientException {
+    public void consume(ActionRequest actionRequest) throws ClientException {
         if(consumer == null) throw new ClientException("Client has not been initialized yet");
         try{
-            consumer.consume(actionCommand);
+            consumer.consume(actionRequest);
         } catch (Exception e) {
-            log.error("Could not execute actionCommand " + actionCommand, e);
-            actionCommand.cancel(true);
+            log.error("Could not execute actionCommand " + actionRequest, e);
+            actionRequest.cancel(true);
         }
     }
 

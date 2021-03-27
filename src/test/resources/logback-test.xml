@@ -7,5 +7,5 @@
 <configuration>
     <include resource="org/springframework/boot/logging/logback/base.xml" />
     <logger name="com.tinatiel.obschatbot.core" level="DEBUG"/>
-    <logger name="com.tinatiel.obschatbot.core.request.dispatch" level="TRACE"/>
+    <logger name="com.tinatiel.obschatbot.core.commandRequest.dispatch" level="TRACE"/>
 </configuration>

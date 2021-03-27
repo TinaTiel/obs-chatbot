@@ -7,8 +7,8 @@ package com.tinatiel.obschatbot.core.client.chat.twitch;
 
 import com.tinatiel.obschatbot.core.client.*;
 import com.tinatiel.obschatbot.core.messaging.*;
-import com.tinatiel.obschatbot.core.request.queue.ActionCommand;
-import com.tinatiel.obschatbot.core.request.queue.TwitchChatQueue;
+import com.tinatiel.obschatbot.core.request.ActionRequest;
+import com.tinatiel.obschatbot.core.remove.queue.TwitchChatQueue;
 import org.pircbotx.PircBotX;
 import org.pircbotx.UtilSSLSocketFactory;
 import org.slf4j.Logger;
@@ -110,7 +110,7 @@ public class TwitchChatClientConfig {
     }
 
     @Bean
-    QueueClient<ActionCommand> twitchChatRequestQueueClient() {
+    QueueClient<ActionRequest> twitchChatRequestQueueClient() {
         return new QueueClientImpl(requestQueue);
     }
 

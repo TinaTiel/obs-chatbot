@@ -7,7 +7,7 @@ package com.tinatiel.obschatbot.core.request.factory;
 
 import com.tinatiel.obschatbot.core.request.expand.CommandExpander;
 import com.tinatiel.obschatbot.core.request.expand.CommandExpanderImpl;
-import com.tinatiel.obschatbot.core.request.queue.MainQueue;
+import com.tinatiel.obschatbot.core.remove.queue.MainQueue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

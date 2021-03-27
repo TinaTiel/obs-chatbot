@@ -5,9 +5,7 @@
 
 package com.tinatiel.obschatbot.core.client;
 
-import com.tinatiel.obschatbot.core.error.ClientException;
 import com.tinatiel.obschatbot.core.messaging.Listener;
-import com.tinatiel.obschatbot.core.request.queue.consumers.ActionCommandConsumer;
 
 /**
  * Provides a way to manage a client. Implementations should be injected with a reference to the settings directly or

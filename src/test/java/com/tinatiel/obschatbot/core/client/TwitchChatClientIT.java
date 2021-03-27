@@ -11,7 +11,7 @@ import com.tinatiel.obschatbot.core.client.event.*;
 import com.tinatiel.obschatbot.core.messaging.Listener;
 import com.tinatiel.obschatbot.core.messaging.ObsChatbotEvent;
 import com.tinatiel.obschatbot.core.messaging.QueueNotifier;
-import com.tinatiel.obschatbot.core.request.queue.QueueConfig;
+import com.tinatiel.obschatbot.core.remove.queue.QueueConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;

@@ -7,11 +7,11 @@ package com.tinatiel.obschatbot.core.request.factory;
 
 import com.tinatiel.obschatbot.core.command.Command;
 import com.tinatiel.obschatbot.core.error.CyclicalActionsException;
-import com.tinatiel.obschatbot.core.request.Request;
+import com.tinatiel.obschatbot.core.request.CommandRequest;
 import com.tinatiel.obschatbot.core.request.RequestContext;
 import com.tinatiel.obschatbot.core.request.expand.CommandExpander;
-import com.tinatiel.obschatbot.core.request.queue.ActionCommand;
-import com.tinatiel.obschatbot.core.request.queue.MainQueue;
+import com.tinatiel.obschatbot.core.request.ActionRequest;
+import com.tinatiel.obschatbot.core.remove.queue.MainQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,7 +45,7 @@ public class RequestFactoryImpl implements RequestFactory {
 
     @SuppressWarnings("unchecked")
     @Override
-    public Request build(Command command, RequestContext context) throws CyclicalActionsException {
+    public CommandRequest build(Command command, RequestContext context) throws CyclicalActionsException {
         if(command == null || context == null) throw new IllegalArgumentException("arguments cannot be null");
         log.debug("Building request from command " + command.getName() + " with context " + context);
 
@@ -53,11 +53,11 @@ public class RequestFactoryImpl implements RequestFactory {
         if(command == null || context == null) throw new IllegalArgumentException("arguments cannot be null");
 
         // Expand the command into Actions and map into actionCommands
-        List<ActionCommand> actionCommands = commandExpander.expand(command).stream()
-                .map(action -> new ActionCommand(action.acceptsClientType(), action, context))
+        List<ActionRequest> actionRequests = commandExpander.expand(command).stream()
+                .map(action -> new ActionRequest(action.acceptsClientType(), action, context))
                 .collect(Collectors.toList());
 
-        return new Request(mainQueue, commandTimeoutMs, actionCommands);
+        return new CommandRequest(mainQueue, commandTimeoutMs, actionRequests);
     }
 
 }

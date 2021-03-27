@@ -8,7 +8,7 @@ package com.tinatiel.obschatbot.core.client.chat.twitch;
 import com.tinatiel.obschatbot.core.client.event.*;
 import com.tinatiel.obschatbot.core.messaging.ObsChatbotEvent;
 import com.tinatiel.obschatbot.core.messaging.QueueClient;
-import com.tinatiel.obschatbot.core.request.queue.ActionCommand;
+import com.tinatiel.obschatbot.core.request.ActionRequest;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.*;
@@ -19,9 +19,9 @@ public class PircBotxListener extends ListenerAdapter {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     private final QueueClient<ObsChatbotEvent> stateClient;
-    private final QueueClient<ActionCommand> requestClient;
+    private final QueueClient<ActionRequest> requestClient;
 
-    public PircBotxListener(QueueClient<ObsChatbotEvent> twitchClientEventClient, QueueClient<ActionCommand> twitchClientRequestClient) {
+    public PircBotxListener(QueueClient<ObsChatbotEvent> twitchClientEventClient, QueueClient<ActionRequest> twitchClientRequestClient) {
         this.stateClient = twitchClientEventClient;
         this.requestClient = twitchClientRequestClient;
     }

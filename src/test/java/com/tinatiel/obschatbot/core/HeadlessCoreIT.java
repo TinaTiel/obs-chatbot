@@ -12,8 +12,8 @@ import com.tinatiel.obschatbot.core.action.model.SendMessageAction;
 import com.tinatiel.obschatbot.core.command.Command;
 import com.tinatiel.obschatbot.core.command.CommandRepository;
 import com.tinatiel.obschatbot.core.request.handler.chat.ChatRequestHandler;
-import com.tinatiel.obschatbot.core.request.queue.ActionCommand;
-import com.tinatiel.obschatbot.core.request.queue.MainQueue;
+import com.tinatiel.obschatbot.core.request.ActionRequest;
+import com.tinatiel.obschatbot.core.remove.queue.MainQueue;
 import com.tinatiel.obschatbot.core.sequencer.ActionSequencer;
 import com.tinatiel.obschatbot.core.sequencer.InOrderActionSequencer;
 import com.tinatiel.obschatbot.core.user.Platform;
@@ -82,7 +82,7 @@ public class HeadlessCoreIT {
             interruptedException.printStackTrace();
         }
         List<Action> received =mainQueue.stream()
-                .map(ActionCommand::getAction)
+                .map(ActionRequest::getAction)
                 .collect(Collectors.toList());
         System.out.println("Main queue: " + received);
 

@@ -9,7 +9,7 @@ import com.tinatiel.obschatbot.core.action.model.SendMessageAction;
 import com.tinatiel.obschatbot.core.client.ClientManager;
 import com.tinatiel.obschatbot.core.client.chat.twitch.TwitchChatClientManager;
 import com.tinatiel.obschatbot.core.request.RequestContext;
-import com.tinatiel.obschatbot.core.request.queue.ActionCommand;
+import com.tinatiel.obschatbot.core.request.ActionRequest;
 import com.tinatiel.obschatbot.core.user.Platform;
 import com.tinatiel.obschatbot.core.user.User;
 import org.springframework.boot.SpringApplication;
@@ -94,8 +94,8 @@ public class App {
         SendMessageAction action = new SendMessageAction("Test message " + new Date());
         User user = new User(Platform.TWITCH, "mango");
         RequestContext requestContext = new RequestContext(user, new ArrayList<>());
-        ActionCommand actionCommand = new ActionCommand(action.acceptsClientType(), action, requestContext);
-        chatClientManager.consume(actionCommand);
+        ActionRequest actionRequest = new ActionRequest(action.acceptsClientType(), action, requestContext);
+        chatClientManager.consume(actionRequest);
 
         System.out.println("Stopping the client");
         chatClientManager.stopClient();

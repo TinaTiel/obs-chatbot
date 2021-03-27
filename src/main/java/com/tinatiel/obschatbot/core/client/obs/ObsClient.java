@@ -6,7 +6,6 @@
 package com.tinatiel.obschatbot.core.client.obs;
 
 import com.tinatiel.obschatbot.core.client.ActionClient;
-import com.tinatiel.obschatbot.core.request.queue.ActionCommand;
 
 public interface ObsClient extends ActionClient {
 

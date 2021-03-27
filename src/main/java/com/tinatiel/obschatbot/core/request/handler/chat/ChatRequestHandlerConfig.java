@@ -6,7 +6,7 @@
 package com.tinatiel.obschatbot.core.request.handler.chat;
 
 import com.tinatiel.obschatbot.core.command.CommandRepository;
-import com.tinatiel.obschatbot.core.request.dispatch.CommandDispatcher;
+import com.tinatiel.obschatbot.core.remove.dispatch.CommandDispatcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

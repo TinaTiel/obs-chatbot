@@ -7,7 +7,7 @@ I have a Discord, but it's not geared towards this stuff atm. If there are more 
 
 ## Issues
 Issues are used both by developers to track work, and by others to file problems or suggestions.
-Use the `improvement` or `bug` labels for help requests, and use other labels as appropriate for 
+Use the `improvement` or `bug` labels for help commandRequests, and use other labels as appropriate for 
 development work. Nothing should go unlabeled!
 
 ## Branches
