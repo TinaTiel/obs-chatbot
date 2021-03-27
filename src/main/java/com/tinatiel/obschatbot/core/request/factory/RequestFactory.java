@@ -13,12 +13,6 @@ import com.tinatiel.obschatbot.core.request.RequestContext;
 
 public interface RequestFactory {
 
-    /**
-     * Gets the maximum time a command will have to execute before it is interrupted.
-     * @return milliseconds timeout
-     */
-    long getCommandTimeoutMs();
-
     CommandRequest build(Command command, RequestContext context) throws CyclicalActionsException, ClientException;
 
 }

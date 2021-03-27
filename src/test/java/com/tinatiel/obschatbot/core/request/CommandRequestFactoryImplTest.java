@@ -28,17 +28,13 @@ import static org.mockito.Mockito.when;
 class CommandRequestFactoryImplTest {
 
     CommandExpander commandExpander;
-    CommandExecutorService commandExecutorService;
-    MainQueue mainQueue;
 
     RequestFactory factory;
 
     @BeforeEach
     void setUp() {
         commandExpander = mock(CommandExpander.class);
-        commandExecutorService = mock(CommandExecutorService.class);
-        mainQueue = mock(MainQueue.class);
-        factory = new RequestFactoryImpl(commandExpander,69L, mainQueue);
+        factory = new RequestFactoryImpl(commandExpander);
     }
 
     @Test

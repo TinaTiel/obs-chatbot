@@ -15,15 +15,10 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RequestFactoryConfig {
 
-    @Autowired
-    MainQueue mainQueue;
-
     @Bean
     RequestFactory requestFactory() {
         return new RequestFactoryImpl(
-                commandExpander(),
-                1000,
-                mainQueue
+                commandExpander()
         );
     }
 

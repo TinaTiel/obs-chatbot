@@ -55,7 +55,7 @@ public class SequentialExecutorImplIT {
                         random.nextInt(maxExecTimeMs)
                 ));
             }
-            commandRequests.add(new CommandRequest(mainQueue,10L, actions));
+//            commandRequests.add(new CommandRequest(mainQueue,10L, actions));
         }
 
         // (print out for sanity-checking)
@@ -64,7 +64,7 @@ public class SequentialExecutorImplIT {
         // when each are executed
         ExecutorService executorService = Executors.newFixedThreadPool(10);
         for(CommandRequest commandRequest : commandRequests) {
-            executorService.submit(commandRequest);
+//            executorService.submit(commandRequest);
         }
         System.out.println(Timestamp.from(Instant.now()) + " - started/scheduled executions");
 

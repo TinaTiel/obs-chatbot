@@ -22,25 +22,14 @@ public class RequestFactoryImpl implements RequestFactory {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     private final CommandExpander commandExpander;
-    private final long commandTimeoutMs;
-    private final MainQueue mainQueue;
 
     /**
-     *
+     * Creates a new instance of the RequestFactory.
      * @param commandExpander Takes a command and expands it into a list of actions (including when actions execute other commands)
-     * @param commandTimeoutMs The maximum time a list of RunnableActions (a Command) has to execute. See com.tinatiel.obschatbot.core.request.Request
-     * @param mainQueue The queue where all actions are submitted for dispatch to their appropriate clients.
      */
-    public RequestFactoryImpl(CommandExpander commandExpander, long commandTimeoutMs, MainQueue mainQueue) {
-        if(commandExpander == null || mainQueue == null ) throw new IllegalArgumentException("arguments cannot be null");
+    public RequestFactoryImpl(CommandExpander commandExpander) {
+        if(commandExpander == null) throw new IllegalArgumentException("arguments cannot be null");
         this.commandExpander = commandExpander;
-        this.commandTimeoutMs = commandTimeoutMs;
-        this.mainQueue = mainQueue;
-    }
-
-    @Override
-    public long getCommandTimeoutMs() {
-        return commandTimeoutMs;
     }
 
     @SuppressWarnings("unchecked")
@@ -57,7 +46,7 @@ public class RequestFactoryImpl implements RequestFactory {
                 .map(action -> new ActionRequest(action.acceptsClientType(), action, context))
                 .collect(Collectors.toList());
 
-        return new CommandRequest(mainQueue, commandTimeoutMs, actionRequests);
+        return new CommandRequest(context, actionRequests);
     }
 
 }

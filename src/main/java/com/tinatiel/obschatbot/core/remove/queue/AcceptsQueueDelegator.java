@@ -10,6 +10,6 @@ import com.tinatiel.obschatbot.core.remove.queue.type.ActionQueueType;
 
 import java.util.concurrent.BlockingQueue;
 
-public interface AAcceptsQueueDelegator extends BlockingQueue<ActionRequest> {
+public interface AcceptsQueueDelegator extends BlockingQueue<ActionRequest> {
     ActionQueueType getActionQueueType();
 }

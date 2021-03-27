@@ -5,6 +5,7 @@
 
 package com.tinatiel.obschatbot.core.request;
 
+import com.tinatiel.obschatbot.core.messaging.AbstractObsChatbotEvent;
 import com.tinatiel.obschatbot.core.remove.queue.MainQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,46 +15,23 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-public class CommandRequest implements Runnable {
-    private final Logger log = LoggerFactory.getLogger(this.getClass());
+public class CommandRequest extends AbstractObsChatbotEvent {
 
-    private final MainQueue mainQueue;
-    private final long timoutMs;
+    private final RequestContext context;
     private final List<ActionRequest> actionRequests;
 
     /**
       * Defines a runnable request, encompassing some run parameters and the actions/args themselves (RunnableAction).
-      * @param mainQueue Reference to main queue
-      * @param timeoutMs The maximum time an individual actionCommand has to execute. If less than zero, there is no timeout.
       * @param actionRequests The list of actionCommands (completableFutures) that will be run.
       */
-    public CommandRequest(MainQueue mainQueue, long timeoutMs, List<ActionRequest> actionRequests) {
-        if(mainQueue == null || actionRequests == null) throw new IllegalArgumentException("arguments cannot be null");
-        this.mainQueue = mainQueue;
-        this.timoutMs = timeoutMs > 0 ? timeoutMs : Integer.MAX_VALUE;
+    public CommandRequest(RequestContext context, List<ActionRequest> actionRequests) {
+        super();
+        this.context = context;
         this.actionRequests = actionRequests;
     }
 
-    @Override
-    public void run() {
-        for(ActionRequest actionRequest : actionRequests) {
-            try {
-                mainQueue.add(actionRequest);
-                // TODO add intelligent logic here for Wait actions; wait at least as long as the wait, plus the specified timeout
-                actionRequest.get(timoutMs, TimeUnit.MILLISECONDS);
-            } catch (InterruptedException interruptedException) {
-                log.warn("Interrupted request at: " + actionRequest, interruptedException);
-                Thread.currentThread().interrupt();
-            } catch (ExecutionException executionException) {
-                log.error("Unable to execute actionCommand: " + actionRequest, executionException);
-            } catch (TimeoutException e) {
-                log.warn("Unable to complete actionCommand " + actionRequest + " before timeout of " + timoutMs + "ms");
-            }
-        }
-    }
-
-    public long getTimoutMs() {
-        return timoutMs;
+    public RequestContext getContext() {
+        return context;
     }
 
     public List<ActionRequest> getActionCommands() {

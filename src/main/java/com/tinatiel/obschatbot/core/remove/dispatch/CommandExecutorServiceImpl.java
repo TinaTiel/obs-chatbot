@@ -62,7 +62,7 @@ public class CommandExecutorServiceImpl implements CommandExecutorService {
     @Override
     public void submit(CommandRequest commandRequest) {
         log.debug("CommandExecutorService request submitted: " + commandRequest);
-        delegator.submit(commandRequest);
+//        delegator.submit(commandRequest);
     }
 
 }

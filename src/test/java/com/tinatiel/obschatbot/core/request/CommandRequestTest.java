@@ -21,11 +21,11 @@ public class CommandRequestTest {
     void nullArgs() {
 
         assertThatThrownBy(() -> {
-            new CommandRequest(null, 123, new ArrayList<>());
+            new CommandRequest(null, new ArrayList<>());
         }).isInstanceOf(IllegalArgumentException.class);
 
         assertThatThrownBy(() -> {
-            new CommandRequest(mock(MainQueue.class), 123, null);
+            new CommandRequest(mock(RequestContext.class),  null);
         }).isInstanceOf(IllegalArgumentException.class);
 
     }
