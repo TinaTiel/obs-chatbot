@@ -58,8 +58,8 @@ class CommandRequestFactoryImplTest {
         CommandRequest commandRequest = factory.build(command, context);
 
         // Then the request contains the expected
-//        assertThat(request.getExecutor()).isNotNull().isInstanceOf(SequentialExecutorImpl.class);
         assertThat(commandRequest.getActionCommands()).hasSameSizeAs(actions);
+        assertThat(commandRequest.getContext()).isEqualTo(context);
 
     }
 
