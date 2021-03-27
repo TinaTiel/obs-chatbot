@@ -26,6 +26,9 @@ public class CommandRequest extends AbstractObsChatbotEvent {
       */
     public CommandRequest(RequestContext context, List<ActionRequest> actionRequests) {
         super();
+        if(context == null || actionRequests == null) {
+            throw new IllegalArgumentException("context and actionRequests are required");
+        }
         this.context = context;
         this.actionRequests = actionRequests;
     }
@@ -41,6 +44,8 @@ public class CommandRequest extends AbstractObsChatbotEvent {
     @Override
     public String toString() {
         return "CommandRequest{" +
+                super.toString() +
+                ", context=" + context +
                 ", actionCommands=" + actionRequests +
                 '}';
     }

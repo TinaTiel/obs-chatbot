@@ -5,14 +5,11 @@
 
 package com.tinatiel.obschatbot.core.request;
 
-import com.tinatiel.obschatbot.core.remove.queue.MainQueue;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.assertj.core.api.Fail.fail;
 import static org.mockito.Mockito.mock;
 
 public class CommandRequestTest {
