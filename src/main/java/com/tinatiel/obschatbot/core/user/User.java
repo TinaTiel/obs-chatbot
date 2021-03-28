@@ -11,10 +11,12 @@ public class User {
 
     private final Platform platform;
     private final String username;
+    private final UserType userType;
 
-    public User(Platform platform, String username) {
+    public User(Platform platform, String username, UserType userType) {
         this.platform = platform;
         this.username = username;
+        this.userType = userType;
     }
 
     public Platform getPlatform() {
@@ -23,6 +25,10 @@ public class User {
 
     public String getUsername() {
         return username;
+    }
+
+    public UserType getUserType() {
+        return userType;
     }
 
     @Override
@@ -43,6 +49,7 @@ public class User {
         return "User{" +
                 "platform=" + platform +
                 ", username='" + username + '\'' +
+                ", userType=" + userType +
                 '}';
     }
 }

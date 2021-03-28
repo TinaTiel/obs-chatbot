@@ -31,19 +31,19 @@ public class WorkGroupTest {
 
         // Given three commands to execute, with an uneven number each
         CommandRequest request1 = new CommandRequest(mockContext, Arrays.asList(
-                new ActionRequest(mockContext, new NonblockingAction("1.1")),
-                new ActionRequest(mockContext, new NonblockingAction("1.2")),
-                new ActionRequest(mockContext, new NonblockingAction("1.3"))
+                new NonblockingAction("1.1"),
+                new NonblockingAction("1.2"),
+                new NonblockingAction("1.3")
         ));
         CommandRequest request2 = new CommandRequest(mockContext, Arrays.asList(
-                new ActionRequest(mockContext, new NonblockingAction("2.1")),
-                new ActionRequest(mockContext, new NonblockingAction("2.2"))
+                new NonblockingAction("2.1"),
+                new NonblockingAction("2.2")
         ));
         CommandRequest request3 = new CommandRequest(mockContext, Arrays.asList(
-                new ActionRequest(mockContext, new NonblockingAction("3.1")),
-                new ActionRequest(mockContext, new NonblockingAction("3.2")),
-                new ActionRequest(mockContext, new NonblockingAction("3.3")),
-                new ActionRequest(mockContext, new NonblockingAction("3.4"))
+                new NonblockingAction("3.1"),
+                new NonblockingAction("3.2"),
+                new NonblockingAction("3.3"),
+                new NonblockingAction("3.4")
         ));
 
         // And are added to the workgroup
@@ -133,19 +133,19 @@ public class WorkGroupTest {
 
         // Given three commands to execute, some with blocking commands
         CommandRequest request1 = new CommandRequest(mockContext, Arrays.asList(
-                new ActionRequest(mockContext, new BlockingAction("1.1b")),
-                new ActionRequest(mockContext, new NonblockingAction("1.2")),
-                new ActionRequest(mockContext, new NonblockingAction("1.3"))
+                new BlockingAction("1.1b"),
+                new NonblockingAction("1.2"),
+                new NonblockingAction("1.3")
         ));
         CommandRequest request2 = new CommandRequest(mockContext, Arrays.asList(
-                new ActionRequest(mockContext, new NonblockingAction("2.1")),
-                new ActionRequest(mockContext, new BlockingAction("2.2b"))
+                new NonblockingAction("2.1"),
+                new BlockingAction("2.2b")
         ));
         CommandRequest request3 = new CommandRequest(mockContext, Arrays.asList(
-                new ActionRequest(mockContext, new NonblockingAction("3.1")),
-                new ActionRequest(mockContext, new NonblockingAction("3.2")),
-                new ActionRequest(mockContext, new BlockingAction("3.3b")),
-                new ActionRequest(mockContext, new NonblockingAction("3.4"))
+                new NonblockingAction("3.1"),
+                new NonblockingAction("3.2"),
+                new BlockingAction("3.3b"),
+                new NonblockingAction("3.4")
         ));
 
         // And are added to the workgroup
@@ -275,9 +275,9 @@ public class WorkGroupTest {
 
         // Given a command to execute
         CommandRequest request = new CommandRequest(mockContext, Arrays.asList(
-                new ActionRequest(mockContext, new NonblockingAction("1.1")),
-                new ActionRequest(mockContext, new NonblockingAction("1.2")),
-                new ActionRequest(mockContext, new NonblockingAction("1.3"))
+                new NonblockingAction("1.1"),
+                new NonblockingAction("1.2"),
+                new NonblockingAction("1.3")
         ));
 
         // And command is added to the workgroup

@@ -18,6 +18,7 @@ import com.tinatiel.obschatbot.core.sequencer.ActionSequencer;
 import com.tinatiel.obschatbot.core.sequencer.InOrderActionSequencer;
 import com.tinatiel.obschatbot.core.user.Platform;
 import com.tinatiel.obschatbot.core.user.User;
+import com.tinatiel.obschatbot.core.user.UserType;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -71,7 +72,7 @@ public class HeadlessCoreIT {
         String request = "!mango has arrived in chat! :D";
 
         // When handled by the chat request handler
-        User user = new User(Platform.TWITCH, "mango");
+        User user = new User(Platform.TWITCH, "mango", UserType.MODERATOR);
         chatRequestHandler.handle(user, request);
 
         // Then the expected messages are added to the main queue, in order (if we wait for them to filter through)

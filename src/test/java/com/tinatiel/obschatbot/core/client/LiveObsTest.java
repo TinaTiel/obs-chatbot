@@ -13,6 +13,7 @@ import com.tinatiel.obschatbot.core.request.RequestContext;
 import com.tinatiel.obschatbot.core.request.ActionRequest;
 import com.tinatiel.obschatbot.core.user.Platform;
 import com.tinatiel.obschatbot.core.user.User;
+import com.tinatiel.obschatbot.core.user.UserType;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -36,7 +37,7 @@ public class LiveObsTest {
 
         // Given an actionCommand
         ObsSourceVisibilityAction action = new ObsSourceVisibilityAction(null, "Image", false);
-        User user = new User(Platform.TWITCH, "mango");
+        User user = new User(Platform.TWITCH, "mango", UserType.MODERATOR);
         RequestContext requestContext = new RequestContext(user, new ArrayList<>());
         ActionRequest actionRequest = new ActionRequest(requestContext, action);
 

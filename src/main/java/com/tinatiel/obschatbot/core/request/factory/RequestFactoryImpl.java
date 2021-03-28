@@ -41,11 +41,8 @@ public class RequestFactoryImpl implements RequestFactory {
         if(command == null || context == null) throw new IllegalArgumentException("arguments cannot be null");
 
         // Expand the command into Actions and map into actionCommands
-        List<ActionRequest> actionRequests = commandExpander.expand(command).stream()
-                .map(action -> new ActionRequest(context, action))
-                .collect(Collectors.toList());
 
-        return new CommandRequest(context, actionRequests);
+        return new CommandRequest(context, commandExpander.expand(command));
     }
 
 }

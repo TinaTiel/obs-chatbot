@@ -12,6 +12,7 @@ import com.tinatiel.obschatbot.core.request.RequestContext;
 import com.tinatiel.obschatbot.core.request.ActionRequest;
 import com.tinatiel.obschatbot.core.user.Platform;
 import com.tinatiel.obschatbot.core.user.User;
+import com.tinatiel.obschatbot.core.user.UserType;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
@@ -92,7 +93,7 @@ public class App {
         // Try an action
         System.out.println("Sending a test message");
         SendMessageAction action = new SendMessageAction("Test message " + new Date());
-        User user = new User(Platform.TWITCH, "mango");
+        User user = new User(Platform.TWITCH, "mango", UserType.MODERATOR);
         RequestContext requestContext = new RequestContext(user, new ArrayList<>());
         ActionRequest actionRequest = new ActionRequest(requestContext, action);
         chatClientManager.consume(actionRequest);

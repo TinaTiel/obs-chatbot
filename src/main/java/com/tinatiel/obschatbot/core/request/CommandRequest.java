@@ -5,11 +5,13 @@
 
 package com.tinatiel.obschatbot.core.request;
 
+import com.tinatiel.obschatbot.core.action.Action;
 import com.tinatiel.obschatbot.core.messaging.AbstractObsChatbotEvent;
 import com.tinatiel.obschatbot.core.remove.queue.MainQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -18,19 +20,19 @@ import java.util.concurrent.TimeoutException;
 public class CommandRequest extends AbstractObsChatbotEvent {
 
     private final RequestContext context;
-    private final List<ActionRequest> actionRequests;
+    private final List<ActionRequest> actionRequests = new ArrayList<>();
 
     /**
       * Defines a runnable request, encompassing some run parameters and the actions/args themselves (RunnableAction).
-      * @param actionRequests The list of actionCommands (completableFutures) that will be run.
+      * @param actions The list of actions that will be run.
       */
-    public CommandRequest(RequestContext context, List<ActionRequest> actionRequests) {
+    public CommandRequest(RequestContext context, List<Action> actions) {
         super();
-        if(context == null || actionRequests == null) {
+        if(context == null || actions == null) {
             throw new IllegalArgumentException("context and actionRequests are required");
         }
         this.context = context;
-        this.actionRequests = actionRequests;
+        actions.forEach(action -> actionRequests.add(new ActionRequest(context, action)));
     }
 
     public RequestContext getContext() {
