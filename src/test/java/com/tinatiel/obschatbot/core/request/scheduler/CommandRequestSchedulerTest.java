@@ -7,17 +7,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class CommandRequestSchedulerTest {
 
     @Test
-    void commandActionsAreExecutedInRoundRobinOrder() {
-        fail("to do");
-    }
-
-    @Test
     void broadcasterCommandsInterruptPriority() {
-        fail("to do");
-    }
-
-    @Test
-    void actionsPendingWaitDontBlockOtherActions() {
         fail("to do");
     }
 
