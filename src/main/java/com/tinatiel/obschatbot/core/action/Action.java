@@ -8,7 +8,18 @@ package com.tinatiel.obschatbot.core.action;
 import com.tinatiel.obschatbot.core.client.ActionClient;
 import com.tinatiel.obschatbot.core.request.RequestContext;
 
-public interface Action<C extends ActionClient, T extends Action<C, T>> {
-    Class<C> acceptsClientType();
+/**
+ * Defines a specific action that can occur, for example hiding an OBS scene,
+ * sending a chat message, pausing/waiting, etc.
+ */
+public interface Action<T extends Action<T>> {
+
     T clone();
+
+    /**
+     * If true, this signifies an action requires receipt of completion
+     * before it is considered complete. An example of this might be a
+     * long-running operation or a wait/timer.
+     */
+    boolean requiresCompletion();
 }

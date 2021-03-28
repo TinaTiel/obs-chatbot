@@ -7,7 +7,6 @@ package com.tinatiel.obschatbot.core.remove.queue.consumers;
 
 import com.tinatiel.obschatbot.core.action.Action;
 import com.tinatiel.obschatbot.core.client.ClientManager;
-import com.tinatiel.obschatbot.core.client.chat.twitch.TwitchChatClient;
 import com.tinatiel.obschatbot.core.request.RequestContext;
 import com.tinatiel.obschatbot.core.request.ActionRequest;
 import com.tinatiel.obschatbot.core.remove.queue.TwitchChatQueue;
@@ -42,9 +41,9 @@ public class TwitchChatQueueConsumerTest {
     void consumesContentsOfQueue() {
 
         // Given some OBS tasks in the queue
-        ActionRequest twitchCmd1 = new ActionRequest(mock(Action.class), mock(RequestContext.class));
-        ActionRequest twitchCmd2 = new ActionRequest(mock(Action.class), mock(RequestContext.class));
-        ActionRequest twitchCmd3 = new ActionRequest(mock(Action.class), mock(RequestContext.class));
+        ActionRequest twitchCmd1 = new ActionRequest(mock(RequestContext.class), mock(Action.class));
+        ActionRequest twitchCmd2 = new ActionRequest(mock(RequestContext.class), mock(Action.class));
+        ActionRequest twitchCmd3 = new ActionRequest(mock(RequestContext.class), mock(Action.class));
         twitchQueue.add(twitchCmd1);
         twitchQueue.add(twitchCmd2);
         twitchQueue.add(twitchCmd3);

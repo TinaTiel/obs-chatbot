@@ -7,16 +7,18 @@ package com.tinatiel.obschatbot.core.request;
 
 import com.tinatiel.obschatbot.core.action.Action;
 import com.tinatiel.obschatbot.core.client.ActionClient;
+import com.tinatiel.obschatbot.core.messaging.AbstractObsChatbotEvent;
 import com.tinatiel.obschatbot.core.request.RequestContext;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 
-public class ActionRequest {
+public class ActionRequest extends AbstractObsChatbotEvent {
     private final Action action;
     private final RequestContext context;
 
-    public ActionRequest(Action action, RequestContext context) {
+    public ActionRequest(RequestContext context, Action action) {
+        super();
         this.action = action;
         this.context = context;
     }
@@ -29,9 +31,14 @@ public class ActionRequest {
         return context;
     }
 
+    public boolean requiresCompletion() {
+        return action.requiresCompletion();
+    }
+
     @Override
     public String toString() {
         return "ActionCommand{" +
+                super.toString() +
                 ", action=" + action +
                 ", context=" + context +
                 '}';

@@ -6,7 +6,6 @@
 package com.tinatiel.obschatbot.core.remove.queue.consumers;
 
 import com.tinatiel.obschatbot.core.action.Action;
-import com.tinatiel.obschatbot.core.client.obs.ObsClient;
 import com.tinatiel.obschatbot.core.client.obs.ObsClientManager;
 import com.tinatiel.obschatbot.core.request.RequestContext;
 import com.tinatiel.obschatbot.core.request.ActionRequest;
@@ -41,9 +40,9 @@ class ObsQueueConsumerTest {
     void consumesContentsOfQueue() {
 
         // Given some OBS tasks in the queue
-        ActionRequest obsCmd1 = new ActionRequest(mock(Action.class), mock(RequestContext.class));
-        ActionRequest obsCmd2 = new ActionRequest(mock(Action.class), mock(RequestContext.class));
-        ActionRequest obsCmd3 = new ActionRequest(mock(Action.class), mock(RequestContext.class));
+        ActionRequest obsCmd1 = new ActionRequest(mock(RequestContext.class), mock(Action.class));
+        ActionRequest obsCmd2 = new ActionRequest(mock(RequestContext.class), mock(Action.class));
+        ActionRequest obsCmd3 = new ActionRequest(mock(RequestContext.class), mock(Action.class));
         obsQueue.add(obsCmd1);
         obsQueue.add(obsCmd2);
         obsQueue.add(obsCmd3);

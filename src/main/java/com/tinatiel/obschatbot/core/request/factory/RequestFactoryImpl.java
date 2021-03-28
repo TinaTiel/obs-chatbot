@@ -11,7 +11,6 @@ import com.tinatiel.obschatbot.core.request.CommandRequest;
 import com.tinatiel.obschatbot.core.request.RequestContext;
 import com.tinatiel.obschatbot.core.request.expand.CommandExpander;
 import com.tinatiel.obschatbot.core.request.ActionRequest;
-import com.tinatiel.obschatbot.core.remove.queue.MainQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,7 +42,7 @@ public class RequestFactoryImpl implements RequestFactory {
 
         // Expand the command into Actions and map into actionCommands
         List<ActionRequest> actionRequests = commandExpander.expand(command).stream()
-                .map(action -> new ActionRequest(action, context))
+                .map(action -> new ActionRequest(context, action))
                 .collect(Collectors.toList());
 
         return new CommandRequest(context, actionRequests);

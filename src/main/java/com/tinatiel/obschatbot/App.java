@@ -94,7 +94,7 @@ public class App {
         SendMessageAction action = new SendMessageAction("Test message " + new Date());
         User user = new User(Platform.TWITCH, "mango");
         RequestContext requestContext = new RequestContext(user, new ArrayList<>());
-        ActionRequest actionRequest = new ActionRequest(action, requestContext);
+        ActionRequest actionRequest = new ActionRequest(requestContext, action);
         chatClientManager.consume(actionRequest);
 
         System.out.println("Stopping the client");

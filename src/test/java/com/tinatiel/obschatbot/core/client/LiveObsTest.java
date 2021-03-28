@@ -7,7 +7,6 @@ package com.tinatiel.obschatbot.core.client;
 
 import com.tinatiel.obschatbot.App;
 import com.tinatiel.obschatbot.core.action.model.ObsSourceVisibilityAction;
-import com.tinatiel.obschatbot.core.client.obs.ObsClient;
 import com.tinatiel.obschatbot.core.client.obs.ObsClientManager;
 import com.tinatiel.obschatbot.core.error.ClientException;
 import com.tinatiel.obschatbot.core.request.RequestContext;
@@ -39,7 +38,7 @@ public class LiveObsTest {
         ObsSourceVisibilityAction action = new ObsSourceVisibilityAction(null, "Image", false);
         User user = new User(Platform.TWITCH, "mango");
         RequestContext requestContext = new RequestContext(user, new ArrayList<>());
-        ActionRequest actionRequest = new ActionRequest(action, requestContext);
+        ActionRequest actionRequest = new ActionRequest(requestContext, action);
 
         // Then we can start/stop/reload the manager and consume messages without exceptions
         try {
