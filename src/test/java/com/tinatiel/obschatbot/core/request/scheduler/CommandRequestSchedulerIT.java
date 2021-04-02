@@ -59,7 +59,7 @@ class CommandRequestSchedulerIT {
                 )),
                 new CommandRequest(otherContext, Arrays.asList(
                         new NonblockingAction("3.1"),
-                        new NonblockingAction("3.2"),
+                        new BlockingAction("3.2"), // will automatically unblock after 1000ms, we should see 3.3 again near the end of the queue
                         new NonblockingAction("3.3"),
                         new NonblockingAction("3.4"),
                         new NonblockingAction("3.5")
@@ -84,7 +84,7 @@ class CommandRequestSchedulerIT {
 
         // And we wait reasonably
         try {
-            Thread.sleep(1000);
+            Thread.sleep(1500);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
