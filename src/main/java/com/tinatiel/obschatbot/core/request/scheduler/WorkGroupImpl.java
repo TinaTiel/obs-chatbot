@@ -9,10 +9,18 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class WorkGroupImpl implements WorkGroup {
 
+    private int maxBatchSize = 0;
     private final Timer timer = new Timer();
     private final List<CommandRequestWrapper> workableRequests = new ArrayList<>();
     private final HashMap<UUID, CommandRequestWrapper> blockedRequests = new HashMap<>();
-    private ReentrantLock lock = new ReentrantLock();
+    private final ReentrantLock lock = new ReentrantLock();
+
+    public WorkGroupImpl() {
+    }
+
+    public WorkGroupImpl(int maxBatchSize) {
+        this.maxBatchSize = maxBatchSize;
+    }
 
     @Override
     public void add(CommandRequest commandRequest) {
@@ -48,7 +56,7 @@ public class WorkGroupImpl implements WorkGroup {
         // Process the workable requests
         lock.lock();
         try {
-            workableRequests.forEach( request -> {
+            for(CommandRequestWrapper request:workableRequests) {
 
                 // Get the next action
                 ActionRequest nextAction = request.getQueue().poll();
@@ -86,7 +94,10 @@ public class WorkGroupImpl implements WorkGroup {
                     removeNext.add(request);
                 }
 
-            });
+                //
+                if(maxBatchSize > 0 && batch.size() >= maxBatchSize) break;
+
+            }
 
             // Remove non-workable items from the workable requests
             removeNext.forEach(workableRequests::remove);

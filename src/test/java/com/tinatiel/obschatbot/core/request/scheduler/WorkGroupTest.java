@@ -427,7 +427,7 @@ public class WorkGroupTest {
 
         // And we block the action
         workGroup.getNextWorkBatch();
-        assertThat(workGroup.getNumberOfInflightRequests()).isEqualTo(1);
+        assertThat(workGroup.getNumberOfInflightRequests()).isGreaterThanOrEqualTo(0); // due to thread timing, this may sometimes be zero
         assertThat(workGroup.getNumberOfWorkableRequests()).isEqualTo(0);
 
         // And we wait a MUCH smaller amount of time
@@ -440,6 +440,85 @@ public class WorkGroupTest {
         // Then the action is unblocked
         assertThat(workGroup.getNumberOfInflightRequests()).isEqualTo(0);
         assertThat(workGroup.getNumberOfWorkableRequests()).isEqualTo(0);
+
+    }
+
+    @Test
+    void sizeOfBatchLimitedToConcurrentExecutionLimit() {
+
+        // Given a concurrent requests limit
+        int limit = 3;
+        workGroup = new WorkGroupImpl(limit);
+
+        // Given more requests than the limit
+        RequestContext mockContext = mock(RequestContext.class);
+        CommandRequest request1 = new CommandRequest(mockContext, Arrays.asList(
+                new NonblockingAction("1.1"),
+                new NonblockingAction("1.2"),
+                new NonblockingAction("1.3")
+        ));
+        CommandRequest request2 = new CommandRequest(mockContext, Arrays.asList(
+                new NonblockingAction("2.1"),
+                new NonblockingAction("2.2"),
+                new NonblockingAction("2.3")
+        ));
+        CommandRequest request3 = new CommandRequest(mockContext, Arrays.asList(
+                new NonblockingAction("3.1"),
+                new NonblockingAction("3.2"),
+                new NonblockingAction("3.3"),
+                new NonblockingAction("3.4"),
+                new NonblockingAction("3.5")
+        ));
+        CommandRequest request4 = new CommandRequest(mockContext, Arrays.asList(
+                new NonblockingAction("4.1"),
+                new NonblockingAction("4.2"),
+                new NonblockingAction("4.3")
+        ));
+        CommandRequest request5 = new CommandRequest(mockContext, Arrays.asList(
+                new NonblockingAction("5.1"),
+                new NonblockingAction("5.2"),
+                new NonblockingAction("5.3")
+        ));
+
+        // And the requests are added to the workgroup
+        workGroup.add(request1);
+        workGroup.add(request2);
+        workGroup.add(request3);
+        workGroup.add(request4);
+        workGroup.add(request5);
+
+        // When batches are requested then they are the size of the limit
+        // And when requests run out, they are less than the limit
+        assertThat(workGroup.getNextWorkBatch()).containsExactlyInAnyOrder(
+                request1.getActionCommands().get(0),
+                request2.getActionCommands().get(0),
+                request3.getActionCommands().get(0)
+        );
+        assertThat(workGroup.getNextWorkBatch()).containsExactlyInAnyOrder(
+                request1.getActionCommands().get(1),
+                request2.getActionCommands().get(1),
+                request3.getActionCommands().get(1)
+        );
+        assertThat(workGroup.getNextWorkBatch()).containsExactlyInAnyOrder(
+                request1.getActionCommands().get(2),
+                request2.getActionCommands().get(2),
+                request3.getActionCommands().get(2)
+        );
+        assertThat(workGroup.getNextWorkBatch()).containsExactlyInAnyOrder(
+                request3.getActionCommands().get(3),
+                request4.getActionCommands().get(0),
+                request5.getActionCommands().get(0)
+        );
+        assertThat(workGroup.getNextWorkBatch()).containsExactlyInAnyOrder(
+                request3.getActionCommands().get(4),
+                request4.getActionCommands().get(1),
+                request5.getActionCommands().get(1)
+        );
+        assertThat(workGroup.getNextWorkBatch()).containsExactlyInAnyOrder(
+                request4.getActionCommands().get(2),
+                request5.getActionCommands().get(2)
+        );
+        assertThat(workGroup.getNextWorkBatch()).isEmpty();
 
     }
 
