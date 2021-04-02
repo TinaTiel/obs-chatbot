@@ -54,6 +54,7 @@ public class WorkGroupTest {
         // Then the number of inflight requests is the same as
         // the number of requests we just added
         assertThat(workGroup.getNumberOfInflightRequests()).isEqualTo(3);
+        assertThat(workGroup.getNumberOfWorkableRequests()).isEqualTo(3);
 
         // When we generate the next batches, then each batch
         // is served round-robin from each request
@@ -82,6 +83,7 @@ public class WorkGroupTest {
         //  3: 3.2, 3.3, 3.4
         // And there are still 3 commands with work to do
         assertThat(workGroup.getNumberOfInflightRequests()).isEqualTo(3);
+        assertThat(workGroup.getNumberOfWorkableRequests()).isEqualTo(3);
 
         // In the second request, we take the last action from CommandRequest #2
         assertThat(workGroup.getNextWorkBatch()).containsExactlyInAnyOrder(
@@ -97,6 +99,7 @@ public class WorkGroupTest {
         //  3: 3.3, 3.4
         // ...so now we have only 2 commands with work left
         assertThat(workGroup.getNumberOfInflightRequests()).isEqualTo(2);
+        assertThat(workGroup.getNumberOfWorkableRequests()).isEqualTo(2);
 
         // In the third request, we take the last action from CommandRequest #1
         assertThat(workGroup.getNextWorkBatch()).containsExactlyInAnyOrder(
@@ -110,6 +113,7 @@ public class WorkGroupTest {
         //  3: 3.4
         // ...so now we have only 1 command with work left
         assertThat(workGroup.getNumberOfInflightRequests()).isEqualTo(1);
+        assertThat(workGroup.getNumberOfWorkableRequests()).isEqualTo(1);
 
         // Finally in the last (fourth) request, we take the last action from CommandRequest #3
         assertThat(workGroup.getNextWorkBatch()).containsExactlyInAnyOrder(
@@ -122,6 +126,7 @@ public class WorkGroupTest {
         //  (none)
         // ...and now we have no commands left with work to do
         assertThat(workGroup.getNumberOfInflightRequests()).isEqualTo(0);
+        assertThat(workGroup.getNumberOfWorkableRequests()).isEqualTo(0);
 
     }
 
@@ -177,6 +182,7 @@ public class WorkGroupTest {
         //  2: 2.2b
         //  3: 3.2, 3.3b, 3.4
         assertThat(workGroup.getNumberOfInflightRequests()).isEqualTo(3);
+        assertThat(workGroup.getNumberOfWorkableRequests()).isEqualTo(2);
 
         // calling again
         assertThat(workGroup.getNextWorkBatch()).containsExactlyInAnyOrder(
@@ -190,6 +196,7 @@ public class WorkGroupTest {
         // available:
         //  3: 3.3b, 3.4
         assertThat(workGroup.getNumberOfInflightRequests()).isEqualTo(3);
+        assertThat(workGroup.getNumberOfWorkableRequests()).isEqualTo(1);
 
         // Unblocking #1
         workGroup.free(request1.getActionCommands().get(0));
@@ -198,6 +205,8 @@ public class WorkGroupTest {
         // available:
         //  1: 1.2, 1.3
         //  3: 3.3b, 3.4
+        assertThat(workGroup.getNumberOfInflightRequests()).isEqualTo(3);
+        assertThat(workGroup.getNumberOfWorkableRequests()).isEqualTo(2);
 
         // Now #1 is returned since it is unblocked, but now #2 is blocked so we don't see it
         assertThat(workGroup.getNextWorkBatch()).containsExactlyInAnyOrder(
@@ -211,6 +220,7 @@ public class WorkGroupTest {
         // available:
         //  1: 1.3
         assertThat(workGroup.getNumberOfInflightRequests()).isEqualTo(3);
+        assertThat(workGroup.getNumberOfWorkableRequests()).isEqualTo(1);
 
         // Unblocking #2
         workGroup.free(request2.getActionCommands().get(1));
@@ -229,6 +239,7 @@ public class WorkGroupTest {
         // available:
         //  (none)
         assertThat(workGroup.getNumberOfInflightRequests()).isEqualTo(1);
+        assertThat(workGroup.getNumberOfWorkableRequests()).isEqualTo(0);
 
         // #3 was blocked, so this request turns up nothing
         assertThat(workGroup.getNextWorkBatch()).isEmpty();
@@ -237,6 +248,7 @@ public class WorkGroupTest {
         // available:
         //  (none)
         assertThat(workGroup.getNumberOfInflightRequests()).isEqualTo(1);
+        assertThat(workGroup.getNumberOfWorkableRequests()).isEqualTo(0);
 
         // Calling again yields the same results as before; we haven't unblocked #3 yet
         assertThat(workGroup.getNextWorkBatch()).isEmpty();
@@ -245,6 +257,7 @@ public class WorkGroupTest {
         // available:
         //  (none)
         assertThat(workGroup.getNumberOfInflightRequests()).isEqualTo(1);
+        assertThat(workGroup.getNumberOfWorkableRequests()).isEqualTo(0);
 
         // free #3
         workGroup.free(request3.getActionCommands().get(2));
@@ -252,6 +265,7 @@ public class WorkGroupTest {
         //  (none)
         // available:
         //  3: 3.4
+        assertThat(workGroup.getNumberOfWorkableRequests()).isEqualTo(1);
 
         // Calling again yields similar results because #3's last request happened
         // to be blocking
@@ -264,11 +278,12 @@ public class WorkGroupTest {
         // available:
         //  (none)
         assertThat(workGroup.getNumberOfInflightRequests()).isEqualTo(0);
+        assertThat(workGroup.getNumberOfWorkableRequests()).isEqualTo(0);
 
     }
 
     @Test
-    void freeAnActionThatIsntFound() {
+    void freeingAnActionThatIsntFoundDoesNothing() {
 
         // Given a mock context (doesn't matter at the WorkGroup level)
         RequestContext mockContext = mock(RequestContext.class);
