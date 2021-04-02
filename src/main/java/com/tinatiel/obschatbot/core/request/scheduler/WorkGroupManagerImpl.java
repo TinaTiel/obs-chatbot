@@ -1,5 +1,7 @@
 package com.tinatiel.obschatbot.core.request.scheduler;
 
+import com.tinatiel.obschatbot.core.request.CommandRequest;
+
 public class WorkGroupManagerImpl implements WorkGroupManager {
 
     private final WorkGroup noWork = new NoWorkAvailableWorkGroup();
@@ -17,5 +19,10 @@ public class WorkGroupManagerImpl implements WorkGroupManager {
                 .findFirst()
                 .orElse(noWork);
 
+    }
+
+    @Override
+    public void route(CommandRequest commandRequest) {
+        router.route(commandRequest);
     }
 }

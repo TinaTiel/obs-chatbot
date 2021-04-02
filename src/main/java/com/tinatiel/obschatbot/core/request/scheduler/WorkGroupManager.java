@@ -1,5 +1,7 @@
 package com.tinatiel.obschatbot.core.request.scheduler;
 
+import com.tinatiel.obschatbot.core.request.CommandRequest;
+
 /**
  * Responsible for determining the next work group that should be executed. Implementations might,
  * for example, always pick a high priority / interrupting WorkGroup until no work remains, and then
@@ -13,5 +15,10 @@ public interface WorkGroupManager {
      * next caller does not need to worry about NullPointerExceptions.
      */
     WorkGroup getNext();
+
+    /**
+     * Routes a given request to the correct WorkGroup.
+     */
+    void route(CommandRequest commandRequest);
 
 }

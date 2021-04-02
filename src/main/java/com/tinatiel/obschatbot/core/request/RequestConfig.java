@@ -18,13 +18,17 @@ import com.tinatiel.obschatbot.core.request.handler.chat.ChatMessageParserImpl;
 import com.tinatiel.obschatbot.core.request.handler.chat.ChatRequestHandler;
 import com.tinatiel.obschatbot.core.request.handler.chat.ChatRequestHandlerImpl;
 import com.tinatiel.obschatbot.core.request.scheduler.CommandRequestScheduler;
+import com.tinatiel.obschatbot.core.request.scheduler.SchedulerConfig;
+import com.tinatiel.obschatbot.core.request.scheduler.WorkGroupManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+@Import(SchedulerConfig.class)
 @Configuration
 public class RequestConfig {
 
@@ -79,8 +83,11 @@ public class RequestConfig {
         return notifier;
     }
 
+    @Autowired
+    WorkGroupManager workGroupManager;
+
     Listener<CommandRequest> commandRequestScheduler() {
-        return new CommandRequestScheduler(actionRequestQueueClient());
+        return new CommandRequestScheduler(workGroupManager, actionRequestQueueClient());
     }
 
     @Bean
