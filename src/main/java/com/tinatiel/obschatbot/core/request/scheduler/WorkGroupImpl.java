@@ -15,9 +15,19 @@ public class WorkGroupImpl implements WorkGroup {
     private final HashMap<UUID, CommandRequestWrapper> blockedRequests = new HashMap<>();
     private final ReentrantLock lock = new ReentrantLock();
 
+    /**
+     * Creates a workgroup with limitless concurrent commandRequest execution.
+     */
     public WorkGroupImpl() {
     }
 
+    /**
+     * Creates a workgroup where batch size is limited to the specified number
+     * of concurrentCommandRequests. Note this is only for one group! In a scheduler
+     * there may be separate schedulers for broadcaster, moderator, and everyone else
+     * for example; the real total number of concurrent executions is determined by this
+     * and should not be limited by the scheduler itself.
+     */
     public WorkGroupImpl(int maxBatchSize) {
         this.maxBatchSize = maxBatchSize;
     }
