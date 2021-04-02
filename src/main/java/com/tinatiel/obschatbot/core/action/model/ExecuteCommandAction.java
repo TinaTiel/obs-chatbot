@@ -29,6 +29,11 @@ public class ExecuteCommandAction implements Action<ExecuteCommandAction> {
         return false;
     }
 
+    @Override
+    public long getTimeout() {
+        return 0;
+    }
+
     public Command getTarget() {
         return target;
     }

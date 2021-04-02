@@ -22,4 +22,11 @@ public interface Action<T extends Action<T>> {
      * long-running operation or a wait/timer.
      */
     boolean requiresCompletion();
+
+    /**
+     * Gets the configured timeout for an action if it is blocking.
+     * @return
+     */
+    long getTimeout();
+
 }

@@ -32,6 +32,11 @@ public class SendMessageAction implements Action<SendMessageAction> {
     }
 
     @Override
+    public long getTimeout() {
+        return 0;
+    }
+
+    @Override
     public String toString() {
         return "SendMessageAction{" +
                 "message='" + message + '\'' +

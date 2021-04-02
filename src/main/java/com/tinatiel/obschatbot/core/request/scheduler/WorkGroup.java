@@ -1,9 +1,12 @@
 package com.tinatiel.obschatbot.core.request.scheduler;
 
+import com.tinatiel.obschatbot.core.messaging.Listener;
+import com.tinatiel.obschatbot.core.request.ActionCompleteEvent;
 import com.tinatiel.obschatbot.core.request.ActionRequest;
 import com.tinatiel.obschatbot.core.request.CommandRequest;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Responsible for providing the next batch of ActionRequests to process.
@@ -17,7 +20,7 @@ import java.util.List;
  * ActionRequests, for example), freeing up ActionRequests that have been completed, and
  * removing ActionRequest queues that are empty or have timed out.
  */
-public interface WorkGroup {
+public interface WorkGroup extends Listener<ActionCompleteEvent> {
 
     /**
      * Add a new CommandRequest to the work group.
@@ -27,8 +30,9 @@ public interface WorkGroup {
     /**
      * An ActionRequest might block future execution of remaining items in a
      * CommandRequest, pending its completion. This method unblocks that item.
+     * @param actionRequestId
      */
-    void free(ActionRequest actionRequest);
+    void free(UUID actionRequestId);
 
     /**
      * Gets the next batch of ActionRequests to work on.

@@ -31,6 +31,11 @@ public class ObsSourceVisibilityAction implements Action<ObsSourceVisibilityActi
         return false;
     }
 
+    @Override
+    public long getTimeout() {
+        return 0;
+    }
+
     public String getSceneName() {
         return sceneName;
     }

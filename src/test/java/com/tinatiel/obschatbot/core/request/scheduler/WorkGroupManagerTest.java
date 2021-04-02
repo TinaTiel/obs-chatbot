@@ -1,15 +1,8 @@
 package com.tinatiel.obschatbot.core.request.scheduler;
 
-import com.tinatiel.obschatbot.core.request.ActionRequest;
-import com.tinatiel.obschatbot.core.request.CommandRequest;
-import com.tinatiel.obschatbot.core.request.RequestContext;
-import com.tinatiel.obschatbot.core.user.Platform;
-import com.tinatiel.obschatbot.core.user.User;
-import com.tinatiel.obschatbot.core.user.UserType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;

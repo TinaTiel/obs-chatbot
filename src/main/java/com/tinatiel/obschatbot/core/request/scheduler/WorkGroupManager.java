@@ -1,7 +1,5 @@
 package com.tinatiel.obschatbot.core.request.scheduler;
 
-import com.tinatiel.obschatbot.core.request.ActionRequest;
-
 /**
  * Responsible for determining the next work group that should be executed. Implementations might,
  * for example, always pick a high priority / interrupting WorkGroup until no work remains, and then

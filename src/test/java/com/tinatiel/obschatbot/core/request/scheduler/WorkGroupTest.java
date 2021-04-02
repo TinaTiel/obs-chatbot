@@ -1,18 +1,24 @@
 package com.tinatiel.obschatbot.core.request.scheduler;
 
 import com.tinatiel.obschatbot.core.action.Action;
-import com.tinatiel.obschatbot.core.request.ActionRequest;
+import com.tinatiel.obschatbot.core.request.ActionCompleteEvent;
 import com.tinatiel.obschatbot.core.request.CommandRequest;
 import com.tinatiel.obschatbot.core.request.RequestContext;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Fail.fail;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
+@Timeout(value = 2000, unit = TimeUnit.MILLISECONDS)
 public class WorkGroupTest {
 
     WorkGroup workGroup;
@@ -199,7 +205,7 @@ public class WorkGroupTest {
         assertThat(workGroup.getNumberOfWorkableRequests()).isEqualTo(1);
 
         // Unblocking #1
-        workGroup.free(request1.getActionCommands().get(0));
+        workGroup.free(request1.getActionCommands().get(0).getId());
         // blocked:
         //  2: (empty)
         // available:
@@ -223,7 +229,7 @@ public class WorkGroupTest {
         assertThat(workGroup.getNumberOfWorkableRequests()).isEqualTo(1);
 
         // Unblocking #2
-        workGroup.free(request2.getActionCommands().get(1));
+        workGroup.free(request2.getActionCommands().get(1).getId());
         // blocked:
         //  3: 3.4
         // available:
@@ -260,7 +266,7 @@ public class WorkGroupTest {
         assertThat(workGroup.getNumberOfWorkableRequests()).isEqualTo(0);
 
         // free #3
-        workGroup.free(request3.getActionCommands().get(2));
+        workGroup.free(request3.getActionCommands().get(2).getId());
         // blocked:
         //  (none)
         // available:
@@ -300,10 +306,140 @@ public class WorkGroupTest {
 
         // When we try to free something that isn't blocked, then nothing happens
         try {
-            workGroup.free(request.getActionCommands().get(1)); // we haven't pulled anything yet, nothing is blocking
+            workGroup.free(request.getActionCommands().get(1).getId()); // we haven't pulled anything yet, nothing is blocking
         } catch (Exception e) {
             fail("expected no exception to be thrown", e);
         }
+
+    }
+
+    @Test
+    void freeBlockedRequest() {
+
+        // Given a mock context (doesn't matter at the WorkGroup level)
+        RequestContext mockContext = mock(RequestContext.class);
+
+        // Given a command with a blocking action
+        CommandRequest request = new CommandRequest(mockContext, Collections.singletonList(
+                new BlockingAction("blocking action")
+        ));
+
+        // And are added to the workgroup
+        workGroup.add(request);
+        assertThat(workGroup.getNumberOfInflightRequests()).isEqualTo(1);
+        assertThat(workGroup.getNumberOfWorkableRequests()).isEqualTo(1);
+
+        // And we block the action
+        workGroup.getNextWorkBatch();
+        assertThat(workGroup.getNumberOfInflightRequests()).isEqualTo(1);
+        assertThat(workGroup.getNumberOfWorkableRequests()).isEqualTo(0);
+
+        // When we invoke the listener
+        workGroup.free(request.getActionCommands().get(0).getId());
+
+        // Then the action is unblocked
+        assertThat(workGroup.getNumberOfInflightRequests()).isEqualTo(0);
+        assertThat(workGroup.getNumberOfWorkableRequests()).isEqualTo(0);
+
+    }
+
+    @Test
+    void listenerFreesBlockedRequest() {
+
+        // Given a mock context (doesn't matter at the WorkGroup level)
+        RequestContext mockContext = mock(RequestContext.class);
+
+        // Given a command with a blocking action
+        CommandRequest request = new CommandRequest(mockContext, Collections.singletonList(
+                new BlockingAction("blocking action")
+        ));
+
+        // And are added to the workgroup
+        workGroup.add(request);
+
+        // And we block the action
+        workGroup.getNextWorkBatch();
+        assertThat(workGroup.getNumberOfInflightRequests()).isEqualTo(1);
+        assertThat(workGroup.getNumberOfWorkableRequests()).isEqualTo(0);
+
+        // When we invoke the listener
+        workGroup.onEvent(new ActionCompleteEvent(request.getActionCommands().get(0).getId()));
+
+        // Then the action is unblocked
+        assertThat(workGroup.getNumberOfInflightRequests()).isEqualTo(0);
+        assertThat(workGroup.getNumberOfWorkableRequests()).isEqualTo(0);
+
+    }
+
+    @Test
+    void requestUnblocksAfterTimeout() {
+
+        // Given a mock context (doesn't matter at the WorkGroup level)
+        RequestContext mockContext = mock(RequestContext.class);
+
+        // Given a command with a blocking action that times out
+        long timeout = 500;
+        Action actionWithTimeout = mock(Action.class);
+        when(actionWithTimeout.requiresCompletion()).thenReturn(true);
+        when(actionWithTimeout.getTimeout()).thenReturn(timeout);
+        CommandRequest request = new CommandRequest(mockContext, Collections.singletonList(
+                actionWithTimeout
+        ));
+
+        // And are added to the workgroup
+        workGroup.add(request);
+
+        // And we block the action
+        workGroup.getNextWorkBatch();
+        assertThat(workGroup.getNumberOfInflightRequests()).isEqualTo(1);
+        assertThat(workGroup.getNumberOfWorkableRequests()).isEqualTo(0);
+
+        // And we wait for timeout to elapse
+        try {
+            Thread.sleep(timeout + 100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        // Then the action is unblocked
+        assertThat(workGroup.getNumberOfInflightRequests()).isEqualTo(0);
+        assertThat(workGroup.getNumberOfWorkableRequests()).isEqualTo(0);
+
+    }
+
+    @RepeatedTest(30)
+    void requestUnblocksImmediatelyIfTimeoutNegative() {
+
+        // Given a mock context (doesn't matter at the WorkGroup level)
+        RequestContext mockContext = mock(RequestContext.class);
+
+        // Given a command with a blocking action that times out
+        long timeout = -1;
+        Action actionWithTimeout = mock(Action.class);
+        when(actionWithTimeout.requiresCompletion()).thenReturn(true);
+        when(actionWithTimeout.getTimeout()).thenReturn(timeout);
+        CommandRequest request = new CommandRequest(mockContext, Collections.singletonList(
+                actionWithTimeout
+        ));
+
+        // And are added to the workgroup
+        workGroup.add(request);
+
+        // And we block the action
+        workGroup.getNextWorkBatch();
+        assertThat(workGroup.getNumberOfInflightRequests()).isEqualTo(1);
+        assertThat(workGroup.getNumberOfWorkableRequests()).isEqualTo(0);
+
+        // And we wait a MUCH smaller amount of time
+        try {
+            Thread.sleep(20);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        // Then the action is unblocked
+        assertThat(workGroup.getNumberOfInflightRequests()).isEqualTo(0);
+        assertThat(workGroup.getNumberOfWorkableRequests()).isEqualTo(0);
 
     }
 
@@ -323,6 +459,11 @@ public class WorkGroupTest {
         @Override
         public boolean requiresCompletion() {
             return false;
+        }
+
+        @Override
+        public long getTimeout() {
+            return 0;
         }
 
         @Override
@@ -349,6 +490,11 @@ public class WorkGroupTest {
         @Override
         public boolean requiresCompletion() {
             return true;
+        }
+
+        @Override
+        public long getTimeout() {
+            return 1000;
         }
 
         @Override
