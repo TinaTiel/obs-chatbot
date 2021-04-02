@@ -1,23 +1,21 @@
 package com.tinatiel.obschatbot.core.request.scheduler;
 
-import com.tinatiel.obschatbot.core.request.ActionRequest;
-
 public class WorkGroupManagerImpl implements WorkGroupManager {
 
+    private final WorkGroup noWork = new NoWorkAvailableWorkGroup();
+    private final WorkGroupRouter router;
 
-
-    @Override
-    public WorkGroup getWorkGroupByActionRequest(ActionRequest actionRequest) {
-        return null;
-    }
-
-    @Override
-    public void addWorkGroup(WorkGroup workGroup) {
-
+    public WorkGroupManagerImpl(WorkGroupRouter router) {
+        this.router = router;
     }
 
     @Override
     public WorkGroup getNext() {
-        return null;
+
+        return router.workGroupsByPriority().stream()
+                .filter(it -> it.getNumberOfWorkableRequests() > 0)
+                .findFirst()
+                .orElse(noWork);
+
     }
 }

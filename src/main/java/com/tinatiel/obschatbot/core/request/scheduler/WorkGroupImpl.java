@@ -71,6 +71,11 @@ public class WorkGroupImpl implements WorkGroup {
         return workableRequests.size() + blockedRequests.size();
     }
 
+    @Override
+    public int getNumberOfWorkableRequests() {
+        return workableRequests.size();
+    }
+
     private static class CommandRequestWrapper {
 
         private final CommandRequest request;

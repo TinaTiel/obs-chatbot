@@ -11,6 +11,15 @@ import java.util.List;
  * complex and route based on provided expressions etc. supplied during runtime.
  */
 public interface WorkGroupRouter {
+
+    /**
+     * Routes a given request to its appropriate {@link WorkGroup} internally, adding it to that group.
+     */
     void route(CommandRequest commandRequest);
+
+    /**
+     * Returns {@link WorkGroup}s in priority order, with the first in the list being highest
+     * priority, and the last in the list being the lowest priority.
+     */
     List<WorkGroup> workGroupsByPriority();
 }

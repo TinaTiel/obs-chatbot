@@ -41,4 +41,10 @@ public interface WorkGroup {
      */
     int getNumberOfInflightRequests();
 
+    /**
+     * Gets the number of requests that can currently be worked (e.g. the number
+     * of in-flight requests, minus the qty blocked/waiting).
+     */
+    int getNumberOfWorkableRequests();
+
 }
