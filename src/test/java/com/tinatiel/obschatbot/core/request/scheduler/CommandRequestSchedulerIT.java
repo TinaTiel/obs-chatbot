@@ -1,6 +1,7 @@
 package com.tinatiel.obschatbot.core.request.scheduler;
 
 import com.tinatiel.obschatbot.core.command.CommandConfig;
+import com.tinatiel.obschatbot.core.messaging.Listener;
 import com.tinatiel.obschatbot.core.messaging.QueueNotifier;
 import com.tinatiel.obschatbot.core.request.ActionRequest;
 import com.tinatiel.obschatbot.core.request.CommandRequest;
@@ -31,6 +32,9 @@ class CommandRequestSchedulerIT {
 
     @Autowired
     BlockingQueue<ActionRequest> actionRequestQueue;
+
+    @MockBean
+    Listener<ActionRequest> twitchChatActionRequestListener;
 
     // mock any QueueNotifier consuming ActionRequests so we can
     // examine the queue afterwards ourselves.

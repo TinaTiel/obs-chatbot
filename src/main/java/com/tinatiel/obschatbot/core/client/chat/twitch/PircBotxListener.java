@@ -19,11 +19,9 @@ public class PircBotxListener extends ListenerAdapter {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     private final QueueClient<ObsChatbotEvent> stateClient;
-    private final QueueClient<ActionRequest> requestClient;
 
-    public PircBotxListener(QueueClient<ObsChatbotEvent> twitchClientEventClient, QueueClient<ActionRequest> twitchClientRequestClient) {
+    public PircBotxListener(QueueClient<ObsChatbotEvent> twitchClientEventClient) {
         this.stateClient = twitchClientEventClient;
-        this.requestClient = twitchClientRequestClient;
     }
 
     /**

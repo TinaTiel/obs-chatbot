@@ -5,12 +5,14 @@
 
 package com.tinatiel.obschatbot.core.client;
 
+import com.tinatiel.obschatbot.core.ClientInstanceWrapper;
+
 /**
  * Generates a new Client instance. Implementations should be injected with a settings store and listener.
  * @param <T> Client instance
  */
-public interface ClientFactory<T> {
+public interface ClientFactory<C,S> {
 
-    T generate();
+    ClientInstanceWrapper<C, S> generate();
 
 }

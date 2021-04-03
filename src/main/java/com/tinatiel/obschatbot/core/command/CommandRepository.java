@@ -9,4 +9,5 @@ import java.util.Optional;
 
 public interface CommandRepository {
     Optional<Command> findByName(String name);
+    Command save(Command command);
 }

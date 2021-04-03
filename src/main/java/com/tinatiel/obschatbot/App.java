@@ -8,8 +8,12 @@ package com.tinatiel.obschatbot;
 import com.tinatiel.obschatbot.core.action.model.SendMessageAction;
 import com.tinatiel.obschatbot.core.client.ClientManager;
 import com.tinatiel.obschatbot.core.client.chat.twitch.TwitchChatClientManager;
+import com.tinatiel.obschatbot.core.command.Command;
+import com.tinatiel.obschatbot.core.command.CommandRepository;
 import com.tinatiel.obschatbot.core.request.ActionRequest;
 import com.tinatiel.obschatbot.core.request.RequestContext;
+import com.tinatiel.obschatbot.core.request.handler.chat.ChatRequestHandler;
+import com.tinatiel.obschatbot.core.sequencer.InOrderActionSequencer;
 import com.tinatiel.obschatbot.core.user.Platform;
 import com.tinatiel.obschatbot.core.user.User;
 import com.tinatiel.obschatbot.core.user.UserType;
@@ -18,6 +22,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 
 @SpringBootApplication
@@ -25,78 +30,39 @@ public class App {
 
     public static void main(String[] args) {
         ApplicationContext context = SpringApplication.run(App.class);
-//        ObsClient client = context.getBean(ObsClient.class);
-//        client.connect();
-//        client.setSourceVisibility("Scene", "someTextSource", false);
-//
-//        ActionServiceFactory factory = context.getBean(ActionServiceFactory.class);
-//
-//        Action action = new ObsSourceVisibilityAction(
-//                new ActionContext("", "", new ArrayList<>()), factory,
-//                "Scene",
-//                "someTextSource",
-//                false
-//        );
-//        action.run();
-
-//        CommandRepository commandRepository = context.getBean(CommandRepository.class);
-//        CommandExpander commandExpander = context.getBean(CommandExpander.class);
-//        User user = new User(Platform.TWITCH, "test");
-//        commandRepository.findByName("foo")
-//                .ifPresent(cmd -> {
-//                    commandExpander.expand(cmd).stream()
-//                            .forEach(action -> {
-//                                action.run();
-//                            });
-//                });
-
-//        System.out.println("You should see this message in the logs");
-//        TwitchChatClient client = context.getBean(TwitchChatClient.class);
-//        try {
-//            Thread.sleep(3000); // wait for connection to establish
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-//        client.sendMessage("FOOOOO");
-
-//        ActionClientFactory actionClientFactory = context.getBean(ActionClientFactory.class);
-
-//        ObsSourceVisibilityAction action = new ObsSourceVisibilityAction(null, "Image", false);
-//        User user = new User(Platform.TWITCH, "mango");
-//        RequestContext requestContext = new RequestContext(user, new ArrayList<>());
-//        ActionCommand actionCommand = new ActionCommand(ObsClient.class, action, requestContext);
-
-//        OBSRemoteController obsRemoteController = new OBSRemoteController("ws://localhost:4444", false);
-//        ObsActionCommandConsumer actionCommandConsumer = new ObsActionCommandConsumer(obsRemoteController);
-//        actionCommandConsumer.consume(actionCommand);
-
-//        ObsClientManager obsClientManager = context.getBean(ObsClientManager.class);
-//        obsClientManager.start();
-//        obsClientManager.consume(actionCommand);
-//        obsClientManager.reload();
-//        obsClientManager.consume(actionCommand);
-//        obsClientManager.stop();
 
         // Get the Twitch Client Manager, and start it
         ClientManager chatClientManager = context.getBean(TwitchChatClientManager.class);
-
         chatClientManager.startClient();
 
         // Wait for it to start
         try {
-            System.out.println("Waiting 5 seconds");
-            Thread.sleep(5000);
+            System.out.println("Waiting for startup");
+            Thread.sleep(6000);
         } catch (InterruptedException interruptedException) {
             interruptedException.printStackTrace();
         }
 
-        // Try an action
+        // Register a command
+        Command command = new Command()
+                .actionSequencer(new InOrderActionSequencer(Arrays.asList(
+                        new SendMessageAction("Test message " + new Date())
+                ), false))
+                .name("test");
+        CommandRepository commandRepository = context.getBean(CommandRepository.class);
+        commandRepository.save(command);
+
         System.out.println("Sending a test message");
-        SendMessageAction action = new SendMessageAction("Test message " + new Date());
         User user = new User(Platform.TWITCH, "mango", UserType.MODERATOR);
-        RequestContext requestContext = new RequestContext(user, new ArrayList<>());
-        ActionRequest actionRequest = new ActionRequest(requestContext, action);
-        chatClientManager.consume(actionRequest);
+        ChatRequestHandler chatRequestHandler = context.getBean(ChatRequestHandler.class);
+        chatRequestHandler.handle(user, "!test");
+
+        try {
+            System.out.println("Waiting for command to execute");
+            Thread.sleep(2000);
+        } catch (InterruptedException interruptedException) {
+            interruptedException.printStackTrace();
+        }
 
         System.out.println("Stopping the client");
         chatClientManager.stopClient();

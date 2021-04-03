@@ -25,6 +25,9 @@ public class QueueNotifierConfig {
     @Autowired
     Listener<CommandRequest> commandRequestScheduler;
 
+    @Autowired
+    Listener<ActionRequest> twitchChatActionRequestListener;
+
     @Bean
     QueueNotifier<CommandRequest> commandRequestQueueNotifier() {
         QueueNotifier<CommandRequest> notifier = new QueueNotifierImpl(commandRequestQueue);
@@ -36,7 +39,7 @@ public class QueueNotifierConfig {
     @Bean
     QueueNotifier<ActionRequest> actionRequestQueueNotifier() {
         QueueNotifier<ActionRequest> notifier = new QueueNotifierImpl(actionRequestQueue);
-        // notifier.addListener(...);
+         notifier.addListener(twitchChatActionRequestListener);
 
         return notifier;
     }

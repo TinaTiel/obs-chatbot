@@ -7,6 +7,8 @@ package com.tinatiel.obschatbot.core.client;
 
 import com.tinatiel.obschatbot.core.client.chat.twitch.PircBotxListener;
 import com.tinatiel.obschatbot.core.client.chat.twitch.TwitchChatClientConfig;
+import com.tinatiel.obschatbot.core.client.chat.twitch.TwitchChatClientFactory;
+import com.tinatiel.obschatbot.core.client.chat.twitch.TwitchChatClientSettings;
 import com.tinatiel.obschatbot.core.client.event.*;
 import com.tinatiel.obschatbot.core.messaging.Listener;
 import com.tinatiel.obschatbot.core.messaging.ObsChatbotEvent;
@@ -48,13 +50,13 @@ public class TwitchChatClientIT {
     TestListener testListener;
 
     @MockBean
-    ClientFactory<PircBotX> clientFactory;
+    ClientFactory<PircBotX, TwitchChatClientSettings> clientFactory;
 
     @Autowired
     PircBotxListener pircBotxListener;
 
     @Autowired
-    ClientManager<ObsChatbotEvent> twitchChatClientManager;
+    ClientManager twitchChatClientManager;
 
     @BeforeEach
     void setUp() {
@@ -66,7 +68,9 @@ public class TwitchChatClientIT {
 
         // Stub the client factory so it returns fake bots
         PircBotX mockClient = mock(PircBotX.class); // stub bot methods, we're not testing the bot
-        when(clientFactory.generate()).thenReturn(mockClient);
+        TwitchChatClientSettings settings = mock(TwitchChatClientSettings.class);
+        when(clientFactory.generate()).thenReturn(
+                new TwitchChatClientFactory.TwitchChatClientInstanceWrapper(mockClient, settings));
 
     }
 

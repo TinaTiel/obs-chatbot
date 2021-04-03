@@ -18,7 +18,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-public class ObsClientManagerImpl implements ClientManager<ObsChatbotEvent> {
+public class ObsClientManagerImpl implements ClientManager {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
     private final ObsSettings settings;

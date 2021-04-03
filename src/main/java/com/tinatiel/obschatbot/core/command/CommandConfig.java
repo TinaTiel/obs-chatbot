@@ -18,12 +18,7 @@ public class CommandConfig {
 
     @Bean
     public CommandRepository commandRepository() {
-        return new CommandRepository() {
-            @Override
-            public Optional<Command> findByName(String name) {
-                return Optional.empty();
-            }
-        };
+        return new CommandRepositoryInMemoryImpl();
     }
 
 }

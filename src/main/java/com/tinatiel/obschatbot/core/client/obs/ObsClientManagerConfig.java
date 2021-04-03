@@ -18,7 +18,7 @@ public class ObsClientManagerConfig {
     }
 
     @Bean
-    public ClientManager<ObsChatbotEvent> obsClientManager() {
+    public ClientManager obsClientManager() {
         return new ObsClientManagerImpl(obsSettings());
     }
 

@@ -10,6 +10,7 @@ import com.tinatiel.obschatbot.core.client.ClientManager;
 import com.tinatiel.obschatbot.core.client.ClientSettingsFactory;
 import com.tinatiel.obschatbot.core.messaging.*;
 import com.tinatiel.obschatbot.core.request.ActionRequest;
+import com.tinatiel.obschatbot.core.request.QueueConfig;
 import org.pircbotx.PircBotX;
 import org.pircbotx.UtilSSLSocketFactory;
 import org.slf4j.Logger;
@@ -56,13 +57,12 @@ public class TwitchChatClientConfig {
     @Bean
     PircBotxListener pircBotxListener() {
         return new PircBotxListener(
-                twitchChatEventQueueClient(),
-                twitchChatRequestQueueClient()
+                twitchChatEventQueueClient()
         );
     }
 
     @Bean
-    ClientFactory<PircBotX> twitchChatClientFactory() {
+    ClientFactory<PircBotX, TwitchChatClientSettings> twitchChatClientFactory() {
         return new TwitchChatClientFactory(
             twitchChatClientSettingsFactory(),
             sslSocketFactory(),
@@ -94,7 +94,6 @@ public class TwitchChatClientConfig {
         return notifier;
     }
 
-    @Bean
     Listener<ObsChatbotEvent> eventLogger() {
         return new Listener<ObsChatbotEvent>() {
 
@@ -107,12 +106,9 @@ public class TwitchChatClientConfig {
         };
     }
 
-    @Autowired
-    BlockingQueue<ActionRequest> actionRequestQueue;
-
     @Bean
-    QueueClient<ActionRequest> twitchChatRequestQueueClient() {
-        return new QueueClientImpl(actionRequestQueue);
+    Listener<ActionRequest> twitchChatActionRequestListener() {
+        return new TwitchChatActionRequestListener(twitchChatClientManager());
     }
 
 }
