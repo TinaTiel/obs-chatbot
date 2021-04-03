@@ -3,8 +3,10 @@
  * GNU General Public License v3.0. See LICENSE or go to https://fsf.org/ for more details.
  */
 
-package com.tinatiel.obschatbot.core.client;
+package com.tinatiel.obschatbot.core.client.twitch;
 
+import com.tinatiel.obschatbot.core.client.ClientFactory;
+import com.tinatiel.obschatbot.core.client.ClientManager;
 import com.tinatiel.obschatbot.core.client.chat.twitch.PircBotxListener;
 import com.tinatiel.obschatbot.core.client.chat.twitch.TwitchChatClientConfig;
 import com.tinatiel.obschatbot.core.client.chat.twitch.TwitchChatClientFactory;
@@ -40,7 +42,7 @@ import static org.mockito.Mockito.when;
  */
 @Import({TwitchChatClientConfig.class, RequestConfig.class}) // todo: reorganize where queues etc are packaged
 @SpringJUnitConfig
-public class TwitchChatClientIT {
+public class TwitchChatClientStateIT {
 
     private final static String TWITCH_AUTH_FAILED_MESSAGE = "Login authentication failed";
 

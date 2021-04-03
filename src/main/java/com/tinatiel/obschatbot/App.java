@@ -54,6 +54,7 @@ public class App {
         CommandRepository commandRepository = context.getBean(CommandRepository.class);
         commandRepository.save(command);
 
+        // Request the command execute (using the chat handler as entrypoint)
         System.out.println("Sending a test message");
         User user = new User(Platform.TWITCH, "mango", UserType.MODERATOR);
         ChatRequestHandler chatRequestHandler = context.getBean(ChatRequestHandler.class);
