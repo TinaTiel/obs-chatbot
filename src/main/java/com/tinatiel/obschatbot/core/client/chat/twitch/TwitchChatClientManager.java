@@ -5,9 +5,9 @@
 
 package com.tinatiel.obschatbot.core.client.chat.twitch;
 
-import com.tinatiel.obschatbot.core.ClientInstanceWrapper;
 import com.tinatiel.obschatbot.core.action.Action;
 import com.tinatiel.obschatbot.core.action.model.SendMessageAction;
+import com.tinatiel.obschatbot.core.client.ClientDelegate;
 import com.tinatiel.obschatbot.core.client.ClientFactory;
 import com.tinatiel.obschatbot.core.client.ClientManager;
 import com.tinatiel.obschatbot.core.client.event.*;
@@ -33,8 +33,7 @@ public class TwitchChatClientManager implements ClientManager {
     private final QueueClient<ObsChatbotEvent> stateClient;
     private final ClientFactory<PircBotX, TwitchChatClientSettings> clientFactory;
 
-    private volatile PircBotX client;
-    private volatile TwitchChatClientSettings settings;
+    private volatile TwitchChatClientDelegate clientDelegate;
     private volatile ObsChatbotEvent lastEvent;
 
     public TwitchChatClientManager(QueueClient<ObsChatbotEvent> stateClient,
@@ -46,21 +45,36 @@ public class TwitchChatClientManager implements ClientManager {
     @Override
     public void startClient() throws ClientException {
 
+        // Acknowledge the request to start the client
         stateClient.submit(new ClientStartRequestedEvent());
 
-        if(client != null) {
+        // Check the clientDelegate hasn't already been generated. If it has, then ignore request.
+        if(clientDelegate != null) {
             stateClient.submit(new ClientRequestIgnoredEvent("Client already starting/started, ignoring"));
             return;
         }
 
+        // Acknowledge request resulted in client starting
         stateClient.submit(new ClientStartingEvent());
-        generateClient();
+
+        // Generate a new client delegate, checking it's the type we want
+        ClientDelegate<PircBotX, TwitchChatClientSettings> generatedDelegate = clientFactory.generate();
+        if(generatedDelegate instanceof TwitchChatClientDelegate) {
+            clientDelegate = (TwitchChatClientDelegate) generatedDelegate;
+        } else {
+            // this should never happen during runtime; this is a developer issue!
+            throw new IllegalStateException("Client factory did not return expected delegate. Was: " + generatedDelegate);
+        }
+
+        // Acknowledge the client will now start connecting
         stateClient.submit(new ClientConnectingEvent());
 
-        // startBot blocks the calling thread, so we're putting it in its own executor thread
+        // Start the client.
+        // Note the underlying client's startBot() method blocks the calling thread,
+        // so we're putting it in its own executor thread!
         executorService.execute(() -> {
             try {
-                client.startBot();
+                clientDelegate.getClient().startBot();
             } catch (IOException | IrcException e) {
                 log.error("Twitch client encountered an unexpected error during start/run", e);
                 stateClient.submit(new ClientErrorEvent(e, "Twitch client encountered an unexpected error during start/run: "
@@ -88,10 +102,7 @@ public class TwitchChatClientManager implements ClientManager {
             try {
                 Action action = actionRequest.getAction();
                 if(action instanceof SendMessageAction) {
-                    client.sendIRC().message(
-                            "#" + settings.getBroadcasterChannel(),
-                            ((SendMessageAction) action).getMessage()
-                    );
+                    clientDelegate.sendMessage(((SendMessageAction) action).getMessage());
                 }
             } catch (Exception unexpected) {
                 stateClient.submit(new ClientErrorEvent(unexpected, "Encountered unexpected exception while consuming " + actionRequest));
@@ -113,25 +124,30 @@ public class TwitchChatClientManager implements ClientManager {
             // When disconnected, we know the client is safely disengaged, so
             // we can clear it out and send a Stopped event
             stateClient.submit(new ClientStoppedEvent());
-            client = null;
+            clientDelegate = null;
         }
     }
 
     private void privateStop(String stopReason) {
 
-        // Stop the client if present, else exit
+        // Acknowledge a stop was requested
         stateClient.submit(new ClientStopRequestedEvent(stopReason));
-        if(client == null) {
+
+        // Stop the client if present, else ignore the request
+        if(clientDelegate == null) {
             stateClient.submit(new ClientRequestIgnoredEvent("Stop ignored: Client wasn't running"));
             return;
         }
 
+        // Acknowledge the request will now result in a stop
         stateClient.submit(new ClientStoppingEvent());
-        client.stopBotReconnect();
+
+        // Stop the client
+        clientDelegate.getClient().stopBotReconnect();
 
         // Try to close the connection
         try {
-            client.close();
+            clientDelegate.getClient().close();
         } catch (Exception e) {
             log.warn("Could not close the connection", e);
         }
@@ -139,12 +155,5 @@ public class TwitchChatClientManager implements ClientManager {
         // Note the rest of the close process will be completed in the listener!
 
     }
-
-    private void generateClient() {
-        ClientInstanceWrapper<PircBotX, TwitchChatClientSettings> wrapper = clientFactory.generate();
-        client = wrapper.getClientInstance();
-        settings = wrapper.getSettings();
-    }
-
 
 }

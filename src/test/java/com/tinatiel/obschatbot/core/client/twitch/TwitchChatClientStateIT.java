@@ -7,10 +7,7 @@ package com.tinatiel.obschatbot.core.client.twitch;
 
 import com.tinatiel.obschatbot.core.client.ClientFactory;
 import com.tinatiel.obschatbot.core.client.ClientManager;
-import com.tinatiel.obschatbot.core.client.chat.twitch.PircBotxListener;
-import com.tinatiel.obschatbot.core.client.chat.twitch.TwitchChatClientConfig;
-import com.tinatiel.obschatbot.core.client.chat.twitch.TwitchChatClientFactory;
-import com.tinatiel.obschatbot.core.client.chat.twitch.TwitchChatClientSettings;
+import com.tinatiel.obschatbot.core.client.chat.twitch.*;
 import com.tinatiel.obschatbot.core.client.event.*;
 import com.tinatiel.obschatbot.core.messaging.Listener;
 import com.tinatiel.obschatbot.core.messaging.ObsChatbotEvent;
@@ -72,7 +69,7 @@ public class TwitchChatClientStateIT {
         PircBotX mockClient = mock(PircBotX.class); // stub bot methods, we're not testing the bot
         TwitchChatClientSettings settings = mock(TwitchChatClientSettings.class);
         when(clientFactory.generate()).thenReturn(
-                new TwitchChatClientFactory.TwitchChatClientInstanceWrapper(mockClient, settings));
+                new TwitchChatClientDelegate(mockClient, settings));
 
     }
 

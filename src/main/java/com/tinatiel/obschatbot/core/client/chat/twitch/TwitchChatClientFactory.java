@@ -27,7 +27,7 @@ public class TwitchChatClientFactory implements ClientFactory<PircBotX, TwitchCh
     }
 
     @Override
-    public TwitchChatClientInstanceWrapper generate() {
+    public TwitchChatClientDelegate generate() {
 
         // Get a fresh set of settings
         TwitchChatClientSettings settings = clientSettingsFactory.getSettings();
@@ -46,29 +46,7 @@ public class TwitchChatClientFactory implements ClientFactory<PircBotX, TwitchCh
                 .buildConfiguration()
         );
 
-        return new TwitchChatClientInstanceWrapper(bot, settings);
-    }
-
-    public static class TwitchChatClientInstanceWrapper
-            implements ClientInstanceWrapper<PircBotX, TwitchChatClientSettings> {
-
-        private final PircBotX client;
-        private final TwitchChatClientSettings settings;
-
-        public TwitchChatClientInstanceWrapper(PircBotX client, TwitchChatClientSettings settings) {
-            this.client = client;
-            this.settings = settings;
-        }
-
-        @Override
-        public PircBotX getClientInstance() {
-            return client;
-        }
-
-        @Override
-        public TwitchChatClientSettings getSettings() {
-            return settings;
-        }
+        return new TwitchChatClientDelegate(bot, settings);
     }
 
 }

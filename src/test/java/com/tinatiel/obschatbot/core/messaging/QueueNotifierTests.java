@@ -1,6 +1,7 @@
 package com.tinatiel.obschatbot.core.messaging;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 
@@ -157,7 +158,6 @@ public class QueueNotifierTests {
         // And then add items to the queue
         queue.add(item2);
         queue.add(item3);
-        assertThat(queue).hasSize(2);
 
         // And we wait
         waitReasonably();
