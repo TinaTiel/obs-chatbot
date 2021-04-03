@@ -1,4 +1,4 @@
-package com.tinatiel.obschatbot.core.client.chat.twitch;
+package com.tinatiel.obschatbot.core.client.twitch.chat;
 
 import com.tinatiel.obschatbot.core.client.ClientDelegate;
 import org.pircbotx.PircBotX;

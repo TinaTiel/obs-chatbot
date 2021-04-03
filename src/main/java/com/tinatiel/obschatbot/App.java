@@ -7,11 +7,9 @@ package com.tinatiel.obschatbot;
 
 import com.tinatiel.obschatbot.core.action.model.SendMessageAction;
 import com.tinatiel.obschatbot.core.client.ClientManager;
-import com.tinatiel.obschatbot.core.client.chat.twitch.TwitchChatClientManager;
+import com.tinatiel.obschatbot.core.client.twitch.chat.TwitchChatClientManager;
 import com.tinatiel.obschatbot.core.command.Command;
 import com.tinatiel.obschatbot.core.command.CommandRepository;
-import com.tinatiel.obschatbot.core.request.ActionRequest;
-import com.tinatiel.obschatbot.core.request.RequestContext;
 import com.tinatiel.obschatbot.core.request.handler.chat.ChatRequestHandler;
 import com.tinatiel.obschatbot.core.sequencer.InOrderActionSequencer;
 import com.tinatiel.obschatbot.core.user.Platform;
@@ -21,9 +19,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
 
 @SpringBootApplication
 public class App {
@@ -56,7 +54,7 @@ public class App {
 
         // Request the command execute (using the chat handler as entrypoint)
         System.out.println("Sending a test message");
-        User user = new User(Platform.TWITCH, "mango", UserType.MODERATOR);
+        User user = new User(Platform.TWITCH, "mango", UserType.MODERATOR, new HashSet<>());
         ChatRequestHandler chatRequestHandler = context.getBean(ChatRequestHandler.class);
         chatRequestHandler.handle(user, "!test");
 

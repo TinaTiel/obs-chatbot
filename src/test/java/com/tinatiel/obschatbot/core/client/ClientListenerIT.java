@@ -1,10 +1,7 @@
 package com.tinatiel.obschatbot.core.client;
 
 import com.tinatiel.obschatbot.core.action.model.SendMessageAction;
-import com.tinatiel.obschatbot.core.client.chat.twitch.TwitchChatClientManager;
-import com.tinatiel.obschatbot.core.client.obs.ObsClientManager;
 import com.tinatiel.obschatbot.core.request.ActionRequest;
-import com.tinatiel.obschatbot.core.request.QueueConfig;
 import com.tinatiel.obschatbot.core.request.QueueNotifierConfig;
 import com.tinatiel.obschatbot.core.request.RequestContext;
 import org.junit.jupiter.api.Disabled;

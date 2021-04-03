@@ -3,7 +3,7 @@ package com.tinatiel.obschatbot.core.client.twitch;
 import com.tinatiel.obschatbot.core.action.Action;
 import com.tinatiel.obschatbot.core.action.model.SendMessageAction;
 import com.tinatiel.obschatbot.core.client.ClientManager;
-import com.tinatiel.obschatbot.core.client.chat.twitch.TwitchChatActionRequestListener;
+import com.tinatiel.obschatbot.core.client.twitch.chat.TwitchChatActionRequestListener;
 import com.tinatiel.obschatbot.core.request.ActionRequest;
 import com.tinatiel.obschatbot.core.request.RequestContext;
 import org.junit.jupiter.api.BeforeEach;

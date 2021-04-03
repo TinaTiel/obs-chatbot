@@ -9,6 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -46,7 +47,7 @@ public class BroadcasterModeratorElseWorkGroupRouterTest {
         assertThat(otherWg.getNumberOfInflightRequests()).isZero();
 
         // Given broadcaster requests
-        User broadcaster = new User(Platform.TWITCH, "tinatiel", UserType.BROADCASTER);
+        User broadcaster = new User(Platform.TWITCH, "tinatiel", UserType.BROADCASTER, new HashSet<>());
         CommandRequest request1 = new CommandRequest(new RequestContext(broadcaster, new ArrayList<>()), new ArrayList<>());
         CommandRequest request2 = new CommandRequest(new RequestContext(broadcaster, new ArrayList<>()), new ArrayList<>());
         CommandRequest request3 = new CommandRequest(new RequestContext(broadcaster, new ArrayList<>()), new ArrayList<>());
@@ -72,7 +73,7 @@ public class BroadcasterModeratorElseWorkGroupRouterTest {
         assertThat(otherWg.getNumberOfInflightRequests()).isZero();
 
         // Given moderator requests
-        User moderator = new User(Platform.TWITCH, "mango", UserType.MODERATOR);
+        User moderator = new User(Platform.TWITCH, "mango", UserType.MODERATOR, new HashSet<>());
         CommandRequest request1 = new CommandRequest(new RequestContext(moderator, new ArrayList<>()), new ArrayList<>());
         CommandRequest request2 = new CommandRequest(new RequestContext(moderator, new ArrayList<>()), new ArrayList<>());
         CommandRequest request3 = new CommandRequest(new RequestContext(moderator, new ArrayList<>()), new ArrayList<>());
@@ -99,11 +100,11 @@ public class BroadcasterModeratorElseWorkGroupRouterTest {
 
         // Given moderator requests
         CommandRequest request1 = new CommandRequest(new RequestContext(
-                new User(Platform.TWITCH, "rando55", UserType.GUEST), new ArrayList<>()), new ArrayList<>());
+                new User(Platform.TWITCH, "rando55", UserType.GUEST, new HashSet<>()), new ArrayList<>()), new ArrayList<>());
         CommandRequest request2 = new CommandRequest(new RequestContext(
-                new User(Platform.TWITCH, "curious77", UserType.FOLLOWER), new ArrayList<>()), new ArrayList<>());
+                new User(Platform.TWITCH, "curious77", UserType.FOLLOWER, new HashSet<>()), new ArrayList<>()), new ArrayList<>());
         CommandRequest request3 = new CommandRequest(new RequestContext(
-                new User(Platform.TWITCH, "avidfan68", UserType.PATREON), new ArrayList<>()), new ArrayList<>());
+                new User(Platform.TWITCH, "avidfan68", UserType.PATREON, new HashSet<>()), new ArrayList<>()), new ArrayList<>());
 
         // When routed
         router.route(request1);

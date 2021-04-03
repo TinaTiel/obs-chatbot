@@ -22,6 +22,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -37,7 +38,7 @@ public class LiveObsTest {
 
         // Given an actionCommand
         ObsSourceVisibilityAction action = new ObsSourceVisibilityAction(null, "Image", false);
-        User user = new User(Platform.TWITCH, "mango", UserType.MODERATOR);
+        User user = new User(Platform.TWITCH, "mango", UserType.MODERATOR, new HashSet<>());
         RequestContext requestContext = new RequestContext(user, new ArrayList<>());
         ActionRequest actionRequest = new ActionRequest(requestContext, action);
 

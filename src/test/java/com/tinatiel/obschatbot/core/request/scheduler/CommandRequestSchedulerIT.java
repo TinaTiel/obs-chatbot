@@ -18,6 +18,7 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 
@@ -45,9 +46,9 @@ class CommandRequestSchedulerIT {
     void whenRequestsAreSubmittedThenTheyEndUpInTheActionRequestQueue() {
 
         // Given some contexts
-        RequestContext broadcasterContext = new RequestContext(new User(Platform.TWITCH, "tinatiel", UserType.BROADCASTER), new ArrayList<>());
-        RequestContext moderatorContext = new RequestContext(new User(Platform.TWITCH, "mango", UserType.MODERATOR), new ArrayList<>());
-        RequestContext otherContext = new RequestContext(new User(Platform.TWITCH, "other", UserType.FOLLOWER), new ArrayList<>());
+        RequestContext broadcasterContext = new RequestContext(new User(Platform.TWITCH, "tinatiel", UserType.BROADCASTER, new HashSet<>()), new ArrayList<>());
+        RequestContext moderatorContext = new RequestContext(new User(Platform.TWITCH, "mango", UserType.MODERATOR, new HashSet<>()), new ArrayList<>());
+        RequestContext otherContext = new RequestContext(new User(Platform.TWITCH, "other", UserType.FOLLOWER, new HashSet<>()), new ArrayList<>());
 
         // Given some requests
         List<CommandRequest> requests = Arrays.asList(

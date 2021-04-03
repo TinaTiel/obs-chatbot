@@ -2,12 +2,10 @@ package com.tinatiel.obschatbot.core.client.twitch;
 
 import com.tinatiel.obschatbot.core.action.Action;
 import com.tinatiel.obschatbot.core.action.model.SendMessageAction;
-import com.tinatiel.obschatbot.core.client.ClientDelegate;
 import com.tinatiel.obschatbot.core.client.ClientFactory;
-import com.tinatiel.obschatbot.core.client.chat.twitch.TwitchChatClientDelegate;
-import com.tinatiel.obschatbot.core.client.chat.twitch.TwitchChatClientFactory;
-import com.tinatiel.obschatbot.core.client.chat.twitch.TwitchChatClientManager;
-import com.tinatiel.obschatbot.core.client.chat.twitch.TwitchChatClientSettings;
+import com.tinatiel.obschatbot.core.client.twitch.chat.TwitchChatClientDelegate;
+import com.tinatiel.obschatbot.core.client.twitch.chat.TwitchChatClientManager;
+import com.tinatiel.obschatbot.core.client.twitch.chat.TwitchChatClientSettings;
 import com.tinatiel.obschatbot.core.client.event.ClientReadyEvent;
 import com.tinatiel.obschatbot.core.messaging.ObsChatbotEvent;
 import com.tinatiel.obschatbot.core.messaging.QueueClient;

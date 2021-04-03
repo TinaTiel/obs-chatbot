@@ -5,30 +5,36 @@
 
 package com.tinatiel.obschatbot.core.user;
 
-import java.util.Objects;
+import com.tinatiel.obschatbot.core.user.local.UserGroup;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
+
+@Getter
 public class User {
 
     private final Platform platform;
     private final String username;
     private final UserType userType;
+    private final Set<UserGroup> groups = new HashSet<>();
 
-    public User(Platform platform, String username, UserType userType) {
+    /**
+     * Construct an user, defaulting to a GUEST type.
+     */
+    public User(Platform platform, String username) {
+        this.platform = platform;
+        this.username = username;
+        this.userType = UserType.GUEST;
+    }
+
+    public User(Platform platform, String username, UserType userType, Set<UserGroup> groups) {
         this.platform = platform;
         this.username = username;
         this.userType = userType;
-    }
-
-    public Platform getPlatform() {
-        return platform;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public UserType getUserType() {
-        return userType;
+        this.groups.addAll(groups);
     }
 
     @Override
@@ -44,12 +50,4 @@ public class User {
         return Objects.hash(platform, username);
     }
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "platform=" + platform +
-                ", username='" + username + '\'' +
-                ", userType=" + userType +
-                '}';
-    }
 }

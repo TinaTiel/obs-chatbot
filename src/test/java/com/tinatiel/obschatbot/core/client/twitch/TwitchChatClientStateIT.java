@@ -7,8 +7,11 @@ package com.tinatiel.obschatbot.core.client.twitch;
 
 import com.tinatiel.obschatbot.core.client.ClientFactory;
 import com.tinatiel.obschatbot.core.client.ClientManager;
-import com.tinatiel.obschatbot.core.client.chat.twitch.*;
 import com.tinatiel.obschatbot.core.client.event.*;
+import com.tinatiel.obschatbot.core.client.twitch.chat.PircBotxListener;
+import com.tinatiel.obschatbot.core.client.twitch.chat.TwitchChatClientConfig;
+import com.tinatiel.obschatbot.core.client.twitch.chat.TwitchChatClientDelegate;
+import com.tinatiel.obschatbot.core.client.twitch.chat.TwitchChatClientSettings;
 import com.tinatiel.obschatbot.core.messaging.Listener;
 import com.tinatiel.obschatbot.core.messaging.ObsChatbotEvent;
 import com.tinatiel.obschatbot.core.messaging.QueueNotifier;

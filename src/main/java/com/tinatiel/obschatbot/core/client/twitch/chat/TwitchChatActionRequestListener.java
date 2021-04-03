@@ -1,4 +1,4 @@
-package com.tinatiel.obschatbot.core.client.chat.twitch;
+package com.tinatiel.obschatbot.core.client.twitch.chat;
 
 import com.tinatiel.obschatbot.core.action.Action;
 import com.tinatiel.obschatbot.core.action.model.SendMessageAction;
