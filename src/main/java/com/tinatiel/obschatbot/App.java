@@ -46,7 +46,9 @@ public class App {
         // Register a command
         Command command = new Command()
                 .actionSequencer(new InOrderActionSequencer(Arrays.asList(
-                        new SendMessageAction("Test message " + new Date())
+                        new SendMessageAction("Test message #1, sent " + new Date()),
+                        new SendMessageAction("Test message #2, sent " + new Date()),
+                        new SendMessageAction("Test message #3, sent " + new Date()) // this may not execute due to short wait before stopping client
                 ), false))
                 .name("test");
         CommandRepository commandRepository = context.getBean(CommandRepository.class);

@@ -85,12 +85,16 @@ public class TwitchChatClientManager implements ClientManager {
     @Override
     public void consume(ActionRequest actionRequest) {
         if(lastEvent instanceof ClientReadyEvent) {
-            Action action = actionRequest.getAction();
-            if(action instanceof SendMessageAction) {
-                client.sendIRC().message(
-                        "#" + settings.getBroadcasterChannel(),
-                        ((SendMessageAction) action).getMessage()
-                );
+            try {
+                Action action = actionRequest.getAction();
+                if(action instanceof SendMessageAction) {
+                    client.sendIRC().message(
+                            "#" + settings.getBroadcasterChannel(),
+                            ((SendMessageAction) action).getMessage()
+                    );
+                }
+            } catch (Exception unexpected) {
+                stateClient.submit(new ClientErrorEvent(unexpected, "Encountered unexpected exception while consuming " + actionRequest));
             }
         } else {
             stateClient.submit(new ClientRequestIgnoredEvent("Ignoring request "

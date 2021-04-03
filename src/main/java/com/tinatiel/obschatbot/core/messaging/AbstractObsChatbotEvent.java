@@ -51,6 +51,6 @@ public abstract class AbstractObsChatbotEvent implements ObsChatbotEvent {
     @Override
     public String toString() {
         return  "timestamp=" + timestamp +
-                ", id=" + id;
+                ", id=" + id + ", ";
     }
 }
