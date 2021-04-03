@@ -6,7 +6,6 @@
 package com.tinatiel.obschatbot.core.command;
 
 import com.tinatiel.obschatbot.core.action.Action;
-import com.tinatiel.obschatbot.core.action.Action;
 import com.tinatiel.obschatbot.core.sequencer.ActionSequencer;
 import org.junit.jupiter.api.Test;
 
@@ -14,7 +13,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 

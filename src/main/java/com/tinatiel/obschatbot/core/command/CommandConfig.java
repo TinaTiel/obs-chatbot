@@ -5,11 +5,14 @@
 
 package com.tinatiel.obschatbot.core.command;
 
+import com.tinatiel.obschatbot.core.request.factory.expand.CommandExpanderConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 
 import java.util.Optional;
 
+@Import(CommandExpanderConfig.class)
 @Configuration
 public class CommandConfig {
 
@@ -22,4 +25,5 @@ public class CommandConfig {
             }
         };
     }
+
 }

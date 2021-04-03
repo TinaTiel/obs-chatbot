@@ -6,12 +6,7 @@
 package com.tinatiel.obschatbot.core.request;
 
 import com.tinatiel.obschatbot.core.action.Action;
-import com.tinatiel.obschatbot.core.client.ActionClient;
 import com.tinatiel.obschatbot.core.messaging.AbstractObsChatbotEvent;
-import com.tinatiel.obschatbot.core.request.RequestContext;
-
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Future;
 
 public class ActionRequest extends AbstractObsChatbotEvent {
     private final Action action;

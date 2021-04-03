@@ -3,14 +3,14 @@
  * GNU General Public License v3.0. See LICENSE or go to https://fsf.org/ for more details.
  */
 
-package com.tinatiel.obschatbot.core.request.expand;
+package com.tinatiel.obschatbot.core.request.factory.expand;
 
 import com.tinatiel.obschatbot.core.action.Action;
 import com.tinatiel.obschatbot.core.action.model.ExecuteCommandAction;
-import com.tinatiel.obschatbot.core.request.RequestContext;
-import com.tinatiel.obschatbot.core.sequencer.ActionSequencer;
 import com.tinatiel.obschatbot.core.command.Command;
 import com.tinatiel.obschatbot.core.error.CyclicalActionsException;
+import com.tinatiel.obschatbot.core.request.RequestContext;
+import com.tinatiel.obschatbot.core.sequencer.ActionSequencer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

@@ -7,8 +7,8 @@ package com.tinatiel.obschatbot.core.request.handler.chat;
 
 import com.tinatiel.obschatbot.core.command.Command;
 import com.tinatiel.obschatbot.core.command.CommandRepository;
-import com.tinatiel.obschatbot.core.request.handler.CommandRequestDispatcher;
 import com.tinatiel.obschatbot.core.request.RequestContext;
+import com.tinatiel.obschatbot.core.request.handler.CommandRequestDispatcher;
 import com.tinatiel.obschatbot.core.user.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

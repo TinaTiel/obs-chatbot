@@ -10,8 +10,6 @@ import com.tinatiel.obschatbot.core.messaging.QueueClient;
 import com.tinatiel.obschatbot.core.request.CommandRequest;
 import com.tinatiel.obschatbot.core.request.RequestContext;
 import com.tinatiel.obschatbot.core.request.factory.RequestFactory;
-import com.tinatiel.obschatbot.core.request.handler.CommandRequestDispatcher;
-import com.tinatiel.obschatbot.core.request.handler.CommandRequestDispatcherImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

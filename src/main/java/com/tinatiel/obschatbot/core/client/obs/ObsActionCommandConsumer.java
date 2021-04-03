@@ -5,9 +5,8 @@
 
 package com.tinatiel.obschatbot.core.client.obs;
 
-import com.tinatiel.obschatbot.core.action.model.ObsSourceVisibilityAction;
-import com.tinatiel.obschatbot.core.request.ActionRequest;
 import com.tinatiel.obschatbot.core.client.ActionCommandConsumer;
+import com.tinatiel.obschatbot.core.request.ActionRequest;
 import net.twasi.obsremotejava.OBSRemoteController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

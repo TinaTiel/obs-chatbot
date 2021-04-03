@@ -5,9 +5,6 @@
 
 package com.tinatiel.obschatbot.core.request.handler.chat;
 
-import com.tinatiel.obschatbot.core.request.handler.chat.ChatMessageParseResult;
-import com.tinatiel.obschatbot.core.request.handler.chat.ChatMessageParser;
-import com.tinatiel.obschatbot.core.request.handler.chat.ChatMessageParserImpl;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;

@@ -1,10 +1,10 @@
 package com.tinatiel.obschatbot.core.request.scheduler;
 
-import com.tinatiel.obschatbot.core.messaging.QueueClient;
-import com.tinatiel.obschatbot.core.messaging.QueueClientImpl;
-import com.tinatiel.obschatbot.core.messaging.QueueNotifier;
-import com.tinatiel.obschatbot.core.messaging.QueueNotifierImpl;
+import com.tinatiel.obschatbot.core.messaging.*;
 import com.tinatiel.obschatbot.core.request.ActionCompleteEvent;
+import com.tinatiel.obschatbot.core.request.ActionRequest;
+import com.tinatiel.obschatbot.core.request.CommandRequest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -12,7 +12,10 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 @Configuration
-public class SchedulerConfig {
+public class RequestSchedulerConfig {
+
+    @Autowired
+    QueueClient<ActionRequest> actionRequestQueueClient;
 
     @Bean
     WorkGroup broadcasterWorkGroup() {
@@ -60,5 +63,9 @@ public class SchedulerConfig {
         return new WorkGroupManagerImpl(workGroupRouter());
     }
 
+    @Bean
+    Listener<CommandRequest> commandRequestScheduler() {
+        return new CommandRequestScheduler(workGroupManager(), actionRequestQueueClient);
+    }
 
 }

@@ -11,7 +11,7 @@ import com.tinatiel.obschatbot.core.client.event.*;
 import com.tinatiel.obschatbot.core.messaging.Listener;
 import com.tinatiel.obschatbot.core.messaging.ObsChatbotEvent;
 import com.tinatiel.obschatbot.core.messaging.QueueNotifier;
-import com.tinatiel.obschatbot.core.remove.queue.QueueConfig;
+import com.tinatiel.obschatbot.core.request.RequestConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -36,7 +36,7 @@ import static org.mockito.Mockito.when;
  * There needs to be a separate continuous test that verifies this with a real bot for the case that Twitch
  * changes how login to their IRC servers changes.
  */
-@Import({TwitchChatClientConfig.class, QueueConfig.class}) // todo: reorganize where queues etc are packaged
+@Import({TwitchChatClientConfig.class, RequestConfig.class}) // todo: reorganize where queues etc are packaged
 @SpringJUnitConfig
 public class TwitchChatClientIT {
 

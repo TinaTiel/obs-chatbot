@@ -9,13 +9,9 @@ import com.tinatiel.obschatbot.core.command.Command;
 import com.tinatiel.obschatbot.core.error.CyclicalActionsException;
 import com.tinatiel.obschatbot.core.request.CommandRequest;
 import com.tinatiel.obschatbot.core.request.RequestContext;
-import com.tinatiel.obschatbot.core.request.expand.CommandExpander;
-import com.tinatiel.obschatbot.core.request.ActionRequest;
+import com.tinatiel.obschatbot.core.request.factory.expand.CommandExpander;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class RequestFactoryImpl implements RequestFactory {
     private final Logger log = LoggerFactory.getLogger(this.getClass());

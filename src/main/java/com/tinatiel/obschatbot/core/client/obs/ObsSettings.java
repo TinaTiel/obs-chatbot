@@ -5,8 +5,6 @@
 
 package com.tinatiel.obschatbot.core.client.obs;
 
-import java.time.Duration;
-
 public class ObsSettings {
 
     private String host;

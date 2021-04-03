@@ -6,9 +6,7 @@
 package com.tinatiel.obschatbot.core.action.model;
 
 import com.tinatiel.obschatbot.core.action.Action;
-import com.tinatiel.obschatbot.core.client.NoOpClient;
 import com.tinatiel.obschatbot.core.command.Command;
-import com.tinatiel.obschatbot.core.request.RequestContext;
 
 public class ExecuteCommandAction implements Action<ExecuteCommandAction> {
 

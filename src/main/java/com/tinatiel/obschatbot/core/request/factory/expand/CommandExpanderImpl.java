@@ -3,7 +3,7 @@
  * GNU General Public License v3.0. See LICENSE or go to https://fsf.org/ for more details.
  */
 
-package com.tinatiel.obschatbot.core.request.expand;
+package com.tinatiel.obschatbot.core.request.factory.expand;
 
 import com.tinatiel.obschatbot.core.action.Action;
 import com.tinatiel.obschatbot.core.action.model.ExecuteCommandAction;
@@ -12,7 +12,8 @@ import com.tinatiel.obschatbot.core.error.CyclicalActionsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.*;
 import java.util.stream.Collectors;
 

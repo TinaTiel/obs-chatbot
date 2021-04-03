@@ -6,7 +6,6 @@
 package com.tinatiel.obschatbot.core.action.model;
 
 import com.tinatiel.obschatbot.core.action.Action;
-import com.tinatiel.obschatbot.core.client.chat.twitch.TwitchChatClient;
 
 public class SendMessageAction implements Action<SendMessageAction> {
 

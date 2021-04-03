@@ -19,11 +19,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
-import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@ContextConfiguration(classes = {RequestConfig.class, CommandConfig.class})
+@ContextConfiguration(classes = {RequestConfig.class})
 @SpringJUnitConfig
 class CommandRequestSchedulerIT {
 
