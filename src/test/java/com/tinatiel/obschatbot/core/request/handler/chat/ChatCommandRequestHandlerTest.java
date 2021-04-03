@@ -9,6 +9,7 @@ import com.tinatiel.obschatbot.core.command.Command;
 import com.tinatiel.obschatbot.core.command.CommandRepository;
 import com.tinatiel.obschatbot.core.request.handler.CommandRequestDispatcher;
 import com.tinatiel.obschatbot.core.user.User;
+import com.tinatiel.obschatbot.core.user.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -24,6 +25,7 @@ public class ChatCommandRequestHandlerTest {
 
     ChatMessageParser parser;
     CommandRepository commandRepository;
+    UserService userService;
     CommandRequestDispatcher dispatcher;
 
     ChatRequestHandler handler;
@@ -34,9 +36,10 @@ public class ChatCommandRequestHandlerTest {
 
         parser = mock(ChatMessageParser.class);
         commandRepository = mock(CommandRepository.class);
+        userService = mock(UserService.class);
         dispatcher = mock(CommandRequestDispatcher.class);
 
-        handler = new ChatRequestHandlerImpl(parser, commandRepository, dispatcher);
+        handler = new ChatRequestHandlerImpl(parser, commandRepository, userService, dispatcher);
 
     }
 
@@ -86,6 +89,9 @@ public class ChatCommandRequestHandlerTest {
         // And a command is found
         Command command = mock(Command.class);
         when(commandRepository.findByName(any())).thenReturn(Optional.of(command));
+
+        // And the full user is retrieved
+        when(userService.findUserFromPartial(any())).thenReturn(user);
 
         // When handled
         handler.handle(user, "doesn't matter");
