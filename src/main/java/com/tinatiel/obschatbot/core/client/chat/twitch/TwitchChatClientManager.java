@@ -5,12 +5,13 @@
 
 package com.tinatiel.obschatbot.core.client.chat.twitch;
 
-import com.tinatiel.obschatbot.core.client.*;
+import com.tinatiel.obschatbot.core.client.ClientFactory;
+import com.tinatiel.obschatbot.core.client.ClientManager;
 import com.tinatiel.obschatbot.core.client.event.*;
 import com.tinatiel.obschatbot.core.error.ClientException;
 import com.tinatiel.obschatbot.core.messaging.ObsChatbotEvent;
 import com.tinatiel.obschatbot.core.messaging.QueueClient;
-import com.tinatiel.obschatbot.core.request.queue.ActionCommand;
+import com.tinatiel.obschatbot.core.request.ActionRequest;
 import org.pircbotx.PircBotX;
 import org.pircbotx.exception.IrcException;
 import org.slf4j.Logger;
@@ -19,7 +20,6 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.locks.ReentrantLock;
 
 public class TwitchChatClientManager implements ClientManager<ObsChatbotEvent> {
 
@@ -100,7 +100,7 @@ public class TwitchChatClientManager implements ClientManager<ObsChatbotEvent> {
     }
 
     @Override
-    public void consume(ActionCommand actionCommand) {
+    public void consume(ActionRequest actionRequest) {
 
     }
 

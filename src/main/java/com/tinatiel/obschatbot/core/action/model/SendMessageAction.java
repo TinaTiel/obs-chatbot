@@ -6,9 +6,8 @@
 package com.tinatiel.obschatbot.core.action.model;
 
 import com.tinatiel.obschatbot.core.action.Action;
-import com.tinatiel.obschatbot.core.client.chat.twitch.TwitchChatClient;
 
-public class SendMessageAction implements Action<TwitchChatClient, SendMessageAction> {
+public class SendMessageAction implements Action<SendMessageAction> {
 
     private final String message;
 
@@ -22,13 +21,18 @@ public class SendMessageAction implements Action<TwitchChatClient, SendMessageAc
     }
 
     @Override
-    public Class<TwitchChatClient> acceptsClientType() {
-        return TwitchChatClient.class;
+    public SendMessageAction clone() {
+        return new SendMessageAction(message);
     }
 
     @Override
-    public SendMessageAction clone() {
-        return new SendMessageAction(message);
+    public boolean requiresCompletion() {
+        return false;
+    }
+
+    @Override
+    public long getTimeout() {
+        return 0;
     }
 
     @Override

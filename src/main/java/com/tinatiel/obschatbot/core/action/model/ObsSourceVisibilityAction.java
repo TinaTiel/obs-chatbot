@@ -6,9 +6,8 @@
 package com.tinatiel.obschatbot.core.action.model;
 
 import com.tinatiel.obschatbot.core.action.Action;
-import com.tinatiel.obschatbot.core.client.obs.ObsClient;
 
-public class ObsSourceVisibilityAction implements Action<ObsClient, ObsSourceVisibilityAction> {
+public class ObsSourceVisibilityAction implements Action<ObsSourceVisibilityAction> {
 
     private final String sceneName;
     private final String sourceName;
@@ -22,13 +21,18 @@ public class ObsSourceVisibilityAction implements Action<ObsClient, ObsSourceVis
     }
 
     @Override
-    public Class<ObsClient> acceptsClientType() {
-        return ObsClient.class;
+    public ObsSourceVisibilityAction clone() {
+        return new ObsSourceVisibilityAction(sceneName, sourceName, visible);
     }
 
     @Override
-    public ObsSourceVisibilityAction clone() {
-        return new ObsSourceVisibilityAction(sceneName, sourceName, visible);
+    public boolean requiresCompletion() {
+        return false;
+    }
+
+    @Override
+    public long getTimeout() {
+        return 0;
     }
 
     public String getSceneName() {

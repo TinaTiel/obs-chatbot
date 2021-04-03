@@ -15,8 +15,8 @@ public class UserTest {
     void sameUsernameDifferentPlatformAreDifferentUsers() {
 
         // given two users, from different platforms
-        User twitchUser = new User(Platform.TWITCH, "mango");
-        User localUser = new User(Platform.LOCAL, "mango");
+        User twitchUser = new User(Platform.TWITCH, "mango", UserType.MODERATOR);
+        User localUser = new User(Platform.LOCAL, "mango", UserType.MODERATOR);
 
         // then they aren't the same user
         assertThat(twitchUser).isNotEqualTo(localUser);
@@ -27,8 +27,8 @@ public class UserTest {
     void differentUsernameSamePlatformAreDifferentUsers() {
 
         // given two users from same platform, but different names
-        User mango = new User(Platform.TWITCH, "mango");
-        User tina = new User(Platform.TWITCH, "tina");
+        User mango = new User(Platform.TWITCH, "mango", UserType.MODERATOR);
+        User tina = new User(Platform.TWITCH, "tina", UserType.BROADCASTER);
 
         // then they aren't the same user
         assertThat(tina).isNotEqualTo(mango);
@@ -39,8 +39,8 @@ public class UserTest {
     void samePlatformAndSameUsernameIsSameUser() {
 
         // Given copy of users on same platform
-        User mango = new User(Platform.TWITCH, "mango");
-        User mangoCopy = new User(Platform.TWITCH, "mango");
+        User mango = new User(Platform.TWITCH, "mango", UserType.MODERATOR);
+        User mangoCopy = new User(Platform.TWITCH, "mango", UserType.MODERATOR);
 
         // Then they are the same user
         assertThat(mango).isEqualTo(mangoCopy);

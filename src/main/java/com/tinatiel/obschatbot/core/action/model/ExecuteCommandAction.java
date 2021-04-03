@@ -6,11 +6,9 @@
 package com.tinatiel.obschatbot.core.action.model;
 
 import com.tinatiel.obschatbot.core.action.Action;
-import com.tinatiel.obschatbot.core.client.NoOpClient;
 import com.tinatiel.obschatbot.core.command.Command;
-import com.tinatiel.obschatbot.core.request.RequestContext;
 
-public class ExecuteCommandAction implements Action<NoOpClient, ExecuteCommandAction> {
+public class ExecuteCommandAction implements Action<ExecuteCommandAction> {
 
     private final Command target;
 
@@ -20,13 +18,18 @@ public class ExecuteCommandAction implements Action<NoOpClient, ExecuteCommandAc
     }
 
     @Override
-    public Class<NoOpClient> acceptsClientType() {
-        return NoOpClient.class;
+    public ExecuteCommandAction clone() {
+        return new ExecuteCommandAction(target);
     }
 
     @Override
-    public ExecuteCommandAction clone() {
-        return new ExecuteCommandAction(target);
+    public boolean requiresCompletion() {
+        return false;
+    }
+
+    @Override
+    public long getTimeout() {
+        return 0;
     }
 
     public Command getTarget() {

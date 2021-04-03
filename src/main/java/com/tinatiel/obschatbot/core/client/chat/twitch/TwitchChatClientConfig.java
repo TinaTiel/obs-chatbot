@@ -5,10 +5,11 @@
 
 package com.tinatiel.obschatbot.core.client.chat.twitch;
 
-import com.tinatiel.obschatbot.core.client.*;
+import com.tinatiel.obschatbot.core.client.ClientFactory;
+import com.tinatiel.obschatbot.core.client.ClientManager;
+import com.tinatiel.obschatbot.core.client.ClientSettingsFactory;
 import com.tinatiel.obschatbot.core.messaging.*;
-import com.tinatiel.obschatbot.core.request.queue.ActionCommand;
-import com.tinatiel.obschatbot.core.request.queue.TwitchChatQueue;
+import com.tinatiel.obschatbot.core.request.ActionRequest;
 import org.pircbotx.PircBotX;
 import org.pircbotx.UtilSSLSocketFactory;
 import org.slf4j.Logger;
@@ -33,9 +34,6 @@ public class TwitchChatClientConfig {
 
     @Value("${TWITCH_PASS:noauth}")
     private String twitchPassword;
-
-    @Autowired
-    TwitchChatQueue requestQueue;
 
     /**
      * Until we have this stored in a Repository, just hard-code it here.
@@ -109,9 +107,12 @@ public class TwitchChatClientConfig {
         };
     }
 
+    @Autowired
+    BlockingQueue<ActionRequest> actionRequestQueue;
+
     @Bean
-    QueueClient<ActionCommand> twitchChatRequestQueueClient() {
-        return new QueueClientImpl(requestQueue);
+    QueueClient<ActionRequest> twitchChatRequestQueueClient() {
+        return new QueueClientImpl(actionRequestQueue);
     }
 
 }
