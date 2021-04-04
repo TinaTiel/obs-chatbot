@@ -44,12 +44,13 @@ public class UserServiceImpl implements UserService {
         }
 
         // Return the completed User
-        return new User(
-                partialUserInfo.getPlatform(),
-                partialUserInfo.getUsername(),
-                userType,
-                groups
-        );
+        return User.builder()
+                .platform(partialUserInfo.getPlatform())
+                .username(partialUserInfo.getUsername())
+                .userType(userType)
+                .groups(groups)
+                .userDetails(partialUserInfo.getUserDetails())
+                .build();
 
     }
 }

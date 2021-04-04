@@ -47,7 +47,11 @@ public class BroadcasterModeratorElseWorkGroupRouterTest {
         assertThat(otherWg.getNumberOfInflightRequests()).isZero();
 
         // Given broadcaster requests
-        User broadcaster = new User(Platform.TWITCH, "tinatiel", UserType.BROADCASTER, new HashSet<>());
+        User broadcaster = User.builder()
+            .platform(Platform.TWITCH)
+                .username("tinatiel")
+                .userType(UserType.BROADCASTER)
+                .build();
         CommandRequest request1 = new CommandRequest(new RequestContext(broadcaster, new ArrayList<>()), new ArrayList<>());
         CommandRequest request2 = new CommandRequest(new RequestContext(broadcaster, new ArrayList<>()), new ArrayList<>());
         CommandRequest request3 = new CommandRequest(new RequestContext(broadcaster, new ArrayList<>()), new ArrayList<>());
@@ -73,7 +77,11 @@ public class BroadcasterModeratorElseWorkGroupRouterTest {
         assertThat(otherWg.getNumberOfInflightRequests()).isZero();
 
         // Given moderator requests
-        User moderator = new User(Platform.TWITCH, "mango", UserType.MODERATOR, new HashSet<>());
+        User moderator = User.builder()
+                .platform(Platform.TWITCH)
+                .username("mango")
+                .userType(UserType.MODERATOR)
+                .build();
         CommandRequest request1 = new CommandRequest(new RequestContext(moderator, new ArrayList<>()), new ArrayList<>());
         CommandRequest request2 = new CommandRequest(new RequestContext(moderator, new ArrayList<>()), new ArrayList<>());
         CommandRequest request3 = new CommandRequest(new RequestContext(moderator, new ArrayList<>()), new ArrayList<>());
@@ -98,13 +106,28 @@ public class BroadcasterModeratorElseWorkGroupRouterTest {
         assertThat(moderatorWg.getNumberOfInflightRequests()).isZero();
         assertThat(otherWg.getNumberOfInflightRequests()).isZero();
 
-        // Given moderator requests
+        // Given other requests
         CommandRequest request1 = new CommandRequest(new RequestContext(
-                new User(Platform.TWITCH, "rando55", UserType.GUEST, new HashSet<>()), new ArrayList<>()), new ArrayList<>());
+                User.builder()
+                        .platform(Platform.TWITCH)
+                        .username("rando55")
+                        .userType(UserType.GUEST)
+                        .build(), new ArrayList<>()),
+                new ArrayList<>());
         CommandRequest request2 = new CommandRequest(new RequestContext(
-                new User(Platform.TWITCH, "curious77", UserType.FOLLOWER, new HashSet<>()), new ArrayList<>()), new ArrayList<>());
+                User.builder()
+                        .platform(Platform.TWITCH)
+                        .username("curious77")
+                        .userType(UserType.FOLLOWER)
+                        .build(), new ArrayList<>()),
+                new ArrayList<>());
         CommandRequest request3 = new CommandRequest(new RequestContext(
-                new User(Platform.TWITCH, "avidfan68", UserType.PATREON, new HashSet<>()), new ArrayList<>()), new ArrayList<>());
+                User.builder()
+                        .platform(Platform.TWITCH)
+                        .username("avidfan68")
+                        .userType(UserType.PATREON)
+                        .build(), new ArrayList<>()),
+                new ArrayList<>());
 
         // When routed
         router.route(request1);
@@ -128,7 +151,13 @@ public class BroadcasterModeratorElseWorkGroupRouterTest {
 
         // Given request with usertype unspecified
         CommandRequest request = new CommandRequest(new RequestContext(
-                new User(Platform.TWITCH, "rando55", null, new HashSet<>()), new ArrayList<>()), new ArrayList<>());
+                User.builder()
+                        .platform(Platform.TWITCH)
+                        .username("rando55")
+                        .userType(null)
+                        .build(), new ArrayList<>()),
+                new ArrayList<>());
+        assertThat(request.getContext().getUser().getUserType()).isNull();
 
         // When routed
         router.route(request);

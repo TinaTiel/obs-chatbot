@@ -47,10 +47,23 @@ class CommandRequestSchedulerIT {
     void whenRequestsAreSubmittedThenTheyEndUpInTheActionRequestQueue() {
 
         // Given some contexts
-        RequestContext broadcasterContext = new RequestContext(new User(Platform.TWITCH, "tinatiel", UserType.BROADCASTER, new HashSet<>()), new ArrayList<>());
-        RequestContext moderatorContext = new RequestContext(new User(Platform.TWITCH, "mango", UserType.MODERATOR, new HashSet<>()), new ArrayList<>());
-        RequestContext otherContext = new RequestContext(new User(Platform.TWITCH, "other", UserType.FOLLOWER, new HashSet<>()), new ArrayList<>());
+        RequestContext broadcasterContext = new RequestContext(
+                User.builder()
+                    .platform(Platform.TWITCH)
+                    .username("tinatiel")
+                    .userType(UserType.BROADCASTER)
+                    .build(), new ArrayList<>());
+        RequestContext moderatorContext = new RequestContext(User.builder()
+                .platform(Platform.TWITCH)
+                .username("mango")
+                .userType(UserType.MODERATOR)
+                .build(), new ArrayList<>());
 
+        RequestContext otherContext = new RequestContext(User.builder()
+                .platform(Platform.TWITCH)
+                .username("follower78")
+                .userType(UserType.FOLLOWER)
+                .build(), new ArrayList<>());
         // Given some requests
         List<CommandRequest> requests = Arrays.asList(
                 new CommandRequest(otherContext, Arrays.asList(

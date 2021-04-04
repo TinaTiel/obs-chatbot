@@ -28,6 +28,9 @@ public class User {
     @Builder.Default
     private final Set<UserGroup> groups = new HashSet<>();
 
+    @Builder.Default
+    private final UserDetails userDetails = UserDetails.builder().build();
+
     public static User systemUser() {
         return User.builder()
                 .platform(Platform.LOCAL)

@@ -28,8 +28,8 @@ public class UserTest {
     void sameUsernameDifferentPlatformAreDifferentUsers() {
 
         // given two users, from different platforms
-        User twitchUser = new User(Platform.TWITCH, "mango", UserType.MODERATOR, new HashSet<>());
-        User localUser = new User(Platform.LOCAL, "mango", UserType.MODERATOR, new HashSet<>());
+        User twitchUser = User.builder().platform(Platform.TWITCH).username("mango").build();
+        User localUser = User.builder().platform(Platform.LOCAL).username("mango").build();
 
         // then they aren't the same user
         assertThat(twitchUser).isNotEqualTo(localUser);
@@ -40,8 +40,8 @@ public class UserTest {
     void differentUsernameSamePlatformAreDifferentUsers() {
 
         // given two users from same platform, but different names
-        User mango = new User(Platform.TWITCH, "mango", UserType.MODERATOR, new HashSet<>());
-        User tina = new User(Platform.TWITCH, "tina", UserType.BROADCASTER, new HashSet<>());
+        User mango = User.builder().platform(Platform.TWITCH).username("tinatiel").build();
+        User tina = User.builder().platform(Platform.TWITCH).username("mango").build();
 
         // then they aren't the same user
         assertThat(tina).isNotEqualTo(mango);
@@ -52,8 +52,8 @@ public class UserTest {
     void samePlatformAndSameUsernameIsSameUser() {
 
         // Given copy of users on same platform
-        User mango = new User(Platform.TWITCH, "mango", UserType.MODERATOR, new HashSet<>());
-        User mangoCopy = new User(Platform.TWITCH, "mango", UserType.MODERATOR, new HashSet<>());
+        User mango = User.builder().platform(Platform.TWITCH).username("mango").build();
+        User mangoCopy = User.builder().platform(Platform.TWITCH).username("mango").build();
 
         // Then they are the same user
         assertThat(mango).isEqualTo(mangoCopy);

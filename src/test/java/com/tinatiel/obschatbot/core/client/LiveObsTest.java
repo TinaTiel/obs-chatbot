@@ -38,7 +38,8 @@ public class LiveObsTest {
 
         // Given an actionCommand
         ObsSourceVisibilityAction action = new ObsSourceVisibilityAction(null, "Image", false);
-        User user = new User(Platform.TWITCH, "mango", UserType.MODERATOR, new HashSet<>());
+//        User user = new User(Platform.TWITCH, "mango", UserType.MODERATOR, new HashSet<>());
+        User user = User.builder().build();
         RequestContext requestContext = new RequestContext(user, new ArrayList<>());
         ActionRequest actionRequest = new ActionRequest(requestContext, action);
 

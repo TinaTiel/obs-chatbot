@@ -61,7 +61,11 @@ public class App {
 
         // Request the command execute (using the chat handler as entrypoint)
         System.out.println("Sending a test message");
-        User user = new User(Platform.TWITCH, "mango", UserType.MODERATOR, new HashSet<>());
+        User user = User.builder()
+                .platform(Platform.TWITCH)
+                .username("localtest")
+                .userType(UserType.BROADCASTER)
+                .build();
         ChatRequestHandler chatRequestHandler = context.getBean(ChatRequestHandler.class);
         chatRequestHandler.handle(user, "!test");
 

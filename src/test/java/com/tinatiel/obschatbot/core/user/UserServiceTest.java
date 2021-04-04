@@ -49,7 +49,11 @@ public class UserServiceTest {
     void groupMembershipsAreAddedToUser() {
 
         // Given a partial User
-        User partialUser = new User(Platform.TWITCH, "garfield", UserType.GUEST, new HashSet<>());
+        User partialUser = User.builder()
+                .platform(Platform.TWITCH)
+                .username("garfield")
+                .userType(UserType.GUEST)
+                .build();
 
         // And given an user has group memberships
         Set<UserGroup> expectedGroups = new HashSet<>(Arrays.asList(
@@ -78,7 +82,11 @@ public class UserServiceTest {
     void broadcasterSkipsGettingPlatformDetailsAndOverridesTypeDetails() {
 
         // Given a partial User, not a broadcaster
-        User partialUser = new User(Platform.TWITCH, "tinatiel", UserType.GUEST, new HashSet<>());
+        User partialUser = User.builder()
+                .platform(Platform.TWITCH)
+                .username("tinatiel")
+                .userType(UserType.GUEST)
+                .build();
 
         // But given user is marked as the broadcaster locally
         when(localUserRepository.findByPlatformAndUsername(any(), any())).thenReturn(
