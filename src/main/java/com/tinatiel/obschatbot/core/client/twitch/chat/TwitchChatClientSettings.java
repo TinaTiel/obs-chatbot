@@ -18,6 +18,9 @@ public class TwitchChatClientSettings {
     private final long connectionTimeoutMs;
     private final int connectionAttempts;
 
+    private String joinMessage;
+    private String leaveMessage;
+
     public TwitchChatClientSettings(String host, int port, String username, String password, String broadcasterChannel,
                                     long connectionTimeoutMs, int connectionAttempts) {
         this.host = host;
@@ -55,5 +58,21 @@ public class TwitchChatClientSettings {
 
     public int getConnectionAttempts() {
         return connectionAttempts;
+    }
+
+    public String getJoinMessage() {
+        return joinMessage;
+    }
+
+    public void setJoinMessage(String joinMessage) {
+        this.joinMessage = joinMessage;
+    }
+
+    public String getLeaveMessage() {
+        return leaveMessage;
+    }
+
+    public void setLeaveMessage(String leaveMessage) {
+        this.leaveMessage = leaveMessage;
     }
 }

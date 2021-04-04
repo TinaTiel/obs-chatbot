@@ -28,6 +28,14 @@ public class User {
     @Builder.Default
     private final Set<UserGroup> groups = new HashSet<>();
 
+    public static User systemUser() {
+        return User.builder()
+                .platform(Platform.LOCAL)
+                .username("SYSTEM")
+                .userType(UserType.BROADCASTER)
+                .build();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

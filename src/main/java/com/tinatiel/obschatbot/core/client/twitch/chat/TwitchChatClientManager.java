@@ -15,12 +15,15 @@ import com.tinatiel.obschatbot.core.error.ClientException;
 import com.tinatiel.obschatbot.core.messaging.ObsChatbotEvent;
 import com.tinatiel.obschatbot.core.messaging.QueueClient;
 import com.tinatiel.obschatbot.core.request.ActionRequest;
+import com.tinatiel.obschatbot.core.request.RequestContext;
+import com.tinatiel.obschatbot.core.user.User;
 import org.pircbotx.PircBotX;
 import org.pircbotx.exception.IrcException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -126,6 +129,13 @@ public class TwitchChatClientManager implements ClientManager {
             // we can clear it out and send a Stopped event
             stateClient.submit(new ClientStoppedEvent());
             clientDelegate = null;
+        } else if (event instanceof ClientReadyEvent) {
+            if(clientDelegate.getSettings().getJoinMessage() != null) {
+                consume(new ActionRequest(
+                        new RequestContext(User.systemUser(), new ArrayList<>()),
+                        new SendMessageAction(clientDelegate.getSettings().getJoinMessage())
+                ));
+            }
         }
     }
 
@@ -138,6 +148,19 @@ public class TwitchChatClientManager implements ClientManager {
         if(clientDelegate == null) {
             stateClient.submit(new ClientRequestIgnoredEvent("Stop ignored: Client wasn't running"));
             return;
+        }
+
+        // Send a closing message if relevant, and wait for it to go through
+        if(clientDelegate.getSettings().getLeaveMessage() != null) {
+            consume(new ActionRequest(
+                    new RequestContext(User.systemUser(), new ArrayList<>()),
+                    new SendMessageAction(clientDelegate.getSettings().getLeaveMessage())
+            ));
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
 
         // Acknowledge the request will now result in a stop

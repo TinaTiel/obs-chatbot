@@ -56,9 +56,6 @@ public class PircBotxListener extends ListenerAdapter {
         stateClient.submit(new ClientJoiningEvent("Requesting Commands capability"));
         event.getBot().sendCAP().request("twitch.tv/commands");
 
-        // Drop a welcome message into chat to provide feedback to broadcaster
-        event.getBot().sendIRC().message("#tinatiel", "Obs Chatbot has joined the chat!");
-
         stateClient.submit(new ClientJoinedEvent());
         stateClient.submit(new ClientReadyEvent());
 

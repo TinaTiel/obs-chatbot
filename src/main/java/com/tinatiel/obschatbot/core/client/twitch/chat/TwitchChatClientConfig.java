@@ -44,12 +44,15 @@ public class TwitchChatClientConfig {
      */
     @Bean
     ClientSettingsFactory<TwitchChatClientSettings> twitchChatClientSettingsFactory() {
-        return new TwitchChatClientSettingsFactory(new TwitchChatClientSettings(
+        TwitchChatClientSettings settings = new TwitchChatClientSettings(
                 TwitchChatClientSettings.DEFAULT_HOST, TwitchChatClientSettings.DEFAULT_PORT,
                 twitchUsername, twitchPassword, targetChannel,
                 1000,
                 1
-        ));
+        );
+        settings.setJoinMessage("OBS Chatbot is ready! Type !help to see available commands");
+        settings.setLeaveMessage("OBS Chatbot is shutting down");
+        return new TwitchChatClientSettingsFactory(settings);
     }
 
     @Bean
