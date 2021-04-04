@@ -32,9 +32,9 @@ public class BroadcasterModeratorElseWorkGroupRouter implements WorkGroupRouter 
         if(securityDetails == null) securityDetails = UserSecurityDetails.builder().build();
 
         // Route based on userType to the workgroups
-        if(securityDetails.getBroadcaster()) {
+        if(securityDetails.getBroadcaster() != null && securityDetails.getBroadcaster() ) {
             broadcasterWg.add(commandRequest);
-        } else if (securityDetails.getModerator()) {
+        } else if (securityDetails.getModerator() != null && securityDetails.getModerator() ) {
             moderatorWg.add(commandRequest);
         } else {
             otherWg.add(commandRequest);

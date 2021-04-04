@@ -18,7 +18,7 @@ public class UserSecurityDetailsTest {
         assertThat(userSecurityDetails.getBroadcaster()).isNull();
         assertThat(userSecurityDetails.getModerator()).isNull();
         assertThat(userSecurityDetails.getPatron()).isNull();
-        assertThat(userSecurityDetails.getPatronPeriod()).isEqualTo(Period.ZERO);
+        assertThat(userSecurityDetails.getPatronPeriod()).isNull();
         assertThat(userSecurityDetails.getFollowing()).isNull();
 
     }

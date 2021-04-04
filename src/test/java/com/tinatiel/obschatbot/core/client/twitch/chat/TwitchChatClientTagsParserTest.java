@@ -20,6 +20,7 @@ public class TwitchChatClientTagsParserTest {
 
     @Test
     void parseTagsAsExpected() {
+
         // Given some tags from Twitch
         ImmutableMap<String, String> tags = ImmutableMap.<String, String>builder()
         // badge-info=45,
@@ -37,7 +38,9 @@ public class TwitchChatClientTagsParserTest {
                 .patron(true)
                 .patronPeriod(Period.ofMonths(45))
                 .build();
-        assertThat(userSecurityDetails).usingRecursiveComparison().isEqualTo(expectedUserSecurityDetails);
+        assertThat(userSecurityDetails)
+                .usingRecursiveComparison()
+                .isEqualTo(expectedUserSecurityDetails);
 
     }
 
@@ -65,7 +68,7 @@ public class TwitchChatClientTagsParserTest {
 
         // And when null is provided, then the default UserDetails are provided
         assertThat(tagsParser.getDetailsFromTags(null))
-                .usingRecursiveComparison().isEqualTo(UserSecurityDetails.builder().build());
+                .usingRecursiveComparison().isEqualTo(expectedUserSecurityDetails);
 
     }
 

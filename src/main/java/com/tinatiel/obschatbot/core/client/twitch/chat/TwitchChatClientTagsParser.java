@@ -16,27 +16,34 @@ import java.util.Arrays;
 public class TwitchChatClientTagsParser {
 
     UserSecurityDetails getDetailsFromTags(ImmutableMap<String, String> tags) {
-        UserSecurityDetails.UserSecurityDetailsBuilder builder = UserSecurityDetails.builder();
+
+        // Define default values if unset, since the tags are a source of truth
+        // and it is safe to interpret null/absence as 'false' in this case.
+        boolean moderator = false;
+        boolean patron = false;
+        Period patronPeriod = Period.ZERO;
 
         if(tags != null) {
 
             // Parse badges. Expected to be in format "badge/ver,badge/ver,..."
-            Arrays.stream(tags.getOrDefault("badges", "").split(","))
-                    .forEach(it -> {
-                        if(it != null) {
-                            if(it.contains("moderator")) builder.moderator(true);
-                            if(it.contains("subscriber")) builder.patron(true);
-                        }
-                    });
+            for(String badge:tags.getOrDefault("badges", "").split(",")) {
+                if(badge != null) {
+
+                    // check for moderator flag
+                    if(badge.contains("moderator")) moderator = true;
+
+                    // check for patron flag
+                    if(badge.contains("subscriber")) patron = true;
+
+                }
+            }
 
             // Parse "badge info". According to docs, this is only being used
             // atm for subscriber duration
             String badgeInfo = tags.get("badge-info");
             if(badgeInfo != null) {
                 try {
-                    builder.patronPeriod(
-                            Period.ofMonths(Integer.parseInt(badgeInfo))
-                    );
+                    patronPeriod = Period.ofMonths(Integer.parseInt(badgeInfo));
                 } catch (NumberFormatException e) {
                     log.warn("Could not parse subscriber duration from tag: " + badgeInfo);
                 }
@@ -44,7 +51,13 @@ public class TwitchChatClientTagsParser {
 
         }
 
-        return builder.build();
+        // Build and return what we have authority over
+        return UserSecurityDetails.builder()
+                .moderator(moderator)
+                .patron(patron)
+                .patronPeriod(patronPeriod)
+                .build();
+
     }
 
 }
