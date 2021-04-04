@@ -7,6 +7,7 @@ import com.tinatiel.obschatbot.core.user.local.UserGroup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import java.util.*;
 
@@ -14,8 +15,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Fail.fail;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class UserServiceTest {
 
@@ -36,11 +36,11 @@ public class UserServiceTest {
     void platformAndUsernameAlwaysRequired() {
 
         assertThatThrownBy(() -> {
-            userService.findUserFromPartial(new User(Platform.TWITCH, null));
+            userService.findUserFromPartial(User.builder().platform(Platform.TWITCH).build());
         }).isInstanceOf(IllegalArgumentException.class);
 
         assertThatThrownBy(() -> {
-            userService.findUserFromPartial(new User(null, "foo"));
+            userService.findUserFromPartial(User.builder().username("foo").build());
         }).isInstanceOf(IllegalArgumentException.class);
 
     }
@@ -71,6 +71,33 @@ public class UserServiceTest {
 
         // Then the full user has those memberships
         assertThat(fullUser.getGroups()).containsExactlyInAnyOrderElementsOf(expectedGroups);
+
+    }
+
+    @Test
+    void broadcasterSkipsGettingPlatformDetailsAndOverridesTypeDetails() {
+
+        // Given a partial User, not a broadcaster
+        User partialUser = new User(Platform.TWITCH, "tinatiel", UserType.GUEST, new HashSet<>());
+
+        // But given user is marked as the broadcaster locally
+        when(localUserRepository.findByPlatformAndUsername(any(), any())).thenReturn(
+                Optional.of(LocalUser.builder()
+                        .username(partialUser.getUsername())
+                        .platform(partialUser.getPlatform())
+                        .isBroadcaster(true)
+                        .build()
+                )
+        );
+
+        // When retrieved
+        User fullUser = userService.findUserFromPartial(partialUser);
+
+        // Then the user is a broadcaster
+        assertThat(fullUser.getUserType()).isEqualTo(UserType.BROADCASTER);
+
+        // And there were no interactions with the Twitch API
+        verifyNoInteractions(twitchApiClient);
 
     }
 

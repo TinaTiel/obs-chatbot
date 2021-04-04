@@ -23,5 +23,7 @@ import java.util.Set;
 public class LocalUser {
     private Platform platform;
     private String username;
-    private Set<UserGroup> groups;
+    @Builder.Default
+    private Set<UserGroup> groups = new HashSet<>();
+    private boolean isBroadcaster;
 }

@@ -27,19 +27,27 @@ public class UserServiceImpl implements UserService {
         }
 
         // Try to get local groups if they exist
-        Set<UserGroup> groups = localUserRepository.findByPlatformAndUsername(
+        LocalUser localUser = localUserRepository.findByPlatformAndUsername(
                 partialUserInfo.getPlatform(), partialUserInfo.getUsername())
-                .orElse(new LocalUser())
-                .getGroups();
+                .orElse(new LocalUser());
 
-        // To Do: Call the right service depending on the platform
-        // todo
+        Set<UserGroup> groups = localUser.getGroups();
+        groups.addAll(partialUserInfo.getGroups());
+
+        // Determine the usertype, defaulting to what was specified in the partial userInfo
+        UserType userType = partialUserInfo.getUserType();
+        if(localUser.isBroadcaster()) {
+            userType = UserType.BROADCASTER;
+        } else {
+            // To Do: Call the right service depending on the platform
+            // todo
+        }
 
         // Return the completed User
         return new User(
                 partialUserInfo.getPlatform(),
                 partialUserInfo.getUsername(),
-                partialUserInfo.getUserType(), // will change with todo above
+                userType,
                 groups
         );
 
