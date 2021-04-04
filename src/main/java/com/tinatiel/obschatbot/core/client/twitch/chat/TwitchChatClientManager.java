@@ -98,6 +98,7 @@ public class TwitchChatClientManager implements ClientManager {
 
     @Override
     public void consume(ActionRequest actionRequest) {
+        log.debug("Consuming ActionRequest: " + actionRequest);
         if(lastEvent instanceof ClientReadyEvent) {
             try {
                 Action action = actionRequest.getAction();

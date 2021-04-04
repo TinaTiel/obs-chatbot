@@ -32,7 +32,7 @@ public class ActionRequest extends AbstractObsChatbotEvent {
 
     @Override
     public String toString() {
-        return "ActionCommand{" +
+        return "ActionRequest{" +
                 super.toString() +
                 ", action=" + action +
                 ", context=" + context +

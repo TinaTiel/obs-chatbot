@@ -78,9 +78,9 @@ public class PircBotxListener extends ListenerAdapter {
 
     @Override
     public void onMessage(MessageEvent event) throws Exception {
-        log.debug("ON MESSAGE event: " + event);
-        log.info("Received Message from user '" + event.getUser().getNick() + "' : '" + event.getMessage() + "'");
-        log.info("Tags: " + event.getTags());
+        log.trace("ON MESSAGE event: " + event);
+        log.trace("Received Message from user '" + event.getUser().getNick() + "' : '" + event.getMessage() + "'");
+        log.trace("Tags: " + event.getTags());
         chatRequestHandler.handle(
                 User.builder().platform(Platform.TWITCH).username(event.getUser().getNick()).build(),
                 event.getMessage()
@@ -94,7 +94,7 @@ public class PircBotxListener extends ListenerAdapter {
 
     @Override
     public void onEvent(Event event) throws Exception {
-        log.debug("PircBotX: " + event);
+        log.trace("PircBotX: " + event);
         super.onEvent(event);
     }
 
