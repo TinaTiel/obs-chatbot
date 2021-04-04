@@ -14,6 +14,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class UserTest {
 
     @Test
+    void defaultUserTypeIsGuest() {
+
+        // Given a new user
+        User user = User.builder().build();
+
+        // default type is guest
+        assertThat(user.getUserType()).isEqualTo(UserType.GUEST);
+
+    }
+
+    @Test
     void sameUsernameDifferentPlatformAreDifferentUsers() {
 
         // given two users, from different platforms

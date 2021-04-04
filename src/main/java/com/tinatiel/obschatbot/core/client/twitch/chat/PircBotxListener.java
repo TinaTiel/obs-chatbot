@@ -9,6 +9,9 @@ import com.tinatiel.obschatbot.core.client.event.*;
 import com.tinatiel.obschatbot.core.messaging.ObsChatbotEvent;
 import com.tinatiel.obschatbot.core.messaging.QueueClient;
 import com.tinatiel.obschatbot.core.request.ActionRequest;
+import com.tinatiel.obschatbot.core.request.handler.chat.ChatRequestHandler;
+import com.tinatiel.obschatbot.core.user.Platform;
+import com.tinatiel.obschatbot.core.user.User;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.*;
@@ -19,9 +22,11 @@ public class PircBotxListener extends ListenerAdapter {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     private final QueueClient<ObsChatbotEvent> stateClient;
+    private final ChatRequestHandler chatRequestHandler;
 
-    public PircBotxListener(QueueClient<ObsChatbotEvent> twitchClientEventClient) {
-        this.stateClient = twitchClientEventClient;
+    public PircBotxListener(QueueClient<ObsChatbotEvent> stateClient, ChatRequestHandler chatRequestHandler) {
+        this.stateClient = stateClient;
+        this.chatRequestHandler = chatRequestHandler;
     }
 
     /**
@@ -76,6 +81,10 @@ public class PircBotxListener extends ListenerAdapter {
         log.debug("ON MESSAGE event: " + event);
         log.info("Received Message from user '" + event.getUser().getNick() + "' : '" + event.getMessage() + "'");
         log.info("Tags: " + event.getTags());
+        chatRequestHandler.handle(
+                User.builder().platform(Platform.TWITCH).username(event.getUser().getNick()).build(),
+                event.getMessage()
+        );
     }
 
     @Override

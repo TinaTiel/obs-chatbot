@@ -4,6 +4,7 @@ import com.tinatiel.obschatbot.core.action.model.SendMessageAction;
 import com.tinatiel.obschatbot.core.request.ActionRequest;
 import com.tinatiel.obschatbot.core.request.QueueNotifierConfig;
 import com.tinatiel.obschatbot.core.request.RequestContext;
+import com.tinatiel.obschatbot.core.request.handler.chat.ChatRequestHandler;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,9 @@ public class ClientListenerIT {
 
     @MockBean(name = "obsClientManager")
     ClientManager obsClientManager;
+
+    @MockBean
+    ChatRequestHandler chatRequestHandler;
 
     @Test
     void twitchChatActionIsRouted() {

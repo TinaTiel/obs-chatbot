@@ -7,9 +7,7 @@ import com.tinatiel.obschatbot.core.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 
-@Import(RequestHandlerConfig.class)
 @Configuration
 public class ChatHandlerConfig {
 
@@ -17,7 +15,7 @@ public class ChatHandlerConfig {
     CommandRepository commandRepository;
 
     @Autowired
-    CommandRequestDispatcher commandRequestDispatcher; // TODO: Get rid of this, it adds strange dependency patterns
+    CommandRequestDispatcher commandRequestDispatcher;
 
     @Autowired
     UserService userService;

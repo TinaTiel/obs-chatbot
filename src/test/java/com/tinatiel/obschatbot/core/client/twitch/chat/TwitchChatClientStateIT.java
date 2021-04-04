@@ -3,19 +3,17 @@
  * GNU General Public License v3.0. See LICENSE or go to https://fsf.org/ for more details.
  */
 
-package com.tinatiel.obschatbot.core.client.twitch;
+package com.tinatiel.obschatbot.core.client.twitch.chat;
 
 import com.tinatiel.obschatbot.core.client.ClientFactory;
 import com.tinatiel.obschatbot.core.client.ClientManager;
 import com.tinatiel.obschatbot.core.client.event.*;
-import com.tinatiel.obschatbot.core.client.twitch.chat.PircBotxListener;
-import com.tinatiel.obschatbot.core.client.twitch.chat.TwitchChatClientConfig;
-import com.tinatiel.obschatbot.core.client.twitch.chat.TwitchChatClientDelegate;
-import com.tinatiel.obschatbot.core.client.twitch.chat.TwitchChatClientSettings;
 import com.tinatiel.obschatbot.core.messaging.Listener;
 import com.tinatiel.obschatbot.core.messaging.ObsChatbotEvent;
 import com.tinatiel.obschatbot.core.messaging.QueueNotifier;
+import com.tinatiel.obschatbot.core.request.QueueNotifierConfig;
 import com.tinatiel.obschatbot.core.request.RequestConfig;
+import com.tinatiel.obschatbot.core.request.handler.chat.ChatRequestHandler;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -40,7 +38,7 @@ import static org.mockito.Mockito.when;
  * There needs to be a separate continuous test that verifies this with a real bot for the case that Twitch
  * changes how login to their IRC servers changes.
  */
-@Import({TwitchChatClientConfig.class, RequestConfig.class}) // todo: reorganize where queues etc are packaged
+@Import({TwitchChatClientConfig.class, QueueNotifierConfig.class})
 @SpringJUnitConfig
 public class TwitchChatClientStateIT {
 
@@ -59,6 +57,9 @@ public class TwitchChatClientStateIT {
 
     @Autowired
     ClientManager twitchChatClientManager;
+
+    @MockBean
+    ChatRequestHandler chatRequestHandler;
 
     @BeforeEach
     void setUp() {

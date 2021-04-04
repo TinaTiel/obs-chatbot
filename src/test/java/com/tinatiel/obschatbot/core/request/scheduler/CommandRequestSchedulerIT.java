@@ -1,16 +1,16 @@
 package com.tinatiel.obschatbot.core.request.scheduler;
 
 import com.tinatiel.obschatbot.core.command.CommandConfig;
+import com.tinatiel.obschatbot.core.command.CommandRepository;
 import com.tinatiel.obschatbot.core.messaging.Listener;
 import com.tinatiel.obschatbot.core.messaging.QueueNotifier;
-import com.tinatiel.obschatbot.core.request.ActionRequest;
-import com.tinatiel.obschatbot.core.request.CommandRequest;
-import com.tinatiel.obschatbot.core.request.RequestConfig;
-import com.tinatiel.obschatbot.core.request.RequestContext;
+import com.tinatiel.obschatbot.core.request.*;
 import com.tinatiel.obschatbot.core.user.Platform;
 import com.tinatiel.obschatbot.core.user.User;
+import com.tinatiel.obschatbot.core.user.UserService;
 import com.tinatiel.obschatbot.core.user.UserType;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
@@ -24,7 +24,7 @@ import java.util.concurrent.BlockingQueue;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@ContextConfiguration(classes = {RequestConfig.class})
+@ContextConfiguration(classes = {QueueNotifierConfig.class})
 @SpringJUnitConfig
 class CommandRequestSchedulerIT {
 
@@ -34,6 +34,7 @@ class CommandRequestSchedulerIT {
     @Autowired
     BlockingQueue<ActionRequest> actionRequestQueue;
 
+    // MOck out stuff we don't need
     @MockBean
     Listener<ActionRequest> twitchChatActionRequestListener;
 

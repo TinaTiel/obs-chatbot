@@ -118,4 +118,24 @@ public class BroadcasterModeratorElseWorkGroupRouterTest {
 
     }
 
+    @Test
+    void unspecifiedTypesRouteToOther() {
+
+        // Given there are no initial requests
+        assertThat(broadcasterWg.getNumberOfInflightRequests()).isZero();
+        assertThat(moderatorWg.getNumberOfInflightRequests()).isZero();
+        assertThat(otherWg.getNumberOfInflightRequests()).isZero();
+
+        // Given request with usertype unspecified
+        CommandRequest request = new CommandRequest(new RequestContext(
+                new User(Platform.TWITCH, "rando55", null, new HashSet<>()), new ArrayList<>()), new ArrayList<>());
+
+        // When routed
+        router.route(request);
+
+        // Then the broadcaster wg received them
+        assertThat(broadcasterWg.getNumberOfInflightRequests()).isZero();
+        assertThat(moderatorWg.getNumberOfInflightRequests()).isZero();
+        assertThat(otherWg.getNumberOfInflightRequests()).isEqualTo(1);
+    }
 }

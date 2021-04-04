@@ -78,15 +78,5 @@ public class App {
 
         chatClientManager.startClient(); // start it again
 
-        // Wait for it to start
-        try {
-            System.out.println("Waiting 2 seconds");
-            Thread.sleep(2000);
-        } catch (InterruptedException interruptedException) {
-            interruptedException.printStackTrace();
-        }
-
-        // stop the client
-        chatClientManager.stopClient();
     }
 }

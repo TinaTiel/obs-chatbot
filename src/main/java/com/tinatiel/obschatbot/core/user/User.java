@@ -15,13 +15,15 @@ import java.util.Set;
 @AllArgsConstructor
 @Getter
 @Builder
+@ToString
 public class User {
 
     private final Platform platform;
 
     private final String username;
 
-    private final UserType userType;
+    @Builder.Default
+    private final UserType userType = UserType.GUEST;
 
     @Builder.Default
     private final Set<UserGroup> groups = new HashSet<>();
