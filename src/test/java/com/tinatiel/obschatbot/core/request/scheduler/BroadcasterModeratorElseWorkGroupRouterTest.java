@@ -4,12 +4,11 @@ import com.tinatiel.obschatbot.core.request.CommandRequest;
 import com.tinatiel.obschatbot.core.request.RequestContext;
 import com.tinatiel.obschatbot.core.user.Platform;
 import com.tinatiel.obschatbot.core.user.User;
-import com.tinatiel.obschatbot.core.user.UserType;
+import com.tinatiel.obschatbot.core.user.UserSecurityDetails;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -50,7 +49,7 @@ public class BroadcasterModeratorElseWorkGroupRouterTest {
         User broadcaster = User.builder()
             .platform(Platform.TWITCH)
                 .username("tinatiel")
-                .userType(UserType.BROADCASTER)
+                .userSecurityDetails(UserSecurityDetails.builder().broadcaster(true).build())
                 .build();
         CommandRequest request1 = new CommandRequest(new RequestContext(broadcaster, new ArrayList<>()), new ArrayList<>());
         CommandRequest request2 = new CommandRequest(new RequestContext(broadcaster, new ArrayList<>()), new ArrayList<>());
@@ -80,7 +79,7 @@ public class BroadcasterModeratorElseWorkGroupRouterTest {
         User moderator = User.builder()
                 .platform(Platform.TWITCH)
                 .username("mango")
-                .userType(UserType.MODERATOR)
+                .userSecurityDetails(UserSecurityDetails.builder().moderator(true).build())
                 .build();
         CommandRequest request1 = new CommandRequest(new RequestContext(moderator, new ArrayList<>()), new ArrayList<>());
         CommandRequest request2 = new CommandRequest(new RequestContext(moderator, new ArrayList<>()), new ArrayList<>());
@@ -111,21 +110,20 @@ public class BroadcasterModeratorElseWorkGroupRouterTest {
                 User.builder()
                         .platform(Platform.TWITCH)
                         .username("rando55")
-                        .userType(UserType.GUEST)
                         .build(), new ArrayList<>()),
                 new ArrayList<>());
         CommandRequest request2 = new CommandRequest(new RequestContext(
                 User.builder()
                         .platform(Platform.TWITCH)
                         .username("curious77")
-                        .userType(UserType.FOLLOWER)
+                        .userSecurityDetails(UserSecurityDetails.builder().following(true).build())
                         .build(), new ArrayList<>()),
                 new ArrayList<>());
         CommandRequest request3 = new CommandRequest(new RequestContext(
                 User.builder()
                         .platform(Platform.TWITCH)
                         .username("avidfan68")
-                        .userType(UserType.PATREON)
+                        .userSecurityDetails(UserSecurityDetails.builder().patron(true).build())
                         .build(), new ArrayList<>()),
                 new ArrayList<>());
 
@@ -154,10 +152,10 @@ public class BroadcasterModeratorElseWorkGroupRouterTest {
                 User.builder()
                         .platform(Platform.TWITCH)
                         .username("rando55")
-                        .userType(null)
+                        .userSecurityDetails(null)
                         .build(), new ArrayList<>()),
                 new ArrayList<>());
-        assertThat(request.getContext().getUser().getUserType()).isNull();
+        assertThat(request.getContext().getUser().getUserSecurityDetails()).isNull();
 
         // When routed
         router.route(request);

@@ -70,7 +70,10 @@ public class TwitchChatRequestIT {
         assertThat(commandRequestQueue).isEmpty();
 
         // Given a PircBotXListener (mocking the state queue client, we don't care about it here)
-        PircBotxListener pircBotxListener = new PircBotxListener(mock(QueueClient.class), chatRequestHandler);
+        PircBotxListener pircBotxListener = new PircBotxListener(
+                mock(QueueClient.class),
+                chatRequestHandler,
+                new TwitchChatClientTagsParser());
 
         // Given a Command exists
         Command command = new Command()

@@ -1,14 +1,11 @@
 package com.tinatiel.obschatbot.core.client.twitch.chat;
 
-import com.tinatiel.obschatbot.core.user.UserDetails;
+import com.google.common.collect.ImmutableMap;
+import com.tinatiel.obschatbot.core.user.UserSecurityDetails;
 import lombok.extern.slf4j.Slf4j;
 
-import java.time.Duration;
 import java.time.Period;
-import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
 
 /**
  * Parses tags for UserDetails information. See
@@ -18,8 +15,8 @@ import java.util.List;
 @Slf4j
 public class TwitchChatClientTagsParser {
 
-    UserDetails getDetailsFromTags(HashMap<String, String> tags) {
-        UserDetails.UserDetailsBuilder builder = UserDetails.builder();
+    UserSecurityDetails getDetailsFromTags(ImmutableMap<String, String> tags) {
+        UserSecurityDetails.UserSecurityDetailsBuilder builder = UserSecurityDetails.builder();
 
         if(tags != null) {
 
@@ -28,7 +25,7 @@ public class TwitchChatClientTagsParser {
                     .forEach(it -> {
                         if(it != null) {
                             if(it.contains("moderator")) builder.moderator(true);
-                            if(it.contains("subscriber")) builder.patreon(true);
+                            if(it.contains("subscriber")) builder.patron(true);
                         }
                     });
 
@@ -37,7 +34,7 @@ public class TwitchChatClientTagsParser {
             String badgeInfo = tags.get("badge-info");
             if(badgeInfo != null) {
                 try {
-                    builder.patreonDuration(
+                    builder.patronPeriod(
                             Period.ofMonths(Integer.parseInt(badgeInfo))
                     );
                 } catch (NumberFormatException e) {

@@ -12,6 +12,9 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+/**
+ * Encompasses an actor in this system; what identifies them, and what permissions they have.
+ */
 @AllArgsConstructor
 @Getter
 @Builder
@@ -23,19 +26,20 @@ public class User {
     private final String username;
 
     @Builder.Default
-    private final UserType userType = UserType.GUEST;
+    private final UserSecurityDetails userSecurityDetails = UserSecurityDetails.builder().build();
 
     @Builder.Default
     private final Set<UserGroup> groups = new HashSet<>();
 
-    @Builder.Default
-    private final UserDetails userDetails = UserDetails.builder().build();
-
+    /**
+     * Returns the SYSTEM user; a Local user that has admin (broadcaster)
+     * permissions.
+     */
     public static User systemUser() {
         return User.builder()
                 .platform(Platform.LOCAL)
                 .username("SYSTEM")
-                .userType(UserType.BROADCASTER)
+                .userSecurityDetails(UserSecurityDetails.builder().broadcaster(true).build())
                 .build();
     }
 

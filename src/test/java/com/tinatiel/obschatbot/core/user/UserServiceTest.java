@@ -7,7 +7,6 @@ import com.tinatiel.obschatbot.core.user.local.UserGroup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import java.util.*;
 
@@ -52,7 +51,6 @@ public class UserServiceTest {
         User partialUser = User.builder()
                 .platform(Platform.TWITCH)
                 .username("garfield")
-                .userType(UserType.GUEST)
                 .build();
 
         // And given an user has group memberships
@@ -78,40 +76,12 @@ public class UserServiceTest {
 
     }
 
-    @Test
-    void broadcasterSkipsGettingPlatformDetailsAndOverridesTypeDetails() {
-
-        // Given a partial User, not a broadcaster
-        User partialUser = User.builder()
-                .platform(Platform.TWITCH)
-                .username("tinatiel")
-                .userType(UserType.GUEST)
-                .build();
-
-        // But given user is marked as the broadcaster locally
-        when(localUserRepository.findByPlatformAndUsername(any(), any())).thenReturn(
-                Optional.of(LocalUser.builder()
-                        .username(partialUser.getUsername())
-                        .platform(partialUser.getPlatform())
-                        .isBroadcaster(true)
-                        .build()
-                )
-        );
-
-        // When retrieved
-        User fullUser = userService.findUserFromPartial(partialUser);
-
-        // Then the user is a broadcaster
-        assertThat(fullUser.getUserType()).isEqualTo(UserType.BROADCASTER);
-
-        // And there were no interactions with the Twitch API
-        verifyNoInteractions(twitchApiClient);
-
-    }
-
     @Disabled
     @Test
-    void twitchUserAddsTwitchDetails() {
+    void twitchUserAddsFollowerDetailsToExistingDetails() {
+
+        // Given existing details...
+
         fail("to do");
     }
 

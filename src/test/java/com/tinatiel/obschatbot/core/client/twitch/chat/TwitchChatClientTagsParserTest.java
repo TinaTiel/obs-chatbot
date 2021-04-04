@@ -1,15 +1,11 @@
 package com.tinatiel.obschatbot.core.client.twitch.chat;
 
-import com.tinatiel.obschatbot.core.user.UserDetails;
+import com.google.common.collect.ImmutableMap;
+import com.tinatiel.obschatbot.core.user.UserSecurityDetails;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.time.Duration;
-import java.time.Month;
 import java.time.Period;
-import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalUnit;
-import java.util.HashMap;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -25,22 +21,23 @@ public class TwitchChatClientTagsParserTest {
     @Test
     void parseTagsAsExpected() {
         // Given some tags from Twitch
-        HashMap<String, String> tags = new HashMap<>();
+        ImmutableMap<String, String> tags = ImmutableMap.<String, String>builder()
         // badge-info=45,
         // badges=moderator/1,subscriber/1
-        tags.put("badge-info", "45");
-        tags.put("badges", "moderator/1,subscriber/1");
+        .put("badge-info", "45")
+        .put("badges", "moderator/1,subscriber/1")
+        .build();
 
         // When parsed
-        UserDetails userDetails = tagsParser.getDetailsFromTags(tags);
+        UserSecurityDetails userSecurityDetails = tagsParser.getDetailsFromTags(tags);
 
         // Then the expected user details are returned
-        UserDetails expectedUserDetails = UserDetails.builder()
+        UserSecurityDetails expectedUserSecurityDetails = UserSecurityDetails.builder()
                 .moderator(true)
-                .patreon(true)
-                .patreonDuration(Period.ofMonths(45))
+                .patron(true)
+                .patronPeriod(Period.ofMonths(45))
                 .build();
-        assertThat(userDetails).usingRecursiveComparison().isEqualTo(expectedUserDetails);
+        assertThat(userSecurityDetails).usingRecursiveComparison().isEqualTo(expectedUserSecurityDetails);
 
     }
 
@@ -48,26 +45,27 @@ public class TwitchChatClientTagsParserTest {
     void returnDefaultsForNulls() {
 
         // Given some tags from Twitch
-        HashMap<String, String> tags = new HashMap<>();
+        ImmutableMap<String, String> tags = ImmutableMap.<String, String>builder()
         // badge-info=,
         // badges=
-        tags.put("badge-info", "");
-        tags.put("badges", "");
+        .put("badge-info", "")
+        .put("badges", "")
+        .build();
 
         // When parsed
-        UserDetails userDetails = tagsParser.getDetailsFromTags(tags);
+        UserSecurityDetails userSecurityDetails = tagsParser.getDetailsFromTags(tags);
 
         // Then the expected user details are returned
-        UserDetails expectedUserDetails = UserDetails.builder()
+        UserSecurityDetails expectedUserSecurityDetails = UserSecurityDetails.builder()
                 .moderator(false)
-                .patreon(false)
-                .patreonDuration(Period.ZERO)
+                .patron(false)
+                .patronPeriod(Period.ZERO)
                 .build();
-        assertThat(userDetails).usingRecursiveComparison().isEqualTo(expectedUserDetails);
+        assertThat(userSecurityDetails).usingRecursiveComparison().isEqualTo(expectedUserSecurityDetails);
 
         // And when null is provided, then the default UserDetails are provided
         assertThat(tagsParser.getDetailsFromTags(null))
-                .usingRecursiveComparison().isEqualTo(UserDetails.builder().build());
+                .usingRecursiveComparison().isEqualTo(UserSecurityDetails.builder().build());
 
     }
 

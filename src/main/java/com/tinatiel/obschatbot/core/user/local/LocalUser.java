@@ -25,5 +25,5 @@ public class LocalUser {
     private String username;
     @Builder.Default
     private Set<UserGroup> groups = new HashSet<>();
-    private boolean isBroadcaster;
+    private boolean broadcaster;
 }

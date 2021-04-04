@@ -5,10 +5,7 @@ import com.tinatiel.obschatbot.core.command.CommandRepository;
 import com.tinatiel.obschatbot.core.messaging.Listener;
 import com.tinatiel.obschatbot.core.messaging.QueueNotifier;
 import com.tinatiel.obschatbot.core.request.*;
-import com.tinatiel.obschatbot.core.user.Platform;
-import com.tinatiel.obschatbot.core.user.User;
-import com.tinatiel.obschatbot.core.user.UserService;
-import com.tinatiel.obschatbot.core.user.UserType;
+import com.tinatiel.obschatbot.core.user.*;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,18 +48,18 @@ class CommandRequestSchedulerIT {
                 User.builder()
                     .platform(Platform.TWITCH)
                     .username("tinatiel")
-                    .userType(UserType.BROADCASTER)
+                    .userSecurityDetails(UserSecurityDetails.builder().broadcaster(true).build())
                     .build(), new ArrayList<>());
         RequestContext moderatorContext = new RequestContext(User.builder()
                 .platform(Platform.TWITCH)
                 .username("mango")
-                .userType(UserType.MODERATOR)
+                .userSecurityDetails(UserSecurityDetails.builder().moderator(true).build())
                 .build(), new ArrayList<>());
 
         RequestContext otherContext = new RequestContext(User.builder()
                 .platform(Platform.TWITCH)
                 .username("follower78")
-                .userType(UserType.FOLLOWER)
+                .userSecurityDetails(UserSecurityDetails.builder().following(true).build())
                 .build(), new ArrayList<>());
         // Given some requests
         List<CommandRequest> requests = Arrays.asList(

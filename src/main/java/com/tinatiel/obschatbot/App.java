@@ -14,6 +14,7 @@ import com.tinatiel.obschatbot.core.request.handler.chat.ChatRequestHandler;
 import com.tinatiel.obschatbot.core.sequencer.InOrderActionSequencer;
 import com.tinatiel.obschatbot.core.user.Platform;
 import com.tinatiel.obschatbot.core.user.User;
+import com.tinatiel.obschatbot.core.user.UserSecurityDetails;
 import com.tinatiel.obschatbot.core.user.UserType;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -64,7 +65,7 @@ public class App {
         User user = User.builder()
                 .platform(Platform.TWITCH)
                 .username("localtest")
-                .userType(UserType.BROADCASTER)
+                .userSecurityDetails(UserSecurityDetails.builder().broadcaster(true).build())
                 .build();
         ChatRequestHandler chatRequestHandler = context.getBean(ChatRequestHandler.class);
         chatRequestHandler.handle(user, "!test");

@@ -64,7 +64,8 @@ public class TwitchChatClientConfig {
     PircBotxListener pircBotxListener() {
         return new PircBotxListener(
                 twitchChatEventQueueClient(),
-                chatRequestHandler
+                chatRequestHandler,
+                new TwitchChatClientTagsParser()
         );
     }
 

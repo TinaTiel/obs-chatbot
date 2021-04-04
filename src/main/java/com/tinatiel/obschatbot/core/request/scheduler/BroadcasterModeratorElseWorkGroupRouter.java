@@ -1,6 +1,7 @@
 package com.tinatiel.obschatbot.core.request.scheduler;
 
 import com.tinatiel.obschatbot.core.request.CommandRequest;
+import com.tinatiel.obschatbot.core.user.UserSecurityDetails;
 import com.tinatiel.obschatbot.core.user.UserType;
 
 import java.util.Arrays;
@@ -26,21 +27,19 @@ public class BroadcasterModeratorElseWorkGroupRouter implements WorkGroupRouter 
     @Override
     public void route(CommandRequest commandRequest) {
 
-        // Defensively get the userType
-        UserType userType = commandRequest.getContext().getUser().getUserType();
-        if(userType == null) userType = UserType.GUEST;
+        // Defensively get the security details, defaulting to lowest security is null
+        UserSecurityDetails securityDetails = commandRequest.getContext().getUser().getUserSecurityDetails();
+        if(securityDetails == null) securityDetails = UserSecurityDetails.builder().build();
 
         // Route based on userType to the workgroups
-        switch (userType) {
-            case BROADCASTER:
-                broadcasterWg.add(commandRequest);
-                break;
-            case MODERATOR:
-                moderatorWg.add(commandRequest);
-                break;
-            default:
-                otherWg.add(commandRequest);
+        if(securityDetails.getBroadcaster()) {
+            broadcasterWg.add(commandRequest);
+        } else if (securityDetails.getModerator()) {
+            moderatorWg.add(commandRequest);
+        } else {
+            otherWg.add(commandRequest);
         }
+
     }
 
     @Override

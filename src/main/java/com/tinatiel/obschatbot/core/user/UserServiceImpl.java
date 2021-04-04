@@ -5,7 +5,6 @@ import com.tinatiel.obschatbot.core.user.local.LocalUser;
 import com.tinatiel.obschatbot.core.user.local.LocalUserRepository;
 import com.tinatiel.obschatbot.core.user.local.UserGroup;
 
-import java.util.HashSet;
 import java.util.Set;
 
 public class UserServiceImpl implements UserService {
@@ -35,21 +34,20 @@ public class UserServiceImpl implements UserService {
         groups.addAll(partialUserInfo.getGroups());
 
         // Determine the usertype, defaulting to what was specified in the partial userInfo
-        UserType userType = partialUserInfo.getUserType();
-        if(localUser.isBroadcaster()) {
-            userType = UserType.BROADCASTER;
-        } else {
-            // To Do: Call the right service depending on the platform
-            // todo
-        }
+//        UserType userType = partialUserInfo.getUserType();
+//        if(localUser.isBroadcaster()) {
+//            userType = UserType.BROADCASTER;
+//        } else {
+//            // To Do: Call the right service depending on the platform
+//            // todo
+//        }
 
         // Return the completed User
         return User.builder()
                 .platform(partialUserInfo.getPlatform())
                 .username(partialUserInfo.getUsername())
-                .userType(userType)
                 .groups(groups)
-                .userDetails(partialUserInfo.getUserDetails())
+                .userSecurityDetails(partialUserInfo.getUserSecurityDetails())
                 .build();
 
     }
