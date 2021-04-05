@@ -34,14 +34,14 @@ public class App {
         ClientManager chatClientManager = context.getBean(TwitchChatClientManager.class);
         chatClientManager.startClient();
 
-        // Wait for it to start
-        try {
-            System.out.println("Waiting for startup");
-            Thread.sleep(6000);
-        } catch (InterruptedException interruptedException) {
-            interruptedException.printStackTrace();
-        }
-
+//        // Wait for it to start
+//        try {
+//            System.out.println("Waiting for startup");
+//            Thread.sleep(6000);
+//        } catch (InterruptedException interruptedException) {
+//            interruptedException.printStackTrace();
+//        }
+//
         // Register a command
         Command command = new Command()
                 .name("test")
@@ -59,36 +59,36 @@ public class App {
         CommandRepository commandRepository = context.getBean(CommandRepository.class);
         commandRepository.save(command);
         commandRepository.save(pingPong);
-
-        // Request the command execute (using the chat handler as entrypoint)
-        System.out.println("Sending a test message");
-        User user = User.builder()
-                .platform(Platform.TWITCH)
-                .username("localtest")
-                .userSecurityDetails(UserSecurityDetails.builder().broadcaster(true).build())
-                .build();
-        ChatRequestHandler chatRequestHandler = context.getBean(ChatRequestHandler.class);
-        chatRequestHandler.handle(user, "!test");
-
-        try {
-            System.out.println("Waiting for command to execute");
-            Thread.sleep(2000);
-        } catch (InterruptedException interruptedException) {
-            interruptedException.printStackTrace();
-        }
-
-        System.out.println("Stopping the client");
-        chatClientManager.stopClient();
-
-        // Wait for it to stop
-        try {
-            System.out.println("Waiting 2 seconds");
-            Thread.sleep(2000);
-        } catch (InterruptedException interruptedException) {
-            interruptedException.printStackTrace();
-        }
-
-        chatClientManager.startClient(); // start it again
+//
+//        // Request the command execute (using the chat handler as entrypoint)
+//        System.out.println("Sending a test message");
+//        User user = User.builder()
+//                .platform(Platform.TWITCH)
+//                .username("localtest")
+//                .userSecurityDetails(UserSecurityDetails.builder().broadcaster(true).build())
+//                .build();
+//        ChatRequestHandler chatRequestHandler = context.getBean(ChatRequestHandler.class);
+//        chatRequestHandler.handle(user, "!test");
+//
+//        try {
+//            System.out.println("Waiting for command to execute");
+//            Thread.sleep(2000);
+//        } catch (InterruptedException interruptedException) {
+//            interruptedException.printStackTrace();
+//        }
+//
+//        System.out.println("Stopping the client");
+//        chatClientManager.stopClient();
+//
+//        // Wait for it to stop
+//        try {
+//            System.out.println("Waiting 2 seconds");
+//            Thread.sleep(2000);
+//        } catch (InterruptedException interruptedException) {
+//            interruptedException.printStackTrace();
+//        }
+//
+//        chatClientManager.startClient(); // start it again
 
     }
 }

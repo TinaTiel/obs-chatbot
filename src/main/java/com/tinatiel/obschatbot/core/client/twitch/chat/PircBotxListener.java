@@ -66,8 +66,28 @@ public class PircBotxListener extends ListenerAdapter {
 
     @Override
     public void onNotice(NoticeEvent event) throws Exception {
-        if(event.getNotice().contains("auth")) {
-            stateClient.submit(new ClientErrorEvent(null, "Unable to connect to Twitch: bad credentials"));
+
+        if(event.getNotice().toLowerCase().contains("improperly formatted auth")) {
+            // "Improperly formatted auth" => improperly formatted auth; developer error
+            stateClient.submit(new ClientErrorEvent(null,
+                    "Unable to connect to Twitch: Improperly formatted auth, contact the developer!"
+            ));
+
+        } else if (event.getNotice().toLowerCase().contains("unsuccessful")) {
+            // "login unsuccessful" => if token doesn't have needed scopes, or isn't an user access token; developer error
+            stateClient.submit(new ClientErrorEvent(null,
+                    "Unable to connect to Twitch: Not an User Token; contact the developer!"
+            ));
+
+        } else if (
+                event.getNotice().toLowerCase().contains("permission to perform")
+                || event.getNotice().toLowerCase().contains("authentication failed")
+        ) {
+            // "You don't have permission to perform that action" => if token revoked during session; user-error
+            stateClient.submit(new ClientErrorEvent(null,
+                    "Unable to connect to Twitch: Connection (token) has been removed or revoked; re-approve and try again."
+            ));
+
         }
     }
 

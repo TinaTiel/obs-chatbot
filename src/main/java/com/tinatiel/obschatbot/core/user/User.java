@@ -21,6 +21,8 @@ import java.util.Set;
 @ToString
 public class User {
 
+    private final String id;
+
     private final Platform platform;
 
     private final String username;
