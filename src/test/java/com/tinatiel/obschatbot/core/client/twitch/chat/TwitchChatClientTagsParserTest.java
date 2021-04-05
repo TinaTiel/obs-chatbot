@@ -25,7 +25,7 @@ public class TwitchChatClientTagsParserTest {
         ImmutableMap<String, String> tags = ImmutableMap.<String, String>builder()
         // badge-info=45,
         // badges=moderator/1,subscriber/1
-        .put("badge-info", "45")
+        .put("badge-info", "subscriber/45")
         .put("badges", "moderator/1,subscriber/1")
         .build();
 

@@ -40,12 +40,21 @@ public class TwitchChatClientTagsParser {
 
             // Parse "badge info". According to docs, this is only being used
             // atm for subscriber duration
-            String badgeInfo = tags.get("badge-info");
-            if(badgeInfo != null) {
-                try {
-                    patronPeriod = Period.ofMonths(Integer.parseInt(badgeInfo));
-                } catch (NumberFormatException e) {
-                    log.warn("Could not parse subscriber duration from tag: " + badgeInfo);
+            String badgeInfos = tags.get("badge-info");
+            if(badgeInfos != null) {
+                // Assuming they may list in a comma-delimited fashion in the future,
+                // split the string by commas
+                for(String badgeInfo:badgeInfos.split(",")) {
+                    // Within each expect the format to be tag/amount, for example
+                    // subscriber/6 would mean 6 month subscription
+                    String[] units = badgeInfo.split("/");
+                    if(units.length == 2 && units[0].equals("subscriber")) {
+                        try {
+                            patronPeriod = Period.ofMonths(Integer.parseInt(units[1]));
+                        } catch (NumberFormatException e) {
+                            log.warn("Could not parse subscriber duration from tag: " + badgeInfo);
+                        }
+                    }
                 }
             }
 
