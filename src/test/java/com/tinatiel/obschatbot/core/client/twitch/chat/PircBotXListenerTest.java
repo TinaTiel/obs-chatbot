@@ -59,6 +59,7 @@ public class PircBotXListenerTest {
                 .patronPeriod(Period.ofMonths(3))
                 .build();
         when(tagsParser.getDetailsFromTags(any())).thenReturn(userSecurityDetails);
+        when(tagsParser.getUserIdFromTags(any())).thenReturn("123456");
 
         // When invoked
         pircBotxListener.onMessage(messageEvent);
@@ -70,6 +71,7 @@ public class PircBotXListenerTest {
         User expectedUser = User.builder()
                 .platform(Platform.TWITCH)
                 .username("foo")
+                .id("123456")
                 .userSecurityDetails(userSecurityDetails)
                 .build();
 

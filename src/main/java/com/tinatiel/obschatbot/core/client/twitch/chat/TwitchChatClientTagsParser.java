@@ -69,4 +69,8 @@ public class TwitchChatClientTagsParser {
 
     }
 
+    String getUserIdFromTags(ImmutableMap<String, String> tags) {
+        return tags.get("user-id");
+    }
+
 }

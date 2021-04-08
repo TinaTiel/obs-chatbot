@@ -72,4 +72,20 @@ public class TwitchChatClientTagsParserTest {
 
     }
 
+    @Test
+    void parseUserId() {
+
+        // Given some tags from Twitch
+        ImmutableMap<String, String> tags = ImmutableMap.<String, String>builder()
+                // user-id=405563396
+                .put("user-id", "405563396")
+                .build();
+
+        // When the id is parsed
+        String userId = tagsParser.getUserIdFromTags(tags);
+
+        // Then it is the expected value
+        assertThat(userId).isEqualTo("405563396");
+
+    }
 }

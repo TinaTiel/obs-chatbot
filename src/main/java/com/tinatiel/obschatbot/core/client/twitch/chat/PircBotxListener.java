@@ -105,6 +105,7 @@ public class PircBotxListener extends ListenerAdapter {
                 User.builder()
                         .platform(Platform.TWITCH)
                         .username(event.getUser().getNick())
+                        .id(tagsParser.getUserIdFromTags(event.getTags()))
                         .userSecurityDetails(tagsParser.getDetailsFromTags(event.getTags()))
                         .build(),
                 event.getMessage()
