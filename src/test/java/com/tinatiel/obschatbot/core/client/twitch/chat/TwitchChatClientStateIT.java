@@ -16,12 +16,14 @@ import com.tinatiel.obschatbot.core.request.RequestConfig;
 import com.tinatiel.obschatbot.core.request.handler.chat.ChatRequestHandler;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.events.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import java.util.ArrayList;
@@ -60,6 +62,9 @@ public class TwitchChatClientStateIT {
 
     @MockBean
     ChatRequestHandler chatRequestHandler;
+
+    @MockBean
+    OAuth2AuthorizedClientService oAuth2AuthorizedClientService;
 
     @BeforeEach
     void setUp() {

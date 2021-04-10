@@ -13,7 +13,7 @@ public class TwitchChatClientSettings {
     private final String host;
     private final int port;
     private final String username;
-    private final String password;
+    private String password;
     private final String broadcasterChannel;
     private final long connectionTimeoutMs;
     private final int connectionAttempts;
@@ -74,5 +74,9 @@ public class TwitchChatClientSettings {
 
     public void setLeaveMessage(String leaveMessage) {
         this.leaveMessage = leaveMessage;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

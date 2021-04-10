@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
@@ -36,6 +37,9 @@ public class ClientListenerIT {
 
     @MockBean
     ChatRequestHandler chatRequestHandler;
+
+    @MockBean
+    OAuth2AuthorizedClientService oAuth2AuthorizedClientService;
 
     @Test
     void twitchChatActionIsRouted() {

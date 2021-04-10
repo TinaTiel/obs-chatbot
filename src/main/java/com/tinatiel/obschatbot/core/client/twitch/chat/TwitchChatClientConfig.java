@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 
 import javax.net.ssl.SSLSocketFactory;
 import java.util.concurrent.BlockingQueue;
@@ -33,11 +34,14 @@ public class TwitchChatClientConfig {
     @Value("${TWITCH_USER:noauth}")
     private String twitchUsername;
 
-    @Value("${TWITCH_PASS:noauth}")
-    private String twitchPassword;
+//    @Value("${TWITCH_PASS:noauth}")
+    private String twitchPassword = "nonespecified";
 
     @Autowired
     ChatRequestHandler chatRequestHandler;
+
+    @Autowired
+    OAuth2AuthorizedClientService oAuth2AuthorizedClientService;
 
     /**
      * Until we have this stored in a Repository, just hard-code it here.
@@ -52,7 +56,7 @@ public class TwitchChatClientConfig {
         );
         settings.setJoinMessage("OBS Chatbot is ready! Type !help to see available commands");
         settings.setLeaveMessage("OBS Chatbot is shutting down");
-        return new TwitchChatClientSettingsFactory(settings);
+        return new TwitchChatClientSettingsFactory(settings, oAuth2AuthorizedClientService);
     }
 
     @Bean
