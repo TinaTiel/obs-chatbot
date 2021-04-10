@@ -13,7 +13,7 @@ public class TwitchChatClientSettings {
     private final String host;
     private final int port;
     private final String username;
-    private String password;
+    private String oauthUserToken;
     private final String broadcasterChannel;
     private final long connectionTimeoutMs;
     private final int connectionAttempts;
@@ -21,12 +21,12 @@ public class TwitchChatClientSettings {
     private String joinMessage;
     private String leaveMessage;
 
-    public TwitchChatClientSettings(String host, int port, String username, String password, String broadcasterChannel,
+    public TwitchChatClientSettings(String host, int port, String username, String oauthUserToken, String broadcasterChannel,
                                     long connectionTimeoutMs, int connectionAttempts) {
         this.host = host;
         this.port = port;
         this.username = username;
-        this.password = password;
+        this.oauthUserToken = oauthUserToken;
         this.broadcasterChannel = broadcasterChannel;
         this.connectionTimeoutMs = connectionTimeoutMs;
         this.connectionAttempts = connectionAttempts;
@@ -44,8 +44,8 @@ public class TwitchChatClientSettings {
         return username;
     }
 
-    public String getPassword() {
-        return password;
+    public String getOauthUserToken() {
+        return oauthUserToken;
     }
 
     public String getBroadcasterChannel() {
@@ -76,7 +76,7 @@ public class TwitchChatClientSettings {
         this.leaveMessage = leaveMessage;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setOauthUserToken(String oauthUserToken) {
+        this.oauthUserToken = oauthUserToken;
     }
 }

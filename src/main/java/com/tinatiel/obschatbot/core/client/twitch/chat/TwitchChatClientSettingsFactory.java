@@ -29,7 +29,7 @@ public class TwitchChatClientSettingsFactory implements ClientSettingsFactory<Tw
                 "twitch", User.SYSTEM_PRINCIPAL_NAME);
 
         if(authorizedClient != null) {
-            settings.setPassword("oauth:" + authorizedClient.getAccessToken().getTokenValue());
+            settings.setOauthUserToken(authorizedClient.getAccessToken().getTokenValue());
         } else {
             log.warn("No Authorized Client found for Twitch + SYSTEM user"); // TODO revisit, see if we can alert / respond better than logging
         }

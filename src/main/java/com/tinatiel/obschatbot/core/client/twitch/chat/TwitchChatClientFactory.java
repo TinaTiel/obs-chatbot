@@ -33,15 +33,30 @@ public class TwitchChatClientFactory implements ClientFactory<PircBotX, TwitchCh
 
         // Create a new bot with those settings
         PircBotX bot = new PircBotX(new org.pircbotx.Configuration.Builder()
-                .addServer(settings.getHost(), settings.getPort()) // Twitch's IRC url
+                // Twitch's IRC url
+                .addServer(settings.getHost(), settings.getPort())
+
+                // Auto-join the broadcaster's channel
+                .addAutoJoinChannel("#" + settings.getBroadcasterChannel())
+
+                // Name is required by PircBotX, but we can ignore it because it is derived from the token
+                .setName("ignore")
+
+                // IRC Login is 'oauth:' + the oauth user token
+                .setServerPassword("oauth:" + settings.getOauthUserToken())
+
+                // Register our listener so that we can manage client lifecycle and process chat messages
+                .addListener(pircBotxListener)
+
+                // Twitch does not support WHO
+                .setOnJoinWhoEnabled(false)
+
+                // Connection settings
                 .setSocketFactory(sslSocketFactory)
-                .addAutoJoinChannel("#" + settings.getBroadcasterChannel()) // channel is same as streamer's username
-                .setName(settings.getUsername())             // account we're connecting as
-                .setServerPassword(settings.getPassword())   // generated with TMI for now
-                .addListener(pircBotxListener)   // have to register the listener!
-                .setOnJoinWhoEnabled(false) // Twitch does not support WHO
                 .setAutoReconnectAttempts(settings.getConnectionAttempts())
-                .setSocketConnectTimeout(Long.valueOf(settings.getConnectionTimeoutMs()).intValue()) // millis timeout, weirdly supplied as int
+                .setSocketConnectTimeout(Long.valueOf(settings.getConnectionTimeoutMs()).intValue())
+
+                // Build it!
                 .buildConfiguration()
         );
 

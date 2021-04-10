@@ -50,7 +50,7 @@ public class TwitchChatClientConfig {
     ClientSettingsFactory<TwitchChatClientSettings> twitchChatClientSettingsFactory() {
         TwitchChatClientSettings settings = new TwitchChatClientSettings(
                 TwitchChatClientSettings.DEFAULT_HOST, TwitchChatClientSettings.DEFAULT_PORT,
-                twitchUsername, "oauth:" + twitchPassword, targetChannel,
+                twitchUsername, "foo", targetChannel,
                 1000,
                 1
         );

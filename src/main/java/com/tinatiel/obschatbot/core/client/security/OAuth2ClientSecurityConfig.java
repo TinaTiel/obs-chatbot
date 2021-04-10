@@ -34,6 +34,8 @@ public class OAuth2ClientSecurityConfig {
     /**
      * Wire in the default implementation of the AuthorizedClientService (inMemory implementation)
      * since we aren't customizing it.
+     * TODO Replace with JdbcOAuth2AuthorizedClientService
+     * https://docs.spring.io/spring-security/site/docs/current/api/org/springframework/security/oauth2/client/JdbcOAuth2AuthorizedClientService.html
      */
     @Autowired
     OAuth2AuthorizedClientService authorizedClientService;
