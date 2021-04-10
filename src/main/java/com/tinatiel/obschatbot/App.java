@@ -30,27 +30,27 @@ public class App {
     public static void main(String[] args) {
         ApplicationContext context = SpringApplication.run(App.class);
 
-//        // Get the Twitch Client Manager, and start it
-//        ClientManager chatClientManager = context.getBean(TwitchChatClientManager.class);
-//        chatClientManager.startClient();
-//
-//        // Register a command
-//        Command command = new Command()
-//                .name("test")
-//                .actionSequencer(new InOrderActionSequencer(Arrays.asList(
-//                        new SendMessageAction("Test message #1, sent " + new Date()),
-//                        new SendMessageAction("Test message #2, sent " + new Date()),
-//                        new SendMessageAction("Test message #3, sent " + new Date()) // this may not execute due to short wait before stopping client
-//                ), false));
-//        Command pingPong = new Command()
-//                .name("ping")
-//                .actionSequencer(new InOrderActionSequencer(Arrays.asList(
-//                        new SendMessageAction("pong!")
-//                ), false));
-//
-//        CommandRepository commandRepository = context.getBean(CommandRepository.class);
-//        commandRepository.save(command);
-//        commandRepository.save(pingPong);
+        // Get the Twitch Client Manager, and start it
+        ClientManager chatClientManager = context.getBean(TwitchChatClientManager.class);
+        chatClientManager.startClient();
+
+        // Register a command
+        Command command = new Command()
+                .name("test")
+                .actionSequencer(new InOrderActionSequencer(Arrays.asList(
+                        new SendMessageAction("Test message #1, sent " + new Date()),
+                        new SendMessageAction("Test message #2, sent " + new Date()),
+                        new SendMessageAction("Test message #3, sent " + new Date()) // this may not execute due to short wait before stopping client
+                ), false));
+        Command pingPong = new Command()
+                .name("ping")
+                .actionSequencer(new InOrderActionSequencer(Arrays.asList(
+                        new SendMessageAction("pong!")
+                ), false));
+
+        CommandRepository commandRepository = context.getBean(CommandRepository.class);
+        commandRepository.save(command);
+        commandRepository.save(pingPong);
 
     }
 }

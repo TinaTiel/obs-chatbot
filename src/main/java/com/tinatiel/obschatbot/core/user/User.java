@@ -21,6 +21,8 @@ import java.util.Set;
 @ToString
 public class User {
 
+    public static final String SYSTEM_PRINCIPAL_NAME = "SYSTEM";
+
     private final String id;
 
     private final Platform platform;
@@ -40,7 +42,7 @@ public class User {
     public static User systemUser() {
         return User.builder()
                 .platform(Platform.LOCAL)
-                .username("SYSTEM")
+                .username(SYSTEM_PRINCIPAL_NAME)
                 .userSecurityDetails(UserSecurityDetails.builder().broadcaster(true).build())
                 .build();
     }
