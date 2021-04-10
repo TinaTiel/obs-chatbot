@@ -30,10 +30,6 @@ public class App {
     public static void main(String[] args) {
         ApplicationContext context = SpringApplication.run(App.class);
 
-        // Get the Twitch Client Manager, and start it
-        ClientManager chatClientManager = context.getBean(TwitchChatClientManager.class);
-        chatClientManager.startClient();
-
         // Register a command
         Command command = new Command()
                 .name("test")
@@ -51,6 +47,10 @@ public class App {
         CommandRepository commandRepository = context.getBean(CommandRepository.class);
         commandRepository.save(command);
         commandRepository.save(pingPong);
+
+//        // Get the Twitch Client Manager, and start it
+//        ClientManager chatClientManager = context.getBean(TwitchChatClientManager.class);
+//        chatClientManager.startClient();
 
     }
 }

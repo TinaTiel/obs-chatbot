@@ -1,7 +1,7 @@
 logging:
   level:
     root: warn
-    com.tinatiel: trace
+    com.tinatiel: debug
     org.hibernate: warn
     org.pircbotx: warn # WARNING: Prints credentials to log in Debug mode
     org.apache.http: debug
