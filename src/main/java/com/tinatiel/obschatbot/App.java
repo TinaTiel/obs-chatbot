@@ -30,65 +30,27 @@ public class App {
     public static void main(String[] args) {
         ApplicationContext context = SpringApplication.run(App.class);
 
-        // Get the Twitch Client Manager, and start it
-        ClientManager chatClientManager = context.getBean(TwitchChatClientManager.class);
-        chatClientManager.startClient();
-
-//        // Wait for it to start
-//        try {
-//            System.out.println("Waiting for startup");
-//            Thread.sleep(6000);
-//        } catch (InterruptedException interruptedException) {
-//            interruptedException.printStackTrace();
-//        }
+//        // Get the Twitch Client Manager, and start it
+//        ClientManager chatClientManager = context.getBean(TwitchChatClientManager.class);
+//        chatClientManager.startClient();
 //
-        // Register a command
-        Command command = new Command()
-                .name("test")
-                .actionSequencer(new InOrderActionSequencer(Arrays.asList(
-                        new SendMessageAction("Test message #1, sent " + new Date()),
-                        new SendMessageAction("Test message #2, sent " + new Date()),
-                        new SendMessageAction("Test message #3, sent " + new Date()) // this may not execute due to short wait before stopping client
-                ), false));
-        Command pingPong = new Command()
-                .name("ping")
-                .actionSequencer(new InOrderActionSequencer(Arrays.asList(
-                        new SendMessageAction("pong!")
-                ), false));
-
-        CommandRepository commandRepository = context.getBean(CommandRepository.class);
-        commandRepository.save(command);
-        commandRepository.save(pingPong);
+//        // Register a command
+//        Command command = new Command()
+//                .name("test")
+//                .actionSequencer(new InOrderActionSequencer(Arrays.asList(
+//                        new SendMessageAction("Test message #1, sent " + new Date()),
+//                        new SendMessageAction("Test message #2, sent " + new Date()),
+//                        new SendMessageAction("Test message #3, sent " + new Date()) // this may not execute due to short wait before stopping client
+//                ), false));
+//        Command pingPong = new Command()
+//                .name("ping")
+//                .actionSequencer(new InOrderActionSequencer(Arrays.asList(
+//                        new SendMessageAction("pong!")
+//                ), false));
 //
-//        // Request the command execute (using the chat handler as entrypoint)
-//        System.out.println("Sending a test message");
-//        User user = User.builder()
-//                .platform(Platform.TWITCH)
-//                .username("localtest")
-//                .userSecurityDetails(UserSecurityDetails.builder().broadcaster(true).build())
-//                .build();
-//        ChatRequestHandler chatRequestHandler = context.getBean(ChatRequestHandler.class);
-//        chatRequestHandler.handle(user, "!test");
-//
-//        try {
-//            System.out.println("Waiting for command to execute");
-//            Thread.sleep(2000);
-//        } catch (InterruptedException interruptedException) {
-//            interruptedException.printStackTrace();
-//        }
-//
-//        System.out.println("Stopping the client");
-//        chatClientManager.stopClient();
-//
-//        // Wait for it to stop
-//        try {
-//            System.out.println("Waiting 2 seconds");
-//            Thread.sleep(2000);
-//        } catch (InterruptedException interruptedException) {
-//            interruptedException.printStackTrace();
-//        }
-//
-//        chatClientManager.startClient(); // start it again
+//        CommandRepository commandRepository = context.getBean(CommandRepository.class);
+//        commandRepository.save(command);
+//        commandRepository.save(pingPong);
 
     }
 }

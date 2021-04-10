@@ -4,3 +4,5 @@ logging:
     com.tinatiel: trace
     org.hibernate: warn
     org.pircbotx: warn # WARNING: Prints credentials to log in Debug mode
+    org.apache.http: debug
+    httpclient.wire: debug
