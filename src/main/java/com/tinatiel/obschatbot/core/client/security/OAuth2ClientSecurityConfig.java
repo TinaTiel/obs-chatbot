@@ -2,6 +2,7 @@ package com.tinatiel.obschatbot.core.client.security;
 
 import lombok.extern.log4j.Log4j;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.Authentication;
@@ -26,10 +27,12 @@ import java.util.Map;
 @Configuration
 public class OAuth2ClientSecurityConfig {
 
-
     // TODO get from DB / settings factory
-    private String twitchClientId = "drk7vknesfqclm67yywgo15qkxzvij";
-    private String twitchClientSecret = "hhzyuo32i6q2k4nnr458i80wzn4kph";
+    @Value("${TWITCH_CLIENT_ID:noclientspecified}")
+    private String twitchClientId;
+
+    @Value("${TWITCH_CLIENT_SECRET:nosecretspecified}")
+    private String twitchClientSecret;
 
     // TODO build from configured scheme, host, and port
     private final String twitchClientRedirectUri = "http://localhost:8080/" + "authorized/twitch";
