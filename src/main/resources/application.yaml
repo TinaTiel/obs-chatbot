@@ -6,3 +6,15 @@ logging:
     org.pircbotx: warn # WARNING: Prints credentials to log in Debug mode
     org.apache.http: debug
     httpclient.wire: debug
+
+com:
+  tinatiel:
+    twitch:
+      auth:
+        host: https://id.twitch.tv
+        authorization-path: /oauth2/authorize
+        token-path: /oauth2/token
+        scopes:
+          - channel:moderate
+          - chat:read
+          - chat:edit

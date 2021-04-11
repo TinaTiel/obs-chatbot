@@ -1,8 +1,10 @@
-package com.tinatiel.obschatbot.core.client.security;
+package com.tinatiel.obschatbot.core.client.twitch.auth;
 
+import com.tinatiel.obschatbot.core.client.security.SystemPrincipalOAuth2AuthorizedClientRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.oauth2.client.*;
@@ -14,11 +16,13 @@ import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+@ConfigurationProperties(prefix = "com.tinatiel.twitch")
 @Slf4j
 @Configuration
-public class OAuth2ClientSecurityConfig {
+public class TwitchOAuth2ClientConfig {
 
     // TODO get from DB / settings factory
     @Value("${TWITCH_CLIENT_ID:noclientspecified}")
@@ -32,13 +36,14 @@ public class OAuth2ClientSecurityConfig {
     private final String twitchClientRedirectUri = "http://localhost:8080/" + "authorized/twitch";
 
     /**
-     * Wire in the default implementation of the AuthorizedClientService (inMemory implementation)
-     * since we aren't customizing it.
+     * manages **authorized** clients
      * TODO Replace with JdbcOAuth2AuthorizedClientService
      * https://docs.spring.io/spring-security/site/docs/current/api/org/springframework/security/oauth2/client/JdbcOAuth2AuthorizedClientService.html
      */
-    @Autowired
-    OAuth2AuthorizedClientService authorizedClientService;
+    @Bean
+    OAuth2AuthorizedClientService authorizedClientService() {
+        return new InMemoryOAuth2AuthorizedClientService(clientRegistrationRepository());
+    }
 
     @Bean
     OAuth2AuthorizedClientManager auth2AuthorizedClientManager() {
@@ -57,7 +62,7 @@ public class OAuth2ClientSecurityConfig {
         AuthorizedClientServiceOAuth2AuthorizedClientManager clientManager =
                 new AuthorizedClientServiceOAuth2AuthorizedClientManager(
                         clientRegistrationRepository(),
-                        authorizedClientService
+                        authorizedClientService()
                 );
         clientManager.setAuthorizedClientProvider(oAuth2AuthorizedClientProvider);
 
@@ -87,7 +92,7 @@ public class OAuth2ClientSecurityConfig {
     @Bean
     OAuth2AuthorizedClientRepository authorizedClientRepository() {
         OAuth2AuthorizedClientRepository authorizedClientRepository =
-                new SystemPrincipalOAuth2AuthorizedClientRepository(authorizedClientService);
+                new SystemPrincipalOAuth2AuthorizedClientRepository(authorizedClientService());
         return  authorizedClientRepository;
     }
 
@@ -97,18 +102,32 @@ public class OAuth2ClientSecurityConfig {
      */
     private ClientRegistration twitchOAuth2ClientRegistration() {
 
+        TwitchAuthConnectionSettings settings = twitchAuthConnectionSettings;
+
         ClientRegistration clientRegistration = ClientRegistration.withRegistrationId("twitch")
-                .authorizationUri("https://id.twitch.tv/oauth2/authorize")
-                .tokenUri("https://id.twitch.tv/oauth2/token")
+                .authorizationUri(settings.getHost() + settings.getAuthorizationPath())
+                .tokenUri(settings.getHost() + settings.getTokenPath())
                 .clientId(twitchClientId)
                 .clientSecret(twitchClientSecret)
                 .redirectUri(twitchClientRedirectUri)
-                .scope("channel:moderate", "chat:read", "chat:edit")
+                .scope(settings.getScopes())
                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
                 .clientAuthenticationMethod(ClientAuthenticationMethod.POST)
                 .build();
 
         return clientRegistration;
     }
+
+//    @Bean
+//    TwitchAuthConnectionSettings twitchAuthConnectionSettings() {
+//        return TwitchAuthConnectionSettings.builder()
+//                .host("https://id.twitch.tv")
+//                .authorizationPath("/oauth2/authorize")
+//                .tokenPath("/oauth2/token")
+//                .scopes(Arrays.asList("channel:moderate", "chat:read", "chat:edit"))
+//                .build();
+//    }
+    @Autowired
+    TwitchAuthConnectionSettings twitchAuthConnectionSettings;
 
 }
