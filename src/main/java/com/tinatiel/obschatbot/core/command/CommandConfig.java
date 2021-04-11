@@ -10,15 +10,16 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
-import java.util.Optional;
-
+/**
+ * Encapsulates all configuration for the command package.
+ */
 @Import(CommandExpanderConfig.class)
 @Configuration
 public class CommandConfig {
 
-    @Bean
-    public CommandRepository commandRepository() {
-        return new CommandRepositoryInMemoryImpl();
-    }
+  @Bean
+  public CommandRepository commandRepository() {
+    return new CommandRepositoryInMemoryImpl();
+  }
 
 }

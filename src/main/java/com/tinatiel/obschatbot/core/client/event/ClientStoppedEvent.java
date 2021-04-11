@@ -7,14 +7,18 @@ package com.tinatiel.obschatbot.core.client.event;
 
 import com.tinatiel.obschatbot.core.messaging.AbstractObsChatbotEvent;
 
+/**
+ * This event should be emitted ONLY when the client has fully disconnected from the remote server
+ * and is therefore fully stopped.
+ */
 public class ClientStoppedEvent extends AbstractObsChatbotEvent {
 
-    public ClientStoppedEvent() {
-        super();
-    }
+  public ClientStoppedEvent() {
+    super();
+  }
 
-    @Override
-    public String toString() {
-        return "StoppedEvent{" + super.toString() + "}";
-    }
+  @Override
+  public String toString() {
+    return "StoppedEvent{" + super.toString() + "}";
+  }
 }

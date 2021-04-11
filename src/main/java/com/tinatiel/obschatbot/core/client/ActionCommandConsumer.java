@@ -7,6 +7,10 @@ package com.tinatiel.obschatbot.core.client;
 
 import com.tinatiel.obschatbot.core.request.ActionRequest;
 
+/**
+ * Remove me.
+ */
 public interface ActionCommandConsumer {
-    void consume(ActionRequest actionRequest);
+
+  void consume(ActionRequest actionRequest);
 }

@@ -5,15 +5,13 @@
 
 package com.tinatiel.obschatbot.core.client;
 
-import com.tinatiel.obschatbot.core.ClientInstanceWrapper;
-
 /**
- * Generates a new Client instance delegate.
- * Delegate implementations will contain a new client instance, a reference to the settings
- * used to create the client instance, and should wrap important client methods.
+ * Generates a new Client instance delegate. Delegate implementations will contain a new client
+ * instance, a reference to the settings used to create the client instance, and should wrap
+ * important client methods.
  */
-public interface ClientFactory<C,S> {
+public interface ClientFactory<C, S> {
 
-    ClientDelegate<C, S> generate();
+  ClientDelegate<C, S> generate();
 
 }

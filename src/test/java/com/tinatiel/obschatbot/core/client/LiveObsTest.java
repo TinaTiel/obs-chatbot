@@ -13,7 +13,7 @@ import com.tinatiel.obschatbot.core.request.ActionRequest;
 import com.tinatiel.obschatbot.core.request.RequestContext;
 import com.tinatiel.obschatbot.core.user.Platform;
 import com.tinatiel.obschatbot.core.user.User;
-import com.tinatiel.obschatbot.core.user.UserType;
+
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

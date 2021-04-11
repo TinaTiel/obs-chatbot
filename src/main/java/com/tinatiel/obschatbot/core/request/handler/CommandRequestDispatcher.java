@@ -12,5 +12,6 @@ import com.tinatiel.obschatbot.core.request.RequestContext;
  * Responsible for building, validating, and submitting a Request to the CommandRequest queue.
  */
 public interface CommandRequestDispatcher {
-    void submit(Command command, RequestContext requestContext);
+
+  void submit(Command command, RequestContext requestContext);
 }

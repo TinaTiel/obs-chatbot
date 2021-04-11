@@ -7,7 +7,12 @@ package com.tinatiel.obschatbot.core.command;
 
 import java.util.Optional;
 
+/**
+ * Responsible for CRUD operations of Commands.
+ */
 public interface CommandRepository {
-    Optional<Command> findByName(String name);
-    Command save(Command command);
+
+  Optional<Command> findByName(String name);
+
+  Command save(Command command);
 }

@@ -9,16 +9,16 @@ import com.tinatiel.obschatbot.core.request.CommandRequest;
  */
 public interface WorkGroupManager {
 
-    /**
-     * Gets the next work group in priority order having work to do. Never returns null; if
-     * there is no work to do, a special {@link NoWorkAvailableWorkGroup} is returned so the
-     * next caller does not need to worry about NullPointerExceptions.
-     */
-    WorkGroup getNext();
+  /**
+   * Gets the next work group in priority order having work to do. Never returns null; if there is
+   * no work to do, a special {@link NoWorkAvailableWorkGroup} is returned so the next caller does
+   * not need to worry about NullPointerExceptions.
+   */
+  WorkGroup getNext();
 
-    /**
-     * Routes a given request to the correct WorkGroup.
-     */
-    void route(CommandRequest commandRequest);
+  /**
+   * Routes a given request to the correct WorkGroup.
+   */
+  void route(CommandRequest commandRequest);
 
 }

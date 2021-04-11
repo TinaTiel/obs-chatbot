@@ -8,84 +8,92 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+/**
+ * Thread-safe implementation of the ${@link PausableQueueNotifier}.
+ */
 public class PausableQueueNotifierImpl implements PausableQueueNotifier {
 
-    private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
-    private final Lock rLock = lock.readLock();
-    private final Lock wLock = lock.writeLock();
-    private final Condition runningCondition = wLock.newCondition();
+  private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
+  private final Lock writeLock = lock.writeLock();
+  private final Condition runningCondition = writeLock.newCondition();
 
-    private final BlockingQueue queue;
-    private final List<Listener> listeners = new ArrayList<>();
+  private final BlockingQueue queue;
+  private final List<Listener> listeners = new ArrayList<>();
 
-    private volatile boolean running = false;
+  private volatile boolean running = false;
 
-    public PausableQueueNotifierImpl(BlockingQueue queue) {
-        this.queue = queue;
-        Executors.newSingleThreadExecutor().execute(() -> {
-            while(true) {
-                run();
-            }
-        });
+  /**
+   * Construct a new instance, specifying the BlockingQueue that the notifier will consume from.
+   */
+  public PausableQueueNotifierImpl(BlockingQueue queue) {
+    this.queue = queue;
+    Executors.newSingleThreadExecutor().execute(() -> {
+      while (true) {
+        run();
+      }
+    });
+  }
+
+  public void pause() {
+    running = false;
+  }
+
+  public void consume() {
+    writeLock.lock();
+    try {
+      running = true;
+      runningCondition.signalAll(); // NOT notifyAll()! Use Condition signalAll() method
+    } finally {
+      writeLock.unlock();
     }
+  }
 
-    public void pause() {
-        running = false;
-    }
-
-    public void consume() {
-        wLock.lock();
-        try {
-            running = true;
-            runningCondition.signalAll(); // NOT notifyAll()! Use Condition signalAll() method
-        } finally {
-            wLock.unlock();
-        }
-    }
-
-    private void run() {
-        wLock.lock();
-        try {
-            try {
-                // Sleep if not running.
-                // Use a while loop instead of if/the to protect from spurious wakeups
-                while(!running) {
-                    runningCondition.await(); // NOT wait()! Use the Condition method await()
-                }
-
-                // Get next item out of the queue. Thread sleeps until an item is available, then wakes up with that item
-                Object item = queue.take();
-                if(running) {
-                    notifyListeners(item); // If running, then notify listeners
-                } else {
-                    try {
-                        queue.add(item); // If an item was taken but it isn't running, then put it back
-                    } catch (IllegalStateException queueFullException) {
-                        notifyListeners(item); // If the queue is full, we have no choice but to process it
-                    }
-                }
-            } catch (InterruptedException interruptedException) {
-                interruptedException.printStackTrace();
-            }
-        } finally {
-            wLock.unlock();
+  private void run() {
+    writeLock.lock();
+    try {
+      try {
+        // Sleep if not running.
+        // Use a while loop instead of if/the to protect from spurious wakeups
+        while (!running) {
+          runningCondition.await(); // NOT wait()! Use the Condition method await()
         }
 
+        // Get next item out of the queue. Thread sleeps until an item is available,
+        // then wakes up with that item
+        Object item = queue.take();
+        if (running) {
+          notifyListeners(item); // If running, then notify listeners
+        } else {
+          try {
+            queue.add(item); // If an item was taken but it isn't running, then put it back
+          } catch (IllegalStateException queueFullException) {
+            notifyListeners(item); // If the queue is full, we have no choice but to process it
+          }
+        }
+      } catch (InterruptedException interruptedException) {
+        interruptedException.printStackTrace();
+      }
+    } finally {
+      writeLock.unlock();
     }
 
-    @Override
-    public void addListener(Listener listener) {
-        this.listeners.add(listener);
-    }
+  }
 
-    @Override
-    public void removeListener(Listener listener) {
-        this.listeners.remove(listener);
-    }
+  @Override
+  public void addListener(Listener listener) {
+    this.listeners.add(listener);
+  }
 
-    @Override
-    public void notifyListeners(Object item) {
-        for(Listener listener:listeners) listener.onEvent(item);
+  @Override
+  public void removeListener(Listener listener) {
+    this.listeners.remove(listener);
+  }
+
+  @Override
+  public void notifyListeners(Object item) {
+    for (Listener listener : listeners) {
+      listener.onEvent(item);
     }
+  }
 
 }

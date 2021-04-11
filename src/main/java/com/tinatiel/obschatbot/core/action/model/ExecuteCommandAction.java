@@ -8,38 +8,49 @@ package com.tinatiel.obschatbot.core.action.model;
 import com.tinatiel.obschatbot.core.action.Action;
 import com.tinatiel.obschatbot.core.command.Command;
 
+/**
+ * An Action that allows execution of another Command.
+ */
 public class ExecuteCommandAction implements Action<ExecuteCommandAction> {
 
-    private final Command target;
+  private final Command target;
 
-    public ExecuteCommandAction(Command target) {
-        if(target == null) throw new IllegalArgumentException("arguments cannot be null");
-        this.target = target;
+  /**
+   * Create a new instance of this action, providing the desired Command to execute.
+   */
+  public ExecuteCommandAction(Command target) {
+    if (target == null) {
+      throw new IllegalArgumentException("arguments cannot be null");
     }
+    this.target = target;
+  }
 
-    @Override
-    public ExecuteCommandAction clone() {
-        return new ExecuteCommandAction(target);
-    }
+  @Override
+  public ExecuteCommandAction clone() {
+    return new ExecuteCommandAction(target);
+  }
 
-    @Override
-    public boolean requiresCompletion() {
-        return false;
-    }
+  @Override
+  public boolean requiresCompletion() {
+    return false;
+  }
 
-    @Override
-    public long getTimeout() {
-        return 0;
-    }
+  /**
+   * This action has no timeout; always returns zero.
+   */
+  @Override
+  public long getTimeout() {
+    return 0;
+  }
 
-    public Command getTarget() {
-        return target;
-    }
+  public Command getTarget() {
+    return target;
+  }
 
-    @Override
-    public String toString() {
-        return "ExecuteCommandAction{" +
-                ", target=!" + target.getName() +
-                '}';
-    }
+  @Override
+  public String toString() {
+    return "ExecuteCommandAction{"
+      + "target=" + target
+      + '}';
+  }
 }

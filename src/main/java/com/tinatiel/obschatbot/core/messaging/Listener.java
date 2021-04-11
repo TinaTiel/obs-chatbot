@@ -5,6 +5,12 @@
 
 package com.tinatiel.obschatbot.core.messaging;
 
+/**
+ * A generic listener, generally paired with a ${@link QueueNotifier}. When the QueueNotifier
+ * encounters an event, it invokes the onEvent method for each registered listener.
+ *
+ * @param <T> The type of event this listener processes.
+ */
 public interface Listener<T> {
-    void onEvent(T event);
+  void onEvent(T event);
 }

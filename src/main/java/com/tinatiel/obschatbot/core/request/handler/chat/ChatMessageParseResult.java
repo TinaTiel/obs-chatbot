@@ -6,30 +6,20 @@
 package com.tinatiel.obschatbot.core.request.handler.chat;
 
 import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.ToString;
 
+/**
+ * Represents the result of parsing a String chat message into its respective parts, the (1) command
+ * name that was invoked, and (2) the proceeding arguments to that command.
+ */
+@AllArgsConstructor
+@Getter
+@ToString
 public class ChatMessageParseResult {
 
-    private final String commandName;
-    private final List<String> args;
+  private final String commandName;
+  private final List<String> args;
 
-    public ChatMessageParseResult(String commandName, List<String> args) {
-        this.commandName = commandName;
-        this.args = args;
-    }
-
-    public String getCommandName() {
-        return commandName;
-    }
-
-    public List<String> getArgs() {
-        return args;
-    }
-
-    @Override
-    public String toString() {
-        return "ChatMessageParseResult{" +
-                "commandName='" + commandName + '\'' +
-                ", args=" + args +
-                '}';
-    }
 }

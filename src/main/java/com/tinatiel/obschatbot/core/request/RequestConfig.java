@@ -5,13 +5,16 @@
 
 package com.tinatiel.obschatbot.core.request;
 
-import com.tinatiel.obschatbot.core.request.factory.RequestFactoryConfig;
+import com.tinatiel.obschatbot.core.request.factory.CommandRequestFactoryConfig;
 import com.tinatiel.obschatbot.core.request.handler.RequestHandlerConfig;
-import com.tinatiel.obschatbot.core.request.handler.chat.ChatHandlerConfig;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
-@Import({QueueNotifierConfig.class, RequestHandlerConfig.class, RequestFactoryConfig.class})
+/**
+ * Encompasses all configuration for the request package.
+ */
+@Import({QueueNotifierConfig.class, RequestHandlerConfig.class, CommandRequestFactoryConfig.class})
 @Configuration
 public class RequestConfig {
+
 }

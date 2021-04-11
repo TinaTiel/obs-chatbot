@@ -9,27 +9,28 @@ import com.tinatiel.obschatbot.core.messaging.Listener;
 import com.tinatiel.obschatbot.core.messaging.ObsChatbotEvent;
 
 /**
- * Provides a way to manage a client. Implementations should be injected with a reference to the settings directly or
- * to a data-store that provides them (settings are assumed mutable). When a client is started, a new instance is created
- * with those settings -- and when a client is stopped then the client is destroyed.
+ * Provides a way to manage a client. Implementations should be injected with a reference to the
+ * settings directly or to a data-store that provides them (settings are assumed mutable). When a
+ * client is started, a new instance is created with those settings -- and when a client is stopped
+ * then the client is destroyed.
  */
 public interface ClientManager extends Listener<ObsChatbotEvent>, ActionCommandConsumer {
 
-    /**
-     * Starts a new client instance. Implementations should be blocking until timeout expires.
-      */
-    void startClient();
+  /**
+   * Starts a new client instance. Implementations should be blocking until timeout expires.
+   */
+  void startClient();
 
-    /**
-     * Stops a client instance. Implementations should be blocking until timeout expires.
-     */
-    void stopClient();
+  /**
+   * Stops a client instance. Implementations should be blocking until timeout expires.
+   */
+  void stopClient();
 
-    /**
-     * Convenience method to stop and then start a client. Since a new client is spun up on each start, this method can
-     * be used when fresh settings should be loaded (the old client is destroyed, and the new client is created with the
-     * updated settings.
-     */
-    void reloadClient();
+  /**
+   * Convenience method to stop and then start a client. Since a new client is spun up on each
+   * start, this method can be used when fresh settings should be loaded (the old client is
+   * destroyed, and the new client is created with the updated settings.
+   */
+  void reloadClient();
 
 }

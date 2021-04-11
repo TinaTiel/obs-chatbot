@@ -7,52 +7,67 @@ package com.tinatiel.obschatbot.core.action.model;
 
 import com.tinatiel.obschatbot.core.action.Action;
 
+/**
+ * An Action that either hides or shows a specified Source in OBS (an image, audio source, etc.).
+ */
 public class ObsSourceVisibilityAction implements Action<ObsSourceVisibilityAction> {
 
-    private final String sceneName;
-    private final String sourceName;
-    private final boolean visible;
+  private final String sceneName;
+  private final String sourceName;
+  private final boolean visible;
 
-    public ObsSourceVisibilityAction(String sceneName, String sourceName, boolean visible) {
-        if(sourceName == null) throw new IllegalArgumentException("source name cannot be null");
-        this.sceneName = sceneName;
-        this.sourceName = sourceName;
-        this.visible = visible;
+  /**
+   * Construct a new instance of this action.
+   *
+   * @param sceneName Optional. If not specified, OBS uses the current scene.
+   * @param sourceName Required. The (case-sensitive) name of the source to hide/show.
+   * @param visible Required. If true, will show a source; else will hide a source.
+   */
+  public ObsSourceVisibilityAction(String sceneName, String sourceName, boolean visible) {
+    if (sourceName == null) {
+      throw new IllegalArgumentException("source name cannot be null");
     }
+    this.sceneName = sceneName;
+    this.sourceName = sourceName;
+    this.visible = visible;
+  }
 
-    @Override
-    public ObsSourceVisibilityAction clone() {
-        return new ObsSourceVisibilityAction(sceneName, sourceName, visible);
-    }
+  @Override
+  public ObsSourceVisibilityAction clone() {
+    return new ObsSourceVisibilityAction(sceneName, sourceName, visible);
+  }
 
-    @Override
-    public boolean requiresCompletion() {
-        return false;
-    }
+  @Override
+  public boolean requiresCompletion() {
+    return false;
+  }
 
-    @Override
-    public long getTimeout() {
-        return 0;
-    }
+  /**
+   * This action has no timeout; always returns zero.
+   */
+  @Override
+  public long getTimeout() {
+    return 0;
+  }
 
-    public String getSceneName() {
-        return sceneName;
-    }
+  public String getSceneName() {
+    return sceneName;
+  }
 
-    public String getSourceName() {
-        return sourceName;
-    }
+  public String getSourceName() {
+    return sourceName;
+  }
 
-    public boolean isVisible() {
-        return visible;
-    }
+  public boolean isVisible() {
+    return visible;
+  }
 
-    @Override
-    public String toString() {
-        return "ObsSourceVisibilityAction{" +
-                "sceneName='" + sceneName + '\'' +
-                ", sourceName='" + sourceName + '\'' +
-                ", visible=" + visible +
-                '}';
-    }
+  @Override
+  public String toString() {
+    return "ObsSourceVisibilityAction{"
+      + "sceneName='" + sceneName + '\''
+      + ", sourceName='" + sourceName + '\''
+      + ", visible=" + visible
+      + '}';
+  }
 }

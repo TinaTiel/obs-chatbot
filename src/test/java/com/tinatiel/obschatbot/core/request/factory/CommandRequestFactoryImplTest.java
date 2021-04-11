@@ -27,12 +27,12 @@ class CommandRequestFactoryImplTest {
 
     CommandExpander commandExpander;
 
-    RequestFactory factory;
+    CommandRequestFactory factory;
 
     @BeforeEach
     void setUp() {
         commandExpander = mock(CommandExpander.class);
-        factory = new RequestFactoryImpl(commandExpander);
+        factory = new CommandRequestFactoryImpl(commandExpander);
     }
 
     @Test

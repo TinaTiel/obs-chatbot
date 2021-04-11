@@ -6,10 +6,11 @@
 package com.tinatiel.obschatbot.core.client;
 
 /**
- * Returns immutable copies of settings from their source; e.g. would have dependencies on the database, but won't return mutable proxies.
+ * Returns immutable copies of settings from their source; e.g. would have dependencies on the
+ * database, but won't return mutable proxies.
  */
 public interface ClientSettingsFactory<T> {
 
-    T getSettings();
+  T getSettings();
 
 }

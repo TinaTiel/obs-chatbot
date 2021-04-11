@@ -5,33 +5,22 @@
 
 package com.tinatiel.obschatbot.core.client.obs;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.ToString;
+
+/**
+ * Encompasses the connection settings required to initiate connection with OBS.
+ */
+@Data
+@AllArgsConstructor
+@ToString
 public class ObsSettings {
 
-    private String host;
-    private int port;
-    private String password;
-    private long connectionTimeoutMs;
+  private String host;
+  private int port;
+  @ToString.Exclude
+  private String password;
+  private long connectionTimeoutMs;
 
-    public ObsSettings(String host, int port, String password, long connectionTimeoutMs) {
-        this.host = host;
-        this.port = port;
-        this.password = password;
-        this.connectionTimeoutMs = connectionTimeoutMs;
-    }
-
-    public String getHost() {
-        return host;
-    }
-
-    public int getPort() {
-        return port;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public long getConnectionTimeoutMs() {
-        return connectionTimeoutMs;
-    }
 }

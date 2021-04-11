@@ -8,13 +8,13 @@ package com.tinatiel.obschatbot.core.request.handler.chat;
 import java.util.Optional;
 
 /**
- * Responsible for conditionally parsing a message into a
- * command and argument parts.
+ * Responsible for conditionally parsing a message into a command and argument parts.
  */
 public interface ChatMessageParser {
-    /**
-     * Parse a message into a {@link ChatMessageParseResult} if the message
-     * appears to contain a command request.
-     */
-    Optional<ChatMessageParseResult> parse(String message);
+
+  /**
+   * Parse a message into a {@link ChatMessageParseResult} if the message appears to contain a
+   * command request.
+   */
+  Optional<ChatMessageParseResult> parse(String message);
 }

@@ -7,13 +7,17 @@ package com.tinatiel.obschatbot.core.client.event;
 
 import com.tinatiel.obschatbot.core.messaging.AbstractObsChatbotEvent;
 
+/**
+ * Represents when a client has initiated authentication with a remote server.
+ */
 public class ClientAuthenticatingEvent extends AbstractObsChatbotEvent {
-    public ClientAuthenticatingEvent() {
-        super();
-    }
 
-    @Override
-    public String toString() {
-        return "AuthenticatingEvent{" + super.toString() + "}";
-    }
+  public ClientAuthenticatingEvent() {
+    super();
+  }
+
+  @Override
+  public String toString() {
+    return "AuthenticatingEvent{" + super.toString() + "}";
+  }
 }

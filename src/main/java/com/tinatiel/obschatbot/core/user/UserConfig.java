@@ -8,22 +8,25 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
+/**
+ * Encompasses all configuration for the UserService.
+ */
 @Import(LocalUserConfig.class)
 @Configuration
 public class UserConfig {
 
-    @Autowired
-    LocalUserRepository localUserRepository;
+  @Autowired
+  LocalUserRepository localUserRepository;
 
-    @Autowired
-    TwitchApiClient twitchApiClient;
+  @Autowired
+  TwitchApiClient twitchApiClient;
 
-    @Bean
-    UserService userService() {
-        return new UserServiceImpl(
-                localUserRepository,
-                twitchApiClient
-        );
-    }
+  @Bean
+  UserService userService() {
+    return new UserServiceImpl(
+      localUserRepository,
+      twitchApiClient
+    );
+  }
 
 }

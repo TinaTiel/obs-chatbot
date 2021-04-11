@@ -11,8 +11,13 @@ import com.tinatiel.obschatbot.core.error.CyclicalActionsException;
 import com.tinatiel.obschatbot.core.request.CommandRequest;
 import com.tinatiel.obschatbot.core.request.RequestContext;
 
-public interface RequestFactory {
+/**
+ * Responsible for taking a raw ${@link Command} and ${@link RequestContext} and assembling them
+ * into an executable ${@link CommandRequest}.
+ */
+public interface CommandRequestFactory {
 
-    CommandRequest build(Command command, RequestContext context) throws CyclicalActionsException, ClientException;
+  CommandRequest build(Command command, RequestContext context)
+      throws CyclicalActionsException, ClientException;
 
 }

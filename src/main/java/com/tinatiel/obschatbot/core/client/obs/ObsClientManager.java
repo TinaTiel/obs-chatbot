@@ -8,6 +8,9 @@ package com.tinatiel.obschatbot.core.client.obs;
 import com.tinatiel.obschatbot.core.client.ActionCommandConsumer;
 import com.tinatiel.obschatbot.core.client.ClientManager;
 
+/**
+ * Deprecated.
+ */
 public interface ObsClientManager extends ActionCommandConsumer, ClientManager {
 
 }

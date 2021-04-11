@@ -7,9 +7,13 @@ package com.tinatiel.obschatbot.core.client.obs;
 
 import com.tinatiel.obschatbot.core.client.ActionClient;
 
+/**
+ * Deprecated.
+ */
 public interface ObsClient extends ActionClient {
 
-    void connect();
-    void setSourceVisibility(String scene, String source, boolean visibility);
+  void connect();
+
+  void setSourceVisibility(String scene, String source, boolean visibility);
 
 }

@@ -6,11 +6,13 @@
 package com.tinatiel.obschatbot.core.user;
 
 import com.tinatiel.obschatbot.core.user.local.UserGroup;
-import lombok.*;
-
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.ToString;
 
 /**
  * Encompasses an actor in this system; what identifies them, and what permissions they have.
@@ -21,43 +23,46 @@ import java.util.Set;
 @ToString
 public class User {
 
-    public static final String SYSTEM_PRINCIPAL_NAME = "SYSTEM";
+  public static final String SYSTEM_PRINCIPAL_NAME = "SYSTEM";
 
-    private final String id;
+  private final String id;
 
-    private final Platform platform;
+  private final Platform platform;
 
-    private final String username;
+  private final String username;
 
-    @Builder.Default
-    private final UserSecurityDetails userSecurityDetails = UserSecurityDetails.builder().build();
+  @Builder.Default
+  private final UserSecurityDetails userSecurityDetails = UserSecurityDetails.builder().build();
 
-    @Builder.Default
-    private final Set<UserGroup> groups = new HashSet<>();
+  @Builder.Default
+  private final Set<UserGroup> groups = new HashSet<>();
 
-    /**
-     * Returns the SYSTEM user; a Local user that has admin (broadcaster)
-     * permissions.
-     */
-    public static User systemUser() {
-        return User.builder()
-                .platform(Platform.LOCAL)
-                .username(SYSTEM_PRINCIPAL_NAME)
-                .userSecurityDetails(UserSecurityDetails.builder().broadcaster(true).build())
-                .build();
+  /**
+   * Returns the SYSTEM user; a Local user that has admin (broadcaster) permissions.
+   */
+  public static User systemUser() {
+    return User.builder()
+      .platform(Platform.LOCAL)
+      .username(SYSTEM_PRINCIPAL_NAME)
+      .userSecurityDetails(UserSecurityDetails.builder().broadcaster(true).build())
+      .build();
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return platform == user.platform && Objects.equals(username, user.username);
+    if (o == null || getClass() != o.getClass()) {
+      return false;
     }
+    User user = (User) o;
+    return platform == user.platform && Objects.equals(username, user.username);
+  }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(platform, username);
-    }
+  @Override
+  public int hashCode() {
+    return Objects.hash(platform, username);
+  }
 
 }

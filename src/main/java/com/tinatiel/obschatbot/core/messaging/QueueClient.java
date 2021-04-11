@@ -5,6 +5,15 @@
 
 package com.tinatiel.obschatbot.core.messaging;
 
+/**
+ * A client that submits work to a queue.
+ *
+ * @param <T> The type submitted to the queue.
+ */
 public interface QueueClient<T> {
-    void submit(T queueItem);
+
+  /**
+   * Submit work to a queue of type T.
+   */
+  void submit(T queueItem);
 }

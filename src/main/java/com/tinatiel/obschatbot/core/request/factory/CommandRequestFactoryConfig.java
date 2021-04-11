@@ -7,17 +7,20 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
+/**
+ * Encompasses all configuration for the CommandRequestFactory instance.
+ */
 @Import(CommandExpanderConfig.class)
 @Configuration
-public class RequestFactoryConfig {
+public class CommandRequestFactoryConfig {
 
-    @Autowired
-    CommandExpander commandExpander;
+  @Autowired
+  CommandExpander commandExpander;
 
-    @Bean
-    RequestFactory requestFactory() {
-        return new RequestFactoryImpl(
-                commandExpander
-        );
-    }
+  @Bean
+  CommandRequestFactory requestFactory() {
+    return new CommandRequestFactoryImpl(
+      commandExpander
+    );
+  }
 }

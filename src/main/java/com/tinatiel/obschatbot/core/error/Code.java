@@ -5,12 +5,12 @@
 
 package com.tinatiel.obschatbot.core.error;
 
+/**
+ * Represents unique exception codes.
+ */
 public enum Code {
-    UNEXPECTED,
-    NOT_ACCEPTABLE,
-    SERVICE_NOT_READY,
-    CYCLICAL_ACTION,
-    CLIENT_NOT_AVAILABLE,
-    CLIENT_BAD_CREDENTIALS,
-    CLIENT_UNREACHABLE
+  UNEXPECTED,
+  SERVICE_NOT_READY,
+  CYCLICAL_ACTION,
+  CLIENT_NOT_AVAILABLE
 }

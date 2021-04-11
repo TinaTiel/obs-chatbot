@@ -7,13 +7,17 @@ package com.tinatiel.obschatbot.core.client.event;
 
 import com.tinatiel.obschatbot.core.messaging.AbstractObsChatbotEvent;
 
+/**
+ * Represents that a start request has been acknowledged and is now being acted upon.
+ */
 public class ClientStartingEvent extends AbstractObsChatbotEvent {
-    public ClientStartingEvent() {
-        super();
-    }
 
-    @Override
-    public String toString() {
-        return "StartingEvent{" + super.toString() + "}";
-    }
+  public ClientStartingEvent() {
+    super();
+  }
+
+  @Override
+  public String toString() {
+    return "StartingEvent{" + super.toString() + "}";
+  }
 }

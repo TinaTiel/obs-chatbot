@@ -6,24 +6,22 @@
 package com.tinatiel.obschatbot.core.action;
 
 /**
- * Defines a specific action that can occur, for example hiding an OBS scene,
- * sending a chat message, pausing/waiting, etc.
+ * Defines a specific action that can occur, for example hiding an OBS scene, sending a chat
+ * message, pausing/waiting, etc.
  */
 public interface Action<T extends Action<T>> {
 
-    T clone();
+  T clone();
 
-    /**
-     * If true, this signifies an action requires receipt of completion
-     * before it is considered complete. An example of this might be a
-     * long-running operation or a wait/timer.
-     */
-    boolean requiresCompletion();
+  /**
+   * If true, this signifies an action requires receipt of completion before it is considered
+   * complete. An example of this might be a long-running operation or a wait/timer.
+   */
+  boolean requiresCompletion();
 
-    /**
-     * Gets the configured timeout for an action if it is blocking.
-     * @return
-     */
-    long getTimeout();
+  /**
+   * Gets the configured timeout for an action if it is blocking.
+   */
+  long getTimeout();
 
 }

@@ -11,16 +11,20 @@ import net.twasi.obsremotejava.OBSRemoteController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Deprecated.
+ */
 public class ObsActionCommandConsumer implements ActionCommandConsumer {
-    private final Logger log = LoggerFactory.getLogger(this.getClass());
-    private final OBSRemoteController client;
 
-    public ObsActionCommandConsumer(OBSRemoteController client) {
-        this.client = client;
-    }
+  private final Logger log = LoggerFactory.getLogger(this.getClass());
+  private final OBSRemoteController client;
 
-    @Override
-    public void consume(ActionRequest actionRequest) {
+  public ObsActionCommandConsumer(OBSRemoteController client) {
+    this.client = client;
+  }
+
+  @Override
+  public void consume(ActionRequest actionRequest) {
 //        try {
 //            if(actionRequest.getAction() instanceof ObsSourceVisibilityAction) {
 //                ObsSourceVisibilityAction action = (ObsSourceVisibilityAction) actionRequest.getAction();
@@ -32,5 +36,5 @@ public class ObsActionCommandConsumer implements ActionCommandConsumer {
 //        } finally {
 //            actionRequest.cancel(true);
 //        }
-    }
+  }
 }

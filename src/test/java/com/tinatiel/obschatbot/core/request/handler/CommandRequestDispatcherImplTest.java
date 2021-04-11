@@ -9,7 +9,7 @@ import com.tinatiel.obschatbot.core.command.Command;
 import com.tinatiel.obschatbot.core.messaging.QueueClient;
 import com.tinatiel.obschatbot.core.request.CommandRequest;
 import com.tinatiel.obschatbot.core.request.RequestContext;
-import com.tinatiel.obschatbot.core.request.factory.RequestFactory;
+import com.tinatiel.obschatbot.core.request.factory.CommandRequestFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -19,16 +19,16 @@ import static org.mockito.Mockito.*;
 
 class CommandRequestDispatcherImplTest {
 
-    RequestFactory requestFactory;
+    CommandRequestFactory commandRequestFactory;
     QueueClient<CommandRequest> commandRequestQueueClient;
 
     CommandRequestDispatcher commandRequestDispatcher;
 
     @BeforeEach
     void setUp() {
-        requestFactory = mock(RequestFactory.class);
+        commandRequestFactory = mock(CommandRequestFactory.class);
         commandRequestQueueClient = mock(QueueClient.class);
-        commandRequestDispatcher = new CommandRequestDispatcherImpl(requestFactory, commandRequestQueueClient);
+        commandRequestDispatcher = new CommandRequestDispatcherImpl(commandRequestFactory, commandRequestQueueClient);
     }
 
     @Test
@@ -46,7 +46,7 @@ class CommandRequestDispatcherImplTest {
 
         // Given the request factory returns a request
         CommandRequest commandRequest = mock(CommandRequest.class);
-        when(requestFactory.build(any(), any())).thenReturn(commandRequest);
+        when(commandRequestFactory.build(any(), any())).thenReturn(commandRequest);
 
         // When executed
         commandRequestDispatcher.submit(mock(Command.class), mock(RequestContext.class));
@@ -60,7 +60,7 @@ class CommandRequestDispatcherImplTest {
     void whenAnyExceptionsOccurThenExecutorIsNotInvoked() {
 
         // Given factory throws exception
-        when(requestFactory.build(any(), any())).thenThrow(new RuntimeException("some exception, doesn't matter"));
+        when(commandRequestFactory.build(any(), any())).thenThrow(new RuntimeException("some exception, doesn't matter"));
 
         // When executed
         commandRequestDispatcher.submit(mock(Command.class), mock(RequestContext.class));

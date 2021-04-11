@@ -7,27 +7,32 @@ package com.tinatiel.obschatbot.core.messaging;
 
 import java.util.concurrent.BlockingQueue;
 
+/**
+ * An implementation of QueueNotifier that continuously polls a queue for new items, notifying
+ * any registered listeners. Internally, it uses a ${@link PausableQueueNotifierImpl} that is
+ * started immediately after this class is instantiated.
+ */
 public class QueueNotifierImpl implements QueueNotifier {
 
-    private final PausableQueueNotifier delegate;
+  private final PausableQueueNotifier delegate;
 
-    public QueueNotifierImpl(BlockingQueue queue) {
-        this.delegate = new PausableQueueNotifierImpl(queue);
-        delegate.consume();
-    }
+  public QueueNotifierImpl(BlockingQueue queue) {
+    this.delegate = new PausableQueueNotifierImpl(queue);
+    delegate.consume();
+  }
 
-    @Override
-    public void addListener(Listener listener) {
-        delegate.addListener(listener);
-    }
+  @Override
+  public void addListener(Listener listener) {
+    delegate.addListener(listener);
+  }
 
-    @Override
-    public void removeListener(Listener listener) {
-        delegate.removeListener(listener);
-    }
+  @Override
+  public void removeListener(Listener listener) {
+    delegate.removeListener(listener);
+  }
 
-    @Override
-    public void notifyListeners(Object queueItem) {
-        delegate.notifyListeners(queueItem);
-    }
+  @Override
+  public void notifyListeners(Object queueItem) {
+    delegate.notifyListeners(queueItem);
+  }
 }

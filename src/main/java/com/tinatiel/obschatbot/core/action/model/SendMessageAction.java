@@ -7,38 +7,50 @@ package com.tinatiel.obschatbot.core.action.model;
 
 import com.tinatiel.obschatbot.core.action.Action;
 
+/**
+ * An action instructing a chat client to send a message.
+ */
 public class SendMessageAction implements Action<SendMessageAction> {
 
-    private final String message;
+  private final String message;
 
-    public SendMessageAction(String message) {
-        if(message == null) throw new IllegalArgumentException("message cannot be null");
-        this.message = message;
+  /**
+   * Construct a new instance with the specified message to send.
+   */
+  public SendMessageAction(String message) {
+    if (message == null) {
+      throw new IllegalArgumentException("message cannot be null");
     }
+    this.message = message;
+  }
 
-    public String getMessage() {
-        return message;
-    }
+  public String getMessage() {
+    return message;
+  }
 
-    @Override
-    public SendMessageAction clone() {
-        return new SendMessageAction(message);
-    }
+  @Override
+  public SendMessageAction clone() {
+    return new SendMessageAction(message);
+  }
 
-    @Override
-    public boolean requiresCompletion() {
-        return false;
-    }
+  @Override
+  public boolean requiresCompletion() {
+    return false;
+  }
 
-    @Override
-    public long getTimeout() {
-        return 0;
-    }
+  /**
+   * This action has no timeout; always returns zero.
+   */
+  @Override
+  public long getTimeout() {
+    return 0;
+  }
 
-    @Override
-    public String toString() {
-        return "SendMessageAction{" +
-                "message='" + message + '\'' +
-                '}';
-    }
+  @Override
+  public String toString() {
+    return "SendMessageAction{"
+      + "message='" + message + '\''
+      + '}';
+  }
+
 }

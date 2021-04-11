@@ -5,5 +5,9 @@
 
 package com.tinatiel.obschatbot.core.client;
 
+/**
+ * Remove me.
+ */
 public interface ActionClient {
+
 }

@@ -7,16 +7,19 @@ package com.tinatiel.obschatbot.core.client.obs;
 
 import com.tinatiel.obschatbot.core.client.ClientSettingsFactory;
 
+/**
+ * Provides up-to-date settings for the OBS Client.
+ */
 public class ObsClientSettingsFactory implements ClientSettingsFactory<ObsSettings> {
 
-    private final ObsSettings settings;
+  private final ObsSettings settings;
 
-    public ObsClientSettingsFactory(ObsSettings settings) {
-        this.settings = settings;
-    }
+  public ObsClientSettingsFactory(ObsSettings settings) {
+    this.settings = settings;
+  }
 
-    @Override
-    public ObsSettings getSettings() {
-        return settings;
-    }
+  @Override
+  public ObsSettings getSettings() {
+    return settings;
+  }
 }

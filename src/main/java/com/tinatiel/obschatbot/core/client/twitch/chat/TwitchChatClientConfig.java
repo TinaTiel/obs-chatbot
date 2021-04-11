@@ -8,9 +8,17 @@ package com.tinatiel.obschatbot.core.client.twitch.chat;
 import com.tinatiel.obschatbot.core.client.ClientFactory;
 import com.tinatiel.obschatbot.core.client.ClientManager;
 import com.tinatiel.obschatbot.core.client.ClientSettingsFactory;
-import com.tinatiel.obschatbot.core.messaging.*;
+import com.tinatiel.obschatbot.core.messaging.Listener;
+import com.tinatiel.obschatbot.core.messaging.ObsChatbotEvent;
+import com.tinatiel.obschatbot.core.messaging.QueueClient;
+import com.tinatiel.obschatbot.core.messaging.QueueClientImpl;
+import com.tinatiel.obschatbot.core.messaging.QueueNotifier;
+import com.tinatiel.obschatbot.core.messaging.QueueNotifierImpl;
 import com.tinatiel.obschatbot.core.request.ActionRequest;
 import com.tinatiel.obschatbot.core.request.handler.chat.ChatRequestHandler;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+import javax.net.ssl.SSLSocketFactory;
 import org.pircbotx.PircBotX;
 import org.pircbotx.UtilSSLSocketFactory;
 import org.slf4j.Logger;
@@ -21,106 +29,101 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 
-import javax.net.ssl.SSLSocketFactory;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
-
+/**
+ * Encompasses all configuration for the Twitch IRC chat client.
+ */
 @Configuration
 public class TwitchChatClientConfig {
 
-    @Value("${TWITCH_TARGET_CHANNEL:noauth}")
-    private String targetChannel;
+  @Autowired
+  ChatRequestHandler chatRequestHandler;
 
-    @Value("${TWITCH_USER:noauth}")
-    private String twitchUsername;
+  @Autowired
+  OAuth2AuthorizedClientService authorizedClientService;
 
-//    @Value("${TWITCH_PASS:noauth}")
-    private String twitchPassword = "nonespecified";
+  @Value("${TWITCH_TARGET_CHANNEL:noauth}")
+  private String targetChannel;
 
-    @Autowired
-    ChatRequestHandler chatRequestHandler;
+  @Value("${TWITCH_USER:noauth}")
+  private String twitchUsername;
 
-    @Autowired
-    OAuth2AuthorizedClientService oAuth2AuthorizedClientService;
+  /**
+   * Until we have this stored in a Repository, just hard-code it here.
+   */
+  @Bean
+  ClientSettingsFactory<TwitchChatClientSettings> twitchChatClientSettingsFactory() {
+    TwitchChatClientSettings settings = new TwitchChatClientSettings(
+        TwitchChatClientSettings.DEFAULT_HOST, TwitchChatClientSettings.DEFAULT_PORT,
+        twitchUsername, "foo", targetChannel,
+        1000, 1,
+        "OBS Chatbot is ready! Type !help to see available commands",
+        "OBS Chatbot is shutting down"
+    );
+    return new TwitchChatClientSettingsFactory(settings, authorizedClientService);
+  }
 
-    /**
-     * Until we have this stored in a Repository, just hard-code it here.
-     */
-    @Bean
-    ClientSettingsFactory<TwitchChatClientSettings> twitchChatClientSettingsFactory() {
-        TwitchChatClientSettings settings = new TwitchChatClientSettings(
-                TwitchChatClientSettings.DEFAULT_HOST, TwitchChatClientSettings.DEFAULT_PORT,
-                twitchUsername, "foo", targetChannel,
-                1000,
-                1
-        );
-        settings.setJoinMessage("OBS Chatbot is ready! Type !help to see available commands");
-        settings.setLeaveMessage("OBS Chatbot is shutting down");
-        return new TwitchChatClientSettingsFactory(settings, oAuth2AuthorizedClientService);
-    }
+  @Bean
+  SSLSocketFactory sslSocketFactory() {
+    return new UtilSSLSocketFactory();
+  }
 
-    @Bean
-    SSLSocketFactory sslSocketFactory() {
-        return new UtilSSLSocketFactory();
-    }
+  @Bean
+  PircBotxListener pircBotxListener() {
+    return new PircBotxListener(
+        twitchChatEventQueueClient(),
+        chatRequestHandler,
+        new TwitchChatClientTagsParser()
+    );
+  }
 
-    @Bean
-    PircBotxListener pircBotxListener() {
-        return new PircBotxListener(
-                twitchChatEventQueueClient(),
-                chatRequestHandler,
-                new TwitchChatClientTagsParser()
-        );
-    }
+  @Bean
+  ClientFactory<PircBotX, TwitchChatClientSettings> twitchChatClientFactory() {
+    return new TwitchChatClientFactory(
+      twitchChatClientSettingsFactory(),
+      sslSocketFactory(),
+      pircBotxListener()
+    );
+  }
 
-    @Bean
-    ClientFactory<PircBotX, TwitchChatClientSettings> twitchChatClientFactory() {
-        return new TwitchChatClientFactory(
-            twitchChatClientSettingsFactory(),
-            sslSocketFactory(),
-            pircBotxListener()
-        );
-    }
+  @Bean
+  ClientManager twitchChatClientManager() {
+    return new TwitchChatClientManager(twitchChatEventQueueClient(), twitchChatClientFactory());
+  }
 
-    @Bean
-    ClientManager twitchChatClientManager() {
-        return new TwitchChatClientManager(twitchChatEventQueueClient(), twitchChatClientFactory());
-    }
+  @Bean
+  BlockingQueue<ObsChatbotEvent> twitchChatEventQueue() {
+    return new LinkedBlockingQueue<>();
+  }
 
-    @Bean
-    BlockingQueue<ObsChatbotEvent> twitchChatEventQueue() {
-        return new LinkedBlockingQueue<>();
-    }
+  @Bean
+  QueueClient<ObsChatbotEvent> twitchChatEventQueueClient() {
+    return new QueueClientImpl(twitchChatEventQueue());
+  }
 
-    @Bean
-    QueueClient<ObsChatbotEvent> twitchChatEventQueueClient() {
-        return new QueueClientImpl(twitchChatEventQueue());
-    }
+  @Bean
+  QueueNotifier<ObsChatbotEvent> twitchChatEventQueueNotifier() {
+    QueueNotifier<ObsChatbotEvent> notifier = new QueueNotifierImpl(twitchChatEventQueue());
+    notifier.addListener(eventLogger());
+    notifier.addListener(twitchChatClientManager());
 
-    @Bean
-    QueueNotifier<ObsChatbotEvent> twitchChatEventQueueNotifier() {
-        QueueNotifier<ObsChatbotEvent> notifier = new QueueNotifierImpl(twitchChatEventQueue());
-        notifier.addListener(eventLogger());
-        notifier.addListener(twitchChatClientManager());
+    return notifier;
+  }
 
-        return notifier;
-    }
+  Listener<ObsChatbotEvent> eventLogger() {
+    return new Listener<ObsChatbotEvent>() {
 
-    Listener<ObsChatbotEvent> eventLogger() {
-        return new Listener<ObsChatbotEvent>() {
+      private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-            private final Logger log = LoggerFactory.getLogger(this.getClass());
+      @Override
+      public void onEvent(ObsChatbotEvent event) {
+        log.debug("Logged Event: " + event.toString());
+      }
+    };
+  }
 
-            @Override
-            public void onEvent(ObsChatbotEvent event) {
-                log.debug("Logged Event: " + event.toString());
-            }
-        };
-    }
-
-    @Bean
-    Listener<ActionRequest> twitchChatActionRequestListener() {
-        return new TwitchChatActionRequestListener(twitchChatClientManager());
-    }
+  @Bean
+  Listener<ActionRequest> twitchChatActionRequestListener() {
+    return new TwitchChatActionRequestListener(twitchChatClientManager());
+  }
 
 }

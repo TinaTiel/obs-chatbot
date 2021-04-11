@@ -7,13 +7,17 @@ package com.tinatiel.obschatbot.core.client.event;
 
 import com.tinatiel.obschatbot.core.messaging.AbstractObsChatbotEvent;
 
+/**
+ * Represents when a client has closed the socket/connection with the remote server.
+ */
 public class ClientDisconnectedEvent extends AbstractObsChatbotEvent {
-    public ClientDisconnectedEvent() {
-        super();
-    }
 
-    @Override
-    public String toString() {
-        return "DisconnectedEvent{" + super.toString() + "}";
-    }
+  public ClientDisconnectedEvent() {
+    super();
+  }
+
+  @Override
+  public String toString() {
+    return "DisconnectedEvent{" + super.toString() + "}";
+  }
 }

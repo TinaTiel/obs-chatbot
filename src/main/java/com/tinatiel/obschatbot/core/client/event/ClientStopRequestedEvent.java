@@ -7,20 +7,24 @@ package com.tinatiel.obschatbot.core.client.event;
 
 import com.tinatiel.obschatbot.core.messaging.AbstractObsChatbotEvent;
 
+/**
+ * Acknowledges a request to stop a client. A client may subsequently follow this with an
+ * ${@link ClientRequestIgnoredEvent} if, for example, the client is already stopped or stopping.
+ */
 public class ClientStopRequestedEvent extends AbstractObsChatbotEvent {
 
-    private final String reason;
+  private final String reason;
 
-    public ClientStopRequestedEvent(String reason) {
-        super();
-        this.reason = reason;
-    }
+  public ClientStopRequestedEvent(String reason) {
+    super();
+    this.reason = reason;
+  }
 
-    @Override
-    public String toString() {
-        return "StopRequestedEvent{" +
-                super.toString() +
-                "reason='" + reason + '\'' +
-                '}';
-    }
+  @Override
+  public String toString() {
+    return "StopRequestedEvent{"
+      + super.toString()
+      + "reason='" + reason + '\''
+      + '}';
+  }
 }

@@ -5,16 +5,17 @@
 
 package com.tinatiel.obschatbot.core.error;
 
-public class UnexpectedException extends AbstractException {
-    public UnexpectedException(Code code, String message, Throwable throwable) {
-        super(code, message, throwable);
-    }
+public class UnexpectedException extends AbstractCodedException {
 
-    public UnexpectedException(String message, Throwable throwable) {
-        super(Code.UNEXPECTED, message, throwable);
-    }
+  public UnexpectedException(Code code, String message, Throwable throwable) {
+    super(code, message, throwable);
+  }
 
-    public UnexpectedException(String message) {
-        super(Code.UNEXPECTED, message, null);
-    }
+  public UnexpectedException(String message, Throwable throwable) {
+    super(Code.UNEXPECTED, message, throwable);
+  }
+
+  public UnexpectedException(String message) {
+    super(Code.UNEXPECTED, message, null);
+  }
 }

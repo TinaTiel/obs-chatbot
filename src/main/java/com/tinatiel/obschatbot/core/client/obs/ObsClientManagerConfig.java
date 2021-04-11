@@ -6,20 +6,22 @@
 package com.tinatiel.obschatbot.core.client.obs;
 
 import com.tinatiel.obschatbot.core.client.ClientManager;
-import com.tinatiel.obschatbot.core.messaging.ObsChatbotEvent;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * Encompasses all configuration for the OBS Client Manager.
+ */
 @Configuration
 public class ObsClientManagerConfig {
 
-    private ObsSettings obsSettings() {
-        return new ObsSettings("localhost", 4444, null, 1000);
-    }
+  private ObsSettings obsSettings() {
+    return new ObsSettings("localhost", 4444, null, 1000);
+  }
 
-    @Bean
-    public ClientManager obsClientManager() {
-        return new ObsClientManagerImpl(obsSettings());
-    }
+  @Bean
+  public ClientManager obsClientManager() {
+    return new ObsClientManagerImpl(obsSettings());
+  }
 
 }

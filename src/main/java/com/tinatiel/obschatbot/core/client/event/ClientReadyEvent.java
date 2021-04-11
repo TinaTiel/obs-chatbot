@@ -7,13 +7,19 @@ package com.tinatiel.obschatbot.core.client.event;
 
 import com.tinatiel.obschatbot.core.messaging.AbstractObsChatbotEvent;
 
+/**
+ * Signifies when a client is ready to accept requests/actions, for example an IRC client has
+ * successfully connected, authenticated with, and joined with the required capabilities (CAP) and
+ * is now able to listen to and send chat messages.
+ */
 public class ClientReadyEvent extends AbstractObsChatbotEvent {
-    public ClientReadyEvent() {
-        super();
-    }
 
-    @Override
-    public String toString() {
-        return "ReadyEvent{" + super.toString() + "}";
-    }
+  public ClientReadyEvent() {
+    super();
+  }
+
+  @Override
+  public String toString() {
+    return "ReadyEvent{" + super.toString() + "}";
+  }
 }

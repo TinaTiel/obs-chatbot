@@ -5,16 +5,19 @@
 
 package com.tinatiel.obschatbot.core.client.obs;
 
+/**
+ * Deprecated.
+ */
 public enum ObsClientState {
-    ERROR,
-    STOP_REQUESTED,
-    STOPPING,
-    STOPPED,
-    START_REQUESTED,
-    STARTING,
-    CONNECTING,
-    CONNECTED,
-    AUTHENTICATING,
-    AUTHENTICATED,
-    READY
+  ERROR,
+  STOP_REQUESTED,
+  STOPPING,
+  STOPPED,
+  START_REQUESTED,
+  STARTING,
+  CONNECTING,
+  CONNECTED,
+  AUTHENTICATING,
+  AUTHENTICATED,
+  READY
 }

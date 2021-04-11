@@ -5,14 +5,20 @@
 
 package com.tinatiel.obschatbot.core.error;
 
-public class ClientException extends AbstractException {
-    public ClientException(Code code, String message, Throwable throwable) {
-        super(code, message, throwable);
-    }
-    public ClientException(String message, Throwable throwable) {
-        super(Code.CLIENT_NOT_AVAILABLE, message, throwable);
-    }
-    public ClientException(String message) {
-        super(Code.CLIENT_NOT_AVAILABLE, message, null);
-    }
+/**
+ * Represents a runtime exception thrown by a client.
+ */
+public class ClientException extends AbstractCodedException {
+
+  public ClientException(Code code, String message, Throwable throwable) {
+    super(code, message, throwable);
+  }
+
+  public ClientException(String message, Throwable throwable) {
+    super(Code.CLIENT_NOT_AVAILABLE, message, throwable);
+  }
+
+  public ClientException(String message) {
+    super(Code.CLIENT_NOT_AVAILABLE, message, null);
+  }
 }

@@ -5,7 +5,20 @@
 
 package com.tinatiel.obschatbot.core.messaging;
 
+/**
+ * A ${@link QueueNotifier} that can pause/resume consumption from its target queue.
+ *
+ * @param <T> the type consumed from the queue.
+ */
 public interface PausableQueueNotifier<T> extends QueueNotifier<T> {
-    void pause();
-    void consume();
+
+  /**
+   * Pauses consumption from target queue.
+   */
+  void pause();
+
+  /**
+   * Starts (or resumes) consumption from target queue.
+   */
+  void consume();
 }
