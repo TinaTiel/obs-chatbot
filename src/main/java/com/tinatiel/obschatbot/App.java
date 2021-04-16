@@ -9,6 +9,7 @@ import com.tinatiel.obschatbot.core.action.model.SendMessageAction;
 import com.tinatiel.obschatbot.core.command.Command;
 import com.tinatiel.obschatbot.core.command.CommandRepository;
 import com.tinatiel.obschatbot.core.sequencer.InOrderActionSequencer;
+import com.tinatiel.obschatbot.core.sequencer.RandomOrderActionSequencer;
 import java.util.Arrays;
 import java.util.Date;
 import org.springframework.boot.SpringApplication;
@@ -30,11 +31,11 @@ public class App {
     // Register a command
     Command command = new Command()
         .name("test")
-        .actionSequencer(new InOrderActionSequencer(Arrays.asList(
+        .actionSequencer(new RandomOrderActionSequencer(Arrays.asList(
           new SendMessageAction("Test message #1, sent " + new Date()),
           new SendMessageAction("Test message #2, sent " + new Date()),
           new SendMessageAction("Test message #3, sent " + new Date())
-        ), false));
+        ), 2));
 
     Command pingPong = new Command()
         .name("ping")

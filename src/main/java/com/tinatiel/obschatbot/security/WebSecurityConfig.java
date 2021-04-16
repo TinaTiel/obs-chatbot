@@ -2,7 +2,13 @@ package com.tinatiel.obschatbot.security;
 
 import java.util.Arrays;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.http.HttpHost;
+import org.apache.http.client.HttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.conn.DefaultProxyRoutePlanner;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.http.converter.FormHttpMessageConverter;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -39,7 +45,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         .oauth2Client(client -> client // specifying the client config isn't strictly necessary
           .authorizationCodeGrant(codeGrant -> codeGrant
             .accessTokenResponseClient(this.accessTokenResponseClient())
-          ));
+          )
+        );
 
   }
 
@@ -56,6 +63,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     // If debug mode is enabled, use the better-resolution Apache HttpComponents RequestFactory
     if (log.isDebugEnabled()) {
       restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
+
     }
     return restTemplate;
   }

@@ -18,6 +18,14 @@
     <artifactId>obschatbot</artifactId>
     <version>0.1.0-alpha</version>
 
+    <properties>
+        <pircbotx.version>2.2</pircbotx.version>
+        <obswebsocketjava.version>1.2.0</obswebsocketjava.version>
+        <commonslang.version>3.11</commonslang.version>
+        <mockserver.version>3.10.8</mockserver.version>
+        <apache.httpcomponents.version>4.5.12</apache.httpcomponents.version>
+    </properties>
+
     <dependencies>
 
         <!-- Spring Dependencies -->
@@ -50,7 +58,7 @@
         <dependency>
             <groupId>net.twasi</groupId>
             <artifactId>obs-websocket-java</artifactId>
-            <version>1.2.0</version>
+            <version>${obswebsocketjava.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.slf4j</groupId>
@@ -62,13 +70,13 @@
         <dependency>
             <groupId>com.github.pircbotx</groupId>
             <artifactId>pircbotx</artifactId>
-            <version>2.2</version>
+            <version>${pircbotx.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-            <version>3.11</version>
+            <version>${commonslang.version}</version>
         </dependency>
 
         <!-- Logging & Dev Tools dependencies            -->
@@ -84,7 +92,7 @@
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
-            <version>4.5.12</version>
+            <version>${apache.httpcomponents.version}</version>
         </dependency>
 
         <!-- Test dependencies               -->
@@ -117,6 +125,11 @@
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mock-server</groupId>
+            <artifactId>mockserver-netty</artifactId>
+            <version>${mockserver.version}</version>
         </dependency>
 
     </dependencies>
