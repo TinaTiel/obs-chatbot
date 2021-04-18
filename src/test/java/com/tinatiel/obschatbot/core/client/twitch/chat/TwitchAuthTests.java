@@ -1,5 +1,6 @@
 package com.tinatiel.obschatbot.core.client.twitch.chat;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.when;
@@ -8,6 +9,7 @@ import com.tinatiel.obschatbot.App;
 import com.tinatiel.obschatbot.core.client.twitch.auth.TwitchAuthConnectionSettings;
 import com.tinatiel.obschatbot.core.client.twitch.auth.TwitchAuthConnectionSettingsFactory;
 import com.tinatiel.obschatbot.core.client.twitch.auth.TwitchOauth2ClientConfig;
+import com.tinatiel.obschatbot.core.user.User;
 import com.tinatiel.obschatbot.security.WebSecurityConfig;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -24,6 +26,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Answers;
 import org.mockserver.client.server.MockServerClient;
 import org.mockserver.integration.ClientAndServer;
@@ -39,17 +42,27 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Primary;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.web.AuthorizationRequestRepository;
+import org.springframework.security.oauth2.client.web.HttpSessionOAuth2AuthorizationRequestRepository;
+import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepository;
 import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
+@DirtiesContext
+//@ContextConfiguration
+@SpringBootTest(webEnvironment = WebEnvironment.DEFINED_PORT, properties = {"server.port=8080"})
 public class TwitchAuthTests {
 
-  @LocalServerPort
-  private String localPort;
+//  @LocalServerPort // Not actually working, so we have to hard-code it and dirty the context. Thanks Spring team.
+  int localPort=8080;
 
   // Define our info to initialize the MockServer expectations
   private String redirectUri = "http://localhost:" + localPort + "/foo"; // doesn't matter because Spring Security uses filters to detect
@@ -69,19 +82,22 @@ public class TwitchAuthTests {
   private ClientAndServer mockServer;
 
   @MockBean
-  AuthorizationRequestRepository authorizationRequestRepository;
+  AuthorizationRequestRepository<OAuth2AuthorizationRequest> authorizationRequestRepository;
 
   @MockBean
   TwitchAuthConnectionSettingsFactory twitchAuthConnectionSettingsFactory;
 
-  @BeforeClass
-  void beforeClass() {
-    mockServer = ClientAndServer.startClientAndServer(twitchPort);
+  @Autowired
+  OAuth2AuthorizedClientService authorizedClientService;
 
+  @BeforeClass
+  public void beforeClass() {
+    mockServer = ClientAndServer.startClientAndServer(twitchPort);
+    createTokenExchangeExpectations();
   }
 
   @AfterClass
-  void afterClass() {
+  public void afterClass() {
     mockServer.stop();
   }
 
@@ -89,7 +105,7 @@ public class TwitchAuthTests {
   void setUp() {
     when(twitchAuthConnectionSettingsFactory.getSettings()).thenReturn(
       TwitchAuthConnectionSettings.builder()
-        .host(twitchBaseUrl)
+        .host("http://" + twitchBaseUrl)
         .authorizationPath(twitchAuthPath)
         .tokenPath(twitchTokenPath)
         .scopes(scopes)
@@ -117,11 +133,16 @@ public class TwitchAuthTests {
       .build();
     when(authorizationRequestRepository.loadAuthorizationRequest(any()))
       .thenReturn(authorizationRequest);
+    when(authorizationRequestRepository.removeAuthorizationRequest(any(), any()))
+      .thenReturn(authorizationRequest);
 
     // When agent redirected back after approving authorization, with a code and state
     RestTemplate restTemplate = new RestTemplate();
+    restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
+    String uri = redirectUri + "?code={code}&scope={scope}&state={state}";
     Map<String, String> uriParams = new HashMap<>();
     uriParams.put("code", code);
+    uriParams.put("state", state);
     uriParams.put("scope", scopes.stream()
       .map(it -> {
         try {
@@ -133,11 +154,16 @@ public class TwitchAuthTests {
       })
       .collect(Collectors.joining("+"))
     );
-    uriParams.put("state", state);
-    restTemplate.getForObject(redirectUri, Object.class, uriParams);
+    try {
+      restTemplate.getForObject(uri, Object.class, uriParams);
+    } catch (HttpClientErrorException ignored) {}
 
     // When we check for the token, then it exists
+    OAuth2AuthorizedClient authorizedClient = authorizedClientService.loadAuthorizedClient("twitch",
+      User.SYSTEM_PRINCIPAL_NAME);
 
+    assertThat(authorizedClient).isNotNull();
+    assertThat(authorizedClient.getAccessToken().getTokenValue()).isEqualTo(accessToken);
 
   }
 

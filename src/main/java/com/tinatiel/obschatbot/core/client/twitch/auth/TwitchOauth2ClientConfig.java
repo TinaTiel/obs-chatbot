@@ -24,6 +24,7 @@ import org.springframework.security.oauth2.client.web.HttpSessionOAuth2Authoriza
 import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepository;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
+import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
 
 /**
  * Encompasses all settings required to authenticate with Twitch.
@@ -44,16 +45,6 @@ public class TwitchOauth2ClientConfig {
   @Bean
   OAuth2AuthorizedClientService authorizedClientService() {
     return new InMemoryOAuth2AuthorizedClientService(clientRegistrationRepository());
-  }
-
-  /**
-   * This is responsible for noting that an authorization request was made. Without a registered
-   * authorization request (initiated at /oauth2/authorization/{registrationId}, the corresponding
-   * security filters (e.g. OAuth2AuthorizationCodeGrantFilter) will not attempt code exchange.
-   */
-  @Bean
-  AuthorizationRequestRepository authorizationRequestRepository() {
-    return new HttpSessionOAuth2AuthorizationRequestRepository(); // the default
   }
 
   @Bean

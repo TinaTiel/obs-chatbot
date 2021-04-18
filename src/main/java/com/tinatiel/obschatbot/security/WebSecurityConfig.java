@@ -1,5 +1,6 @@
 package com.tinatiel.obschatbot.security;
 
+import com.tinatiel.obschatbot.core.client.twitch.auth.MyAuthorizationRequestRepository;
 import java.util.Arrays;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpHost;
@@ -7,6 +8,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.DefaultProxyRoutePlanner;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
@@ -18,6 +20,9 @@ import org.springframework.security.oauth2.client.endpoint.DefaultAuthorizationC
 import org.springframework.security.oauth2.client.endpoint.OAuth2AccessTokenResponseClient;
 import org.springframework.security.oauth2.client.endpoint.OAuth2AuthorizationCodeGrantRequest;
 import org.springframework.security.oauth2.client.http.OAuth2ErrorResponseErrorHandler;
+import org.springframework.security.oauth2.client.web.AuthorizationRequestRepository;
+import org.springframework.security.oauth2.client.web.HttpSessionOAuth2AuthorizationRequestRepository;
+import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
 import org.springframework.security.oauth2.core.http.converter.OAuth2AccessTokenResponseHttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
@@ -28,6 +33,18 @@ import org.springframework.web.client.RestTemplate;
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+
+  /**
+   * This is responsible for noting that an authorization request was made. Without a registered
+   * authorization request (initiated at /oauth2/authorization/{registrationId}, the corresponding
+   * security filters (e.g. OAuth2AuthorizationCodeGrantFilter) will not attempt code exchange.
+   * Even if we want to use the default, we need to redeclare it here because the default bean is
+   * final and cannot be mocked in tests.
+   */
+  @Bean
+  AuthorizationRequestRepository<OAuth2AuthorizationRequest> customAuthorizationRepository() {
+    return new HttpSessionOAuth2AuthorizationRequestRepository(); // the default
+  }
 
   @Override
   protected void configure(HttpSecurity http) throws Exception {
@@ -45,6 +62,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         .oauth2Client(client -> client // specifying the client config isn't strictly necessary
           .authorizationCodeGrant(codeGrant -> codeGrant
             .accessTokenResponseClient(this.accessTokenResponseClient())
+            .authorizationRequestRepository(this.customAuthorizationRepository())
           )
         );
 
