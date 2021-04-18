@@ -1,6 +1,7 @@
 package com.tinatiel.obschatbot.core.client.twitch.chat;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.when;
 
 import com.tinatiel.obschatbot.App;
@@ -23,6 +24,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Answers;
 import org.mockserver.client.server.MockServerClient;
 import org.mockserver.integration.ClientAndServer;
 import org.mockserver.model.HttpRequest;
@@ -75,6 +77,16 @@ public class TwitchAuthTests {
   @BeforeClass
   void beforeClass() {
     mockServer = ClientAndServer.startClientAndServer(twitchPort);
+
+  }
+
+  @AfterClass
+  void afterClass() {
+    mockServer.stop();
+  }
+
+  @BeforeEach
+  void setUp() {
     when(twitchAuthConnectionSettingsFactory.getSettings()).thenReturn(
       TwitchAuthConnectionSettings.builder()
         .host(twitchBaseUrl)
@@ -86,16 +98,6 @@ public class TwitchAuthTests {
         .redirectUri(redirectUri)
         .build()
     );
-  }
-
-  @AfterClass
-  void afterClass() {
-    mockServer.stop();
-  }
-
-  @BeforeEach
-  void setUp() {
-
   }
 
   @Test

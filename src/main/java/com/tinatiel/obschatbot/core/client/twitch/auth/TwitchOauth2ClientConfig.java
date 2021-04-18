@@ -87,12 +87,9 @@ public class TwitchOauth2ClientConfig {
   @Bean
   ClientRegistrationRepository clientRegistrationRepository() {
 
-    List<ClientRegistration> clientRegistrations = new ArrayList<>();
-    clientRegistrations.add(twitchOauth2ClientRegistration());
-
     // TODO: Swap with our own impl that uses JDBC / JPA
     ClientRegistrationRepository clientRegistrationRepository =
-        new InMemoryClientRegistrationRepository(clientRegistrations);
+        new JdbcClientRegistrationRepository(twitchAuthConnectionSettingsFactory);
 
     return clientRegistrationRepository;
   }
@@ -106,29 +103,6 @@ public class TwitchOauth2ClientConfig {
   @Bean
   OAuth2AuthorizedClientRepository authorizedClientRepository() {
     return new SystemPrincipalOauth2AuthorizedClientRepository(authorizedClientService());
-  }
-
-  /**
-   * Define the ClientRegistration for the Twitch Client. TODO: Move this into a custom
-   * ClientRegistrationRepository so it can be rebuilt at runtime
-   */
-  @Bean
-  ClientRegistration twitchOauth2ClientRegistration() {
-
-    TwitchAuthConnectionSettings settings = twitchAuthConnectionSettingsFactory.getSettings();
-
-    ClientRegistration clientRegistration = ClientRegistration.withRegistrationId("twitch")
-        .authorizationUri(settings.getHost() + settings.getAuthorizationPath())
-        .tokenUri(settings.getHost() + settings.getTokenPath())
-        .clientId(settings.getClientId())
-        .clientSecret(settings.getClientSecret())
-        .redirectUri(settings.getRedirectUri())
-        .scope(settings.getScopes())
-        .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-        .clientAuthenticationMethod(ClientAuthenticationMethod.POST)
-        .build();
-
-    return clientRegistration;
   }
 
   @Bean
