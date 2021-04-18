@@ -1,4 +1,4 @@
-package com.tinatiel.obschatbot.core.client.twitch.chat;
+package com.tinatiel.obschatbot.core.client.twitch.auth;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
