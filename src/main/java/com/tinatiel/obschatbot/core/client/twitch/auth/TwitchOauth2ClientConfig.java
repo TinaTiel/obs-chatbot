@@ -3,12 +3,13 @@ package com.tinatiel.obschatbot.core.client.twitch.auth;
 import com.tinatiel.obschatbot.security.SystemPrincipalOauth2AuthorizedClientRepository;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.oauth2.client.AuthorizedClientServiceOAuth2AuthorizedClientManager;
 import org.springframework.security.oauth2.client.InMemoryOAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager;
@@ -18,6 +19,8 @@ import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.client.registration.InMemoryClientRegistrationRepository;
+import org.springframework.security.oauth2.client.web.AuthorizationRequestRepository;
+import org.springframework.security.oauth2.client.web.HttpSessionOAuth2AuthorizationRequestRepository;
 import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepository;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
@@ -25,22 +28,14 @@ import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 /**
  * Encompasses all settings required to authenticate with Twitch.
  */
-@ConfigurationProperties(prefix = "com.tinatiel.twitch")
+
+@EnableScheduling
 @Slf4j
 @Configuration
 public class TwitchOauth2ClientConfig {
 
-  // TODO build from configured scheme, host, and port
-  // initiate auth at /oauth2/authorization/twitch
-  private final String twitchClientRedirectUri = "http://localhost:8080/" + "authorized/twitch";
-
   @Autowired
-  TwitchAuthConnectionSettings twitchAuthConnectionSettings;
-  // TODO get from DB / settings factory
-  @Value("${TWITCH_CLIENT_ID:noclientspecified}")
-  private String twitchClientId;
-  @Value("${TWITCH_CLIENT_SECRET:nosecretspecified}")
-  private String twitchClientSecret;
+  TwitchAuthConnectionSettingsFactory twitchAuthConnectionSettingsFactory;
 
   /**
    * manages **authorized** clients TODO Replace with JdbcOAuth2AuthorizedClientService
@@ -49,6 +44,16 @@ public class TwitchOauth2ClientConfig {
   @Bean
   OAuth2AuthorizedClientService authorizedClientService() {
     return new InMemoryOAuth2AuthorizedClientService(clientRegistrationRepository());
+  }
+
+  /**
+   * This is responsible for noting that an authorization request was made. Without a registered
+   * authorization request (initiated at /oauth2/authorization/{registrationId}, the corresponding
+   * security filters (e.g. OAuth2AuthorizationCodeGrantFilter) will not attempt code exchange.
+   */
+  @Bean
+  AuthorizationRequestRepository authorizationRequestRepository() {
+    return new HttpSessionOAuth2AuthorizationRequestRepository(); // the default
   }
 
   @Bean
@@ -107,22 +112,28 @@ public class TwitchOauth2ClientConfig {
    * Define the ClientRegistration for the Twitch Client. TODO: Move this into a custom
    * ClientRegistrationRepository so it can be rebuilt at runtime
    */
-  private ClientRegistration twitchOauth2ClientRegistration() {
+  @Bean
+  ClientRegistration twitchOauth2ClientRegistration() {
 
-    TwitchAuthConnectionSettings settings = twitchAuthConnectionSettings;
+    TwitchAuthConnectionSettings settings = twitchAuthConnectionSettingsFactory.getSettings();
 
     ClientRegistration clientRegistration = ClientRegistration.withRegistrationId("twitch")
         .authorizationUri(settings.getHost() + settings.getAuthorizationPath())
         .tokenUri(settings.getHost() + settings.getTokenPath())
-        .clientId(twitchClientId)
-        .clientSecret(twitchClientSecret)
-        .redirectUri(twitchClientRedirectUri)
+        .clientId(settings.getClientId())
+        .clientSecret(settings.getClientSecret())
+        .redirectUri(settings.getRedirectUri())
         .scope(settings.getScopes())
         .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
         .clientAuthenticationMethod(ClientAuthenticationMethod.POST)
         .build();
 
     return clientRegistration;
+  }
+
+  @Bean
+  TwitchAuthScheduler twitchAuthScheduler() {
+    return new TwitchAuthScheduler(authorizedClientService(), auth2AuthorizedClientManager());
   }
 
 }

@@ -1,3 +1,4 @@
+#server.port: 8080
 logging:
   level:
     root: warn
@@ -6,6 +7,7 @@ logging:
     org.pircbotx: warn # WARNING: Prints credentials to log in Debug mode
     org.apache.http: debug
     httpclient.wire: debug
+    org.springframework.security.oauth2.client: trace
 
 com:
   tinatiel:

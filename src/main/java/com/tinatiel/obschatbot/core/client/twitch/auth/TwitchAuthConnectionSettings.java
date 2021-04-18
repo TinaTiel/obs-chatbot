@@ -20,13 +20,14 @@ import org.springframework.context.annotation.Configuration;
 @AllArgsConstructor
 @Data
 @NoArgsConstructor
-@Configuration
-@ConfigurationProperties("com.tinatiel.twitch.auth")
 public class TwitchAuthConnectionSettings {
 
   private String host;
   private String authorizationPath;
   private String tokenPath;
   private List<String> scopes;
+  private String clientId;
+  private String clientSecret;
+  private String redirectUri;
 
 }
