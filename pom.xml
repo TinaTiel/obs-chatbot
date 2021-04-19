@@ -17,6 +17,18 @@
     <groupId>com.tinatiel</groupId>
     <artifactId>obschatbot</artifactId>
     <version>0.1.0-alpha</version>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>11</source>
+                    <target>11</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
     <properties>
         <pircbotx.version>2.2</pircbotx.version>
