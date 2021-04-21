@@ -34,7 +34,11 @@ public class OAuth2ClientController {
     OAuth2AuthorizedClient authorizedClient = authorizedClientService
         .loadAuthorizedClient("twitch", "SYSTEM");
 
-    return authorizedClient.getAccessToken().getTokenValue();
+    return "Access Token: " + authorizedClient.getAccessToken().getTokenValue() + System.lineSeparator()
+      + "Expiring: " + authorizedClient.getAccessToken().getExpiresAt() + System.lineSeparator()
+      + "Refresh Token: " + authorizedClient.getRefreshToken().getTokenValue() + System.lineSeparator()
+      + "Expiring: " + authorizedClient.getRefreshToken().getExpiresAt();
+
   }
 
   @PostMapping("/refresh/twitch")
