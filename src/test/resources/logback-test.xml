@@ -10,6 +10,6 @@
     <logger name="com.tinatiel.obschatbot.core.commandRequest.dispatch" level="TRACE"/>
     <logger name="org.apache.http" level="DEBUG" />
     <logger name="httpclient.wire" level="DEBUG" />
-    <logger name="mockserver" level="DEBUG" />
+    <logger name="org.mockserver" level="DEBUG" />
     <logger name="org.springframework.web.reactive.function.client.ExchangeFunctions" level="TRACE" />
 </configuration>

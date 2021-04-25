@@ -1,6 +1,8 @@
 package com.tinatiel.obschatbot.web.controller;
 
 import com.tinatiel.obschatbot.core.client.twitch.auth.TwitchAuthScheduler;
+import com.tinatiel.obschatbot.core.messaging.ObsChatbotEvent;
+import java.util.concurrent.BlockingQueue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
@@ -26,6 +28,9 @@ public class OAuth2ClientController {
   @Autowired
   private TwitchAuthScheduler twitchAuthScheduler;
 
+  @Autowired
+  BlockingQueue<ObsChatbotEvent> twitchAuthAuditQueue;
+
   @GetMapping("/test/twitch")
   public String index() {
     ClientRegistration clientRegistration = clientRegistrationRepository
@@ -44,6 +49,12 @@ public class OAuth2ClientController {
   @PostMapping("/refresh/twitch")
   public void refresh() {
     twitchAuthScheduler.refreshTokenIfNeeded();
+  }
+
+  @GetMapping("/validate/twitch")
+  public String validate() {
+    twitchAuthScheduler.validateToken();
+    return twitchAuthAuditQueue.toString();
   }
 
 }

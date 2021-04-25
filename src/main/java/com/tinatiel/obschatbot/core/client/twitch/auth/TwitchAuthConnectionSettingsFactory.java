@@ -13,6 +13,7 @@ public class TwitchAuthConnectionSettingsFactory {
   private String host;
   private String authorizationPath;
   private String tokenPath;
+  private String validationPath;
   private List<String> scopes;
   private String clientId;
   private String clientSecret;
@@ -27,6 +28,7 @@ public class TwitchAuthConnectionSettingsFactory {
       .host(host)
       .authorizationPath(authorizationPath)
       .tokenPath(tokenPath)
+      .validationPath(validationPath)
       .scopes(scopes)
       .clientId(clientId)
       .clientSecret(clientSecret)

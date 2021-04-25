@@ -1,7 +1,14 @@
 package com.tinatiel.obschatbot.core.client.twitch.auth;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockserver.model.JsonBody.json;
+import static org.mockserver.model.Parameter.param;
+import static org.mockserver.model.ParameterBody.params;
 
+import com.tinatiel.obschatbot.core.client.twitch.auth.event.TwitchAuthValidationFailureEvent;
+import com.tinatiel.obschatbot.core.client.twitch.auth.event.TwitchAuthValidationSuccessEvent;
+import com.tinatiel.obschatbot.core.messaging.ObsChatbotEvent;
+import com.tinatiel.obschatbot.core.messaging.QueueNotifier;
 import com.tinatiel.obschatbot.core.user.User;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -11,12 +18,19 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.BlockingQueue;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockserver.client.server.MockServerClient;
+import org.mockserver.model.HttpRequest;
+import org.mockserver.model.HttpResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.oauth2.client.OAuth2AuthorizeRequest;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.web.AuthorizationRequestRepository;
 import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
@@ -30,13 +44,36 @@ public class TwitchAuthTests extends AbstractTwitchAuthTest {
   @MockBean
   AuthorizationRequestRepository<OAuth2AuthorizationRequest> mockAuthorizationRequestRepository;
 
+  @Qualifier("twitchAuthQueueNotifier")
+  @MockBean
+  QueueNotifier<ObsChatbotEvent> twitchAuthQueueNotifier; // mock the notifier so it doesn't consume queue events
+
   @Autowired
   OAuth2AuthorizedClientService authorizedClientService;
 
   @Autowired
   TwitchAuthScheduler twitchAuthScheduler;
 
+  @Autowired
+  BlockingQueue<ObsChatbotEvent> twitchAuthQueue;
+
+  @Autowired
+  OAuth2AuthorizedClientManager clientManager;
+
   private WebTestClient webClient;
+
+  // Given we define min info to auth with Twitch
+  String redirectUri = "http://localhost:" + localPort + "/foo"; // doesn't matter because Spring Security uses filters to detect
+  String twitchBaseUrl = "http://localhost:" + twitchPort;
+  String twitchAuthPath = "/somepath/authorize";
+  String twitchTokenPath = "/somepath/token";
+  List<String> scopes = Arrays.asList("foo:bar", "chat:read", "channel:moderate");
+  String clientId = "myclientid";
+  String clientSecret = "myclientsecret";
+  String code = "abcd1234";
+  String state = "asdfasdf";
+  String accessToken = "myaccesstoken";
+  String refreshToken = "myrefreshtoken";
 
   @BeforeEach
   void setUp() {
@@ -48,19 +85,6 @@ public class TwitchAuthTests extends AbstractTwitchAuthTest {
 
   @Test
   void whenAuthorizationApprovedThenTokenAvailable() throws IOException, InterruptedException {
-
-    // Given we define min info to auth with Twitch
-    String redirectUri = "http://localhost:" + localPort + "/foo"; // doesn't matter because Spring Security uses filters to detect
-    String twitchBaseUrl = "http://localhost:" + twitchPort;
-    String twitchAuthPath = "/somepath/authorize";
-    String twitchTokenPath = "/somepath/token";
-    List<String> scopes = Arrays.asList("foo:bar", "chat:read", "channel:moderate");
-    String clientId = "myclientid";
-    String clientSecret = "myclientsecret";
-    String code = "abcd1234";
-    String state = "asdfasdf";
-    String accessToken = "myaccesstoken";
-    String refreshToken = "myrefreshtoken";
 
     // And our token expires in a reasonable time during this test
     int expiresIn = 2; // seconds

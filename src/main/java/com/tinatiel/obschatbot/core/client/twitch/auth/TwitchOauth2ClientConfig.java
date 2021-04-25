@@ -1,19 +1,32 @@
 package com.tinatiel.obschatbot.core.client.twitch.auth;
 
+import com.tinatiel.obschatbot.core.messaging.ObsChatbotEvent;
+import com.tinatiel.obschatbot.core.messaging.QueueClient;
 import com.tinatiel.obschatbot.security.SystemPrincipalOauth2AuthorizedClientRepository;
+import java.util.Map;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.AuthorizedClientServiceOAuth2AuthorizedClientManager;
 import org.springframework.security.oauth2.client.InMemoryOAuth2AuthorizedClientService;
+import org.springframework.security.oauth2.client.OAuth2AuthorizationSuccessHandler;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientProvider;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientProviderBuilder;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
+import org.springframework.security.oauth2.client.RemoveAuthorizedClientOAuth2AuthorizationFailureHandler;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepository;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
 
 /**
  * Encompasses all settings required to authenticate with Twitch.
@@ -26,6 +39,9 @@ public class TwitchOauth2ClientConfig {
 
   @Autowired
   TwitchAuthConnectionSettingsFactory twitchAuthConnectionSettingsFactory;
+
+  @Autowired
+  QueueClient<ObsChatbotEvent> twitchAuthQueueClient;
 
   /**
    * manages **authorized** clients TODO Replace with JdbcOAuth2AuthorizedClientService
@@ -86,8 +102,21 @@ public class TwitchOauth2ClientConfig {
   }
 
   @Bean
+  RestTemplate twitchTokenValidationRestTemplate() {
+    return new RestTemplateBuilder()
+      .requestFactory(() -> new HttpComponentsClientHttpRequestFactory())
+      .build();
+  }
+
+  @Bean
   TwitchAuthScheduler twitchAuthScheduler() {
-    return new TwitchAuthScheduler(authorizedClientService(), auth2AuthorizedClientManager());
+    return new TwitchAuthScheduler(
+      authorizedClientService(),
+      auth2AuthorizedClientManager(),
+      twitchTokenValidationRestTemplate(),
+      twitchAuthConnectionSettingsFactory,
+      twitchAuthQueueClient
+    );
   }
 
 }

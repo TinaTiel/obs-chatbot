@@ -16,6 +16,7 @@ com:
         host: https://id.twitch.tv
         authorization-path: /oauth2/authorize
         token-path: /oauth2/token
+        validationPath: /oauth2/validate
         scopes:
           - channel:moderate
           - chat:read
