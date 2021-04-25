@@ -12,13 +12,13 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.oauth2.client.OAuth2AuthorizeRequest;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
-import reactor.core.publisher.Mono;
 
 @Slf4j
 public class TwitchAuthScheduler {
@@ -48,7 +48,7 @@ public class TwitchAuthScheduler {
    * is used in our IRC client -- so, if the token needs to be refreshed, then we
    * must also stop/start the IRC client as well.
    */
-//  @Scheduled(fixedRate = 1000*60*15)
+  @Scheduled(fixedRate = 1000*60*5) // every 5 minutes
   public void refreshTokenIfNeeded() {
 
     // Get the twitch client
@@ -72,6 +72,7 @@ public class TwitchAuthScheduler {
 
   }
 
+  @Scheduled(fixedRate = 1000*60*30) // every 30 minutes -- Twitch requires at least once per hour
   public void validateToken() {
 
     // Load the most recent settings for authentication with Twitch
