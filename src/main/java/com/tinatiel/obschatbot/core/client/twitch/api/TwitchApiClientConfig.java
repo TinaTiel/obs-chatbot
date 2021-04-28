@@ -1,7 +1,9 @@
 package com.tinatiel.obschatbot.core.client.twitch.api;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 
 @Configuration
 public class TwitchApiClientConfig {
@@ -19,14 +21,13 @@ public class TwitchApiClientConfig {
 //                .build();
 //    }
 //
+
+  @Autowired
+  OAuth2AuthorizedClientService authorizedClientService;
+
   @Bean
   TwitchApiClient twitchApiClient() {
-    return new TwitchApiClient() {
-      @Override
-      public boolean isFollowing(String broadcasterId, String viewerId) {
-        return false;
-      }
-    };
+    return new TwitchApiClientImpl(authorizedClientService);
   }
 
 }

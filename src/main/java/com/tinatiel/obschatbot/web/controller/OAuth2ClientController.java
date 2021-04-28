@@ -1,8 +1,11 @@
 package com.tinatiel.obschatbot.web.controller;
 
+import com.tinatiel.obschatbot.core.client.twitch.api.TwitchApiClient;
 import com.tinatiel.obschatbot.core.client.twitch.auth.TwitchAuthScheduler;
 import com.tinatiel.obschatbot.core.messaging.ObsChatbotEvent;
 import java.util.concurrent.BlockingQueue;
+import javax.websocket.server.PathParam;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
@@ -11,11 +14,13 @@ import org.springframework.security.oauth2.client.registration.ClientRegistratio
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
  * This is a test controller, replace or delete me when ready.
  */
+@Slf4j
 @RestController
 public class OAuth2ClientController {
 
@@ -30,6 +35,9 @@ public class OAuth2ClientController {
 
   @Autowired
   BlockingQueue<ObsChatbotEvent> twitchAuthAuditQueue;
+
+  @Autowired
+  TwitchApiClient twitchApiClient;
 
   @GetMapping("/test/twitch")
   public String index() {
@@ -55,6 +63,12 @@ public class OAuth2ClientController {
   public String validate() {
     twitchAuthScheduler.validateToken();
     return twitchAuthAuditQueue.toString();
+  }
+
+  @GetMapping("/following")
+  public boolean isFollowing(@PathParam("broadcasterId") String broadcasterId, @PathParam("viewerId") String viewerId) {
+    log.debug("Checking if viewer (" + viewerId + ") is following broadcaster (" + broadcasterId + ")");
+    return twitchApiClient.isFollowing(broadcasterId, viewerId);
   }
 
 }
