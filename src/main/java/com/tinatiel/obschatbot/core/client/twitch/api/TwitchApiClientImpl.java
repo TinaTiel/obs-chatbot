@@ -45,15 +45,20 @@ public class TwitchApiClientImpl implements TwitchApiClient {
     HttpHeaders headers = new HttpHeaders();
     headers.add("Authorization", "Bearer " + client.getAccessToken().getTokenValue());
     headers.add("Client-Id", client.getClientRegistration().getClientId());
-
     HttpEntity entity = new HttpEntity(headers);
+
     // Make the request
-    UsersFollowsResponse response = restTemplate.exchange(
-      "https://api.twitch.tv/helix/users/follows?from_id={viewer}&to_id={broadcaster}",
-      HttpMethod.GET,
-      entity,
-      new ParameterizedTypeReference<UsersFollowsResponse>(){},
-      viewerId, broadcasterId).getBody();
+    UsersFollowsResponse response = null;
+    try {
+      response = restTemplate.exchange(
+        "https://api.twitch.tv/helix/users/follows?from_id={viewer}&to_id={broadcaster}",
+        HttpMethod.GET,
+        entity,
+        new ParameterizedTypeReference<UsersFollowsResponse>(){},
+        viewerId, broadcasterId).getBody();
+    } catch (HttpClientErrorException e) {
+      log.error("Could not determine if user is follower; twitch responded with " + e.getStatusCode());
+    }
 
     return response != null && response.getTotal() > 0;
 

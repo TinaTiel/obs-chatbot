@@ -23,6 +23,7 @@ import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 public class TwitchApiClientTest {
@@ -179,6 +180,32 @@ public class TwitchApiClientTest {
     boolean result = twitchApiClient.isFollowing("broadcasterid", "viewerid");
 
     // Then the viewer is not following the broadcaster (we don't throw an exception)
+    assertThat(result).isFalse();
+
+  }
+
+  @Test
+  void isFollowing_twitchError() {
+
+    // Given the app was authorized to access twitch already
+    String tokenValue = "validtoken";
+    String clientId = "someclientid";
+    givenApplicationWasAuthorizedToAccessTwitch(tokenValue, clientId);
+
+    // But given Twitch returns an HTTP Error
+    when(restTemplate.exchange(
+      contains("/users/follows?from_id={viewer}&to_id={broadcaster}"),
+      eq(HttpMethod.GET),
+      any(),
+      eq(new ParameterizedTypeReference<UsersFollowsResponse>(){}),
+      anyString(),
+      anyString())
+    ).thenThrow(mock(HttpClientErrorException.class)); // doesn't matter what error
+
+    // When called
+    boolean result = twitchApiClient.isFollowing("broadcasterid", "viewerid");
+
+    // Then the viewer is NOT following the broadcaster; it doesn't throw an exception
     assertThat(result).isFalse();
 
   }
