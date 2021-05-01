@@ -30,7 +30,7 @@ import org.springframework.security.oauth2.client.web.AuthorizationRequestReposi
 import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
-public class TwitchAuthTests extends AbstractTwitchAuthTest {
+public class TwitchAuthIT extends AbstractTwitchAuthTest {
 
   @MockBean
   TwitchAuthConnectionSettingsFactory mockTwitchAuthConnSettingsFactory;

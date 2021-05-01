@@ -15,4 +15,11 @@ public interface TwitchApiClient {
    *         if Twitch cannot be reached.
    */
   boolean isFollowing(String broadcasterId, String viewerId);
+
+  /**
+   * Validates if the current access token is valid
+   * @return
+   */
+  boolean isCurrentAccessTokenValid();
+
 }

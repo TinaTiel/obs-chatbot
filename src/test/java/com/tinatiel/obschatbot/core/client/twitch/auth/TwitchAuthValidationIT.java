@@ -25,7 +25,7 @@ import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
 
-public class TwitchAuthValidationTests extends AbstractTwitchAuthTest {
+public class TwitchAuthValidationIT extends AbstractTwitchAuthTest {
 
   @MockBean
   TwitchAuthConnectionSettingsFactory mockTwitchAuthConnSettingsFactory;
