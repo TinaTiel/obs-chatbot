@@ -56,7 +56,7 @@ public class ChatRequestHandlerImpl implements ChatRequestHandler {
           if (command.isPresent()) {
 
             // Lookup the full user, given what the chat client partially provided
-            User fullUser = userService.findUserFromPartial(partialUser);
+            User fullUser = userService.getUserFromPartial(partialUser);
 
             // Submit the command and a new RequestContext (built from the full user)
             // for execution by the dispatcher.

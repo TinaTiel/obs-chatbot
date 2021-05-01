@@ -35,11 +35,11 @@ public class UserServiceTest {
     void platformAndUsernameAlwaysRequired() {
 
         assertThatThrownBy(() -> {
-            userService.findUserFromPartial(User.builder().platform(Platform.TWITCH).build());
+            userService.getUserFromPartial(User.builder().platform(Platform.TWITCH).build());
         }).isInstanceOf(IllegalArgumentException.class);
 
         assertThatThrownBy(() -> {
-            userService.findUserFromPartial(User.builder().username("foo").build());
+            userService.getUserFromPartial(User.builder().username("foo").build());
         }).isInstanceOf(IllegalArgumentException.class);
 
     }
@@ -69,20 +69,96 @@ public class UserServiceTest {
         );
 
         // When retrieved
-        User fullUser = userService.findUserFromPartial(partialUser);
+        User fullUser = userService.getUserFromPartial(partialUser);
 
         // Then the full user has those memberships
         assertThat(fullUser.getGroups()).containsExactlyInAnyOrderElementsOf(expectedGroups);
 
     }
 
-    @Disabled
     @Test
     void twitchUserAddsFollowerDetailsToExistingDetails() {
 
-        // Given existing details...
+        String broadcasterid = "broadcasterid";
+        String viewerid = "viewerid";
 
-        fail("to do");
+        // Given a partial User
+        User partialUser = User.builder()
+          .platform(Platform.TWITCH)
+          .username("garfield")
+          .build();
+
+        // Given the broadcaster exists for the Twitch platform
+        LocalUser broadcaster = LocalUser.builder().username("tinatiel").broadcaster(true).build();
+        when(localUserRepository.findByPlatformAndBroadcasterTrue(Platform.TWITCH)).thenReturn(
+          Optional.of(broadcaster)
+        );
+
+        // And given we can get the id of the broadcaster and user
+        when(twitchApiClient.getUserIdFromUsername(broadcaster.getUsername())).thenReturn(broadcasterid);
+        when(twitchApiClient.getUserIdFromUsername(partialUser.getUsername())).thenReturn(viewerid);
+
+        // And given the Twitch api client gives some response (we'll say following since not is the default)
+        when(twitchApiClient.isFollowing(broadcasterid, viewerid)).thenReturn(true);
+
+        // When retrieved
+        User fullUser = userService.getUserFromPartial(partialUser);
+
+        // Then the full user is following
+        assertThat(fullUser.getUserSecurityDetails().getFollowing()).isTrue();
+
+        // And we also have the user id
+        assertThat(fullUser.getId()).isEqualTo(viewerid);
+
+    }
+
+    @Test
+    void twitchUserIgnoresFollowerDetailsWhenNoBroadcaster() {
+
+        // Given a partial User
+        User partialUser = User.builder()
+          .platform(Platform.TWITCH)
+          .id("1234")
+          .username("garfield")
+          .build();
+
+        // Given the broadcaster does NOT exist for the Twitch platform
+        when(localUserRepository.findByPlatformAndBroadcasterTrue(Platform.TWITCH)).thenReturn(
+          Optional.empty()
+        );
+
+        // When retrieved
+        User fullUser = userService.getUserFromPartial(partialUser);
+
+        // Then the full user is not following
+        assertThat(fullUser.getUserSecurityDetails().getFollowing()).isFalse();
+
+    }
+
+    @Test
+    void twitchUserIgnoresFollowerDetailsWhenNoViewerOrBroadcasterId() {
+
+        // Given a partial User
+        User partialUser = User.builder()
+          .platform(Platform.TWITCH)
+          .id("1234")
+          .username("garfield")
+          .build();
+
+        // Given the broadcaster does exist for the Twitch platform
+        when(localUserRepository.findByPlatformAndBroadcasterTrue(Platform.TWITCH)).thenReturn(
+          Optional.empty()
+        );
+
+        // But given we cannot retrieve the id of the broadcaster or viewer
+        when(twitchApiClient.getUserIdFromUsername(any())).thenReturn(null);
+
+        // When retrieved
+        User fullUser = userService.getUserFromPartial(partialUser);
+
+        // Then the full user is not following
+        assertThat(fullUser.getUserSecurityDetails().getFollowing()).isFalse();
+
     }
 
 }

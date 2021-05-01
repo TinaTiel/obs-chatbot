@@ -114,4 +114,9 @@ public class TwitchApiClientImpl implements TwitchApiClient {
     return tokenIsValid;
   }
 
+  @Override
+  public String getUserIdFromUsername(String username) {
+    return null;
+  }
+
 }

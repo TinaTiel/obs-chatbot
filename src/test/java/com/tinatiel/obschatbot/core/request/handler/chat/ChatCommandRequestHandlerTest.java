@@ -91,7 +91,7 @@ public class ChatCommandRequestHandlerTest {
         when(commandRepository.findByName(any())).thenReturn(Optional.of(command));
 
         // And the full user is retrieved
-        when(userService.findUserFromPartial(any())).thenReturn(user);
+        when(userService.getUserFromPartial(any())).thenReturn(user);
 
         // When handled
         handler.handle(user, "doesn't matter");

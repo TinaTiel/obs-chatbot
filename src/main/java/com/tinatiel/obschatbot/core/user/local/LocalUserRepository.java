@@ -1,6 +1,7 @@
 package com.tinatiel.obschatbot.core.user.local;
 
 import com.tinatiel.obschatbot.core.user.Platform;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -10,6 +11,8 @@ import java.util.Optional;
 public interface LocalUserRepository {
 
   Optional<LocalUser> findByPlatformAndUsername(Platform platform, String username);
+
+  Optional<LocalUser> findByPlatformAndBroadcasterTrue(Platform platform);
 
   LocalUser save(LocalUser localUser);
 }

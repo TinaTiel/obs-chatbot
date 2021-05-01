@@ -7,5 +7,6 @@ package com.tinatiel.obschatbot.core.user;
  */
 public interface UserService {
 
-  User findUserFromPartial(User partialUserInfo);
+  User getUserFromPartial(User partialUserInfo);
+
 }

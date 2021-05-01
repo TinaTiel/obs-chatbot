@@ -21,6 +21,14 @@ public class LocalUserRepositoryInMemoryImpl implements LocalUserRepository {
   }
 
   @Override
+  public Optional<LocalUser> findByPlatformAndBroadcasterTrue(Platform platform) {
+    return users.stream()
+      .filter(it -> it.getPlatform().equals(platform))
+      .filter(LocalUser::isBroadcaster)
+      .findFirst();
+  }
+
+  @Override
   public LocalUser save(LocalUser localUser) {
     users.add(localUser);
     return localUser;
