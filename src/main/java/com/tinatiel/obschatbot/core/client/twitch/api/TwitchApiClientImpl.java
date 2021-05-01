@@ -36,7 +36,8 @@ public class TwitchApiClientImpl implements TwitchApiClient {
 
   @Override
   public boolean isFollowing(String broadcasterId, String viewerId) {
-    // Get the authorized client
+
+    // Get the authorized client; if none, then exit early assuming the viewer doesn't follow the broadcaster
     OAuth2AuthorizedClient client = authorizedClientService.loadAuthorizedClient("twitch", User.SYSTEM_PRINCIPAL_NAME);
     if(client == null || client.getAccessToken() == null) return false;
 

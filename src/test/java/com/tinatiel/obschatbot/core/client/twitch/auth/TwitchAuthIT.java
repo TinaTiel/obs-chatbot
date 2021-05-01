@@ -1,9 +1,6 @@
 package com.tinatiel.obschatbot.core.client.twitch.auth;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockserver.model.JsonBody.json;
-import static org.mockserver.model.Parameter.param;
-import static org.mockserver.model.ParameterBody.params;
 
 import com.tinatiel.obschatbot.core.messaging.ObsChatbotEvent;
 import com.tinatiel.obschatbot.core.messaging.QueueNotifier;

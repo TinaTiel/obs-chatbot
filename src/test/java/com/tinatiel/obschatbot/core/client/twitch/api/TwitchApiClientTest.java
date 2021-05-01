@@ -2,6 +2,7 @@ package com.tinatiel.obschatbot.core.client.twitch.api;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.contains;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
@@ -10,8 +11,10 @@ import static org.mockito.Mockito.when;
 import com.tinatiel.obschatbot.core.client.twitch.auth.TwitchAuthConnectionSettings;
 import com.tinatiel.obschatbot.core.client.twitch.auth.TwitchAuthConnectionSettingsFactory;
 import com.tinatiel.obschatbot.core.user.User;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,7 +42,7 @@ public class TwitchApiClientTest {
   }
 
   @Test
-  void twitchFindsTokenValid() {
+  void isCurrentTokenValid_twitchFindsTokenValid() {
 
     // Given the app was configured with the host and path
     String host = "https://somehost";
@@ -66,7 +69,7 @@ public class TwitchApiClientTest {
   }
 
   @Test
-  void noTokenToValidate() {
+  void isCurrentTokenValid_noTokenToValidate() {
 
     // Given the app was configured with the host and path
     String host = "https://somehost";
@@ -85,7 +88,7 @@ public class TwitchApiClientTest {
   }
 
   @Test
-  void twitchFindsTokenInvalid() {
+  void isCurrentTokenValid_twitchFindsTokenInvalid() {
 
     // Given the app was configured with the host and path
     String host = "https://somehost";
@@ -108,6 +111,76 @@ public class TwitchApiClientTest {
 
     // Then it is true
     assertThat(result).isFalse();
+  }
+
+  @Test
+  void isFollowing_viewerIsFollowingBroadcaster() {
+
+    // Given the app was authorized to access twitch already
+    String tokenValue = "validtoken";
+    String clientId = "someclientid";
+    givenApplicationWasAuthorizedToAccessTwitch(tokenValue, clientId);
+
+    // And given Twitch lists the broadcaster as a follow
+    UsersFollowsResponse body = new UsersFollowsResponse(1);
+    ResponseEntity<UsersFollowsResponse> responseEntity = ResponseEntity.of(Optional.of(body));
+    when(restTemplate.exchange(
+      contains("/users/follows?from_id={viewer}&to_id={broadcaster}"),
+      eq(HttpMethod.GET),
+      any(),
+      eq(new ParameterizedTypeReference<UsersFollowsResponse>(){}),
+      anyString(),
+      anyString())
+    ).thenReturn(responseEntity);
+
+    // When called
+    boolean result = twitchApiClient.isFollowing("broadcasterid", "viewerid");
+
+    // Then the viewer is following the broadcaster
+    assertThat(result).isTrue();
+
+  }
+
+  @Test
+  void isFollowing_viewerIsNotFollowingBroadcaster() {
+
+    // Given the app was authorized to access twitch already
+    String tokenValue = "validtoken";
+    String clientId = "someclientid";
+    givenApplicationWasAuthorizedToAccessTwitch(tokenValue, clientId);
+
+    // And given Twitch lists the broadcaster as a follow
+    UsersFollowsResponse body = new UsersFollowsResponse(0);
+    ResponseEntity<UsersFollowsResponse> responseEntity = ResponseEntity.of(Optional.of(body));
+    when(restTemplate.exchange(
+      contains("/users/follows?from_id={viewer}&to_id={broadcaster}"),
+      eq(HttpMethod.GET),
+      any(),
+      eq(new ParameterizedTypeReference<UsersFollowsResponse>(){}),
+      anyString(),
+      anyString())
+    ).thenReturn(responseEntity);
+
+    // When called
+    boolean result = twitchApiClient.isFollowing("broadcasterid", "viewerid");
+
+    // Then the viewer is following the broadcaster
+    assertThat(result).isFalse();
+
+  }
+
+  @Test
+  void isFollowing_notAuthorized() {
+
+    // Given the app was not authorized to access twitch already
+    // (do nothing)
+
+    // When called
+    boolean result = twitchApiClient.isFollowing("broadcasterid", "viewerid");
+
+    // Then the viewer is not following the broadcaster (we don't throw an exception)
+    assertThat(result).isFalse();
+
   }
 
   private void givenApplicationWasAuthorizedToAccessTwitch(String clientId, String tokenValue) {
