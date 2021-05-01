@@ -39,7 +39,7 @@ public class CommandRequestFactoryImpl implements CommandRequestFactory {
   @SuppressWarnings("unchecked")
   @Override
   public CommandRequest build(Command command, RequestContext context)
-    throws CyclicalActionsException {
+      throws CyclicalActionsException {
     if (command == null || context == null) {
       throw new IllegalArgumentException("arguments cannot be null");
     }

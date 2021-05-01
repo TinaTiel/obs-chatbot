@@ -5,8 +5,6 @@ import static org.mockserver.model.JsonBody.json;
 import static org.mockserver.model.Parameter.param;
 import static org.mockserver.model.ParameterBody.params;
 
-import com.tinatiel.obschatbot.core.client.twitch.auth.event.TwitchAuthValidationFailureEvent;
-import com.tinatiel.obschatbot.core.client.twitch.auth.event.TwitchAuthValidationSuccessEvent;
 import com.tinatiel.obschatbot.core.messaging.ObsChatbotEvent;
 import com.tinatiel.obschatbot.core.messaging.QueueNotifier;
 import com.tinatiel.obschatbot.core.user.User;
@@ -22,13 +20,9 @@ import java.util.concurrent.BlockingQueue;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockserver.client.server.MockServerClient;
-import org.mockserver.model.HttpRequest;
-import org.mockserver.model.HttpResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.security.oauth2.client.OAuth2AuthorizeRequest;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
@@ -52,7 +46,7 @@ public class TwitchAuthTests extends AbstractTwitchAuthTest {
   OAuth2AuthorizedClientService authorizedClientService;
 
   @Autowired
-  TwitchAuthScheduler twitchAuthScheduler;
+  TwitchAuthValidationService twitchAuthValidationService;
 
   @Autowired
   BlockingQueue<ObsChatbotEvent> twitchAuthQueue;
@@ -157,7 +151,7 @@ public class TwitchAuthTests extends AbstractTwitchAuthTest {
     givenTwitchRefreshesToken(twitchPort, twitchTokenPath, newAccessToken, expiresIn, newRefreshToken, scopes);
 
     // When we refresh our token
-    twitchAuthScheduler.refreshTokenIfNeeded();
+    twitchAuthValidationService.refreshTokenIfNeeded();
 
     // Then we have a new token
     OAuth2AuthorizedClient newAuthorizedClient = authorizedClientService.loadAuthorizedClient("twitch",

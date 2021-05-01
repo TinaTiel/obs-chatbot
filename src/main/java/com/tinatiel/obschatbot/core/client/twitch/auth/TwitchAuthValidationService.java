@@ -20,8 +20,12 @@ import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
+/**
+ * Provides means to periodically validate a Twitch access token (per their guidelines) and
+ * to also refresh a token programmatically if expired.
+ */
 @Slf4j
-public class TwitchAuthScheduler {
+public class TwitchAuthValidationService {
 
   private final OAuth2AuthorizedClientService authorizedClientService;
   private final OAuth2AuthorizedClientManager authorizedClientManager;
@@ -29,7 +33,7 @@ public class TwitchAuthScheduler {
   private final TwitchAuthConnectionSettingsFactory twitchAuthConnectionSettingsFactory;
   private final QueueClient<ObsChatbotEvent> twitchAuthQueueClient;
 
-  public TwitchAuthScheduler(
+  public TwitchAuthValidationService(
     OAuth2AuthorizedClientService authorizedClientService,
     OAuth2AuthorizedClientManager authorizedClientManager,
     RestTemplate restTemplate,
@@ -72,6 +76,10 @@ public class TwitchAuthScheduler {
 
   }
 
+  /**
+   * Validates the current Twitch access token is still valid, as required per their guidelines.
+   * Since our usage is tied to chat, we schedule periodic checks rather than every call.
+   */
   @Scheduled(fixedRate = 1000*60*30) // every 30 minutes -- Twitch requires at least once per hour
   public void validateToken() {
 

@@ -17,7 +17,7 @@ public class JdbcClientRegistrationRepository implements ClientRegistrationRepos
   private final TwitchAuthConnectionSettingsFactory twitchAuthConnectionSettingsFactory;
 
   public JdbcClientRegistrationRepository(
-    TwitchAuthConnectionSettingsFactory twitchAuthConnectionSettingsFactory) {
+      TwitchAuthConnectionSettingsFactory twitchAuthConnectionSettingsFactory) {
     this.twitchAuthConnectionSettingsFactory = twitchAuthConnectionSettingsFactory;
   }
 
@@ -26,7 +26,7 @@ public class JdbcClientRegistrationRepository implements ClientRegistrationRepos
 
     TwitchAuthConnectionSettings settings = twitchAuthConnectionSettingsFactory.getSettings();
 
-    if(registrationId.equals("twitch")) {
+    if (registrationId.equals("twitch")) {
       return ClientRegistration.withRegistrationId("twitch")
         .authorizationUri(settings.getHost() + settings.getAuthorizationPath())
         .tokenUri(settings.getHost() + settings.getTokenPath())

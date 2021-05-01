@@ -10,17 +10,9 @@ import com.tinatiel.obschatbot.core.client.twitch.auth.event.TwitchAuthValidatio
 import com.tinatiel.obschatbot.core.client.twitch.auth.event.TwitchAuthValidationSuccessEvent;
 import com.tinatiel.obschatbot.core.messaging.ObsChatbotEvent;
 import com.tinatiel.obschatbot.core.messaging.QueueNotifier;
-import com.tinatiel.obschatbot.core.user.User;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.BlockingQueue;
-import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockserver.client.server.MockServerClient;
@@ -30,12 +22,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
-import org.springframework.security.oauth2.client.web.AuthorizationRequestRepository;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
-import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
-import org.springframework.test.web.reactive.server.WebTestClient;
 
 public class TwitchAuthValidationTests extends AbstractTwitchAuthTest {
 
@@ -50,7 +38,7 @@ public class TwitchAuthValidationTests extends AbstractTwitchAuthTest {
   OAuth2AuthorizedClientService authorizedClientService;
 
   @Autowired
-  TwitchAuthScheduler twitchAuthScheduler;
+  TwitchAuthValidationService twitchAuthValidationService;
 
   @Autowired
   BlockingQueue<ObsChatbotEvent> twitchAuthQueue;
@@ -114,7 +102,7 @@ public class TwitchAuthValidationTests extends AbstractTwitchAuthTest {
       );
 
     // When we validate our access token
-    twitchAuthScheduler.validateToken();
+    twitchAuthValidationService.validateToken();
 
     // Then there will be a valid auth event in the queue
     assertThat(twitchAuthQueue.take()).isNotNull().isInstanceOf(TwitchAuthValidationSuccessEvent.class);
@@ -160,7 +148,7 @@ public class TwitchAuthValidationTests extends AbstractTwitchAuthTest {
       );
 
     // When we validate our access token
-    twitchAuthScheduler.validateToken();
+    twitchAuthValidationService.validateToken();
 
     // Then there will be an invalid auth event in the queue
     assertThat(twitchAuthQueue.take()).isNotNull().isInstanceOf(TwitchAuthValidationFailureEvent.class);
@@ -188,7 +176,7 @@ public class TwitchAuthValidationTests extends AbstractTwitchAuthTest {
     when(authorizedClientService.loadAuthorizedClient(eq("twitch"), any())).thenReturn(null);
 
     // When we try to validate our access token
-    twitchAuthScheduler.validateToken();
+    twitchAuthValidationService.validateToken();
 
     // Then there will be an invalid auth event in the queue
     assertThat(twitchAuthQueue.take()).isNotNull().isInstanceOf(TwitchAuthValidationFailureEvent.class);

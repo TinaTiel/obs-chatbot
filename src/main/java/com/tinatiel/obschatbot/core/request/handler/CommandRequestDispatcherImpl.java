@@ -16,8 +16,8 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * Implementation of ${@link CommandRequestDispatcher} that passes a ${@link Command} and a
- * ${@link RequestContext} to a ${@link CommandRequestFactory} to build a ${@link CommandRequest} that
- * is passed to the CommandRequest Queue.
+ * ${@link RequestContext} to a ${@link CommandRequestFactory} to build a ${@link CommandRequest}
+ * that is passed to the CommandRequest Queue.
  */
 @Slf4j
 public class CommandRequestDispatcherImpl implements CommandRequestDispatcher {

@@ -1,20 +1,18 @@
 package com.tinatiel.obschatbot.web.controller;
 
 import com.tinatiel.obschatbot.core.client.twitch.api.TwitchApiClient;
-import com.tinatiel.obschatbot.core.client.twitch.auth.TwitchAuthScheduler;
+import com.tinatiel.obschatbot.core.client.twitch.auth.TwitchAuthValidationService;
 import com.tinatiel.obschatbot.core.messaging.ObsChatbotEvent;
 import java.util.concurrent.BlockingQueue;
 import javax.websocket.server.PathParam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -22,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @Slf4j
 @RestController
-public class OAuth2ClientController {
+public class Oauth2ClientController {
 
   @Autowired
   private ClientRegistrationRepository clientRegistrationRepository;
@@ -31,7 +29,7 @@ public class OAuth2ClientController {
   private OAuth2AuthorizedClientService authorizedClientService;
 
   @Autowired
-  private TwitchAuthScheduler twitchAuthScheduler;
+  private TwitchAuthValidationService twitchAuthValidationService;
 
   @Autowired
   BlockingQueue<ObsChatbotEvent> twitchAuthAuditQueue;
@@ -56,12 +54,12 @@ public class OAuth2ClientController {
 
   @PostMapping("/refresh/twitch")
   public void refresh() {
-    twitchAuthScheduler.refreshTokenIfNeeded();
+    twitchAuthValidationService.refreshTokenIfNeeded();
   }
 
   @GetMapping("/validate/twitch")
   public String validate() {
-    twitchAuthScheduler.validateToken();
+    twitchAuthValidationService.validateToken();
     return twitchAuthAuditQueue.toString();
   }
 
