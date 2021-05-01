@@ -38,13 +38,17 @@ public class TwitchApiClientConfig {
     return restTemplate;
   }
 
+  @Autowired
+  TwitchApiClientSettingsFactory twitchApiClientSettingsFactory;
+
   @Bean
   TwitchApiClient twitchApiClient() {
 
     return new TwitchApiClientImpl(
       twitchApiClientRestTemplate(),
       authorizedClientService,
-      twitchAuthConnectionSettingsFactory
+      twitchAuthConnectionSettingsFactory,
+      twitchApiClientSettingsFactory
     );
   }
 

@@ -2,8 +2,6 @@ package com.tinatiel.obschatbot.core.client.twitch.api;
 
 import com.tinatiel.obschatbot.core.client.twitch.auth.TwitchAuthConnectionSettings;
 import com.tinatiel.obschatbot.core.client.twitch.auth.TwitchAuthConnectionSettingsFactory;
-import com.tinatiel.obschatbot.core.client.twitch.auth.event.TwitchAuthValidationFailureEvent;
-import com.tinatiel.obschatbot.core.client.twitch.auth.event.TwitchAuthValidationSuccessEvent;
 import com.tinatiel.obschatbot.core.user.User;
 import java.util.Collections;
 import lombok.extern.slf4j.Slf4j;
@@ -13,7 +11,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.web.client.HttpClientErrorException;
@@ -24,14 +21,17 @@ public class TwitchApiClientImpl implements TwitchApiClient {
 
   private final RestTemplate restTemplate;
   private final OAuth2AuthorizedClientService authorizedClientService;
-  private final TwitchAuthConnectionSettingsFactory settingsFactory;
+  private final TwitchAuthConnectionSettingsFactory authSettingsFactory;
+  private final TwitchApiClientSettingsFactory apiSettingsFactory;
 
   public TwitchApiClientImpl(RestTemplate restTemplate,
     OAuth2AuthorizedClientService authorizedClientService,
-    TwitchAuthConnectionSettingsFactory settingsFactory) {
+    TwitchAuthConnectionSettingsFactory authSettingsFactory,
+    TwitchApiClientSettingsFactory apiSettingsFactory) {
     this.restTemplate = restTemplate;
     this.authorizedClientService = authorizedClientService;
-    this.settingsFactory = settingsFactory;
+    this.authSettingsFactory = authSettingsFactory;
+    this.apiSettingsFactory = apiSettingsFactory;
   }
 
   @Override
@@ -49,9 +49,10 @@ public class TwitchApiClientImpl implements TwitchApiClient {
 
     // Make the request
     UsersFollowsResponse response = null;
+    TwitchApiClientSettings settings = apiSettingsFactory.getSettings();
     try {
       response = restTemplate.exchange(
-        "https://api.twitch.tv/helix/users/follows?from_id={viewer}&to_id={broadcaster}",
+        settings.getHost() + settings.getUsersFollowsPath() + "?from_id={viewer}&to_id={broadcaster}",
         HttpMethod.GET,
         entity,
         new ParameterizedTypeReference<UsersFollowsResponse>(){},
@@ -71,7 +72,7 @@ public class TwitchApiClientImpl implements TwitchApiClient {
     boolean tokenIsValid = false;
 
     // Load the most recent settings for authentication with Twitch
-    TwitchAuthConnectionSettings settings = settingsFactory.getSettings();
+    TwitchAuthConnectionSettings settings = authSettingsFactory.getSettings();
 
     // Get the twitch client
     OAuth2AuthorizedClient twitchClient = authorizedClientService

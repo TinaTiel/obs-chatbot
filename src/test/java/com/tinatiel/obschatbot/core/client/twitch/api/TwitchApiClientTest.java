@@ -30,7 +30,8 @@ public class TwitchApiClientTest {
 
   RestTemplate restTemplate;
   OAuth2AuthorizedClientService authorizedClientService;
-  TwitchAuthConnectionSettingsFactory settingsFactory;
+  TwitchAuthConnectionSettingsFactory authSettingsFactory;
+  TwitchApiClientSettingsFactory apiSettingsFactory;
 
   TwitchApiClient twitchApiClient;
 
@@ -38,8 +39,10 @@ public class TwitchApiClientTest {
   void setUp() {
     restTemplate = mock(RestTemplate.class);
     authorizedClientService = mock(OAuth2AuthorizedClientService.class);
-    settingsFactory = mock(TwitchAuthConnectionSettingsFactory.class);
-    twitchApiClient = new TwitchApiClientImpl(restTemplate, authorizedClientService, settingsFactory);
+    authSettingsFactory = mock(TwitchAuthConnectionSettingsFactory.class);
+    apiSettingsFactory = mock(TwitchApiClientSettingsFactory.class);
+    twitchApiClient = new TwitchApiClientImpl(restTemplate, authorizedClientService,
+      authSettingsFactory, apiSettingsFactory);
   }
 
   @Test
@@ -122,11 +125,19 @@ public class TwitchApiClientTest {
     String clientId = "someclientid";
     givenApplicationWasAuthorizedToAccessTwitch(tokenValue, clientId);
 
+    // Given the app was configured with the appropriate path
+    String host = "http://some-host";
+    String path = "/helix/users/follows";
+    when(apiSettingsFactory.getSettings()).thenReturn(TwitchApiClientSettings.builder()
+      .host(host)
+      .usersFollowsPath(path)
+      .build());
+
     // And given Twitch lists the broadcaster as a follow
     UsersFollowsResponse body = new UsersFollowsResponse(1);
     ResponseEntity<UsersFollowsResponse> responseEntity = ResponseEntity.of(Optional.of(body));
     when(restTemplate.exchange(
-      contains("/users/follows?from_id={viewer}&to_id={broadcaster}"),
+      contains(path + "?from_id={viewer}&to_id={broadcaster}"),
       eq(HttpMethod.GET),
       any(),
       eq(new ParameterizedTypeReference<UsersFollowsResponse>(){}),
@@ -150,11 +161,19 @@ public class TwitchApiClientTest {
     String clientId = "someclientid";
     givenApplicationWasAuthorizedToAccessTwitch(tokenValue, clientId);
 
+    // Given the app was configured with the appropriate path
+    String host = "http://some-host";
+    String path = "/helix/users/follows";
+    when(apiSettingsFactory.getSettings()).thenReturn(TwitchApiClientSettings.builder()
+      .host(host)
+      .usersFollowsPath(path)
+      .build());
+
     // And given Twitch lists the broadcaster as a follow
     UsersFollowsResponse body = new UsersFollowsResponse(0);
     ResponseEntity<UsersFollowsResponse> responseEntity = ResponseEntity.of(Optional.of(body));
     when(restTemplate.exchange(
-      contains("/users/follows?from_id={viewer}&to_id={broadcaster}"),
+      contains(path + "?from_id={viewer}&to_id={broadcaster}"),
       eq(HttpMethod.GET),
       any(),
       eq(new ParameterizedTypeReference<UsersFollowsResponse>(){}),
@@ -192,9 +211,17 @@ public class TwitchApiClientTest {
     String clientId = "someclientid";
     givenApplicationWasAuthorizedToAccessTwitch(tokenValue, clientId);
 
+    // Given the app was configured with the appropriate path
+    String host = "http://some-host";
+    String path = "/helix/users/follows";
+    when(apiSettingsFactory.getSettings()).thenReturn(TwitchApiClientSettings.builder()
+      .host(host)
+      .usersFollowsPath(path)
+      .build());
+
     // But given Twitch returns an HTTP Error
     when(restTemplate.exchange(
-      contains("/users/follows?from_id={viewer}&to_id={broadcaster}"),
+      contains(path + "?from_id={viewer}&to_id={broadcaster}"),
       eq(HttpMethod.GET),
       any(),
       eq(new ParameterizedTypeReference<UsersFollowsResponse>(){}),
@@ -230,7 +257,7 @@ public class TwitchApiClientTest {
 
   private void givenApplicationConfiguredWithHostAndValidationPath(String host, String validationPath) {
     TwitchAuthConnectionSettings settings = mock(TwitchAuthConnectionSettings.class);
-    when(settingsFactory.getSettings()).thenReturn(settings);
+    when(authSettingsFactory.getSettings()).thenReturn(settings);
     when(settings.getHost()).thenReturn(host);
     when(settings.getValidationPath()).thenReturn(validationPath);
   }
