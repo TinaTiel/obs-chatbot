@@ -1,22 +1,31 @@
 package com.tinatiel.obschatbot.core.client.twitch.auth;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
+import com.tinatiel.obschatbot.core.client.twitch.api.TwitchApiClient;
+import com.tinatiel.obschatbot.core.client.twitch.auth.event.TwitchAuthValidationFailureEvent;
+import com.tinatiel.obschatbot.core.client.twitch.auth.event.TwitchAuthValidationSuccessEvent;
 import com.tinatiel.obschatbot.core.messaging.ObsChatbotEvent;
 import com.tinatiel.obschatbot.core.messaging.QueueClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.web.client.RestTemplate;
 
 public class TwitchAuthValidationServiceTest {
 
+  ArgumentCaptor<ObsChatbotEvent> argumentCaptor;
+
   OAuth2AuthorizedClientService authorizedClientService;
   OAuth2AuthorizedClientManager authorizedClientManager;
-  RestTemplate restTemplate;
-  TwitchAuthConnectionSettingsFactory twitchAuthConnectionSettingsFactory;
   QueueClient<ObsChatbotEvent> twitchAuthQueueClient;
+  TwitchApiClient twitchApiClient;
 
   TwitchAuthValidationService twitchAuthValidationService;
 
@@ -24,21 +33,46 @@ public class TwitchAuthValidationServiceTest {
   void setUp() {
     authorizedClientService = mock(OAuth2AuthorizedClientService.class);
     authorizedClientManager = mock(OAuth2AuthorizedClientManager.class);
-    restTemplate = mock(RestTemplate.class);
-    twitchAuthConnectionSettingsFactory = mock(TwitchAuthConnectionSettingsFactory.class);
     twitchAuthQueueClient = mock(QueueClient.class);
+    twitchApiClient = mock(TwitchApiClient.class);
+
+    argumentCaptor = ArgumentCaptor.forClass(ObsChatbotEvent.class);
+    doNothing().when(twitchAuthQueueClient).submit(argumentCaptor.capture());
 
     twitchAuthValidationService = new TwitchAuthValidationService(
       authorizedClientService,
       authorizedClientManager,
-      restTemplate,
-      twitchAuthConnectionSettingsFactory,
-      twitchAuthQueueClient
+      twitchAuthQueueClient,
+      twitchApiClient
     );
   }
 
   @Test
-  void tokenIsValid() {
+  void whenTokenValidThenSendSuccessMessage() {
+
+    // Given the TwitchApiClient finds token is valid
+    when(twitchApiClient.isCurrentAccessTokenValid()).thenReturn(true);
+
+    // When called
+    twitchAuthValidationService.validateToken();
+
+    // Then a validation event will be submitted to the queue
+    assertThat(argumentCaptor.getValue()).isInstanceOf(TwitchAuthValidationSuccessEvent.class);
 
   }
+
+  @Test
+  void whenTokenInValidThenSendFailMessage() {
+
+    // Given the TwitchApiClient finds token is valid
+    when(twitchApiClient.isCurrentAccessTokenValid()).thenReturn(false);
+
+    // When called
+    twitchAuthValidationService.validateToken();
+
+    // Then a validation event will be submitted to the queue
+    assertThat(argumentCaptor.getValue()).isInstanceOf(TwitchAuthValidationFailureEvent.class);
+
+  }
+
 }

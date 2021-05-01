@@ -1,24 +1,17 @@
 package com.tinatiel.obschatbot.core.client.twitch.auth;
 
+import com.tinatiel.obschatbot.core.client.twitch.api.TwitchApiClient;
 import com.tinatiel.obschatbot.core.client.twitch.auth.event.TwitchAuthValidationFailureEvent;
 import com.tinatiel.obschatbot.core.client.twitch.auth.event.TwitchAuthValidationSuccessEvent;
 import com.tinatiel.obschatbot.core.messaging.ObsChatbotEvent;
 import com.tinatiel.obschatbot.core.messaging.QueueClient;
 import com.tinatiel.obschatbot.core.user.User;
-import java.util.Collections;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.oauth2.client.OAuth2AuthorizeRequest;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RestTemplate;
 
 /**
  * Provides means to periodically validate a Twitch access token (per their guidelines) and
@@ -29,21 +22,18 @@ public class TwitchAuthValidationService {
 
   private final OAuth2AuthorizedClientService authorizedClientService;
   private final OAuth2AuthorizedClientManager authorizedClientManager;
-  private final RestTemplate restTemplate;
-  private final TwitchAuthConnectionSettingsFactory twitchAuthConnectionSettingsFactory;
   private final QueueClient<ObsChatbotEvent> twitchAuthQueueClient;
+  private final TwitchApiClient twitchApiClient;
 
   public TwitchAuthValidationService(
     OAuth2AuthorizedClientService authorizedClientService,
     OAuth2AuthorizedClientManager authorizedClientManager,
-    RestTemplate restTemplate,
-    TwitchAuthConnectionSettingsFactory twitchAuthConnectionSettingsFactory,
-    QueueClient<ObsChatbotEvent> twitchAuthQueueClient) {
+    QueueClient<ObsChatbotEvent> twitchAuthQueueClient,
+    TwitchApiClient twitchApiClient) {
     this.authorizedClientService = authorizedClientService;
     this.authorizedClientManager = authorizedClientManager;
-    this.restTemplate = restTemplate;
-    this.twitchAuthConnectionSettingsFactory = twitchAuthConnectionSettingsFactory;
     this.twitchAuthQueueClient = twitchAuthQueueClient;
+    this.twitchApiClient = twitchApiClient;
   }
 
   /**
@@ -83,40 +73,10 @@ public class TwitchAuthValidationService {
   @Scheduled(fixedRate = 1000*60*30) // every 30 minutes -- Twitch requires at least once per hour
   public void validateToken() {
 
-    // Load the most recent settings for authentication with Twitch
-    TwitchAuthConnectionSettings settings = twitchAuthConnectionSettingsFactory.getSettings();
-
-    // Get the twitch client
-    OAuth2AuthorizedClient twitchClient = authorizedClientService
-      .loadAuthorizedClient("twitch", User.SYSTEM_PRINCIPAL_NAME);
-
-    // If no authorized client, submit a failure event and exit
-    if(twitchClient == null || twitchClient.getAccessToken() == null) {
-      twitchAuthQueueClient.submit(new TwitchAuthValidationFailureEvent("No authorized client to validate; must authorize first!"));
-      return;
-    }
-
-    HttpHeaders headers = new HttpHeaders();
-    headers.put("Authorization", Collections.singletonList("OAuth " + twitchClient.getAccessToken().getTokenValue()));
-
-    HttpEntity entity = new HttpEntity(null, headers);
-    ResponseEntity<Object> response;
-    try{
-      response = restTemplate.exchange(settings.getHost() + settings.getValidationPath(), HttpMethod.GET, entity, Object.class);
-      if(response.getStatusCode() == HttpStatus.OK) {
-        log.debug("Validation Success");
-        twitchAuthQueueClient.submit(new TwitchAuthValidationSuccessEvent());
-      }
-    } catch (HttpClientErrorException e) {
-      if (e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
-        log.debug("Validation failure");
-        twitchAuthQueueClient.submit(new TwitchAuthValidationFailureEvent("Access token was no-longer valid"));
-      } else {
-        String message = "Unexpected response from Twitch while validating token: "
-          + e.getStatusCode() + ", with body: \n" + e.getResponseBodyAsString();
-        twitchAuthQueueClient.submit(new TwitchAuthValidationFailureEvent(message));
-        log.error(message);
-      }
+    if(twitchApiClient.isCurrentAccessTokenValid()) {
+      twitchAuthQueueClient.submit(new TwitchAuthValidationSuccessEvent());
+    } else {
+      twitchAuthQueueClient.submit(new TwitchAuthValidationFailureEvent());
     }
 
   }
