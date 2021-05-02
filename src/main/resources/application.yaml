@@ -7,6 +7,7 @@ logging:
     org.pircbotx: warn # WARNING: Prints credentials to log in Debug mode
     org.apache.http: debug
     httpclient.wire: debug
+    reactor.netty.http.client: debug # WARNING: Logs HTTP requests that includes PII
 #    org.springframework.security.oauth2.client: trace
 
 com:

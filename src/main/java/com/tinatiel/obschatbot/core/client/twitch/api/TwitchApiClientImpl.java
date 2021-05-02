@@ -1,9 +1,11 @@
 package com.tinatiel.obschatbot.core.client.twitch.api;
 
+import com.tinatiel.obschatbot.core.cache.CacheConfig;
 import com.tinatiel.obschatbot.core.user.User;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
@@ -30,6 +32,7 @@ public class TwitchApiClientImpl implements TwitchApiClient {
     webClient = WebClient.builder().build();
   }
 
+//  @Cacheable(CacheConfig.TWITCH_FOLLOWS) // Commenting out until we add Twitch pub/sub/event support to invalidate cache on follow events
   @Override
   public boolean isFollowing(String broadcasterId, String viewerId) {
 
@@ -82,6 +85,7 @@ public class TwitchApiClientImpl implements TwitchApiClient {
 
   }
 
+  @Cacheable(CacheConfig.TWITCH_USER_IDS)
   @Override
   public String getUserIdFromUsername(String username) {
 

@@ -1,21 +1,13 @@
 package com.tinatiel.obschatbot.core.client.twitch.auth;
 
-import com.tinatiel.obschatbot.core.client.twitch.api.TwitchApiClientSettingsFactory;
 import com.tinatiel.obschatbot.core.user.User;
-import java.util.Collections;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
-import reactor.core.publisher.Mono;
 
 @Slf4j
 public class TwitchAuthClientImpl implements TwitchAuthClient {
