@@ -16,7 +16,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
-import org.springframework.web.client.RestTemplate;
 
 public class TwitchAuthValidationServiceTest {
 
@@ -25,7 +24,7 @@ public class TwitchAuthValidationServiceTest {
   OAuth2AuthorizedClientService authorizedClientService;
   OAuth2AuthorizedClientManager authorizedClientManager;
   QueueClient<ObsChatbotEvent> twitchAuthQueueClient;
-  TwitchApiClient twitchApiClient;
+  TwitchAuthClient twitchAuthClient;
 
   TwitchAuthValidationService twitchAuthValidationService;
 
@@ -34,7 +33,7 @@ public class TwitchAuthValidationServiceTest {
     authorizedClientService = mock(OAuth2AuthorizedClientService.class);
     authorizedClientManager = mock(OAuth2AuthorizedClientManager.class);
     twitchAuthQueueClient = mock(QueueClient.class);
-    twitchApiClient = mock(TwitchApiClient.class);
+    twitchAuthClient = mock(TwitchAuthClient.class);
 
     argumentCaptor = ArgumentCaptor.forClass(ObsChatbotEvent.class);
     doNothing().when(twitchAuthQueueClient).submit(argumentCaptor.capture());
@@ -43,7 +42,7 @@ public class TwitchAuthValidationServiceTest {
       authorizedClientService,
       authorizedClientManager,
       twitchAuthQueueClient,
-      twitchApiClient
+      twitchAuthClient
     );
   }
 
@@ -51,7 +50,7 @@ public class TwitchAuthValidationServiceTest {
   void whenTokenValidThenSendSuccessMessage() {
 
     // Given the TwitchApiClient finds token is valid
-    when(twitchApiClient.isCurrentAccessTokenValid()).thenReturn(true);
+    when(twitchAuthClient.isCurrentAccessTokenValid()).thenReturn(true);
 
     // When called
     twitchAuthValidationService.validateToken();
@@ -65,7 +64,7 @@ public class TwitchAuthValidationServiceTest {
   void whenTokenInValidThenSendFailMessage() {
 
     // Given the TwitchApiClient finds token is valid
-    when(twitchApiClient.isCurrentAccessTokenValid()).thenReturn(false);
+    when(twitchAuthClient.isCurrentAccessTokenValid()).thenReturn(false);
 
     // When called
     twitchAuthValidationService.validateToken();

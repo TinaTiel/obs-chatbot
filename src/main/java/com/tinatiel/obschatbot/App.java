@@ -10,6 +10,9 @@ import com.tinatiel.obschatbot.core.command.Command;
 import com.tinatiel.obschatbot.core.command.CommandRepository;
 import com.tinatiel.obschatbot.core.sequencer.InOrderActionSequencer;
 import com.tinatiel.obschatbot.core.sequencer.RandomOrderActionSequencer;
+import com.tinatiel.obschatbot.core.user.Platform;
+import com.tinatiel.obschatbot.core.user.local.LocalUser;
+import com.tinatiel.obschatbot.core.user.local.LocalUserRepository;
 import java.util.Arrays;
 import java.util.Date;
 import org.springframework.boot.SpringApplication;
@@ -46,6 +49,15 @@ public class App {
     CommandRepository commandRepository = context.getBean(CommandRepository.class);
     commandRepository.save(command);
     commandRepository.save(pingPong);
+
+    // Register who the broadcaster is for the Twitch platform
+    LocalUserRepository localUserRepository = context.getBean(LocalUserRepository.class);
+    localUserRepository.save(LocalUser.builder()
+      .platform(Platform.TWITCH)
+      .username("tinatiel")
+      .broadcaster(true)
+      .build()
+    );
 
 //        // Get the Twitch Client Manager, and start it
 //        ClientManager chatClientManager = context.getBean(TwitchChatClientManager.class);

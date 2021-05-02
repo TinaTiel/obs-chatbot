@@ -17,13 +17,10 @@ public interface TwitchApiClient {
   boolean isFollowing(String broadcasterId, String viewerId);
 
   /**
-   * Validates if the current access token is valid.
-   */
-  boolean isCurrentAccessTokenValid();
-
-  /**
    * Grabs the user id for a given username. Shouldn't be used too often, except to initially setup
    * the broadcaster's id.
+   *
+   * @return the id of the user, otherwise null
    */
   String getUserIdFromUsername(String username);
 

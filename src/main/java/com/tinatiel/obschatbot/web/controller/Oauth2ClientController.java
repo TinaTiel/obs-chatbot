@@ -69,4 +69,10 @@ public class Oauth2ClientController {
     return twitchApiClient.isFollowing(broadcasterId, viewerId);
   }
 
+  @GetMapping("/userid")
+  public String getUserId(@PathParam("username") String username) {
+    return twitchApiClient.getUserIdFromUsername(username);
+  }
+
+
 }

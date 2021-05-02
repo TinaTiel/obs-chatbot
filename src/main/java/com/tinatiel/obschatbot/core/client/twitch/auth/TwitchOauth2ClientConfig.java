@@ -1,12 +1,10 @@
 package com.tinatiel.obschatbot.core.client.twitch.auth;
 
-import com.tinatiel.obschatbot.core.client.twitch.api.TwitchApiClient;
 import com.tinatiel.obschatbot.core.messaging.ObsChatbotEvent;
 import com.tinatiel.obschatbot.core.messaging.QueueClient;
 import com.tinatiel.obschatbot.security.SystemPrincipalOauth2AuthorizedClientRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
@@ -35,9 +33,6 @@ public class TwitchOauth2ClientConfig {
 
   @Autowired
   QueueClient<ObsChatbotEvent> twitchAuthQueueClient;
-
-  @Autowired
-  TwitchApiClient twitchApiClient;
 
   /**
    * manages **authorized** clients TODO Replace with JdbcOAuth2AuthorizedClientService
@@ -98,12 +93,23 @@ public class TwitchOauth2ClientConfig {
   }
 
   @Bean
+  TwitchAuthClient twitchAuthClient() {
+    RestTemplate restTemplate = new RestTemplate();
+    restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
+    return new TwitchAuthClientImpl(
+      restTemplate,
+      authorizedClientService(),
+      twitchAuthConnectionSettingsFactory
+    );
+  }
+
+  @Bean
   TwitchAuthValidationService twitchAuthScheduler() {
     return new TwitchAuthValidationService(
       authorizedClientService(),
       auth2AuthorizedClientManager(),
       twitchAuthQueueClient,
-      twitchApiClient
+      twitchAuthClient()
     );
   }
 

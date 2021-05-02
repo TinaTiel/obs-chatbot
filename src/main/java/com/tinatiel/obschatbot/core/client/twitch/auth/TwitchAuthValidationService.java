@@ -1,6 +1,5 @@
 package com.tinatiel.obschatbot.core.client.twitch.auth;
 
-import com.tinatiel.obschatbot.core.client.twitch.api.TwitchApiClient;
 import com.tinatiel.obschatbot.core.client.twitch.auth.event.TwitchAuthValidationFailureEvent;
 import com.tinatiel.obschatbot.core.client.twitch.auth.event.TwitchAuthValidationSuccessEvent;
 import com.tinatiel.obschatbot.core.messaging.ObsChatbotEvent;
@@ -23,17 +22,17 @@ public class TwitchAuthValidationService {
   private final OAuth2AuthorizedClientService authorizedClientService;
   private final OAuth2AuthorizedClientManager authorizedClientManager;
   private final QueueClient<ObsChatbotEvent> twitchAuthQueueClient;
-  private final TwitchApiClient twitchApiClient;
+  private final TwitchAuthClient twitchAuthClient;
 
   public TwitchAuthValidationService(
     OAuth2AuthorizedClientService authorizedClientService,
     OAuth2AuthorizedClientManager authorizedClientManager,
     QueueClient<ObsChatbotEvent> twitchAuthQueueClient,
-    TwitchApiClient twitchApiClient) {
+    TwitchAuthClient twitchAuthClient) {
     this.authorizedClientService = authorizedClientService;
     this.authorizedClientManager = authorizedClientManager;
     this.twitchAuthQueueClient = twitchAuthQueueClient;
-    this.twitchApiClient = twitchApiClient;
+    this.twitchAuthClient = twitchAuthClient;
   }
 
   /**
@@ -73,7 +72,7 @@ public class TwitchAuthValidationService {
   @Scheduled(fixedRate = 1000*60*30) // every 30 minutes -- Twitch requires at least once per hour
   public void validateToken() {
 
-    if(twitchApiClient.isCurrentAccessTokenValid()) {
+    if(twitchAuthClient.isCurrentAccessTokenValid()) {
       twitchAuthQueueClient.submit(new TwitchAuthValidationSuccessEvent());
     } else {
       twitchAuthQueueClient.submit(new TwitchAuthValidationFailureEvent());

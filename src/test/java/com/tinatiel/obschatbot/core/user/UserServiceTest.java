@@ -145,9 +145,10 @@ public class UserServiceTest {
           .username("garfield")
           .build();
 
-        // Given the broadcaster does exist for the Twitch platform
+        // Given the broadcaster exists for the Twitch platform
+        LocalUser broadcaster = LocalUser.builder().username("tinatiel").broadcaster(true).build();
         when(localUserRepository.findByPlatformAndBroadcasterTrue(Platform.TWITCH)).thenReturn(
-          Optional.empty()
+          Optional.of(broadcaster)
         );
 
         // But given we cannot retrieve the id of the broadcaster or viewer
