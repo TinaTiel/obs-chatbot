@@ -23,7 +23,6 @@ public class TwitchApiClientIT {
   public static MockWebServer twitchServer;
   TwitchApiClientSettings apiSettings;
 
-  RestTemplate restTemplate;
   OAuth2AuthorizedClientService authorizedClientService;
   TwitchApiClientSettingsFactory apiSettingsFactory;
 
@@ -43,7 +42,7 @@ public class TwitchApiClientIT {
   @BeforeEach
   void setUp() {
 
-    // Setup the twitch server
+    // Setup the app settings
     String twitchHost = "http://localhost:" + twitchServer.getPort();
     apiSettings = TwitchApiClientSettings.builder()
       .host(twitchHost)
@@ -53,7 +52,6 @@ public class TwitchApiClientIT {
 
 
     // Setup the SUT
-    restTemplate = mock(RestTemplate.class);
     authorizedClientService = mock(OAuth2AuthorizedClientService.class);
     apiSettingsFactory = mock(TwitchApiClientSettingsFactory.class);
     when(apiSettingsFactory.getSettings()).thenReturn(apiSettings);
