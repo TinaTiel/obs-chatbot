@@ -47,6 +47,7 @@ public class TwitchApiClientIT {
     String twitchHost = "http://localhost:" + twitchServer.getPort();
     apiSettings = TwitchApiClientSettings.builder()
       .host(twitchHost)
+      .usersFollowsPath("/helix/users/follows")
       .usersPath("/helix/users")
       .build();
 
@@ -61,128 +62,99 @@ public class TwitchApiClientIT {
 
   }
 
+  @Test
+  void isFollowing_viewerIsFollowingBroadcaster() {
 
+    // Given the app was authorized to access twitch already
+    givenApplicationWasAuthorizedToAccessTwitch("someclient", "sometoken");
 
-//  @Test
-//  void isFollowing_viewerIsFollowingBroadcaster() {
-//
-//    // Given the app was authorized to access twitch already
-//    String tokenValue = "validtoken";
-//    String clientId = "someclientid";
-//    givenApplicationWasAuthorizedToAccessTwitch(tokenValue, clientId);
-//
-//    // Given the app was configured with the appropriate path
-//    String host = "http://some-host";
-//    String path = "/helix/users/follows";
-//    when(authSettingsFactory.getSettings()).thenReturn(TwitchAuthConnectionSettings.builder()
-//      .host(host)
-//      .usersFollowsPath(path)
-//      .build());
-//
-//    // And given Twitch lists the broadcaster as a follow
-//    UsersFollowsResponse body = new UsersFollowsResponse(1);
-//    ResponseEntity<UsersFollowsResponse> responseEntity = ResponseEntity.of(Optional.of(body));
-//    when(restTemplate.exchange(
-//      contains(path + "?from_id={viewer}&to_id={broadcaster}"),
-//      eq(HttpMethod.GET),
-//      any(),
-//      eq(new ParameterizedTypeReference<UsersFollowsResponse>(){}),
-//      anyString(),
-//      anyString())
-//    ).thenReturn(responseEntity);
-//
-//    // When called
-//    boolean result = twitchAuthClient.isFollowing("broadcasterid", "viewerid");
-//
-//    // Then the viewer is following the broadcaster
-//    assertThat(result).isTrue();
-//
-//  }
-//
-//  @Test
-//  void isFollowing_viewerIsNotFollowingBroadcaster() {
-//
-//    // Given the app was authorized to access twitch already
-//    String tokenValue = "validtoken";
-//    String clientId = "someclientid";
-//    givenApplicationWasAuthorizedToAccessTwitch(tokenValue, clientId);
-//
-//    // Given the app was configured with the appropriate path
-//    String host = "http://some-host";
-//    String path = "/helix/users/follows";
-//    when(authSettingsFactory.getSettings()).thenReturn(TwitchApiClientSettings.builder()
-//      .host(host)
-//      .usersFollowsPath(path)
-//      .build());
-//
-//    // And given Twitch lists the broadcaster as a follow
-//    UsersFollowsResponse body = new UsersFollowsResponse(0);
-//    ResponseEntity<UsersFollowsResponse> responseEntity = ResponseEntity.of(Optional.of(body));
-//    when(restTemplate.exchange(
-//      contains(path + "?from_id={viewer}&to_id={broadcaster}"),
-//      eq(HttpMethod.GET),
-//      any(),
-//      eq(new ParameterizedTypeReference<UsersFollowsResponse>(){}),
-//      anyString(),
-//      anyString())
-//    ).thenReturn(responseEntity);
-//
-//    // When called
-//    boolean result = twitchAuthClient.isFollowing("broadcasterid", "viewerid");
-//
-//    // Then the viewer is following the broadcaster
-//    assertThat(result).isFalse();
-//
-//  }
-//
-//  @Test
-//  void isFollowing_notAuthorized() {
-//
-//    // Given the app was not authorized to access twitch already
-//    // (do nothing)
-//
-//    // When called
-//    boolean result = twitchAuthClient.isFollowing("broadcasterid", "viewerid");
-//
-//    // Then the viewer is not following the broadcaster (we don't throw an exception)
-//    assertThat(result).isFalse();
-//
-//  }
-//
-//  @Test
-//  void isFollowing_twitchError() {
-//
-//    // Given the app was authorized to access twitch already
-//    String tokenValue = "validtoken";
-//    String clientId = "someclientid";
-//    givenApplicationWasAuthorizedToAccessTwitch(tokenValue, clientId);
-//
-//    // Given the app was configured with the appropriate path
-//    String host = "http://some-host";
-//    String path = "/helix/users/follows";
-//    when(authSettingsFactory.getSettings()).thenReturn(TwitchApiClientSettings.builder()
-//      .host(host)
-//      .usersFollowsPath(path)
-//      .build());
-//
-//    // But given Twitch returns an HTTP Error
-//    when(restTemplate.exchange(
-//      contains(path + "?from_id={viewer}&to_id={broadcaster}"),
-//      eq(HttpMethod.GET),
-//      any(),
-//      eq(new ParameterizedTypeReference<UsersFollowsResponse>(){}),
-//      anyString(),
-//      anyString())
-//    ).thenThrow(mock(HttpClientErrorException.class)); // doesn't matter what error
-//
-//    // When called
-//    boolean result = twitchAuthClient.isFollowing("broadcasterid", "viewerid");
-//
-//    // Then the viewer is NOT following the broadcaster; it doesn't throw an exception
-//    assertThat(result).isFalse();
-//
-//  }
-//
+    // And given Twitch lists the broadcaster as a follow
+    String json = "{\n"
+      + "    \"total\": 1,\n"
+      + "    \"data\": [\n"
+      + "        {\n"
+      + "            \"from_id\": \"654321\",\n"
+      + "            \"from_login\": \"robotiel\",\n"
+      + "            \"from_name\": \"robotiel\",\n"
+      + "            \"to_id\": \"123456\",\n"
+      + "            \"to_login\": \"tinatiel\",\n"
+      + "            \"to_name\": \"tinatiel\",\n"
+      + "            \"followed_at\": \"2021-05-02T11:20:19Z\"\n"
+      + "        }\n"
+      + "    ],\n"
+      + "    \"pagination\": {}\n"
+      + "}";
+
+    twitchServer.enqueue(new MockResponse()
+      .setResponseCode(200)
+      .setBody(json)
+      .setHeader("Content-Type", "application/json")
+    );
+
+    // When called
+    boolean result = twitchApiClient.isFollowing("123456", "654321");
+
+    // Then the viewer is following the broadcaster
+    assertThat(result).isTrue();
+
+  }
+
+  @Test
+  void isFollowing_viewerIsNotFollowingBroadcaster() {
+
+    // Given the app was authorized to access twitch already
+    givenApplicationWasAuthorizedToAccessTwitch("someclient", "sometoken");
+
+    // And given Twitch lists the broadcaster as a follow
+    String json = "{\n"
+      + "    \"total\": 0,\n"
+      + "    \"data\": [],\n"
+      + "    \"pagination\": {}\n"
+      + "}";
+
+    twitchServer.enqueue(new MockResponse()
+      .setResponseCode(200)
+      .setBody(json)
+      .setHeader("Content-Type", "application/json")
+    );
+
+    // When called
+    boolean result = twitchApiClient.isFollowing("123456", "654321");
+
+    // Then the viewer is NOT following the broadcaster
+    assertThat(result).isFalse();
+
+  }
+
+  @Test
+  void isFollowing_twitchError() {
+
+    // Given the app was authorized to access twitch already
+    givenApplicationWasAuthorizedToAccessTwitch("someclient", "sometoken");
+
+    // And given Twitch responds with errors
+    twitchServer.enqueue(new MockResponse().setResponseCode(400));
+    twitchServer.enqueue(new MockResponse().setResponseCode(504));
+
+    // When called, then the viewer is not following the broadcaster
+    assertThat(twitchApiClient.isFollowing("123456", "654321")).isFalse();
+    assertThat(twitchApiClient.isFollowing("123456", "654321")).isFalse();
+
+  }
+
+  @Test
+  void isFollowing_notAuthorized() {
+
+    // Given the app was not authorized to access twitch already
+    // (do nothing)
+
+    // When called
+    boolean result = twitchApiClient.isFollowing("broadcasterid", "viewerid");
+
+    // Then the viewer is not following the broadcaster (we don't throw an exception)
+    assertThat(result).isFalse();
+
+  }
 
   @Test
   void getUserId_userFound() {
@@ -238,6 +210,36 @@ public class TwitchApiClientIT {
       .setBody(json)
       .addHeader("Content-Type", "application/json")
     );
+
+    // When the client requests the id
+    String id = twitchApiClient.getUserIdFromUsername("twitchdev");
+
+    // Then it is null
+    assertThat(id).isNull();
+
+  }
+
+  @Test
+  void getUserId_twitchErrorResponse() {
+
+    // Given the api client was authorized
+    givenApplicationWasAuthorizedToAccessTwitch("someclient", "sometoken");
+
+    // Given server responds with an error
+    twitchServer.enqueue(new MockResponse().setResponseCode(400));
+    twitchServer.enqueue(new MockResponse().setResponseCode(504));
+
+    // When the client requests the id, then it is null
+    assertThat(twitchApiClient.getUserIdFromUsername("twitchdev")).isNull();
+    assertThat(twitchApiClient.getUserIdFromUsername("twitchdev")).isNull();
+
+  }
+
+  @Test
+  void getUserId_notAuthorized() {
+
+    // Given the api client was NOT authorized
+    // (do nothing)
 
     // When the client requests the id
     String id = twitchApiClient.getUserIdFromUsername("twitchdev");
