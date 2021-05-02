@@ -13,20 +13,27 @@ import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
+import reactor.core.publisher.Mono;
 
 @Slf4j
 public class TwitchAuthClientImpl implements TwitchAuthClient {
 
-  private final RestTemplate restTemplate;
+  private WebClient webClient;
   private final OAuth2AuthorizedClientService authorizedClientService;
   private final TwitchAuthConnectionSettingsFactory authSettingsFactory;
 
-  public TwitchAuthClientImpl(RestTemplate restTemplate,
+  public TwitchAuthClientImpl(
     OAuth2AuthorizedClientService authorizedClientService,
     TwitchAuthConnectionSettingsFactory authSettingsFactory) {
-    this.restTemplate = restTemplate;
     this.authorizedClientService = authorizedClientService;
     this.authSettingsFactory = authSettingsFactory;
+    init();
+  }
+
+  private void init() {
+    webClient = WebClient.builder().build();
   }
 
   @Override
@@ -41,42 +48,39 @@ public class TwitchAuthClientImpl implements TwitchAuthClient {
     // Get the twitch client
     OAuth2AuthorizedClient twitchClient = authorizedClientService
       .loadAuthorizedClient("twitch", User.SYSTEM_PRINCIPAL_NAME);
-
-    // If no authorized client, return early
     if(twitchClient == null || twitchClient.getAccessToken() == null) {
       log.warn("No authorized client to validate; must authorize first!");
       return tokenIsValid;
     }
 
-    // Build the request auth headers
-    HttpHeaders headers = new HttpHeaders();
-    headers.put("Authorization", Collections.singletonList("OAuth " + twitchClient.getAccessToken().getTokenValue()));
-    HttpEntity entity = new HttpEntity(null, headers);
-
-    // Make the call
-    ResponseEntity<Object> response;
-    try{
-      response = restTemplate.exchange(
-        settings.getHost() + settings.getValidationPath(),
-        HttpMethod.GET,
-        entity,
-        Object.class
-      );
-
-      // If the response is OK, then the token is valid
-      if(response.getStatusCode() == HttpStatus.OK) {
-        log.debug("Current access token is valid");
-        tokenIsValid = true;
-      }
-    } catch (HttpClientErrorException e) {
-      if (e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
-        log.debug("Current access token is NOT valid");
+    // Make the request
+    ResponseEntity<Void> response = null;
+    try {
+      response = webClient
+        .get()
+        .uri(settings.getHost() + settings.getValidationPath())
+        .header("Authorization", "OAuth " + twitchClient.getAccessToken().getTokenValue())
+        .retrieve()
+        .toBodilessEntity()
+        .block(); // TODO don't do this
+    } catch (WebClientResponseException e) {
+      if(e.getStatusCode().equals(HttpStatus.UNAUTHORIZED)) {
+        log.debug("Token is not valid");
       } else {
-        log.error("Unexpected response from Twitch while validating token: "
-          + e.getStatusCode() + ", with body: \n" + e.getResponseBodyAsString());
+        log.error(
+          String.format("Unable to determine token validity, due to %s\n%s",
+            e.getStatusCode(), e.getResponseBodyAsString()),
+          e
+        );
       }
     }
+
+    if(response != null && response.getStatusCode().is2xxSuccessful()) {
+      tokenIsValid = true;
+    }
+
     return tokenIsValid;
+
   }
 
 }

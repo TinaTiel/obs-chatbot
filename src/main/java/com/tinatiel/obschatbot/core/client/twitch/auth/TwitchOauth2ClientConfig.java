@@ -94,10 +94,7 @@ public class TwitchOauth2ClientConfig {
 
   @Bean
   TwitchAuthClient twitchAuthClient() {
-    RestTemplate restTemplate = new RestTemplate();
-    restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
     return new TwitchAuthClientImpl(
-      restTemplate,
       authorizedClientService(),
       twitchAuthConnectionSettingsFactory
     );

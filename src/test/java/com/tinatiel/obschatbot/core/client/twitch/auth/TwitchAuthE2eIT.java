@@ -22,8 +22,6 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
@@ -37,8 +35,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 
-@TestInstance(Lifecycle.PER_CLASS) // so that we can have non-static BeforeAll initialization
-@DirtiesContext // Because we have to use the defined port, aaaaaa
+@DirtiesContext // Because we have to use the defined port, aaaaaa >:(
 @SpringBootTest(webEnvironment = WebEnvironment.DEFINED_PORT, properties = {"server.port=8080"})
 public class TwitchAuthE2eIT {
 
@@ -92,9 +89,6 @@ public class TwitchAuthE2eIT {
       .scopes(Arrays.asList("foo:bar", "chat:read", "channel:moderate"))
       .build();
     when(authSettingsFactory.getSettings()).thenReturn(authSettings);
-
-    // Also setup the auth client
-    // todo???
 
     // Setup the web client
     ExchangeStrategies exchangeStrategies = ExchangeStrategies.withDefaults();
