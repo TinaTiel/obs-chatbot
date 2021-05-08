@@ -71,7 +71,7 @@ public class TwitchChatRequestIT {
 
         // Given a PircBotXListener (mocking the state queue client, we don't care about it here)
         PircBotxListener pircBotxListener = new PircBotxListener(
-                mock(QueueClient.class),
+                mock(TwitchClientMessagingGateway.class),
                 chatRequestHandler,
                 new TwitchChatClientTagsParser());
 

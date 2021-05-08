@@ -28,14 +28,14 @@ public class PircBotXListenerTest {
 
     PircBotxListener pircBotxListener;
 
-    QueueClient<ObsChatbotEvent> stateClient;
+    TwitchClientMessagingGateway stateClient;
     ChatRequestHandler chatRequestHandler;
     TwitchChatClientTagsParser tagsParser;
 
     @BeforeEach
     void setUp() {
 
-        stateClient = mock(QueueClient.class);
+        stateClient = mock(TwitchClientMessagingGateway.class);
         chatRequestHandler = mock(ChatRequestHandler.class);
         tagsParser = mock(TwitchChatClientTagsParser.class);
 

@@ -46,14 +46,14 @@ public class TwitchChatClientManager implements ClientManager {
 
   private final Logger log = LoggerFactory.getLogger(this.getClass());
   // Client factory produces new client instances
-  private final QueueClient<ObsChatbotEvent> stateClient;
+  private final TwitchClientMessagingGateway stateClient;
   private final ClientFactory<PircBotX, TwitchChatClientSettings> clientFactory;
   ExecutorService executorService = Executors.newSingleThreadExecutor();
   private volatile TwitchChatClientDelegate clientDelegate;
   private volatile ObsChatbotEvent lastEvent;
 
   public TwitchChatClientManager(
-      QueueClient<ObsChatbotEvent> stateClient,
+      TwitchClientMessagingGateway stateClient,
       ClientFactory<PircBotX,
       TwitchChatClientSettings> clientFactory) {
     this.stateClient = stateClient;

@@ -5,6 +5,7 @@ import com.tinatiel.obschatbot.core.action.model.SendMessageAction;
 import com.tinatiel.obschatbot.core.client.ClientManager;
 import com.tinatiel.obschatbot.core.messaging.Listener;
 import com.tinatiel.obschatbot.core.request.ActionRequest;
+import org.springframework.integration.annotation.ServiceActivator;
 
 /**
  * A Listener dedicated to filtering for and forwarding requests to the TwitchClientManager.
@@ -17,6 +18,7 @@ public class TwitchChatActionRequestListener implements Listener<ActionRequest> 
     this.twitchChatClientManager = twitchChatClientManager;
   }
 
+  @ServiceActivator(inputChannel = "actionRequestChannel")
   @Override
   public void onEvent(ActionRequest event) {
     Action action = event.getAction();

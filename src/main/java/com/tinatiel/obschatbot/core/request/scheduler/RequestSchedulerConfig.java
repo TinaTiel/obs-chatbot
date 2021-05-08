@@ -7,12 +7,15 @@ import com.tinatiel.obschatbot.core.messaging.QueueNotifier;
 import com.tinatiel.obschatbot.core.messaging.QueueNotifierImpl;
 import com.tinatiel.obschatbot.core.request.ActionCompleteEvent;
 import com.tinatiel.obschatbot.core.request.ActionRequest;
+import com.tinatiel.obschatbot.core.request.ActionRequestGateway;
 import com.tinatiel.obschatbot.core.request.CommandRequest;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.integration.channel.DirectChannel;
+import org.springframework.messaging.MessageChannel;
 
 /**
  * Encompasses all configuration for the Request Scheduler (work groups, etc.).
@@ -20,8 +23,10 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RequestSchedulerConfig {
 
+//  @Autowired
+//  QueueClient<ActionRequest> actionRequestQueueClient;
   @Autowired
-  QueueClient<ActionRequest> actionRequestQueueClient;
+  ActionRequestGateway actionRequestGateway;
 
   @Bean
   WorkGroup broadcasterWorkGroup() {
@@ -39,24 +44,29 @@ public class RequestSchedulerConfig {
   }
 
   @Bean
-  BlockingQueue<ActionCompleteEvent> actionCompleteEventQueue() {
-    return new LinkedBlockingQueue<>();
+  MessageChannel actionCompleteEventQueue() {
+    return new DirectChannel();
   }
 
-  @Bean
-  QueueClient<ActionCompleteEvent> actionCompleteEventQueueClient() {
-    return new QueueClientImpl(actionCompleteEventQueue());
-  }
+//  @Bean
+//  BlockingQueue<ActionCompleteEvent> actionCompleteEventQueue() {
+//    return new LinkedBlockingQueue<>();
+//  }
 
-  @Bean
-  QueueNotifier<ActionCompleteEvent> actionCompleteEventQueueNotifier() {
-    QueueNotifier<ActionCompleteEvent> notifier = new QueueNotifierImpl(actionCompleteEventQueue());
-    notifier.addListener(broadcasterWorkGroup());
-    notifier.addListener(moderatorWorkGroup());
-    notifier.addListener(otherWorkGroup());
-
-    return notifier;
-  }
+//  @Bean
+//  QueueClient<ActionCompleteEvent> actionCompleteEventQueueClient() {
+//    return new QueueClientImpl(actionCompleteEventQueue());
+//  }
+//
+//  @Bean
+//  QueueNotifier<ActionCompleteEvent> actionCompleteEventQueueNotifier() {
+//    QueueNotifier<ActionCompleteEvent> notifier = new QueueNotifierImpl(actionCompleteEventQueue());
+//    notifier.addListener(broadcasterWorkGroup());
+//    notifier.addListener(moderatorWorkGroup());
+//    notifier.addListener(otherWorkGroup());
+//
+//    return notifier;
+//  }
 
   @Bean
   WorkGroupRouter workGroupRouter() {
@@ -71,7 +81,7 @@ public class RequestSchedulerConfig {
 
   @Bean
   Listener<CommandRequest> commandRequestScheduler() {
-    return new CommandRequestScheduler(workGroupManager(), actionRequestQueueClient);
+    return new CommandRequestScheduler(workGroupManager(), actionRequestGateway);
   }
 
 }

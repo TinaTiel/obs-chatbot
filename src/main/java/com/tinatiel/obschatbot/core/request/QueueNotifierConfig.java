@@ -17,32 +17,32 @@ import org.springframework.context.annotation.Import;
 @Configuration
 public class QueueNotifierConfig {
 
-  @Autowired
-  BlockingQueue<CommandRequest> commandRequestQueue;
-
-  @Autowired
-  BlockingQueue<ActionRequest> actionRequestQueue;
-
-  @Autowired
-  Listener<CommandRequest> commandRequestScheduler;
-
-  @Autowired
-  Listener<ActionRequest> twitchChatActionRequestListener;
-
-  @Bean
-  QueueNotifier<CommandRequest> commandRequestQueueNotifier() {
-    QueueNotifier<CommandRequest> notifier = new QueueNotifierImpl(commandRequestQueue);
-    notifier.addListener(commandRequestScheduler);
-
-    return notifier;
-  }
-
-  @Bean
-  QueueNotifier<ActionRequest> actionRequestQueueNotifier() {
-    QueueNotifier<ActionRequest> notifier = new QueueNotifierImpl(actionRequestQueue);
-    notifier.addListener(twitchChatActionRequestListener);
-
-    return notifier;
-  }
+//  @Autowired
+//  BlockingQueue<CommandRequest> commandRequestQueue;
+//
+//  @Autowired
+//  BlockingQueue<ActionRequest> actionRequestQueue;
+//
+//  @Autowired
+//  Listener<CommandRequest> commandRequestScheduler;
+//
+//  @Autowired
+//  Listener<ActionRequest> twitchChatActionRequestListener;
+//
+//  @Bean
+//  QueueNotifier<CommandRequest> commandRequestQueueNotifier() {
+//    QueueNotifier<CommandRequest> notifier = new QueueNotifierImpl(commandRequestQueue);
+//    notifier.addListener(commandRequestScheduler);
+//
+//    return notifier;
+//  }
+//
+//  @Bean
+//  QueueNotifier<ActionRequest> actionRequestQueueNotifier() {
+//    QueueNotifier<ActionRequest> notifier = new QueueNotifierImpl(actionRequestQueue);
+//    notifier.addListener(twitchChatActionRequestListener);
+//
+//    return notifier;
+//  }
 
 }

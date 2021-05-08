@@ -8,6 +8,7 @@ package com.tinatiel.obschatbot.core.request.handler;
 import com.tinatiel.obschatbot.core.command.Command;
 import com.tinatiel.obschatbot.core.messaging.QueueClient;
 import com.tinatiel.obschatbot.core.request.CommandRequest;
+import com.tinatiel.obschatbot.core.request.CommandRequestGateway;
 import com.tinatiel.obschatbot.core.request.RequestContext;
 import com.tinatiel.obschatbot.core.request.factory.CommandRequestFactory;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,15 +21,17 @@ import static org.mockito.Mockito.*;
 class CommandRequestDispatcherImplTest {
 
     CommandRequestFactory commandRequestFactory;
-    QueueClient<CommandRequest> commandRequestQueueClient;
+    CommandRequestGateway commandRequestGateway;
 
     CommandRequestDispatcher commandRequestDispatcher;
 
     @BeforeEach
     void setUp() {
         commandRequestFactory = mock(CommandRequestFactory.class);
-        commandRequestQueueClient = mock(QueueClient.class);
-        commandRequestDispatcher = new CommandRequestDispatcherImpl(commandRequestFactory, commandRequestQueueClient);
+//        commandRequestQueueClient = mock(QueueClient.class);
+
+        commandRequestDispatcher = new CommandRequestDispatcherImpl(commandRequestFactory,
+          commandRequestGateway);
     }
 
     @Test
@@ -52,7 +55,7 @@ class CommandRequestDispatcherImplTest {
         commandRequestDispatcher.submit(mock(Command.class), mock(RequestContext.class));
 
         // Then the underlying executor is invoked with it
-        verify(commandRequestQueueClient).submit(commandRequest);
+        verify(commandRequestGateway).submit(commandRequest);
 
     }
 
@@ -66,7 +69,7 @@ class CommandRequestDispatcherImplTest {
         commandRequestDispatcher.submit(mock(Command.class), mock(RequestContext.class));
 
         // Then delegated executor is NOT invoked (but we should see logs!)
-        verifyNoInteractions(commandRequestQueueClient);
+        verifyNoInteractions(commandRequestGateway);
 
     }
 

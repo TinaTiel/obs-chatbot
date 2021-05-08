@@ -43,7 +43,7 @@ public class PircBotxListener extends ListenerAdapter {
 
   private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-  private final QueueClient<ObsChatbotEvent> stateClient;
+  private final TwitchClientMessagingGateway stateClient;
   private final ChatRequestHandler chatRequestHandler;
   private final TwitchChatClientTagsParser tagsParser;
 
@@ -57,7 +57,7 @@ public class PircBotxListener extends ListenerAdapter {
    *                   the ChatRequestHandler.
    */
   public PircBotxListener(
-      QueueClient<ObsChatbotEvent> stateClient,
+      TwitchClientMessagingGateway stateClient,
       ChatRequestHandler chatRequestHandler,
       TwitchChatClientTagsParser tagsParser) {
     this.stateClient = stateClient;

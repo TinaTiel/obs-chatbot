@@ -17,7 +17,7 @@ import static org.mockito.Mockito.*;
 
 public class TwitchClientManagerTest {
 
-    QueueClient<ObsChatbotEvent> stateClient;
+    TwitchClientMessagingGateway stateClient;
     ClientFactory<PircBotX, TwitchChatClientSettings> clientFactory;
 
     TwitchChatClientManager twitchChatClientManager;
@@ -25,7 +25,7 @@ public class TwitchClientManagerTest {
     @BeforeEach
     void setUp() {
 
-        stateClient = mock(QueueClient.class);
+        stateClient = mock(TwitchClientMessagingGateway.class);
         clientFactory = mock(ClientFactory.class);
 
         twitchChatClientManager = new TwitchChatClientManager(stateClient, clientFactory);

@@ -2,6 +2,7 @@ package com.tinatiel.obschatbot.core.request.handler;
 
 import com.tinatiel.obschatbot.core.messaging.QueueClient;
 import com.tinatiel.obschatbot.core.request.CommandRequest;
+import com.tinatiel.obschatbot.core.request.CommandRequestGateway;
 import com.tinatiel.obschatbot.core.request.factory.CommandRequestFactory;
 import com.tinatiel.obschatbot.core.request.handler.chat.ChatHandlerConfig;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,14 +18,16 @@ public class RequestHandlerConfig {
   @Autowired
   CommandRequestFactory commandRequestFactory;
 
+//  @Autowired
+//  QueueClient<CommandRequest> commandRequestQueueClient;
   @Autowired
-  QueueClient<CommandRequest> commandRequestQueueClient;
+  CommandRequestGateway commandRequestGateway;
 
   @Bean
   CommandRequestDispatcher commandRequestDispatcher() {
     return new CommandRequestDispatcherImpl(
       commandRequestFactory,
-      commandRequestQueueClient
+      commandRequestGateway
     );
   }
 
