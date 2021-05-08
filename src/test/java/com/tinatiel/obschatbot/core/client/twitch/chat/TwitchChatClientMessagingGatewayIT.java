@@ -3,25 +3,25 @@ package com.tinatiel.obschatbot.core.client.twitch.chat;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
-import com.tinatiel.obschatbot.core.client.twitch.chat.TwitchChatClientMessagingGatewayIT.TestConfig;
 import com.tinatiel.obschatbot.core.messaging.ObsChatbotEvent;
-import java.nio.channels.Channel;
+import java.util.Queue;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.integration.annotation.BridgeFrom;
-import org.springframework.integration.annotation.BridgeTo;
 import org.springframework.integration.annotation.ServiceActivator;
-import org.springframework.integration.channel.DirectChannel;
+import org.springframework.integration.channel.AbstractMessageChannel;
 import org.springframework.integration.channel.QueueChannel;
+import org.springframework.integration.channel.interceptor.WireTap;
 import org.springframework.integration.config.EnableIntegration;
 import org.springframework.integration.handler.LoggingHandler;
+import org.springframework.integration.test.context.SpringIntegrationTest;
 import org.springframework.messaging.Message;
-import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageHandler;
 import org.springframework.messaging.PollableChannel;
 import org.springframework.test.context.ContextConfiguration;
@@ -34,17 +34,29 @@ public class TwitchChatClientMessagingGatewayIT {
   @Autowired
   TwitchClientMessagingGateway gateway;
 
+  @Qualifier("testChannel")
   @Autowired
   PollableChannel testChannel;
+
+  @Autowired
+  Queue<Message<?>> testChannelQueue;
+
+  @Qualifier("twitchClientLifecycleChannel")
+  @Autowired
+  AbstractMessageChannel targetChannel;
 
   @EnableIntegration
   @TestConfiguration
   public static class TestConfig {
 
-    @BridgeFrom(value = "twitchClientLifecycleChannel")
+    @Bean
+    Queue<Message<?>> testChannelQueue() {
+      return new LinkedBlockingQueue<>();
+    }
+
     @Bean
     PollableChannel testChannel() {
-      return new QueueChannel();
+      return new QueueChannel(testChannelQueue());
     }
 
     @ServiceActivator(inputChannel = "twitchClientLifecycleChannel")
@@ -58,10 +70,13 @@ public class TwitchChatClientMessagingGatewayIT {
   @BeforeEach
   void setUp() {
     assertThat(gateway).isNotNull();
+    assertThat(testChannelQueue).isEmpty();
+    assertThat(testChannel.receive(1)).isNull();
+    targetChannel.addInterceptor(new WireTap(testChannel));
   }
 
   @Test
-  void messageReceivedFromGateway() {
+  void messageReceivedFromGatewayFoo() {
 
     // Given a payload
     ObsChatbotEvent payload = mock(ObsChatbotEvent.class);
@@ -70,7 +85,8 @@ public class TwitchChatClientMessagingGatewayIT {
     gateway.submit(payload);
 
     // Then it is received
-    Message<?> message = testChannel.receive();
+    System.out.println("Messages: " + testChannelQueue.stream().collect(Collectors.toList()));
+    Message<?> message = testChannel.receive(1);
     assertThat(message).isNotNull();
     assertThat(message.getPayload()).isInstanceOf(ObsChatbotEvent.class).isEqualTo(payload);
 
