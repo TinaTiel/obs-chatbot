@@ -17,6 +17,6 @@ public class TwitchChatClientMessagingConfig {
   }
 
   @Autowired
-  TwitchClientMessagingGateway twitchClientMessagingGateway;
+  TwitchClientStateMessagingGateway twitchClientStateMessagingGateway;
 
 }

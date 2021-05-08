@@ -13,7 +13,7 @@ import com.tinatiel.obschatbot.core.client.event.ClientErrorEvent;
 import com.tinatiel.obschatbot.core.client.event.ClientJoinedEvent;
 import com.tinatiel.obschatbot.core.client.event.ClientJoiningEvent;
 import com.tinatiel.obschatbot.core.client.event.ClientReadyEvent;
-import com.tinatiel.obschatbot.core.client.twitch.chat.messaging.TwitchClientMessagingGateway;
+import com.tinatiel.obschatbot.core.client.twitch.chat.messaging.TwitchClientStateMessagingGateway;
 import com.tinatiel.obschatbot.core.request.handler.chat.ChatRequestHandler;
 import com.tinatiel.obschatbot.core.user.Platform;
 import com.tinatiel.obschatbot.core.user.User;
@@ -42,7 +42,7 @@ public class PircBotxListener extends ListenerAdapter {
 
   private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-  private final TwitchClientMessagingGateway stateClient;
+  private final TwitchClientStateMessagingGateway stateClient;
   private final ChatRequestHandler chatRequestHandler;
   private final TwitchChatClientTagsParser tagsParser;
 
@@ -56,7 +56,7 @@ public class PircBotxListener extends ListenerAdapter {
    *                   the ChatRequestHandler.
    */
   public PircBotxListener(
-      TwitchClientMessagingGateway stateClient,
+      TwitchClientStateMessagingGateway stateClient,
       ChatRequestHandler chatRequestHandler,
       TwitchChatClientTagsParser tagsParser) {
     this.stateClient = stateClient;

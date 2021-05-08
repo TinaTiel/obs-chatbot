@@ -9,7 +9,7 @@ import com.tinatiel.obschatbot.core.client.ClientFactory;
 import com.tinatiel.obschatbot.core.client.ClientManager;
 import com.tinatiel.obschatbot.core.client.ClientSettingsFactory;
 import com.tinatiel.obschatbot.core.client.twitch.chat.messaging.TwitchChatClientMessagingConfig;
-import com.tinatiel.obschatbot.core.client.twitch.chat.messaging.TwitchClientMessagingGateway;
+import com.tinatiel.obschatbot.core.client.twitch.chat.messaging.TwitchClientStateMessagingGateway;
 import com.tinatiel.obschatbot.core.messaging.ObsChatbotEvent;
 import com.tinatiel.obschatbot.core.messaging.QueueClient;
 import com.tinatiel.obschatbot.core.messaging.QueueClientImpl;
@@ -31,7 +31,6 @@ import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 /**
  * Encompasses all configuration for the Twitch IRC chat client.
  */
-@IntegrationComponentScan
 @Import(TwitchChatClientMessagingConfig.class)
 @Configuration
 public class TwitchChatClientConfig {
@@ -52,7 +51,7 @@ public class TwitchChatClientConfig {
   MessageChannel twitchClientLifecycleChannel;
 
   @Autowired
-  TwitchClientMessagingGateway twitchClientMessagingGateway;
+  TwitchClientStateMessagingGateway twitchClientStateMessagingGateway;
 
   /**
    * Until we have this stored in a Repository, just hard-code it here.
@@ -77,7 +76,7 @@ public class TwitchChatClientConfig {
   @Bean
   PircBotxListener pircBotxListener() {
     return new PircBotxListener(
-        twitchClientMessagingGateway,
+      twitchClientStateMessagingGateway,
         chatRequestHandler,
         new TwitchChatClientTagsParser()
     );
@@ -94,18 +93,18 @@ public class TwitchChatClientConfig {
 
   @Bean
   ClientManager twitchChatClientManager() {
-    return new TwitchChatClientManager(twitchClientMessagingGateway, twitchChatClientFactory());
+    return new TwitchChatClientManager(twitchClientStateMessagingGateway, twitchChatClientFactory());
   }
 
-  @Bean
-  BlockingQueue<ObsChatbotEvent> twitchChatEventQueue() {
-    return new LinkedBlockingQueue<>();
-  }
-
-  @Bean
-  QueueClient<ObsChatbotEvent> twitchChatEventQueueClient() {
-    return new QueueClientImpl(twitchChatEventQueue());
-  }
+//  @Bean
+//  BlockingQueue<ObsChatbotEvent> twitchChatEventQueue() {
+//    return new LinkedBlockingQueue<>();
+//  }
+//
+//  @Bean
+//  QueueClient<ObsChatbotEvent> twitchChatEventQueueClient() {
+//    return new QueueClientImpl(twitchChatEventQueue());
+//  }
 
 //  @Bean
 //  QueueNotifier<ObsChatbotEvent> twitchChatEventQueueNotifier() {

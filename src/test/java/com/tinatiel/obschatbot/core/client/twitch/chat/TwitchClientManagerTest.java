@@ -4,7 +4,7 @@ import com.tinatiel.obschatbot.core.action.Action;
 import com.tinatiel.obschatbot.core.action.model.SendMessageAction;
 import com.tinatiel.obschatbot.core.client.ClientFactory;
 import com.tinatiel.obschatbot.core.client.event.ClientReadyEvent;
-import com.tinatiel.obschatbot.core.client.twitch.chat.messaging.TwitchClientMessagingGateway;
+import com.tinatiel.obschatbot.core.client.twitch.chat.messaging.TwitchClientStateMessagingGateway;
 import com.tinatiel.obschatbot.core.request.ActionRequest;
 import com.tinatiel.obschatbot.core.request.RequestContext;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,7 +15,7 @@ import static org.mockito.Mockito.*;
 
 public class TwitchClientManagerTest {
 
-    TwitchClientMessagingGateway stateClient;
+    TwitchClientStateMessagingGateway stateClient;
     ClientFactory<PircBotX, TwitchChatClientSettings> clientFactory;
 
     TwitchChatClientManager twitchChatClientManager;
@@ -23,7 +23,7 @@ public class TwitchClientManagerTest {
     @BeforeEach
     void setUp() {
 
-        stateClient = mock(TwitchClientMessagingGateway.class);
+        stateClient = mock(TwitchClientStateMessagingGateway.class);
         clientFactory = mock(ClientFactory.class);
 
         twitchChatClientManager = new TwitchChatClientManager(stateClient, clientFactory);

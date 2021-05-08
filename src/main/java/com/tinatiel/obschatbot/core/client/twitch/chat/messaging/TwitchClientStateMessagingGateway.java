@@ -5,7 +5,7 @@ import org.springframework.integration.annotation.Gateway;
 import org.springframework.integration.annotation.MessagingGateway;
 
 @MessagingGateway
-public interface TwitchClientMessagingGateway {
+public interface TwitchClientStateMessagingGateway {
   @Gateway(requestChannel = "twitchClientLifecycleChannel")
   void submit(ObsChatbotEvent event);
 }

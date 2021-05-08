@@ -5,10 +5,9 @@ import static org.mockito.Mockito.mock;
 
 import com.tinatiel.obschatbot.core.SpringIntegrationTestConfig;
 import com.tinatiel.obschatbot.core.client.twitch.chat.messaging.TwitchChatClientMessagingConfig;
-import com.tinatiel.obschatbot.core.client.twitch.chat.messaging.TwitchClientMessagingGateway;
+import com.tinatiel.obschatbot.core.client.twitch.chat.messaging.TwitchClientStateMessagingGateway;
 import com.tinatiel.obschatbot.core.messaging.ObsChatbotEvent;
 import java.util.Queue;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,7 +18,6 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.integration.annotation.ServiceActivator;
 import org.springframework.integration.channel.AbstractMessageChannel;
-import org.springframework.integration.channel.QueueChannel;
 import org.springframework.integration.channel.interceptor.WireTap;
 import org.springframework.integration.config.EnableIntegration;
 import org.springframework.integration.handler.LoggingHandler;
@@ -39,7 +37,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 public class TwitchChatClientMessagingGatewayIT {
 
   @Autowired
-  TwitchClientMessagingGateway gateway;
+  TwitchClientStateMessagingGateway gateway;
 
   @Autowired
   PollableChannel testChannel;

@@ -21,7 +21,7 @@ import com.tinatiel.obschatbot.core.client.event.ClientStartingEvent;
 import com.tinatiel.obschatbot.core.client.event.ClientStopRequestedEvent;
 import com.tinatiel.obschatbot.core.client.event.ClientStoppedEvent;
 import com.tinatiel.obschatbot.core.client.event.ClientStoppingEvent;
-import com.tinatiel.obschatbot.core.client.twitch.chat.messaging.TwitchClientMessagingGateway;
+import com.tinatiel.obschatbot.core.client.twitch.chat.messaging.TwitchClientStateMessagingGateway;
 import com.tinatiel.obschatbot.core.error.ClientException;
 import com.tinatiel.obschatbot.core.messaging.ObsChatbotEvent;
 import com.tinatiel.obschatbot.core.request.ActionRequest;
@@ -47,14 +47,14 @@ public class TwitchChatClientManager implements ClientManager {
 
   private final Logger log = LoggerFactory.getLogger(this.getClass());
   // Client factory produces new client instances
-  private final TwitchClientMessagingGateway stateClient;
+  private final TwitchClientStateMessagingGateway stateClient;
   private final ClientFactory<PircBotX, TwitchChatClientSettings> clientFactory;
   ExecutorService executorService = Executors.newSingleThreadExecutor();
   private volatile TwitchChatClientDelegate clientDelegate;
   private volatile ObsChatbotEvent lastEvent;
 
   public TwitchChatClientManager(
-      TwitchClientMessagingGateway stateClient,
+      TwitchClientStateMessagingGateway stateClient,
       ClientFactory<PircBotX,
       TwitchChatClientSettings> clientFactory) {
     this.stateClient = stateClient;
