@@ -3,6 +3,8 @@ package com.tinatiel.obschatbot.core.client.twitch.chat;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
+import com.tinatiel.obschatbot.core.client.twitch.chat.messaging.TwitchChatClientMessagingConfig;
+import com.tinatiel.obschatbot.core.client.twitch.chat.messaging.TwitchClientMessagingGateway;
 import com.tinatiel.obschatbot.core.messaging.ObsChatbotEvent;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -20,14 +22,16 @@ import org.springframework.integration.channel.QueueChannel;
 import org.springframework.integration.channel.interceptor.WireTap;
 import org.springframework.integration.config.EnableIntegration;
 import org.springframework.integration.handler.LoggingHandler;
-import org.springframework.integration.test.context.SpringIntegrationTest;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHandler;
 import org.springframework.messaging.PollableChannel;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-@ContextConfiguration(classes = {TwitchChatClientMessagingGatewayIT.TestConfig.class, TwitchChatClientIntegrationConfig.class})
+@ContextConfiguration(classes = {
+  TwitchChatClientMessagingConfig.class,
+  TwitchChatClientMessagingGatewayIT.TestConfig.class
+})
 @ExtendWith(SpringExtension.class)
 public class TwitchChatClientMessagingGatewayIT {
 

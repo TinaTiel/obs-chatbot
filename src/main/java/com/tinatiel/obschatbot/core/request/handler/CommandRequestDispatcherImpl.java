@@ -10,7 +10,7 @@ import com.tinatiel.obschatbot.core.error.ClientException;
 import com.tinatiel.obschatbot.core.error.CyclicalActionsException;
 import com.tinatiel.obschatbot.core.messaging.QueueClient;
 import com.tinatiel.obschatbot.core.request.CommandRequest;
-import com.tinatiel.obschatbot.core.request.CommandRequestGateway;
+import com.tinatiel.obschatbot.core.request.gateway.CommandRequestGateway;
 import com.tinatiel.obschatbot.core.request.RequestContext;
 import com.tinatiel.obschatbot.core.request.factory.CommandRequestFactory;
 import lombok.extern.slf4j.Slf4j;

@@ -2,8 +2,7 @@ package com.tinatiel.obschatbot.core.client.twitch.chat;
 
 import com.google.common.collect.ImmutableMap;
 import com.tinatiel.obschatbot.core.client.event.ClientErrorEvent;
-import com.tinatiel.obschatbot.core.messaging.ObsChatbotEvent;
-import com.tinatiel.obschatbot.core.messaging.QueueClient;
+import com.tinatiel.obschatbot.core.client.twitch.chat.messaging.TwitchClientMessagingGateway;
 import com.tinatiel.obschatbot.core.request.handler.chat.ChatRequestHandler;
 import com.tinatiel.obschatbot.core.user.Platform;
 import com.tinatiel.obschatbot.core.user.User;

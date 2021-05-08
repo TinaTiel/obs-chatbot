@@ -1,5 +1,6 @@
-package com.tinatiel.obschatbot.core.request;
+package com.tinatiel.obschatbot.core.request.gateway;
 
+import com.tinatiel.obschatbot.core.request.ActionRequest;
 import org.springframework.integration.annotation.Gateway;
 import org.springframework.integration.annotation.MessagingGateway;
 

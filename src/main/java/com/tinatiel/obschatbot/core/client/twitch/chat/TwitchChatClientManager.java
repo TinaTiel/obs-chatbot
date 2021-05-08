@@ -21,9 +21,9 @@ import com.tinatiel.obschatbot.core.client.event.ClientStartingEvent;
 import com.tinatiel.obschatbot.core.client.event.ClientStopRequestedEvent;
 import com.tinatiel.obschatbot.core.client.event.ClientStoppedEvent;
 import com.tinatiel.obschatbot.core.client.event.ClientStoppingEvent;
+import com.tinatiel.obschatbot.core.client.twitch.chat.messaging.TwitchClientMessagingGateway;
 import com.tinatiel.obschatbot.core.error.ClientException;
 import com.tinatiel.obschatbot.core.messaging.ObsChatbotEvent;
-import com.tinatiel.obschatbot.core.messaging.QueueClient;
 import com.tinatiel.obschatbot.core.request.ActionRequest;
 import com.tinatiel.obschatbot.core.request.RequestContext;
 import com.tinatiel.obschatbot.core.user.User;
@@ -35,6 +35,7 @@ import org.pircbotx.PircBotX;
 import org.pircbotx.exception.IrcException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.integration.annotation.ServiceActivator;
 
 /**
  * Implementation of ClientManager that manages the Twitch (IRC) chat client, using an event queue
@@ -154,6 +155,7 @@ public class TwitchChatClientManager implements ClientManager {
    * Any error event will cause this client manager to shut down. If configured, once in the ready
    * state, this manager can send a join message to chat to let viewers know the bot is available.
    */
+  @ServiceActivator(inputChannel = "twitchClientLifecycleChannel")
   @Override
   public void onEvent(ObsChatbotEvent event) {
     lastEvent = event;
