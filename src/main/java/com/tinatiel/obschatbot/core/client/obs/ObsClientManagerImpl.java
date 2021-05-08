@@ -36,19 +36,6 @@ public class ObsClientManagerImpl implements ClientManager {
   }
 
   @Override
-  public void consume(ActionRequest actionRequest) throws ClientException {
-    if (consumer == null) {
-      throw new ClientException("Client has not been initialized yet");
-    }
-    try {
-      consumer.consume(actionRequest);
-    } catch (Exception e) {
-      log.error("Could not execute actionCommand " + actionRequest, e);
-//            actionRequest.cancel(true);
-    }
-  }
-
-  @Override
   public void startClient() {
     if (obsRemoteController == null) {
       // Initialize the client and shared data
@@ -129,7 +116,21 @@ public class ObsClientManagerImpl implements ClientManager {
 
 
   @Override
-  public void onEvent(ObsChatbotEvent event) {
+  public void onLifecycleEvent(ObsChatbotEvent event) {
 
   }
+
+  @Override
+  public void onActionRequest(ActionRequest actionRequest) throws ClientException {
+    if (consumer == null) {
+      throw new ClientException("Client has not been initialized yet");
+    }
+    try {
+//      consumer.consume(actionRequest);
+    } catch (Exception e) {
+      log.error("Could not execute actionCommand " + actionRequest, e);
+//            actionRequest.cancel(true);
+    }
+  }
+
 }

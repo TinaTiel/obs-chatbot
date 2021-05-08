@@ -18,10 +18,12 @@ import java.util.Date;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
+import org.springframework.integration.config.EnableIntegration;
 
 /**
  * Main entrypoint for Spring.
  */
+@EnableIntegration
 @SpringBootApplication
 public class App {
 

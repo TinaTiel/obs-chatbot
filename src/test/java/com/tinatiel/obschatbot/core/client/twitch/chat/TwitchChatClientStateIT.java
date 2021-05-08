@@ -5,28 +5,31 @@
 
 package com.tinatiel.obschatbot.core.client.twitch.chat;
 
+import com.tinatiel.obschatbot.core.SpringIntegrationTestConfig;
 import com.tinatiel.obschatbot.core.client.ClientFactory;
 import com.tinatiel.obschatbot.core.client.ClientManager;
 import com.tinatiel.obschatbot.core.client.event.*;
-import com.tinatiel.obschatbot.core.messaging.Listener;
 import com.tinatiel.obschatbot.core.messaging.ObsChatbotEvent;
-import com.tinatiel.obschatbot.core.messaging.QueueNotifier;
-import com.tinatiel.obschatbot.core.request.QueueNotifierConfig;
-import com.tinatiel.obschatbot.core.request.RequestConfig;
 import com.tinatiel.obschatbot.core.request.handler.chat.ChatRequestHandler;
+import java.util.Queue;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.events.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
+import org.springframework.integration.channel.AbstractMessageChannel;
+import org.springframework.integration.channel.QueueChannel;
+import org.springframework.integration.channel.interceptor.WireTap;
+import org.springframework.integration.config.EnableIntegration;
+import org.springframework.messaging.Message;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,16 +43,22 @@ import static org.mockito.Mockito.when;
  * There needs to be a separate continuous test that verifies this with a real bot for the case that Twitch
  * changes how login to their IRC servers changes.
  */
-@Import({TwitchChatClientConfig.class, QueueNotifierConfig.class})
+@EnableIntegration
+@ContextConfiguration(classes = {TwitchChatClientConfig.class, SpringIntegrationTestConfig.class})
 @SpringJUnitConfig
 public class TwitchChatClientStateIT {
 
     private final static String TWITCH_AUTH_FAILED_MESSAGE = "Login authentication failed";
 
     @Autowired
-    QueueNotifier<ObsChatbotEvent> twitchChatEventQueueNotifier;
+    QueueChannel testChannel;
 
-    TestListener testListener;
+    @Autowired
+    Queue<Message<?>> testChannelQueue;
+
+    @Qualifier("twitchClientLifecycleChannel")
+    @Autowired
+    AbstractMessageChannel targetChannel;
 
     @MockBean
     ClientFactory<PircBotX, TwitchChatClientSettings> clientFactory;
@@ -69,10 +78,8 @@ public class TwitchChatClientStateIT {
     @BeforeEach
     void setUp() {
 
-        // Add the test listener so we can monitor events
-        testListener = new TestListener();
-        twitchChatEventQueueNotifier.addListener(testListener);
-        assertThat(testListener.getLog()).isEmpty();
+        // Intercept messages from the lifecycle channel
+        targetChannel.addInterceptor(new WireTap(testChannel));
 
         // Stub the client factory so it returns fake bots
         PircBotX mockClient = mock(PircBotX.class); // stub bot methods, we're not testing the bot
@@ -80,6 +87,13 @@ public class TwitchChatClientStateIT {
         when(clientFactory.generate()).thenReturn(
                 new TwitchChatClientDelegate(mockClient, settings));
 
+    }
+
+    @AfterEach
+    void tearDown() {
+        // Clear the channel and remove the interceptor
+        testChannel.clear();
+        targetChannel.removeInterceptor(0);
     }
 
     @Test
@@ -104,7 +118,11 @@ public class TwitchChatClientStateIT {
         waitReasonably();
 
         // When we examine the log
-        List<ObsChatbotEvent> events = testListener.getLog();
+        List<ObsChatbotEvent> events = testChannelQueue.stream()
+          .map(Message::getPayload)
+          .map(ObsChatbotEvent.class::cast)
+          .collect(Collectors.toList());
+        events.forEach(System.out::println);
 
         // Then we find the expected order of events
         List<Class> eventClasses = events.stream()
@@ -130,13 +148,13 @@ public class TwitchChatClientStateIT {
         // Given we start the bot
         twitchChatClientManager.startClient();
 
-        // Wait
+        // Wait for it to start
         waitReasonably();
 
-        // Connect to the server
+        // Then connect to the server
         pircBotxListener.onSocketConnect(mock(SocketConnectEvent.class));
 
-        // wait
+        // wait for connection to finish
         waitReasonably();
 
         // start auth
@@ -155,11 +173,15 @@ public class TwitchChatClientStateIT {
         // And it disconnects
         pircBotxListener.onDisconnect(mock(DisconnectEvent.class));
 
-        // And we wait
+        // And we wait for disconnection
         waitReasonably();
 
         // When we examine the log
-        List<ObsChatbotEvent> events = testListener.getLog();
+        List<ObsChatbotEvent> events = testChannelQueue.stream()
+          .map(Message::getPayload)
+          .map(ObsChatbotEvent.class::cast)
+          .collect(Collectors.toList());
+        events.forEach(System.out::println);
 
         // Then we find the expected order of events
         List<Class> eventClasses = events.stream()
@@ -227,7 +249,11 @@ public class TwitchChatClientStateIT {
         waitReasonably();
 
         // When we examine the log
-        List<ObsChatbotEvent> events = testListener.getLog();
+        List<ObsChatbotEvent> events = testChannelQueue.stream()
+          .map(Message::getPayload)
+          .map(ObsChatbotEvent.class::cast)
+          .collect(Collectors.toList());
+        events.forEach(System.out::println);
 
         // Then we find the expected order of events
         List<Class> eventClasses = events.stream()
@@ -249,24 +275,6 @@ public class TwitchChatClientStateIT {
                 ClientDisconnectedEvent.class,
                 ClientStoppedEvent.class
         );
-    }
-
-    /**
-     * Simple listener that puts each event into a history log so we can
-     * view it later and verify the events that executed.
-     */
-    static class TestListener implements Listener<ObsChatbotEvent> {
-
-        List<ObsChatbotEvent> log = new ArrayList<>();
-
-        @Override
-        public void onEvent(ObsChatbotEvent event) {
-            log.add(event);
-        }
-
-        public List<ObsChatbotEvent> getLog() {
-            return log;
-        }
     }
 
     private void waitReasonably() {

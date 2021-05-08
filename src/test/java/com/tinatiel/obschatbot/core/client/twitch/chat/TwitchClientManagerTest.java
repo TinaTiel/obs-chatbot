@@ -2,83 +2,59 @@ package com.tinatiel.obschatbot.core.client.twitch.chat;
 
 import com.tinatiel.obschatbot.core.action.Action;
 import com.tinatiel.obschatbot.core.action.model.SendMessageAction;
+import com.tinatiel.obschatbot.core.client.ActionCommandConsumer;
 import com.tinatiel.obschatbot.core.client.ClientFactory;
 import com.tinatiel.obschatbot.core.client.event.ClientReadyEvent;
-import com.tinatiel.obschatbot.core.messaging.ObsChatbotEvent;
-import com.tinatiel.obschatbot.core.messaging.QueueClient;
+import com.tinatiel.obschatbot.core.client.twitch.chat.messaging.TwitchClientStateMessagingGateway;
 import com.tinatiel.obschatbot.core.request.ActionRequest;
 import com.tinatiel.obschatbot.core.request.RequestContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.pircbotx.PircBotX;
 
 import static org.mockito.Mockito.*;
 
 public class TwitchClientManagerTest {
 
-    QueueClient<ObsChatbotEvent> stateClient;
+    TwitchClientStateMessagingGateway stateClient;
     ClientFactory<PircBotX, TwitchChatClientSettings> clientFactory;
+    ActionCommandConsumer<TwitchChatClientDelegate> twitchChatClientActionCommandConsumer;
 
     TwitchChatClientManager twitchChatClientManager;
 
     @BeforeEach
     void setUp() {
 
-        stateClient = mock(QueueClient.class);
+        stateClient = mock(TwitchClientStateMessagingGateway.class);
         clientFactory = mock(ClientFactory.class);
+        twitchChatClientActionCommandConsumer = mock(ActionCommandConsumer.class);
 
-        twitchChatClientManager = new TwitchChatClientManager(stateClient, clientFactory);
+        twitchChatClientManager = new TwitchChatClientManager(
+          stateClient, clientFactory, twitchChatClientActionCommandConsumer);
 
     }
 
     @Test
-    void consumeExpectedActions() {
+    void consumeExpectedActionsWhenReady() {
 
-        // Given requests
+        // Given requests, doesn't matter what they are
         RequestContext mockContext = mock(RequestContext.class);
-        ActionRequest messageRequest = new ActionRequest(mockContext, mock(SendMessageAction.class));
+        ActionRequest messageRequest = new ActionRequest(mockContext, mock(Action.class));
 
         // And given factory returns a delgate
         TwitchChatClientDelegate clientDelegate = mock(TwitchChatClientDelegate.class, RETURNS_DEEP_STUBS);
         when(clientFactory.generate()).thenReturn(clientDelegate);
 
-        // And given the clientManager was started
-        twitchChatClientManager.startClient();
-
         // And given the clientManager is in a ready state
-        twitchChatClientManager.onEvent(new ClientReadyEvent());
+        twitchChatClientManager.startClient();
+        twitchChatClientManager.onLifecycleEvent(new ClientReadyEvent());
 
         // When consumed
-        twitchChatClientManager.consume(messageRequest);
+        twitchChatClientManager.onActionRequest(messageRequest);
 
         // Then the client was invoked
-        verify(clientDelegate, times(1)).sendMessage(any());
-
-    }
-
-    @Test
-    void ignoreUnexpectedActions() {
-
-        // Given requests
-        RequestContext mockContext = mock(RequestContext.class);
-        ActionRequest messageRequest = new ActionRequest(mockContext, mock(Action.class));
-
-        // And given factory returns a client
-        TwitchChatClientDelegate clientDelegate = mock(TwitchChatClientDelegate.class, RETURNS_DEEP_STUBS);
-        when(clientFactory.generate()).thenReturn(clientDelegate);
-
-        // And given the clientManager was started
-        twitchChatClientManager.startClient();
-
-        // And given the clientManager is in a ready state
-        twitchChatClientManager.onEvent(new ClientReadyEvent());
-
-        // When consumed
-        twitchChatClientManager.consume(messageRequest);
-
-        // Then the client was NOT invoked
-        verify(clientDelegate, times(0)).sendMessage(any());
+        verify(twitchChatClientActionCommandConsumer, times(1))
+          .consume(any(), any());
 
     }
 
@@ -99,7 +75,7 @@ public class TwitchClientManagerTest {
         // (but is not in a ready state)
 
         // When consumed
-        twitchChatClientManager.consume(messageRequest);
+        twitchChatClientManager.onActionRequest(messageRequest);
 
         // Then the client was NOT invoked
         verify(clientDelegate, times(0)).sendMessage(any());

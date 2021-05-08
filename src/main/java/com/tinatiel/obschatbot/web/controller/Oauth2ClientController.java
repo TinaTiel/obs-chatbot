@@ -32,9 +32,6 @@ public class Oauth2ClientController {
   private TwitchAuthValidationService twitchAuthValidationService;
 
   @Autowired
-  BlockingQueue<ObsChatbotEvent> twitchAuthAuditQueue;
-
-  @Autowired
   TwitchApiClient twitchApiClient;
 
   @GetMapping("/test/twitch")
@@ -60,7 +57,7 @@ public class Oauth2ClientController {
   @GetMapping("/validate/twitch")
   public String validate() {
     twitchAuthValidationService.validateToken();
-    return twitchAuthAuditQueue.toString();
+    return "done";
   }
 
   @GetMapping("/following")

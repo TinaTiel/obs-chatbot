@@ -1,4 +1,4 @@
-package com.tinatiel.obschatbot.core.client.twitch.api;
+package com.tinatiel.obschatbot.core.client.twitch.api.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.io.Serializable;
@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
-class UsersFollowsResponse implements Serializable {
+public class UsersFollowsResponse implements Serializable {
   private Integer total; // this is all we care about
 }

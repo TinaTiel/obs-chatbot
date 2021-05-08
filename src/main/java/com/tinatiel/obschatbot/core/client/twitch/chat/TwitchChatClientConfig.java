@@ -5,35 +5,35 @@
 
 package com.tinatiel.obschatbot.core.client.twitch.chat;
 
+import com.tinatiel.obschatbot.core.client.ActionCommandConsumer;
 import com.tinatiel.obschatbot.core.client.ClientFactory;
 import com.tinatiel.obschatbot.core.client.ClientManager;
 import com.tinatiel.obschatbot.core.client.ClientSettingsFactory;
-import com.tinatiel.obschatbot.core.messaging.Listener;
-import com.tinatiel.obschatbot.core.messaging.ObsChatbotEvent;
-import com.tinatiel.obschatbot.core.messaging.QueueClient;
-import com.tinatiel.obschatbot.core.messaging.QueueClientImpl;
-import com.tinatiel.obschatbot.core.messaging.QueueNotifier;
-import com.tinatiel.obschatbot.core.messaging.QueueNotifierImpl;
-import com.tinatiel.obschatbot.core.request.ActionRequest;
+import com.tinatiel.obschatbot.core.client.twitch.chat.messaging.TwitchChatClientMessagingConfig;
+import com.tinatiel.obschatbot.core.client.twitch.chat.messaging.TwitchClientStateMessagingGateway;
 import com.tinatiel.obschatbot.core.request.handler.chat.ChatRequestHandler;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 import javax.net.ssl.SSLSocketFactory;
 import org.pircbotx.PircBotX;
 import org.pircbotx.UtilSSLSocketFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 
 /**
  * Encompasses all configuration for the Twitch IRC chat client.
  */
+@Import(TwitchChatClientMessagingConfig.class)
 @Configuration
 public class TwitchChatClientConfig {
+
+  @Value("${TWITCH_TARGET_CHANNEL:noauth}")
+  private String targetChannel;
+
+  @Value("${TWITCH_USER:noauth}")
+  private String twitchUsername;
 
   @Autowired
   ChatRequestHandler chatRequestHandler;
@@ -41,11 +41,8 @@ public class TwitchChatClientConfig {
   @Autowired
   OAuth2AuthorizedClientService authorizedClientService;
 
-  @Value("${TWITCH_TARGET_CHANNEL:noauth}")
-  private String targetChannel;
-
-  @Value("${TWITCH_USER:noauth}")
-  private String twitchUsername;
+  @Autowired
+  TwitchClientStateMessagingGateway twitchClientStateMessagingGateway;
 
   /**
    * Until we have this stored in a Repository, just hard-code it here.
@@ -70,7 +67,7 @@ public class TwitchChatClientConfig {
   @Bean
   PircBotxListener pircBotxListener() {
     return new PircBotxListener(
-        twitchChatEventQueueClient(),
+      twitchClientStateMessagingGateway,
         chatRequestHandler,
         new TwitchChatClientTagsParser()
     );
@@ -86,44 +83,17 @@ public class TwitchChatClientConfig {
   }
 
   @Bean
+  ActionCommandConsumer<TwitchChatClientDelegate> twitchChatClientActionCommandConsumer() {
+    return new TwitchChatActionCommandConsumer(twitchClientStateMessagingGateway);
+  }
+
+  @Bean
   ClientManager twitchChatClientManager() {
-    return new TwitchChatClientManager(twitchChatEventQueueClient(), twitchChatClientFactory());
-  }
-
-  @Bean
-  BlockingQueue<ObsChatbotEvent> twitchChatEventQueue() {
-    return new LinkedBlockingQueue<>();
-  }
-
-  @Bean
-  QueueClient<ObsChatbotEvent> twitchChatEventQueueClient() {
-    return new QueueClientImpl(twitchChatEventQueue());
-  }
-
-  @Bean
-  QueueNotifier<ObsChatbotEvent> twitchChatEventQueueNotifier() {
-    QueueNotifier<ObsChatbotEvent> notifier = new QueueNotifierImpl(twitchChatEventQueue());
-    notifier.addListener(eventLogger());
-    notifier.addListener(twitchChatClientManager());
-
-    return notifier;
-  }
-
-  Listener<ObsChatbotEvent> eventLogger() {
-    return new Listener<ObsChatbotEvent>() {
-
-      private final Logger log = LoggerFactory.getLogger(this.getClass());
-
-      @Override
-      public void onEvent(ObsChatbotEvent event) {
-        log.debug("Logged Event: " + event.toString());
-      }
-    };
-  }
-
-  @Bean
-  Listener<ActionRequest> twitchChatActionRequestListener() {
-    return new TwitchChatActionRequestListener(twitchChatClientManager());
+    return new TwitchChatClientManager(
+      twitchClientStateMessagingGateway,
+      twitchChatClientFactory(),
+      twitchChatClientActionCommandConsumer()
+    );
   }
 
 }

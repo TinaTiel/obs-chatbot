@@ -2,8 +2,7 @@ package com.tinatiel.obschatbot.core.client.twitch.chat;
 
 import com.google.common.collect.ImmutableMap;
 import com.tinatiel.obschatbot.core.client.event.ClientErrorEvent;
-import com.tinatiel.obschatbot.core.messaging.ObsChatbotEvent;
-import com.tinatiel.obschatbot.core.messaging.QueueClient;
+import com.tinatiel.obschatbot.core.client.twitch.chat.messaging.TwitchClientStateMessagingGateway;
 import com.tinatiel.obschatbot.core.request.handler.chat.ChatRequestHandler;
 import com.tinatiel.obschatbot.core.user.Platform;
 import com.tinatiel.obschatbot.core.user.User;
@@ -28,14 +27,14 @@ public class PircBotXListenerTest {
 
     PircBotxListener pircBotxListener;
 
-    QueueClient<ObsChatbotEvent> stateClient;
+    TwitchClientStateMessagingGateway stateClient;
     ChatRequestHandler chatRequestHandler;
     TwitchChatClientTagsParser tagsParser;
 
     @BeforeEach
     void setUp() {
 
-        stateClient = mock(QueueClient.class);
+        stateClient = mock(TwitchClientStateMessagingGateway.class);
         chatRequestHandler = mock(ChatRequestHandler.class);
         tagsParser = mock(TwitchChatClientTagsParser.class);
 

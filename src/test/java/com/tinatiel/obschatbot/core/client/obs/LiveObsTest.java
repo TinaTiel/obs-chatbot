@@ -3,15 +3,13 @@
  * GNU General Public License v3.0. See LICENSE or go to https://fsf.org/ for more details.
  */
 
-package com.tinatiel.obschatbot.core.client;
+package com.tinatiel.obschatbot.core.client.obs;
 
 import com.tinatiel.obschatbot.App;
 import com.tinatiel.obschatbot.core.action.model.ObsSourceVisibilityAction;
-import com.tinatiel.obschatbot.core.client.obs.ObsClientManager;
 import com.tinatiel.obschatbot.core.error.ClientException;
 import com.tinatiel.obschatbot.core.request.ActionRequest;
 import com.tinatiel.obschatbot.core.request.RequestContext;
-import com.tinatiel.obschatbot.core.user.Platform;
 import com.tinatiel.obschatbot.core.user.User;
 
 import org.junit.jupiter.api.Disabled;
@@ -22,7 +20,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -46,9 +43,9 @@ public class LiveObsTest {
         // Then we can start/stop/reload the manager and consume messages without exceptions
         try {
             obsClientManager.startClient();
-            obsClientManager.consume(actionRequest);
+            obsClientManager.onActionRequest(actionRequest);
             obsClientManager.reloadClient();
-            obsClientManager.consume(actionRequest);
+            obsClientManager.onActionRequest(actionRequest);
             obsClientManager.stopClient();
         } catch (ClientException e) {
             fail("Test requires instance of OBS", e);

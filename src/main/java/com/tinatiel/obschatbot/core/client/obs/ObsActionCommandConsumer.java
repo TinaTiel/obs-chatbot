@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Deprecated.
  */
-public class ObsActionCommandConsumer implements ActionCommandConsumer {
+public class ObsActionCommandConsumer implements ActionCommandConsumer<OBSRemoteController> {
 
   private final Logger log = LoggerFactory.getLogger(this.getClass());
   private final OBSRemoteController client;
@@ -24,7 +24,7 @@ public class ObsActionCommandConsumer implements ActionCommandConsumer {
   }
 
   @Override
-  public void consume(ActionRequest actionRequest) {
+  public void consume(OBSRemoteController client, ActionRequest actionRequest) {
 //        try {
 //            if(actionRequest.getAction() instanceof ObsSourceVisibilityAction) {
 //                ObsSourceVisibilityAction action = (ObsSourceVisibilityAction) actionRequest.getAction();

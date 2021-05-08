@@ -1,14 +1,15 @@
 package com.tinatiel.obschatbot.core.request.scheduler;
 
 import com.tinatiel.obschatbot.core.messaging.Listener;
-import com.tinatiel.obschatbot.core.messaging.QueueClient;
 import com.tinatiel.obschatbot.core.request.ActionRequest;
+import com.tinatiel.obschatbot.core.request.messaging.ActionRequestGateway;
 import com.tinatiel.obschatbot.core.request.CommandRequest;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.integration.annotation.ServiceActivator;
 
 /**
  * Responsible for consuming ${@link CommandRequest}s from the CommandRequest queue and producing
@@ -30,23 +31,24 @@ public class CommandRequestScheduler implements Listener<CommandRequest> {
   private final ExecutorService executorService = Executors.newSingleThreadExecutor();
 
   private final WorkGroupManager workGroupManager;
-  private final QueueClient<ActionRequest> actionRequestQueueClient;
+//  private final QueueClient<ActionRequest> actionRequestQueueClient;
+  private final ActionRequestGateway actionRequestGateway;
 
   /**
    * Create a new instance of the scheduler.
    *
    * @param workGroupManager The WorkGroupManager that routes and schedules ActionReuqests.
-   * @param actionRequestQueueClient A ${@link QueueClient} that submits requests to the
-   *                                 ActionRequest queue
+   * @param actionRequestGateway submits requests to the ActionRequest queue
    */
   public CommandRequestScheduler(
       WorkGroupManager workGroupManager,
-      QueueClient<ActionRequest> actionRequestQueueClient) {
+    ActionRequestGateway actionRequestGateway) {
     this.workGroupManager = workGroupManager;
-    this.actionRequestQueueClient = actionRequestQueueClient;
+    this.actionRequestGateway = actionRequestGateway;
     execute();
   }
 
+  @ServiceActivator(inputChannel = "commandRequestChannel")
   @Override
   public void onEvent(CommandRequest event) {
     workGroupManager.route(event);
@@ -56,7 +58,7 @@ public class CommandRequestScheduler implements Listener<CommandRequest> {
     executorService.execute(() -> {
       while (true) {
         List<ActionRequest> actionRequests = workGroupManager.getNext().getNextWorkBatch();
-        actionRequests.forEach(actionRequestQueueClient::submit);
+        actionRequests.forEach(actionRequestGateway::submit);
         if (actionRequests.isEmpty()) {
           try {
             Thread.sleep(100);

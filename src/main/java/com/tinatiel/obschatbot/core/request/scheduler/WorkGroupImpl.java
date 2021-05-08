@@ -12,6 +12,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
 import java.util.concurrent.locks.ReentrantLock;
+import org.springframework.integration.annotation.ServiceActivator;
 
 /**
  * Implementation of WorkGroup that will generate batches of ActionRequests up to the
@@ -156,6 +157,7 @@ public class WorkGroupImpl implements WorkGroup {
     return result;
   }
 
+  @ServiceActivator(inputChannel = "actionCompleteEventQueue")
   @Override
   public void onEvent(ActionCompleteEvent event) {
     free(event.getCompletedActionRequestId());

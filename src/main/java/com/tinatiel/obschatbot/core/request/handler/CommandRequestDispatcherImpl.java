@@ -8,8 +8,8 @@ package com.tinatiel.obschatbot.core.request.handler;
 import com.tinatiel.obschatbot.core.command.Command;
 import com.tinatiel.obschatbot.core.error.ClientException;
 import com.tinatiel.obschatbot.core.error.CyclicalActionsException;
-import com.tinatiel.obschatbot.core.messaging.QueueClient;
 import com.tinatiel.obschatbot.core.request.CommandRequest;
+import com.tinatiel.obschatbot.core.request.messaging.CommandRequestGateway;
 import com.tinatiel.obschatbot.core.request.RequestContext;
 import com.tinatiel.obschatbot.core.request.factory.CommandRequestFactory;
 import lombok.extern.slf4j.Slf4j;
@@ -23,23 +23,24 @@ import lombok.extern.slf4j.Slf4j;
 public class CommandRequestDispatcherImpl implements CommandRequestDispatcher {
 
   private final CommandRequestFactory commandRequestFactory;
-  private final QueueClient<CommandRequest> commandRequestQueueClient;
+//  private final QueueClient<CommandRequest> commandRequestQueueClient;
+  private final CommandRequestGateway commandRequestGateway;
 
   /**
    * Create a new instance.
    *
    * @param commandRequestFactory Request factory that builds a ${@link CommandRequest}
-   * @param commandRequestQueueClient ${@link QueueClient} that submits requests to the
+   * @param commandRequestGateway ${@link QueueClient} that submits requests to the
    *                                 CommandRequest queue
    */
   public CommandRequestDispatcherImpl(
       CommandRequestFactory commandRequestFactory,
-      QueueClient<CommandRequest> commandRequestQueueClient) {
-    if (commandRequestFactory == null || commandRequestQueueClient == null) {
+      CommandRequestGateway commandRequestGateway) {
+    if (commandRequestFactory == null || commandRequestGateway == null) {
       throw new IllegalArgumentException("arguments cannot be null");
     }
     this.commandRequestFactory = commandRequestFactory;
-    this.commandRequestQueueClient = commandRequestQueueClient;
+    this.commandRequestGateway = commandRequestGateway;
   }
 
   @Override
@@ -52,7 +53,7 @@ public class CommandRequestDispatcherImpl implements CommandRequestDispatcher {
 
     try {
       CommandRequest commandRequest = commandRequestFactory.build(command, requestContext);
-      commandRequestQueueClient.submit(commandRequest);
+      commandRequestGateway.submit(commandRequest);
     } catch (CyclicalActionsException | ClientException e) {
       log.error(String.format(
           "Not able to execute command %s with context %s",
