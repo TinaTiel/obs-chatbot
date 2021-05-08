@@ -8,9 +8,9 @@ package com.tinatiel.obschatbot.core.client;
 import com.tinatiel.obschatbot.core.request.ActionRequest;
 
 /**
- * Remove me.
+ * Encapsulates wrapping logic around executing an ActionRequest against a client implementation.
  */
-public interface ActionCommandConsumer {
+public interface ActionCommandConsumer<C> {
 
-  void consume(ActionRequest actionRequest);
+  void consume(C client, ActionRequest actionRequest);
 }

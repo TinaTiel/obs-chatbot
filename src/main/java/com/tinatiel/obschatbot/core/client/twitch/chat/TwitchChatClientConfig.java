@@ -5,6 +5,7 @@
 
 package com.tinatiel.obschatbot.core.client.twitch.chat;
 
+import com.tinatiel.obschatbot.core.client.ActionCommandConsumer;
 import com.tinatiel.obschatbot.core.client.ClientFactory;
 import com.tinatiel.obschatbot.core.client.ClientManager;
 import com.tinatiel.obschatbot.core.client.ClientSettingsFactory;
@@ -82,8 +83,17 @@ public class TwitchChatClientConfig {
   }
 
   @Bean
+  ActionCommandConsumer<TwitchChatClientDelegate> twitchChatClientActionCommandConsumer() {
+    return new TwitchChatActionCommandConsumer(twitchClientStateMessagingGateway);
+  }
+
+  @Bean
   ClientManager twitchChatClientManager() {
-    return new TwitchChatClientManager(twitchClientStateMessagingGateway, twitchChatClientFactory());
+    return new TwitchChatClientManager(
+      twitchClientStateMessagingGateway,
+      twitchChatClientFactory(),
+      twitchChatClientActionCommandConsumer()
+    );
   }
 
 }

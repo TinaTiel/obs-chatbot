@@ -5,7 +5,6 @@
 
 package com.tinatiel.obschatbot.core.client.twitch.chat;
 
-import com.tinatiel.obschatbot.core.action.Action;
 import com.tinatiel.obschatbot.core.action.model.SendMessageAction;
 import com.tinatiel.obschatbot.core.client.ActionCommandConsumer;
 import com.tinatiel.obschatbot.core.client.ClientDelegate;
@@ -49,16 +48,18 @@ public class TwitchChatClientManager implements ClientManager {
   // Client factory produces new client instances
   private final TwitchClientStateMessagingGateway stateClient;
   private final ClientFactory<PircBotX, TwitchChatClientSettings> clientFactory;
+  private final ActionCommandConsumer<TwitchChatClientDelegate> twitchChatClientActionCommandConsumer;
   ExecutorService executorService = Executors.newSingleThreadExecutor();
   private volatile TwitchChatClientDelegate clientDelegate;
   private volatile ObsChatbotEvent lastEvent;
 
   public TwitchChatClientManager(
-      TwitchClientStateMessagingGateway stateClient,
-      ClientFactory<PircBotX,
-      TwitchChatClientSettings> clientFactory) {
+    TwitchClientStateMessagingGateway stateClient,
+    ClientFactory<PircBotX, TwitchChatClientSettings> clientFactory,
+    ActionCommandConsumer<TwitchChatClientDelegate> twitchChatClientActionCommandConsumer) {
     this.stateClient = stateClient;
     this.clientFactory = clientFactory;
+    this.twitchChatClientActionCommandConsumer = twitchChatClientActionCommandConsumer;
   }
 
   @Override
@@ -131,23 +132,15 @@ public class TwitchChatClientManager implements ClientManager {
    * instead of silently dropping the request entirely.
    */
   @Override
-  public void consume(ActionRequest actionRequest) {
+  @ServiceActivator(inputChannel = "actionRequestChannel")
+  public void onActionRequest(ActionRequest actionRequest) {
     log.debug("Consuming ActionRequest: " + actionRequest);
     if (lastEvent instanceof ClientReadyEvent) {
-      try {
-        Action action = actionRequest.getAction();
-        if (action instanceof SendMessageAction) {
-          clientDelegate.sendMessage(((SendMessageAction) action).getMessage());
-        }
-      } catch (Exception unexpected) {
-        stateClient.submit(new ClientErrorEvent(unexpected,
-            "Encountered unexpected exception while consuming " + actionRequest));
-      }
+      twitchChatClientActionCommandConsumer.consume(clientDelegate, actionRequest);
     } else {
       stateClient.submit(new ClientRequestIgnoredEvent("Ignoring request "
           + actionRequest + ": Client not ready"));
     }
-
   }
 
   /**
@@ -157,7 +150,7 @@ public class TwitchChatClientManager implements ClientManager {
    */
   @ServiceActivator(inputChannel = "twitchClientLifecycleChannel")
   @Override
-  public void onEvent(ObsChatbotEvent event) {
+  public void onLifecycleEvent(ObsChatbotEvent event) {
     lastEvent = event;
     if (event instanceof ClientErrorEvent) {
       // Any error event must stop the client; something is wrong
@@ -169,7 +162,7 @@ public class TwitchChatClientManager implements ClientManager {
       clientDelegate = null;
     } else if (event instanceof ClientReadyEvent) {
       if (clientDelegate.getSettings().getJoinMessage() != null) {
-        consume(new ActionRequest(
+        onActionRequest(new ActionRequest(
             new RequestContext(User.systemUser(), new ArrayList<>()),
             new SendMessageAction(clientDelegate.getSettings().getJoinMessage())
         ));
@@ -190,7 +183,7 @@ public class TwitchChatClientManager implements ClientManager {
 
     // Send a closing message if relevant, and wait for it to go through
     if (clientDelegate.getSettings().getLeaveMessage() != null) {
-      consume(new ActionRequest(
+      onActionRequest(new ActionRequest(
           new RequestContext(User.systemUser(), new ArrayList<>()),
           new SendMessageAction(clientDelegate.getSettings().getLeaveMessage())
       ));

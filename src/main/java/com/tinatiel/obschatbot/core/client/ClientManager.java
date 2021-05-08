@@ -7,6 +7,7 @@ package com.tinatiel.obschatbot.core.client;
 
 import com.tinatiel.obschatbot.core.messaging.Listener;
 import com.tinatiel.obschatbot.core.messaging.ObsChatbotEvent;
+import com.tinatiel.obschatbot.core.request.ActionRequest;
 
 /**
  * Provides a way to manage a client. Implementations should be injected with a reference to the
@@ -14,7 +15,7 @@ import com.tinatiel.obschatbot.core.messaging.ObsChatbotEvent;
  * client is started, a new instance is created with those settings -- and when a client is stopped
  * then the client is destroyed.
  */
-public interface ClientManager extends Listener<ObsChatbotEvent>, ActionCommandConsumer {
+public interface ClientManager {
 
   /**
    * Starts a new client instance. Implementations should be blocking until timeout expires.
@@ -32,5 +33,16 @@ public interface ClientManager extends Listener<ObsChatbotEvent>, ActionCommandC
    * destroyed, and the new client is created with the updated settings.
    */
   void reloadClient();
+
+  /**
+   * Defines behavior of the client on different lifecycle events, for example transitioning to
+   * a "ready" state when passed an "authentication success" event.
+   */
+  void onLifecycleEvent(ObsChatbotEvent lifecycleEvent);
+
+  /**
+   * Executes an ActionRequest, usually delegating to an {@link ActionCommandConsumer}.
+   */
+  void onActionRequest(ActionRequest actionRequest);
 
 }
