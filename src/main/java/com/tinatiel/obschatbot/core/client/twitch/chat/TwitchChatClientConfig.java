@@ -10,12 +10,7 @@ import com.tinatiel.obschatbot.core.client.ClientManager;
 import com.tinatiel.obschatbot.core.client.ClientSettingsFactory;
 import com.tinatiel.obschatbot.core.client.twitch.chat.messaging.TwitchChatClientMessagingConfig;
 import com.tinatiel.obschatbot.core.client.twitch.chat.messaging.TwitchClientStateMessagingGateway;
-import com.tinatiel.obschatbot.core.messaging.ObsChatbotEvent;
-import com.tinatiel.obschatbot.core.messaging.QueueClient;
-import com.tinatiel.obschatbot.core.messaging.QueueClientImpl;
 import com.tinatiel.obschatbot.core.request.handler.chat.ChatRequestHandler;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 import javax.net.ssl.SSLSocketFactory;
 import org.pircbotx.PircBotX;
 import org.pircbotx.UtilSSLSocketFactory;
@@ -24,8 +19,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.integration.annotation.IntegrationComponentScan;
-import org.springframework.messaging.MessageChannel;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 
 /**

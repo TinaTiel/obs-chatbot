@@ -1,9 +1,9 @@
 package com.tinatiel.obschatbot.core.client.twitch.auth;
 
-import com.tinatiel.obschatbot.core.client.twitch.auth.event.TwitchAuthValidationFailureEvent;
-import com.tinatiel.obschatbot.core.client.twitch.auth.event.TwitchAuthValidationSuccessEvent;
+import com.tinatiel.obschatbot.core.client.twitch.auth.messaging.TwitchAuthClientMessagingGateway;
+import com.tinatiel.obschatbot.core.client.twitch.auth.messaging.TwitchAuthValidationFailureEvent;
+import com.tinatiel.obschatbot.core.client.twitch.auth.messaging.TwitchAuthValidationSuccessEvent;
 import com.tinatiel.obschatbot.core.messaging.ObsChatbotEvent;
-import com.tinatiel.obschatbot.core.messaging.QueueClient;
 import com.tinatiel.obschatbot.core.user.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -21,13 +21,13 @@ public class TwitchAuthValidationService {
 
   private final OAuth2AuthorizedClientService authorizedClientService;
   private final OAuth2AuthorizedClientManager authorizedClientManager;
-  private final QueueClient<ObsChatbotEvent> twitchAuthQueueClient;
+  private final TwitchAuthClientMessagingGateway twitchAuthQueueClient;
   private final TwitchAuthClient twitchAuthClient;
 
   public TwitchAuthValidationService(
     OAuth2AuthorizedClientService authorizedClientService,
     OAuth2AuthorizedClientManager authorizedClientManager,
-    QueueClient<ObsChatbotEvent> twitchAuthQueueClient,
+    TwitchAuthClientMessagingGateway twitchAuthQueueClient,
     TwitchAuthClient twitchAuthClient) {
     this.authorizedClientService = authorizedClientService;
     this.authorizedClientManager = authorizedClientManager;

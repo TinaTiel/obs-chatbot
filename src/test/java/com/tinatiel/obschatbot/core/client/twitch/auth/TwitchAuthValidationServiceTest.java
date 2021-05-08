@@ -6,11 +6,10 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.tinatiel.obschatbot.core.client.twitch.api.TwitchApiClient;
-import com.tinatiel.obschatbot.core.client.twitch.auth.event.TwitchAuthValidationFailureEvent;
-import com.tinatiel.obschatbot.core.client.twitch.auth.event.TwitchAuthValidationSuccessEvent;
+import com.tinatiel.obschatbot.core.client.twitch.auth.messaging.TwitchAuthClientMessagingGateway;
+import com.tinatiel.obschatbot.core.client.twitch.auth.messaging.TwitchAuthValidationFailureEvent;
+import com.tinatiel.obschatbot.core.client.twitch.auth.messaging.TwitchAuthValidationSuccessEvent;
 import com.tinatiel.obschatbot.core.messaging.ObsChatbotEvent;
-import com.tinatiel.obschatbot.core.messaging.QueueClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -23,7 +22,7 @@ public class TwitchAuthValidationServiceTest {
 
   OAuth2AuthorizedClientService authorizedClientService;
   OAuth2AuthorizedClientManager authorizedClientManager;
-  QueueClient<ObsChatbotEvent> twitchAuthQueueClient;
+  TwitchAuthClientMessagingGateway twitchAuthQueueClient;
   TwitchAuthClient twitchAuthClient;
 
   TwitchAuthValidationService twitchAuthValidationService;
@@ -32,7 +31,7 @@ public class TwitchAuthValidationServiceTest {
   void setUp() {
     authorizedClientService = mock(OAuth2AuthorizedClientService.class);
     authorizedClientManager = mock(OAuth2AuthorizedClientManager.class);
-    twitchAuthQueueClient = mock(QueueClient.class);
+    twitchAuthQueueClient = mock(TwitchAuthClientMessagingGateway.class);
     twitchAuthClient = mock(TwitchAuthClient.class);
 
     argumentCaptor = ArgumentCaptor.forClass(ObsChatbotEvent.class);

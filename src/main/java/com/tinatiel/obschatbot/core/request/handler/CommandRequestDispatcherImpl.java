@@ -8,7 +8,6 @@ package com.tinatiel.obschatbot.core.request.handler;
 import com.tinatiel.obschatbot.core.command.Command;
 import com.tinatiel.obschatbot.core.error.ClientException;
 import com.tinatiel.obschatbot.core.error.CyclicalActionsException;
-import com.tinatiel.obschatbot.core.messaging.QueueClient;
 import com.tinatiel.obschatbot.core.request.CommandRequest;
 import com.tinatiel.obschatbot.core.request.messaging.CommandRequestGateway;
 import com.tinatiel.obschatbot.core.request.RequestContext;

@@ -1,7 +1,6 @@
 package com.tinatiel.obschatbot.core.request.scheduler;
 
 import com.tinatiel.obschatbot.core.messaging.Listener;
-import com.tinatiel.obschatbot.core.messaging.QueueClient;
 import com.tinatiel.obschatbot.core.request.ActionRequest;
 import com.tinatiel.obschatbot.core.request.messaging.ActionRequestGateway;
 import com.tinatiel.obschatbot.core.request.CommandRequest;

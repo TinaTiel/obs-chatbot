@@ -1,4 +1,4 @@
-package com.tinatiel.obschatbot.core.client.twitch.auth.event;
+package com.tinatiel.obschatbot.core.client.twitch.auth.messaging;
 
 import com.tinatiel.obschatbot.core.messaging.AbstractObsChatbotEvent;
 

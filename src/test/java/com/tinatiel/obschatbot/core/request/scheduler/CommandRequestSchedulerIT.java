@@ -1,21 +1,15 @@
 package com.tinatiel.obschatbot.core.request.scheduler;
 
-import com.tinatiel.obschatbot.core.command.CommandConfig;
-import com.tinatiel.obschatbot.core.command.CommandRepository;
 import com.tinatiel.obschatbot.core.messaging.Listener;
-import com.tinatiel.obschatbot.core.messaging.QueueNotifier;
 import com.tinatiel.obschatbot.core.request.*;
 import com.tinatiel.obschatbot.core.user.*;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 
@@ -34,11 +28,6 @@ class CommandRequestSchedulerIT {
     // MOck out stuff we don't need
     @MockBean
     Listener<ActionRequest> twitchChatActionRequestListener;
-
-    // mock any QueueNotifier consuming ActionRequests so we can
-    // examine the queue afterwards ourselves.
-    @MockBean
-    QueueNotifier<ActionRequest> disabledActionRequestQueueNotifier;
 
     @Test
     void whenRequestsAreSubmittedThenTheyEndUpInTheActionRequestQueue() {
