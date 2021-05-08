@@ -38,8 +38,7 @@ public class CommandRequestScheduler implements Listener<CommandRequest> {
    * Create a new instance of the scheduler.
    *
    * @param workGroupManager The WorkGroupManager that routes and schedules ActionReuqests.
-   * @param actionRequestGateway A ${@link QueueClient} that submits requests to the
-   *                                 ActionRequest queue
+   * @param actionRequestGateway submits requests to the ActionRequest queue
    */
   public CommandRequestScheduler(
       WorkGroupManager workGroupManager,

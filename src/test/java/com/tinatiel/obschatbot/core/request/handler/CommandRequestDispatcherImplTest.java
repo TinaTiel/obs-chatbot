@@ -27,8 +27,7 @@ class CommandRequestDispatcherImplTest {
     @BeforeEach
     void setUp() {
         commandRequestFactory = mock(CommandRequestFactory.class);
-//        commandRequestQueueClient = mock(QueueClient.class);
-
+        commandRequestGateway = mock(CommandRequestGateway.class);
         commandRequestDispatcher = new CommandRequestDispatcherImpl(commandRequestFactory,
           commandRequestGateway);
     }
