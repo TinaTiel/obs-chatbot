@@ -1,9 +1,5 @@
-package com.tinatiel.obschatbot.core.request.gateway;
+package com.tinatiel.obschatbot.core.request.messaging;
 
-import com.tinatiel.obschatbot.core.messaging.QueueClient;
-import com.tinatiel.obschatbot.core.messaging.QueueClientImpl;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.channel.DirectChannel;

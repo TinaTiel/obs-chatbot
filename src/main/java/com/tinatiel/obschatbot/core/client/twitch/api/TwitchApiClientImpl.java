@@ -1,6 +1,9 @@
 package com.tinatiel.obschatbot.core.client.twitch.api;
 
 import com.tinatiel.obschatbot.core.cache.CacheConfig;
+import com.tinatiel.obschatbot.core.client.twitch.api.model.TwitchResponse;
+import com.tinatiel.obschatbot.core.client.twitch.api.model.UsersDataResponse;
+import com.tinatiel.obschatbot.core.client.twitch.api.model.UsersFollowsResponse;
 import com.tinatiel.obschatbot.core.user.User;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;

@@ -3,7 +3,7 @@
  * GNU General Public License v3.0. See LICENSE or go to https://fsf.org/ for more details.
  */
 
-package com.tinatiel.obschatbot.core.client;
+package com.tinatiel.obschatbot.core.client.obs;
 
 import com.tinatiel.obschatbot.App;
 import com.tinatiel.obschatbot.core.action.model.ObsSourceVisibilityAction;

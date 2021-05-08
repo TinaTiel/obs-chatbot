@@ -21,7 +21,7 @@ import java.util.concurrent.BlockingQueue;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@ContextConfiguration(classes = {QueueNotifierConfig.class})
+//@ContextConfiguration(classes = {QueueNotifierConfig.class})
 @SpringJUnitConfig
 class CommandRequestSchedulerIT {
 

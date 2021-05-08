@@ -1,4 +1,4 @@
-package com.tinatiel.obschatbot.core.client.twitch.api;
+package com.tinatiel.obschatbot.core.client.twitch.api.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;

@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Import;
 /**
  * Encompasses all configuration for the request package.
  */
-@Import({QueueNotifierConfig.class, RequestHandlerConfig.class, CommandRequestFactoryConfig.class})
+@Import({RequestHandlerConfig.class, CommandRequestFactoryConfig.class})
 @Configuration
 public class RequestConfig {
 

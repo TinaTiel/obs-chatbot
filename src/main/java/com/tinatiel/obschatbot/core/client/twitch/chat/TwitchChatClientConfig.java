@@ -35,12 +35,6 @@ import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 @Configuration
 public class TwitchChatClientConfig {
 
-  @Autowired
-  ChatRequestHandler chatRequestHandler;
-
-  @Autowired
-  OAuth2AuthorizedClientService authorizedClientService;
-
   @Value("${TWITCH_TARGET_CHANNEL:noauth}")
   private String targetChannel;
 
@@ -48,7 +42,10 @@ public class TwitchChatClientConfig {
   private String twitchUsername;
 
   @Autowired
-  MessageChannel twitchClientLifecycleChannel;
+  ChatRequestHandler chatRequestHandler;
+
+  @Autowired
+  OAuth2AuthorizedClientService authorizedClientService;
 
   @Autowired
   TwitchClientStateMessagingGateway twitchClientStateMessagingGateway;
@@ -95,41 +92,5 @@ public class TwitchChatClientConfig {
   ClientManager twitchChatClientManager() {
     return new TwitchChatClientManager(twitchClientStateMessagingGateway, twitchChatClientFactory());
   }
-
-//  @Bean
-//  BlockingQueue<ObsChatbotEvent> twitchChatEventQueue() {
-//    return new LinkedBlockingQueue<>();
-//  }
-//
-//  @Bean
-//  QueueClient<ObsChatbotEvent> twitchChatEventQueueClient() {
-//    return new QueueClientImpl(twitchChatEventQueue());
-//  }
-
-//  @Bean
-//  QueueNotifier<ObsChatbotEvent> twitchChatEventQueueNotifier() {
-//    QueueNotifier<ObsChatbotEvent> notifier = new QueueNotifierImpl(twitchChatEventQueue());
-//    notifier.addListener(eventLogger());
-//    notifier.addListener(twitchChatClientManager());
-//
-//    return notifier;
-//  }
-//
-//  Listener<ObsChatbotEvent> eventLogger() {
-//    return new Listener<ObsChatbotEvent>() {
-//
-//      private final Logger log = LoggerFactory.getLogger(this.getClass());
-//
-//      @Override
-//      public void onEvent(ObsChatbotEvent event) {
-//        log.debug("Logged Event: " + event.toString());
-//      }
-//    };
-//  }
-
-//  @Bean
-//  Listener<ActionRequest> twitchChatActionRequestListener() {
-//    return new TwitchChatActionRequestListener(twitchChatClientManager());
-//  }
 
 }

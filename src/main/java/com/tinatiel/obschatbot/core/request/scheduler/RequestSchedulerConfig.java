@@ -1,7 +1,7 @@
 package com.tinatiel.obschatbot.core.request.scheduler;
 
 import com.tinatiel.obschatbot.core.messaging.Listener;
-import com.tinatiel.obschatbot.core.request.gateway.ActionRequestGateway;
+import com.tinatiel.obschatbot.core.request.messaging.ActionRequestGateway;
 import com.tinatiel.obschatbot.core.request.CommandRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

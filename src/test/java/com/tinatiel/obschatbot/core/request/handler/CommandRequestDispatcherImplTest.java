@@ -7,7 +7,7 @@ package com.tinatiel.obschatbot.core.request.handler;
 
 import com.tinatiel.obschatbot.core.command.Command;
 import com.tinatiel.obschatbot.core.request.CommandRequest;
-import com.tinatiel.obschatbot.core.request.gateway.CommandRequestGateway;
+import com.tinatiel.obschatbot.core.request.messaging.CommandRequestGateway;
 import com.tinatiel.obschatbot.core.request.RequestContext;
 import com.tinatiel.obschatbot.core.request.factory.CommandRequestFactory;
 import org.junit.jupiter.api.BeforeEach;
