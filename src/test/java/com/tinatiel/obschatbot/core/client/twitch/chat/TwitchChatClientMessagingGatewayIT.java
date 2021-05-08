@@ -3,6 +3,7 @@ package com.tinatiel.obschatbot.core.client.twitch.chat;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
+import com.tinatiel.obschatbot.core.SpringIntegrationTestConfig;
 import com.tinatiel.obschatbot.core.client.twitch.chat.messaging.TwitchChatClientMessagingConfig;
 import com.tinatiel.obschatbot.core.client.twitch.chat.messaging.TwitchClientMessagingGateway;
 import com.tinatiel.obschatbot.core.messaging.ObsChatbotEvent;
@@ -28,8 +29,10 @@ import org.springframework.messaging.PollableChannel;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+@EnableIntegration
 @ContextConfiguration(classes = {
   TwitchChatClientMessagingConfig.class,
+  SpringIntegrationTestConfig.class,
   TwitchChatClientMessagingGatewayIT.TestConfig.class
 })
 @ExtendWith(SpringExtension.class)
@@ -38,7 +41,6 @@ public class TwitchChatClientMessagingGatewayIT {
   @Autowired
   TwitchClientMessagingGateway gateway;
 
-  @Qualifier("testChannel")
   @Autowired
   PollableChannel testChannel;
 
@@ -49,19 +51,8 @@ public class TwitchChatClientMessagingGatewayIT {
   @Autowired
   AbstractMessageChannel targetChannel;
 
-  @EnableIntegration
   @TestConfiguration
   public static class TestConfig {
-
-    @Bean
-    Queue<Message<?>> testChannelQueue() {
-      return new LinkedBlockingQueue<>();
-    }
-
-    @Bean
-    PollableChannel testChannel() {
-      return new QueueChannel(testChannelQueue());
-    }
 
     @ServiceActivator(inputChannel = "twitchClientLifecycleChannel")
     @Bean

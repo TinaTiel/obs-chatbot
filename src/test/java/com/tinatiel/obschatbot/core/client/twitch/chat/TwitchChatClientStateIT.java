@@ -5,6 +5,7 @@
 
 package com.tinatiel.obschatbot.core.client.twitch.chat;
 
+import com.tinatiel.obschatbot.core.SpringIntegrationTestConfig;
 import com.tinatiel.obschatbot.core.client.ClientFactory;
 import com.tinatiel.obschatbot.core.client.ClientManager;
 import com.tinatiel.obschatbot.core.client.event.*;
@@ -59,8 +60,8 @@ import static org.mockito.Mockito.when;
  * There needs to be a separate continuous test that verifies this with a real bot for the case that Twitch
  * changes how login to their IRC servers changes.
  */
-@SpringIntegrationTest
-@ContextConfiguration(classes = {TwitchChatClientConfig.class, TwitchChatClientStateIT.TestConfig.class})
+@EnableIntegration
+@ContextConfiguration(classes = {TwitchChatClientConfig.class, SpringIntegrationTestConfig.class})
 @SpringJUnitConfig
 public class TwitchChatClientStateIT {
 
@@ -75,22 +76,6 @@ public class TwitchChatClientStateIT {
     @Qualifier("twitchClientLifecycleChannel")
     @Autowired
     AbstractMessageChannel targetChannel;
-
-    @EnableIntegration
-    @TestConfiguration
-    public static class TestConfig {
-
-        @Bean
-        Queue<Message<?>> testChannelQueue() {
-            return new LinkedBlockingQueue<>();
-        }
-
-        @Bean
-        QueueChannel testChannel() {
-            return new QueueChannel(testChannelQueue());
-        }
-
-    }
 
     @MockBean
     ClientFactory<PircBotX, TwitchChatClientSettings> clientFactory;
