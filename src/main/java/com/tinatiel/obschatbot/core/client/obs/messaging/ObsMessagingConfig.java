@@ -1,6 +1,5 @@
-package com.tinatiel.obschatbot.core.client.twitch.chat.messaging;
+package com.tinatiel.obschatbot.core.client.obs.messaging;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.annotation.IntegrationComponentScan;
@@ -9,14 +8,11 @@ import org.springframework.messaging.MessageChannel;
 
 @IntegrationComponentScan
 @Configuration
-public class TwitchChatClientMessagingConfig {
+public class ObsMessagingConfig {
 
   @Bean
-  MessageChannel twitchClientLifecycleChannel() {
+  MessageChannel obsClientLifecycleChannel() {
     return new DirectChannel();
   }
-
-  @Autowired
-  TwitchClientLifecycleGateway twitchClientLifecycleGateway;
 
 }

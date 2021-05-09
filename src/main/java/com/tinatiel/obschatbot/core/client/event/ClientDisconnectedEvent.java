@@ -12,12 +12,23 @@ import com.tinatiel.obschatbot.core.messaging.AbstractObsChatbotEvent;
  */
 public class ClientDisconnectedEvent extends AbstractObsChatbotEvent {
 
+  private final String reason;
+
   public ClientDisconnectedEvent() {
     super();
+    this.reason = null;
+  }
+
+  public ClientDisconnectedEvent(String reason) {
+    super();
+    this.reason = null;
   }
 
   @Override
   public String toString() {
-    return "DisconnectedEvent{" + super.toString() + "}";
+    return "DisconnectedEvent{"
+      + "reason='" + reason + "', "
+      + super.toString()
+      + "}";
   }
 }

@@ -5,7 +5,13 @@
 
 package com.tinatiel.obschatbot.core.client.obs;
 
+import com.tinatiel.obschatbot.core.client.ActionCommandConsumer;
+import com.tinatiel.obschatbot.core.client.ClientFactory;
+import com.tinatiel.obschatbot.core.client.ClientManager;
+import com.tinatiel.obschatbot.core.client.obs.messaging.ObsClientLifecycleGateway;
 import net.twasi.obsremotejava.OBSRemoteController;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
@@ -13,16 +19,36 @@ import org.springframework.context.annotation.Lazy;
 @Configuration
 public class ObsClientConfig {
 
-  @Lazy
+  @Value("${OBS_PASSWORD:na}")
+  private String obsPassword;
+
+  @Autowired
+  ObsClientLifecycleGateway obsClientLifecycleGateway;
+
   @Bean
-  public ObsClient obsClient() {
-    OBSRemoteController controller = new OBSRemoteController("ws://localhost:4444", false, null,
-      false);
-    if (controller.isFailed()) {
-      // handle failed connection
-      System.out.println("FSDFSFSFSFSFFS");
-    }
-    return new ObsClientImpl(controller);
+  ObsClientSettingsFactory obsClientSettingsFactory() {
+    String pass = obsPassword.equals("na") ? null : obsPassword;
+    return new ObsClientSettingsFactory(new ObsClientSettings(
+      "localhost", 4444, pass, 1000
+    ));
+  }
+
+  @Bean
+  ActionCommandConsumer<ObsClientDelegate> obsActionCommandConsumer() {
+    return new ObsActionCommandConsumer(obsClientLifecycleGateway);
+  }
+
+  ClientFactory<OBSRemoteController, ObsClientSettings> obsClientFactory() {
+    return new ObsClientFactory(obsClientSettingsFactory(), obsClientLifecycleGateway);
+  }
+
+  @Bean
+  public ClientManager obsClientManager() {
+    return new ObsClientManagerImpl(
+      obsClientLifecycleGateway,
+      obsClientFactory(),
+      obsActionCommandConsumer()
+    );
   }
 
 }

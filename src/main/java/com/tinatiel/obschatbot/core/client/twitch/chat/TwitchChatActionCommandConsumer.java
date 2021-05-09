@@ -4,15 +4,15 @@ import com.tinatiel.obschatbot.core.action.Action;
 import com.tinatiel.obschatbot.core.action.model.SendMessageAction;
 import com.tinatiel.obschatbot.core.client.ActionCommandConsumer;
 import com.tinatiel.obschatbot.core.client.event.ClientErrorEvent;
-import com.tinatiel.obschatbot.core.client.twitch.chat.messaging.TwitchClientStateMessagingGateway;
+import com.tinatiel.obschatbot.core.client.twitch.chat.messaging.TwitchClientLifecycleGateway;
 import com.tinatiel.obschatbot.core.request.ActionRequest;
 
 public class TwitchChatActionCommandConsumer implements ActionCommandConsumer<TwitchChatClientDelegate> {
 
-  private final TwitchClientStateMessagingGateway stateClient;
+  private final TwitchClientLifecycleGateway stateClient;
 
   public TwitchChatActionCommandConsumer(
-    TwitchClientStateMessagingGateway stateClient) {
+    TwitchClientLifecycleGateway stateClient) {
     this.stateClient = stateClient;
   }
 
@@ -24,8 +24,9 @@ public class TwitchChatActionCommandConsumer implements ActionCommandConsumer<Tw
         client.sendMessage(((SendMessageAction) action).getMessage());
       }
     } catch (Exception unexpected) {
-      stateClient.submit(new ClientErrorEvent(unexpected,
-        "Encountered unexpected exception while consuming " + actionRequest));
+      stateClient.submit(new ClientErrorEvent(
+        "Encountered unexpected exception while consuming " + actionRequest, unexpected
+      ));
     }
   }
 }

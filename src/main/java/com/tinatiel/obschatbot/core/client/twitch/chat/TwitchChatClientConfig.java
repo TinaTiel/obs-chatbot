@@ -10,7 +10,7 @@ import com.tinatiel.obschatbot.core.client.ClientFactory;
 import com.tinatiel.obschatbot.core.client.ClientManager;
 import com.tinatiel.obschatbot.core.client.ClientSettingsFactory;
 import com.tinatiel.obschatbot.core.client.twitch.chat.messaging.TwitchChatClientMessagingConfig;
-import com.tinatiel.obschatbot.core.client.twitch.chat.messaging.TwitchClientStateMessagingGateway;
+import com.tinatiel.obschatbot.core.client.twitch.chat.messaging.TwitchClientLifecycleGateway;
 import com.tinatiel.obschatbot.core.request.handler.chat.ChatRequestHandler;
 import javax.net.ssl.SSLSocketFactory;
 import org.pircbotx.PircBotX;
@@ -42,7 +42,7 @@ public class TwitchChatClientConfig {
   OAuth2AuthorizedClientService authorizedClientService;
 
   @Autowired
-  TwitchClientStateMessagingGateway twitchClientStateMessagingGateway;
+  TwitchClientLifecycleGateway twitchClientLifecycleGateway;
 
   /**
    * Until we have this stored in a Repository, just hard-code it here.
@@ -67,7 +67,7 @@ public class TwitchChatClientConfig {
   @Bean
   PircBotxListener pircBotxListener() {
     return new PircBotxListener(
-      twitchClientStateMessagingGateway,
+      twitchClientLifecycleGateway,
         chatRequestHandler,
         new TwitchChatClientTagsParser()
     );
@@ -84,13 +84,13 @@ public class TwitchChatClientConfig {
 
   @Bean
   ActionCommandConsumer<TwitchChatClientDelegate> twitchChatClientActionCommandConsumer() {
-    return new TwitchChatActionCommandConsumer(twitchClientStateMessagingGateway);
+    return new TwitchChatActionCommandConsumer(twitchClientLifecycleGateway);
   }
 
   @Bean
   ClientManager twitchChatClientManager() {
     return new TwitchChatClientManager(
-      twitchClientStateMessagingGateway,
+      twitchClientLifecycleGateway,
       twitchChatClientFactory(),
       twitchChatClientActionCommandConsumer()
     );

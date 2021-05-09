@@ -22,9 +22,15 @@ public class ClientErrorEvent extends AbstractObsChatbotEvent {
    * otherwise it can be null. Message should always be supplied, ideally in a language friendly
    * to non-devs as these messages may be shown directly to users.
    */
-  public ClientErrorEvent(Throwable cause, String message) {
+  public ClientErrorEvent(String message, Throwable cause) {
     super();
     this.cause = cause;
+    this.message = message;
+  }
+
+  public ClientErrorEvent(String message) {
+    super();
+    this.cause = null;
     this.message = message;
   }
 

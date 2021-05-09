@@ -1,11 +1,10 @@
 package com.tinatiel.obschatbot.core.client.twitch.chat;
 
 import com.tinatiel.obschatbot.core.action.Action;
-import com.tinatiel.obschatbot.core.action.model.SendMessageAction;
 import com.tinatiel.obschatbot.core.client.ActionCommandConsumer;
 import com.tinatiel.obschatbot.core.client.ClientFactory;
 import com.tinatiel.obschatbot.core.client.event.ClientReadyEvent;
-import com.tinatiel.obschatbot.core.client.twitch.chat.messaging.TwitchClientStateMessagingGateway;
+import com.tinatiel.obschatbot.core.client.twitch.chat.messaging.TwitchClientLifecycleGateway;
 import com.tinatiel.obschatbot.core.request.ActionRequest;
 import com.tinatiel.obschatbot.core.request.RequestContext;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,7 +15,7 @@ import static org.mockito.Mockito.*;
 
 public class TwitchClientManagerTest {
 
-    TwitchClientStateMessagingGateway stateClient;
+    TwitchClientLifecycleGateway stateClient;
     ClientFactory<PircBotX, TwitchChatClientSettings> clientFactory;
     ActionCommandConsumer<TwitchChatClientDelegate> twitchChatClientActionCommandConsumer;
 
@@ -25,7 +24,7 @@ public class TwitchClientManagerTest {
     @BeforeEach
     void setUp() {
 
-        stateClient = mock(TwitchClientStateMessagingGateway.class);
+        stateClient = mock(TwitchClientLifecycleGateway.class);
         clientFactory = mock(ClientFactory.class);
         twitchChatClientActionCommandConsumer = mock(ActionCommandConsumer.class);
 
