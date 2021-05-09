@@ -11,18 +11,22 @@ import java.util.Queue;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.locks.ReentrantLock;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.integration.annotation.ServiceActivator;
 
 /**
  * Implementation of WorkGroup that will generate batches of ActionRequests up to the
  * maximum batch size, iterating over the CommandRequests in the order received.
  */
+@Slf4j
 public class WorkGroupImpl implements WorkGroup {
 
   private final Timer timer = new Timer();
-  private final List<CommandRequestWrapper> workableRequests = new ArrayList<>();
-  private final HashMap<UUID, CommandRequestWrapper> blockedRequests = new HashMap<>();
+  private final ConcurrentLinkedQueue<CommandRequestWrapper> workableRequests = new ConcurrentLinkedQueue<>();
+  private final ConcurrentHashMap<UUID, CommandRequestWrapper> blockedRequests = new ConcurrentHashMap<>();
   private final ReentrantLock lock = new ReentrantLock();
   private int maxBatchSize = 0;
 
@@ -46,27 +50,35 @@ public class WorkGroupImpl implements WorkGroup {
   @Override
   public void add(CommandRequest commandRequest) {
     workableRequests.add(new CommandRequestWrapper(commandRequest));
+    log.trace("workable requests after adding commandRequest: " + workableRequests);
   }
 
   @Override
   public void free(UUID actionRequestId) {
+    log.trace(this + " Freeing " + actionRequestId);
     lock.lock();
     try {
-
+      log.trace(this + " workable requests before free: " + workableRequests);
+      log.trace(this + " blocked requests before free: " + blockedRequests);
       // Get the request. If it doesn't exist, then exit
       CommandRequestWrapper blockedRequest = blockedRequests.get(actionRequestId);
       if (blockedRequest == null) {
+        log.trace(this + " No request found, exiting");
         return;
       }
 
       // If the request has work to do, then add it back to workable requests
       if (!blockedRequest.getQueue().isEmpty()) {
+        log.trace(this + " Found, adding back to workable requests");
         workableRequests.add(blockedRequest);
       }
 
       // Remove the request from the blocked requests
+      log.trace(this + " Removing from blocked requests");
       blockedRequests.remove(actionRequestId);
 
+      log.trace(this + " workable requests after free: " + workableRequests);
+      log.trace(this + " blocked requests after free: " + blockedRequests);
     } finally {
       lock.unlock();
     }
@@ -98,17 +110,18 @@ public class WorkGroupImpl implements WorkGroup {
 
             // We also must timeout the task if it takes too long so
             // it doesn't block forever
+            log.trace(this + " Scheduling timeout for " + nextAction);
             long timeout = nextAction.getAction().getTimeout() < 0
                 ? 1
                 : nextAction.getAction().getTimeout();
             timer.schedule(new TimerTask() {
               @Override
               public void run() {
+                log.trace(this + " Freeing from the timeout");
                 free(nextAction.getId());
               }
             }, timeout);
           }
-
         }
 
         // If there is nothing left in the queue, then mark the request for removal
@@ -157,9 +170,9 @@ public class WorkGroupImpl implements WorkGroup {
     return result;
   }
 
-  @ServiceActivator(inputChannel = "actionCompleteEventQueue")
   @Override
   public void onEvent(ActionCompleteEvent event) {
+    log.trace(this + " Freeing from event completion: " + event);
     free(event.getCompletedActionRequestId());
   }
 
@@ -171,6 +184,7 @@ public class WorkGroupImpl implements WorkGroup {
     public CommandRequestWrapper(CommandRequest request) {
       this.request = request;
       this.actionRequestQueue.addAll(request.getActionCommands());
+      log.trace(this + " Created queue of actions: " + this.actionRequestQueue);
     }
 
     public Queue<ActionRequest> getQueue() {

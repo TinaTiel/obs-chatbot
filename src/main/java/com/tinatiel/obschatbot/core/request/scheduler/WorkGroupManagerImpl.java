@@ -1,6 +1,8 @@
 package com.tinatiel.obschatbot.core.request.scheduler;
 
+import com.tinatiel.obschatbot.core.request.ActionCompleteEvent;
 import com.tinatiel.obschatbot.core.request.CommandRequest;
+import org.springframework.integration.annotation.ServiceActivator;
 
 /**
  * An implementation of WorkGroupManager that delegates routing and priority-ordering of
@@ -34,5 +36,10 @@ public class WorkGroupManagerImpl implements WorkGroupManager {
   @Override
   public void route(CommandRequest commandRequest) {
     router.route(commandRequest);
+  }
+
+  @ServiceActivator(inputChannel = "actionRequestStatusChannel")
+  public void onEvent(ActionCompleteEvent event) {
+    router.workGroupsByPriority().forEach(it -> it.onEvent(event));
   }
 }

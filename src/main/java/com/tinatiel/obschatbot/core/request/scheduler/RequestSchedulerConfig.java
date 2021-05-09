@@ -36,31 +36,6 @@ public class RequestSchedulerConfig {
   }
 
   @Bean
-  MessageChannel actionCompleteEventQueue() {
-    return new DirectChannel();
-  }
-
-//  @Bean
-//  BlockingQueue<ActionCompleteEvent> actionCompleteEventQueue() {
-//    return new LinkedBlockingQueue<>();
-//  }
-
-//  @Bean
-//  QueueClient<ActionCompleteEvent> actionCompleteEventQueueClient() {
-//    return new QueueClientImpl(actionCompleteEventQueue());
-//  }
-//
-//  @Bean
-//  QueueNotifier<ActionCompleteEvent> actionCompleteEventQueueNotifier() {
-//    QueueNotifier<ActionCompleteEvent> notifier = new QueueNotifierImpl(actionCompleteEventQueue());
-//    notifier.addListener(broadcasterWorkGroup());
-//    notifier.addListener(moderatorWorkGroup());
-//    notifier.addListener(otherWorkGroup());
-//
-//    return notifier;
-//  }
-
-  @Bean
   WorkGroupRouter workGroupRouter() {
     return new BroadcasterModeratorElseWorkGroupRouter(
       broadcasterWorkGroup(), moderatorWorkGroup(), otherWorkGroup());

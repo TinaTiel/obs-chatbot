@@ -21,4 +21,7 @@ public class RequestMessagingConfig {
     return new PublishSubscribeChannel();
   }
 
+  @Bean
+  MessageChannel actionRequestStatusChannel() { return new PublishSubscribeChannel(); }
+
 }

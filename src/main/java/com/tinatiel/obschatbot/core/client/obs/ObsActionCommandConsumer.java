@@ -31,7 +31,8 @@ public class ObsActionCommandConsumer implements ActionCommandConsumer<ObsClient
   public void consume(ObsClientDelegate client, ActionRequest actionRequest) {
       try {
           if(actionRequest.getAction() instanceof ObsSourceVisibilityAction) {
-              ObsSourceVisibilityAction action = (ObsSourceVisibilityAction) actionRequest.getAction();
+            log.debug("Consuming ActionRequest: " + actionRequest);
+            ObsSourceVisibilityAction action = (ObsSourceVisibilityAction) actionRequest.getAction();
               client.getClient().setSourceVisibility(
                 action.getSceneName(), action.getSourceName(), action.isVisible(), (result) -> {});
           }

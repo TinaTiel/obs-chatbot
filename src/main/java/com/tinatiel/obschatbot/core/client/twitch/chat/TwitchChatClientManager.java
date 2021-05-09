@@ -131,7 +131,6 @@ public class TwitchChatClientManager implements ClientManager {
   @Override
   @ServiceActivator(inputChannel = "actionRequestChannel")
   public void onActionRequest(ActionRequest actionRequest) {
-    log.debug("Consuming ActionRequest: " + actionRequest);
     if (ready) {
       twitchChatClientActionCommandConsumer.consume(clientDelegate, actionRequest);
     } else {

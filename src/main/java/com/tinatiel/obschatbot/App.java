@@ -8,18 +8,23 @@ package com.tinatiel.obschatbot;
 import com.tinatiel.obschatbot.core.action.Action;
 import com.tinatiel.obschatbot.core.action.model.ObsSourceVisibilityAction;
 import com.tinatiel.obschatbot.core.action.model.SendMessageAction;
+import com.tinatiel.obschatbot.core.action.model.WaitAction;
 import com.tinatiel.obschatbot.core.client.ClientManager;
 import com.tinatiel.obschatbot.core.client.obs.ObsClientManagerImpl;
 import com.tinatiel.obschatbot.core.command.Command;
 import com.tinatiel.obschatbot.core.command.CommandRepository;
 import com.tinatiel.obschatbot.core.request.ActionRequest;
+import com.tinatiel.obschatbot.core.request.CommandRequest;
 import com.tinatiel.obschatbot.core.request.RequestContext;
+import com.tinatiel.obschatbot.core.request.handler.CommandRequestDispatcher;
+import com.tinatiel.obschatbot.core.request.messaging.CommandRequestGateway;
 import com.tinatiel.obschatbot.core.sequencer.InOrderActionSequencer;
 import com.tinatiel.obschatbot.core.sequencer.RandomOrderActionSequencer;
 import com.tinatiel.obschatbot.core.user.Platform;
 import com.tinatiel.obschatbot.core.user.User;
 import com.tinatiel.obschatbot.core.user.local.LocalUser;
 import com.tinatiel.obschatbot.core.user.local.LocalUserRepository;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -42,13 +47,24 @@ public class App {
     ApplicationContext context = SpringApplication.run(App.class);
 
     // Register a command
-    Command command = new Command()
+    Command randomText = new Command()
         .name("test")
         .actionSequencer(new RandomOrderActionSequencer(Arrays.asList(
           new SendMessageAction("Test message #1, sent " + new Date()),
           new SendMessageAction("Test message #2, sent " + new Date()),
           new SendMessageAction("Test message #3, sent " + new Date())
         ), 2));
+
+    Command hideShow = new Command()
+      .name("hideshow")
+      .actionSequencer(new InOrderActionSequencer(Arrays.asList(
+        new SendMessageAction("Hiding the test scene item..."),
+        new ObsSourceVisibilityAction("scene1", "text1", false),
+        new SendMessageAction("Waiting..."),
+        new WaitAction(Duration.ofSeconds(2)),
+        new SendMessageAction("Showing the test scene item..."),
+        new ObsSourceVisibilityAction("scene1", "text1", true)
+      ), false));
 
     Command pingPong = new Command()
         .name("ping")
@@ -57,8 +73,9 @@ public class App {
         ), false));
 
     CommandRepository commandRepository = context.getBean(CommandRepository.class);
-    commandRepository.save(command);
+    commandRepository.save(randomText);
     commandRepository.save(pingPong);
+    commandRepository.save(hideShow);
 
     // Register who the broadcaster is for the Twitch platform
     LocalUserRepository localUserRepository = context.getBean(LocalUserRepository.class);
@@ -77,16 +94,25 @@ public class App {
     } catch (InterruptedException e) {
       e.printStackTrace();
     }
-    RequestContext requestContext = new RequestContext(User.systemUser(), new ArrayList<>());
-    Action hideAction = new ObsSourceVisibilityAction("scene1", "text1", false);
-    Action showAction = new ObsSourceVisibilityAction("scene1", "text1", true);
-    obsClientManager.onActionRequest(new ActionRequest(requestContext, hideAction));
-    try {
-      Thread.sleep(1000);
-    } catch (InterruptedException e) {
-      e.printStackTrace();
-    }
-    obsClientManager.onActionRequest(new ActionRequest(requestContext, showAction));
+//    RequestContext requestContext = new RequestContext(User.systemUser(), new ArrayList<>());
+//    Action hideAction = new ObsSourceVisibilityAction("scene1", "text1", false);
+//    Action showAction = new ObsSourceVisibilityAction("scene1", "text1", true);
+//    obsClientManager.onActionRequest(new ActionRequest(requestContext, hideAction));
+//    try {
+//      Thread.sleep(1000);
+//    } catch (InterruptedException e) {
+//      e.printStackTrace();
+//    }
+//    obsClientManager.onActionRequest(new ActionRequest(requestContext, showAction));
+
+//    CommandRequestDispatcher commandRequestDispatcher = context.getBean(CommandRequestDispatcher.class);
+//    commandRequestDispatcher.submit(hideShow, requestContext);
+//    try {
+//      Thread.sleep(500);
+//    } catch (InterruptedException e) {
+//      e.printStackTrace();
+//    }
+//    commandRequestDispatcher.submit(hideShow, requestContext);
 
   }
 }
