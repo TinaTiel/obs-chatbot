@@ -1,11 +1,11 @@
 package com.tinatiel.obschatbot.core.client.twitch.chat;
 
 import com.tinatiel.obschatbot.core.action.Action;
-import com.tinatiel.obschatbot.core.action.model.SendMessageAction;
 import com.tinatiel.obschatbot.core.client.ActionCommandConsumer;
 import com.tinatiel.obschatbot.core.client.ClientFactory;
 import com.tinatiel.obschatbot.core.client.event.ClientReadyEvent;
-import com.tinatiel.obschatbot.core.client.twitch.chat.messaging.TwitchClientStateMessagingGateway;
+import com.tinatiel.obschatbot.core.client.event.ClientRequestIgnoredEvent;
+import com.tinatiel.obschatbot.core.client.twitch.chat.messaging.TwitchClientLifecycleGateway;
 import com.tinatiel.obschatbot.core.request.ActionRequest;
 import com.tinatiel.obschatbot.core.request.RequestContext;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,7 +16,7 @@ import static org.mockito.Mockito.*;
 
 public class TwitchClientManagerTest {
 
-    TwitchClientStateMessagingGateway stateClient;
+    TwitchClientLifecycleGateway stateClient;
     ClientFactory<PircBotX, TwitchChatClientSettings> clientFactory;
     ActionCommandConsumer<TwitchChatClientDelegate> twitchChatClientActionCommandConsumer;
 
@@ -25,7 +25,7 @@ public class TwitchClientManagerTest {
     @BeforeEach
     void setUp() {
 
-        stateClient = mock(TwitchClientStateMessagingGateway.class);
+        stateClient = mock(TwitchClientLifecycleGateway.class);
         clientFactory = mock(ClientFactory.class);
         twitchChatClientActionCommandConsumer = mock(ActionCommandConsumer.class);
 
@@ -81,4 +81,31 @@ public class TwitchClientManagerTest {
         verify(clientDelegate, times(0)).sendMessage(any());
     }
 
+    @Test
+    void consumeActionsWhenReadyDespiteIgnoredStarts() {
+
+        // Given requests
+        RequestContext mockContext = mock(RequestContext.class);
+        ActionRequest messageRequest = new ActionRequest(mockContext, mock(Action.class));
+
+        // And given factory returns a delgate
+        TwitchChatClientDelegate clientDelegate = mock(TwitchChatClientDelegate.class, RETURNS_DEEP_STUBS);
+        when(clientFactory.generate()).thenReturn(clientDelegate);
+
+        // Given the client manager is ready to accept requests
+        twitchChatClientManager.startClient();
+        twitchChatClientManager.onLifecycleEvent(new ClientReadyEvent());
+
+        // But it receives another start request
+        twitchChatClientManager.startClient();
+        twitchChatClientManager.onLifecycleEvent(new ClientRequestIgnoredEvent(""));
+
+        // When consumed
+        twitchChatClientManager.onActionRequest(messageRequest);
+
+        // Then it still invokes the client
+        verify(twitchChatClientActionCommandConsumer, times(1))
+          .consume(any(), any());
+
+    }
 }

@@ -15,7 +15,7 @@ import lombok.ToString;
 @Data
 @AllArgsConstructor
 @ToString
-public class ObsSettings {
+public class ObsClientSettings {
 
   private String host;
   private int port;

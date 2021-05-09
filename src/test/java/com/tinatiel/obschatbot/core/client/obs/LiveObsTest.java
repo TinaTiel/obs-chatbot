@@ -28,31 +28,31 @@ import static org.junit.jupiter.api.Assertions.fail;
 @ExtendWith(SpringExtension.class)
 public class LiveObsTest {
 
-    @Autowired ObsClientManager obsClientManager;
-
-    @Test
-    void exerciseClientManagerSmokeTest() {
-
-        // Given an actionCommand
-        ObsSourceVisibilityAction action = new ObsSourceVisibilityAction(null, "Image", false);
-//        User user = new User(Platform.TWITCH, "mango", UserType.MODERATOR, new HashSet<>());
-        User user = User.builder().build();
-        RequestContext requestContext = new RequestContext(user, new ArrayList<>());
-        ActionRequest actionRequest = new ActionRequest(requestContext, action);
-
-        // Then we can start/stop/reload the manager and consume messages without exceptions
-        try {
-            obsClientManager.startClient();
-            obsClientManager.onActionRequest(actionRequest);
-            obsClientManager.reloadClient();
-            obsClientManager.onActionRequest(actionRequest);
-            obsClientManager.stopClient();
-        } catch (ClientException e) {
-            fail("Test requires instance of OBS", e);
-        } catch (Exception unexpected) {
-            fail("Exercising the clientManager should not throw unexpected exceptions", unexpected);
-        }
-
-    }
+//    @Autowired ObsClientManager obsClientManager;
+//
+//    @Test
+//    void exerciseClientManagerSmokeTest() {
+//
+//        // Given an actionCommand
+//        ObsSourceVisibilityAction action = new ObsSourceVisibilityAction(null, "Image", false);
+////        User user = new User(Platform.TWITCH, "mango", UserType.MODERATOR, new HashSet<>());
+//        User user = User.builder().build();
+//        RequestContext requestContext = new RequestContext(user, new ArrayList<>());
+//        ActionRequest actionRequest = new ActionRequest(requestContext, action);
+//
+//        // Then we can start/stop/reload the manager and consume messages without exceptions
+//        try {
+//            obsClientManager.startClient();
+//            obsClientManager.onActionRequest(actionRequest);
+//            obsClientManager.reloadClient();
+//            obsClientManager.onActionRequest(actionRequest);
+//            obsClientManager.stopClient();
+//        } catch (ClientException e) {
+//            fail("Test requires instance of OBS", e);
+//        } catch (Exception unexpected) {
+//            fail("Exercising the clientManager should not throw unexpected exceptions", unexpected);
+//        }
+//
+//    }
 
 }

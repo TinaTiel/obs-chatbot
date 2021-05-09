@@ -20,8 +20,7 @@ import com.tinatiel.obschatbot.core.client.event.ClientStartingEvent;
 import com.tinatiel.obschatbot.core.client.event.ClientStopRequestedEvent;
 import com.tinatiel.obschatbot.core.client.event.ClientStoppedEvent;
 import com.tinatiel.obschatbot.core.client.event.ClientStoppingEvent;
-import com.tinatiel.obschatbot.core.client.twitch.chat.messaging.TwitchClientStateMessagingGateway;
-import com.tinatiel.obschatbot.core.error.ClientException;
+import com.tinatiel.obschatbot.core.client.twitch.chat.messaging.TwitchClientLifecycleGateway;
 import com.tinatiel.obschatbot.core.messaging.ObsChatbotEvent;
 import com.tinatiel.obschatbot.core.request.ActionRequest;
 import com.tinatiel.obschatbot.core.request.RequestContext;
@@ -30,10 +29,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import lombok.extern.slf4j.Slf4j;
 import org.pircbotx.PircBotX;
 import org.pircbotx.exception.IrcException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.integration.annotation.ServiceActivator;
 
 /**
@@ -42,41 +40,41 @@ import org.springframework.integration.annotation.ServiceActivator;
  * ${@link ActionCommandConsumer}, this implementation also accepts ActionRequests related to chat
  * commands if in the ready state.
  */
+@Slf4j
 public class TwitchChatClientManager implements ClientManager {
 
-  private final Logger log = LoggerFactory.getLogger(this.getClass());
   // Client factory produces new client instances
-  private final TwitchClientStateMessagingGateway stateClient;
+  private final TwitchClientLifecycleGateway lifecycleGateway;
   private final ClientFactory<PircBotX, TwitchChatClientSettings> clientFactory;
   private final ActionCommandConsumer<TwitchChatClientDelegate> twitchChatClientActionCommandConsumer;
   ExecutorService executorService = Executors.newSingleThreadExecutor();
   private volatile TwitchChatClientDelegate clientDelegate;
-  private volatile ObsChatbotEvent lastEvent;
+  private volatile boolean ready = false;
 
   public TwitchChatClientManager(
-    TwitchClientStateMessagingGateway stateClient,
+    TwitchClientLifecycleGateway lifecycleGateway,
     ClientFactory<PircBotX, TwitchChatClientSettings> clientFactory,
     ActionCommandConsumer<TwitchChatClientDelegate> twitchChatClientActionCommandConsumer) {
-    this.stateClient = stateClient;
+    this.lifecycleGateway = lifecycleGateway;
     this.clientFactory = clientFactory;
     this.twitchChatClientActionCommandConsumer = twitchChatClientActionCommandConsumer;
   }
 
   @Override
-  public void startClient() throws ClientException {
+  public void startClient() {
 
     // Acknowledge the request to start the client
-    stateClient.submit(new ClientStartRequestedEvent());
+    lifecycleGateway.submit(new ClientStartRequestedEvent());
 
     // Check the clientDelegate hasn't already been generated. If it has, then ignore request.
     if (clientDelegate != null) {
-      stateClient
+      lifecycleGateway
         .submit(new ClientRequestIgnoredEvent("Client already starting/started, ignoring"));
       return;
     }
 
     // Acknowledge request resulted in client starting
-    stateClient.submit(new ClientStartingEvent());
+    lifecycleGateway.submit(new ClientStartingEvent());
 
     // Generate a new client delegate, checking it's the type we want
     ClientDelegate<PircBotX, TwitchChatClientSettings> generatedDelegate = clientFactory.generate();
@@ -89,7 +87,7 @@ public class TwitchChatClientManager implements ClientManager {
     }
 
     // Acknowledge the client will now start connecting
-    stateClient.submit(new ClientConnectingEvent());
+    lifecycleGateway.submit(new ClientConnectingEvent());
 
     // Start the client.
     // Note the underlying client's startBot() method blocks the calling thread,
@@ -98,10 +96,9 @@ public class TwitchChatClientManager implements ClientManager {
       try {
         clientDelegate.getClient().startBot();
       } catch (IOException | IrcException e) {
-        log.error("Twitch client encountered an unexpected error during start/run", e);
-        stateClient.submit(new ClientErrorEvent(e,
-            "Twitch client encountered an unexpected error during start/run: "
-                    + e.getMessage()
+        lifecycleGateway.submit(new ClientErrorEvent(
+          "Twitch client encountered an unexpected error during start/run: "
+                  + e.getMessage(), e
         ));
       }
     });
@@ -120,7 +117,7 @@ public class TwitchChatClientManager implements ClientManager {
   }
 
   @Override
-  public void reloadClient() throws ClientException {
+  public void reloadClient() {
     stopClient();
     startClient();
   }
@@ -135,10 +132,10 @@ public class TwitchChatClientManager implements ClientManager {
   @ServiceActivator(inputChannel = "actionRequestChannel")
   public void onActionRequest(ActionRequest actionRequest) {
     log.debug("Consuming ActionRequest: " + actionRequest);
-    if (lastEvent instanceof ClientReadyEvent) {
+    if (ready) {
       twitchChatClientActionCommandConsumer.consume(clientDelegate, actionRequest);
     } else {
-      stateClient.submit(new ClientRequestIgnoredEvent("Ignoring request "
+      lifecycleGateway.submit(new ClientRequestIgnoredEvent("Ignoring request "
           + actionRequest + ": Client not ready"));
     }
   }
@@ -151,16 +148,17 @@ public class TwitchChatClientManager implements ClientManager {
   @ServiceActivator(inputChannel = "twitchClientLifecycleChannel")
   @Override
   public void onLifecycleEvent(ObsChatbotEvent event) {
-    lastEvent = event;
+    log.debug("Twitch Client Manager Event: " + event);
     if (event instanceof ClientErrorEvent) {
       // Any error event must stop the client; something is wrong
       privateStop("Stopping due to error: " + ((ClientErrorEvent) event).getMessage());
     } else if (event instanceof ClientDisconnectedEvent) {
       // When disconnected, we know the client is safely disengaged, so
       // we can clear it out and send a Stopped event
-      stateClient.submit(new ClientStoppedEvent());
+      lifecycleGateway.submit(new ClientStoppedEvent());
       clientDelegate = null;
     } else if (event instanceof ClientReadyEvent) {
+      ready = true;
       if (clientDelegate.getSettings().getJoinMessage() != null) {
         onActionRequest(new ActionRequest(
             new RequestContext(User.systemUser(), new ArrayList<>()),
@@ -168,16 +166,17 @@ public class TwitchChatClientManager implements ClientManager {
         ));
       }
     }
+    log.debug("Ready: " + ready);
   }
 
   private void privateStop(String stopReason) {
 
     // Acknowledge a stop was requested
-    stateClient.submit(new ClientStopRequestedEvent(stopReason));
+    lifecycleGateway.submit(new ClientStopRequestedEvent(stopReason));
 
     // Stop the client if present, else ignore the request
     if (clientDelegate == null) {
-      stateClient.submit(new ClientRequestIgnoredEvent("Stop ignored: Client wasn't running"));
+      lifecycleGateway.submit(new ClientRequestIgnoredEvent("Stop ignored: Client wasn't running"));
       return;
     }
 
@@ -195,7 +194,7 @@ public class TwitchChatClientManager implements ClientManager {
     }
 
     // Acknowledge the request will now result in a stop
-    stateClient.submit(new ClientStoppingEvent());
+    lifecycleGateway.submit(new ClientStoppingEvent());
 
     // Stop the client
     clientDelegate.getClient().stopBotReconnect();

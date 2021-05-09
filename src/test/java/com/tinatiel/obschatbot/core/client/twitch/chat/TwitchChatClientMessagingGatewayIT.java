@@ -5,7 +5,7 @@ import static org.mockito.Mockito.mock;
 
 import com.tinatiel.obschatbot.core.SpringIntegrationTestConfig;
 import com.tinatiel.obschatbot.core.client.twitch.chat.messaging.TwitchChatClientMessagingConfig;
-import com.tinatiel.obschatbot.core.client.twitch.chat.messaging.TwitchClientStateMessagingGateway;
+import com.tinatiel.obschatbot.core.client.twitch.chat.messaging.TwitchClientLifecycleGateway;
 import com.tinatiel.obschatbot.core.messaging.ObsChatbotEvent;
 import java.util.Queue;
 import java.util.stream.Collectors;
@@ -37,7 +37,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 public class TwitchChatClientMessagingGatewayIT {
 
   @Autowired
-  TwitchClientStateMessagingGateway gateway;
+  TwitchClientLifecycleGateway gateway;
 
   @Autowired
   PollableChannel testChannel;

@@ -1,4 +1,4 @@
-package com.tinatiel.obschatbot.core.request.messaging;
+package com.tinatiel.obschatbot.core.client.obs.messaging;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,15 +9,10 @@ import org.springframework.messaging.MessageChannel;
 
 @IntegrationComponentScan
 @Configuration
-public class RequestMessagingConfig {
+public class ObsMessagingConfig {
 
   @Bean
-  MessageChannel commandRequestChannel() {
-    return new PublishSubscribeChannel();
-  }
-
-  @Bean
-  MessageChannel actionRequestChannel() {
+  MessageChannel obsClientLifecycleChannel() {
     return new PublishSubscribeChannel();
   }
 
