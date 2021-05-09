@@ -21,7 +21,7 @@ public class ClientDisconnectedEvent extends AbstractObsChatbotEvent {
 
   public ClientDisconnectedEvent(String reason) {
     super();
-    this.reason = null;
+    this.reason = reason;
   }
 
   @Override

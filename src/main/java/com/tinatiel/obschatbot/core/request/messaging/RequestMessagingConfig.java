@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.annotation.IntegrationComponentScan;
 import org.springframework.integration.channel.DirectChannel;
+import org.springframework.integration.channel.PublishSubscribeChannel;
 import org.springframework.messaging.MessageChannel;
 
 @IntegrationComponentScan
@@ -12,12 +13,12 @@ public class RequestMessagingConfig {
 
   @Bean
   MessageChannel commandRequestChannel() {
-    return new DirectChannel();
+    return new PublishSubscribeChannel();
   }
 
   @Bean
   MessageChannel actionRequestChannel() {
-    return new DirectChannel();
+    return new PublishSubscribeChannel();
   }
 
 }

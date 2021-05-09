@@ -73,7 +73,7 @@ public class App {
     ClientManager obsClientManager = context.getBean("obsClientManager", ClientManager.class);
     obsClientManager.startClient();
     try {
-      Thread.sleep(2000);
+      Thread.sleep(500);
     } catch (InterruptedException e) {
       e.printStackTrace();
     }

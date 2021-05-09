@@ -9,13 +9,16 @@ import com.tinatiel.obschatbot.core.client.ActionCommandConsumer;
 import com.tinatiel.obschatbot.core.client.ClientFactory;
 import com.tinatiel.obschatbot.core.client.ClientManager;
 import com.tinatiel.obschatbot.core.client.obs.messaging.ObsClientLifecycleGateway;
+import com.tinatiel.obschatbot.core.client.obs.messaging.ObsMessagingConfig;
 import net.twasi.obsremotejava.OBSRemoteController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Lazy;
 
+@Import(ObsMessagingConfig.class)
 @Configuration
 public class ObsClientConfig {
 

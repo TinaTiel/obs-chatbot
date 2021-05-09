@@ -49,7 +49,7 @@ public class TwitchChatClientManager implements ClientManager {
   private final ActionCommandConsumer<TwitchChatClientDelegate> twitchChatClientActionCommandConsumer;
   ExecutorService executorService = Executors.newSingleThreadExecutor();
   private volatile TwitchChatClientDelegate clientDelegate;
-  private volatile ObsChatbotEvent lastEvent;
+  private volatile boolean ready = false;
 
   public TwitchChatClientManager(
     TwitchClientLifecycleGateway lifecycleGateway,
@@ -132,7 +132,7 @@ public class TwitchChatClientManager implements ClientManager {
   @ServiceActivator(inputChannel = "actionRequestChannel")
   public void onActionRequest(ActionRequest actionRequest) {
     log.debug("Consuming ActionRequest: " + actionRequest);
-    if (lastEvent instanceof ClientReadyEvent) {
+    if (ready) {
       twitchChatClientActionCommandConsumer.consume(clientDelegate, actionRequest);
     } else {
       lifecycleGateway.submit(new ClientRequestIgnoredEvent("Ignoring request "
@@ -148,7 +148,7 @@ public class TwitchChatClientManager implements ClientManager {
   @ServiceActivator(inputChannel = "twitchClientLifecycleChannel")
   @Override
   public void onLifecycleEvent(ObsChatbotEvent event) {
-    lastEvent = event;
+    log.debug("Twitch Client Manager Event: " + event);
     if (event instanceof ClientErrorEvent) {
       // Any error event must stop the client; something is wrong
       privateStop("Stopping due to error: " + ((ClientErrorEvent) event).getMessage());
@@ -158,6 +158,7 @@ public class TwitchChatClientManager implements ClientManager {
       lifecycleGateway.submit(new ClientStoppedEvent());
       clientDelegate = null;
     } else if (event instanceof ClientReadyEvent) {
+      ready = true;
       if (clientDelegate.getSettings().getJoinMessage() != null) {
         onActionRequest(new ActionRequest(
             new RequestContext(User.systemUser(), new ArrayList<>()),
@@ -165,6 +166,7 @@ public class TwitchChatClientManager implements ClientManager {
         ));
       }
     }
+    log.debug("Ready: " + ready);
   }
 
   private void privateStop(String stopReason) {
