@@ -1,4 +1,4 @@
-package com.tinatiel.obschatbot.core;
+package com.tinatiel.obschatbot;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
