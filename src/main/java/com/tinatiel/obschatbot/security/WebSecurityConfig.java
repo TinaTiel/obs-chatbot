@@ -43,10 +43,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
   protected void configure(HttpSecurity http) throws Exception {
     http
         // All web requests are served and consumed on localhost
-        .authorizeRequests().anyRequest().permitAll()
+        .authorizeRequests().anyRequest().permitAll().and()
 
         // Disable CSRF, again everything is entirely local
-        .and().csrf().disable()
+        .csrf().disable()
+
+        // Same-origin iframes (for h2-console)
+        .headers().frameOptions().sameOrigin().and()
 
         // Enable the oAuth2 Client
         // We specify the accessTokenResponseClient only so that in DEBUG mode

@@ -1,12 +1,10 @@
 package com.tinatiel.obschatbot.data;
 
-import org.springframework.boot.autoconfigure.domain.EntityScan;
-import org.springframework.context.annotation.ComponentScan;
+import com.tinatiel.obschatbot.core.command.CommandConfig;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.context.annotation.Import;
 
-@EnableJpaRepositories
-@EntityScan("com.tinatiel.obschatbot.data.common")
+@Import({CommonConfig.class, CommandConfig.class})
 @Configuration
 public class DataConfig {
 

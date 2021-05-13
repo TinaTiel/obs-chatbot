@@ -18,7 +18,16 @@ spring:
     username: sa
     password:
   jpa:
+    show-sql: true
     database-platformType: org.hibernate.dialect.H2Dialect
+    properties:
+      hibernate:
+        format_sql: true
+
+  h2:
+    console:
+      enabled: true
+
 com:
   tinatiel:
     twitch:

@@ -2,7 +2,7 @@ package com.tinatiel.obschatbot.data.command;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.tinatiel.obschatbot.data.DataConfig;
+import com.tinatiel.obschatbot.data.CommonConfig;
 import com.tinatiel.obschatbot.data.command.entity.CommandEntityRepository;
 import com.tinatiel.obschatbot.data.command.model.CommandDto;
 import java.util.Optional;
@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ContextConfiguration;
 
-@ContextConfiguration(classes = {DataConfig.class, CommandDataConfig.class})
+@ContextConfiguration(classes = {CommonConfig.class, CommandDataConfig.class})
 @DataJpaTest
 public class CommandEntityServiceTest {
 
@@ -39,6 +39,7 @@ public class CommandEntityServiceTest {
     CommandDto result = service.save(request);
 
     // Then it can be retrieved
+    assertThat(result.getId()).isNotNull();
     Optional<CommandDto> byId = service.findById(result.getId());
     Optional<CommandDto> byName = service.findByName(result.getName());
 

@@ -8,7 +8,6 @@ package com.tinatiel.obschatbot;
 import com.tinatiel.obschatbot.core.action.model.ObsSourceVisibilityAction;
 import com.tinatiel.obschatbot.core.action.model.SendMessageAction;
 import com.tinatiel.obschatbot.core.action.model.WaitAction;
-import com.tinatiel.obschatbot.core.client.ClientManager;
 import com.tinatiel.obschatbot.core.command.Command;
 import com.tinatiel.obschatbot.core.command.CommandServiceInMemoryImpl;
 import com.tinatiel.obschatbot.core.sequencer.InOrderActionSequencer;
@@ -16,13 +15,14 @@ import com.tinatiel.obschatbot.core.sequencer.RandomOrderActionSequencer;
 import com.tinatiel.obschatbot.core.user.Platform;
 import com.tinatiel.obschatbot.core.user.local.LocalUser;
 import com.tinatiel.obschatbot.core.user.local.LocalUserRepository;
+import com.tinatiel.obschatbot.data.CommonConfig;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.Date;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.context.annotation.Import;
 import org.springframework.integration.config.EnableIntegration;
 
 /**
@@ -80,13 +80,13 @@ public class App {
     );
 
     // Get the OBS Client manager and start it
-    ClientManager obsClientManager = context.getBean("obsClientManager", ClientManager.class);
-    obsClientManager.startClient();
-    try {
-      Thread.sleep(500);
-    } catch (InterruptedException e) {
-      e.printStackTrace();
-    }
+//    ClientManager obsClientManager = context.getBean("obsClientManager", ClientManager.class);
+//    obsClientManager.startClient();
+//    try {
+//      Thread.sleep(500);
+//    } catch (InterruptedException e) {
+//      e.printStackTrace();
+//    }
 //    RequestContext requestContext = new RequestContext(User.systemUser(), new ArrayList<>());
 //    Action hideAction = new ObsSourceVisibilityAction("scene1", "text1", false);
 //    Action showAction = new ObsSourceVisibilityAction("scene1", "text1", true);
