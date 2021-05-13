@@ -61,7 +61,7 @@ public class App {
         new SendMessageAction("Hiding the test scene item..."),
         new ObsSourceVisibilityAction("scene1", "text1", false),
         new SendMessageAction("Waiting..."),
-        new WaitAction(Duration.ofSeconds(2)),
+        new WaitAction(Duration.ofSeconds(2), Duration.ofSeconds(30)),
         new SendMessageAction("Showing the test scene item..."),
         new ObsSourceVisibilityAction("scene1", "text1", true)
       ), false));

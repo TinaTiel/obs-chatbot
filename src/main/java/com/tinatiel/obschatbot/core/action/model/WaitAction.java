@@ -6,9 +6,16 @@ import java.time.Duration;
 public class WaitAction implements Action<WaitAction> {
 
   private final Duration waitDuration;
+  private final Duration waitTimeout;
 
   public WaitAction(Duration waitDuration) {
     this.waitDuration = waitDuration;
+    this.waitTimeout = waitDuration.plus(Duration.ofSeconds(10));
+  }
+
+  public WaitAction(Duration waitDuration, Duration waitTimeout) {
+    this.waitDuration = waitDuration;
+    this.waitTimeout = waitTimeout;
   }
 
   @Override
