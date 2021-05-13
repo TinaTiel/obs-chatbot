@@ -64,7 +64,7 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 @EnableIntegration
 @ContextConfiguration(classes = {ObsClientConfig.class, SpringIntegrationTestConfig.class})
 @SpringJUnitConfig
-public class TwitchChatClientLifecycleIT {
+public class ObsClientLifecycleIT {
 
     @Autowired
     QueueChannel testChannel;

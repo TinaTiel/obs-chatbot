@@ -1,4 +1,4 @@
-#server.port: 8080
+server.port: 8080
 logging:
   level:
     root: warn
@@ -10,6 +10,15 @@ logging:
     reactor.netty.http.client: debug # WARNING: Logs HTTP requests that includes PII
 #    org.springframework.security.oauth2.client: trace
 
+spring:
+  datasource:
+#    url: jdbc:h2:file:./DATA
+    url: jdbc:h2:mem:testdb
+    driverClassName: org.h2.Driver
+    username: sa
+    password:
+  jpa:
+    database-platformType: org.hibernate.dialect.H2Dialect
 com:
   tinatiel:
     twitch:
