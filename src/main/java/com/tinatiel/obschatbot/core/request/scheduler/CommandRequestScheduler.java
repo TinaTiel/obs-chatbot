@@ -7,6 +7,7 @@ import com.tinatiel.obschatbot.core.request.CommandRequest;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.integration.annotation.ServiceActivator;
@@ -25,9 +26,9 @@ import org.springframework.integration.annotation.ServiceActivator;
  *
  * @see WorkGroupManager
  */
+@Slf4j
 public class CommandRequestScheduler implements Listener<CommandRequest> {
 
-  private final Logger log = LoggerFactory.getLogger(this.getClass());
   private final ExecutorService executorService = Executors.newSingleThreadExecutor();
 
   private final WorkGroupManager workGroupManager;
@@ -51,6 +52,7 @@ public class CommandRequestScheduler implements Listener<CommandRequest> {
   @ServiceActivator(inputChannel = "commandRequestChannel")
   @Override
   public void onEvent(CommandRequest event) {
+    log.debug("Scheduler received request " + event);
     workGroupManager.route(event);
   }
 

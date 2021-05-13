@@ -164,7 +164,6 @@ public class ObsClientManagerImpl implements ClientManager {
   @ServiceActivator(inputChannel = "actionRequestChannel")
   @Override
   public void onActionRequest(ActionRequest actionRequest) throws ClientException {
-    log.debug("Consuming ActionRequest: " + actionRequest);
     if (ready) {
       consumer.consume(clientDelegate, actionRequest);
     } else {

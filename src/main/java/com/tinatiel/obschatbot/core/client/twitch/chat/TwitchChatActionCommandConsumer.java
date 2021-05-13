@@ -6,7 +6,9 @@ import com.tinatiel.obschatbot.core.client.ActionCommandConsumer;
 import com.tinatiel.obschatbot.core.client.event.ClientErrorEvent;
 import com.tinatiel.obschatbot.core.client.twitch.chat.messaging.TwitchClientLifecycleGateway;
 import com.tinatiel.obschatbot.core.request.ActionRequest;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class TwitchChatActionCommandConsumer implements ActionCommandConsumer<TwitchChatClientDelegate> {
 
   private final TwitchClientLifecycleGateway stateClient;
@@ -21,6 +23,7 @@ public class TwitchChatActionCommandConsumer implements ActionCommandConsumer<Tw
     try {
       Action action = actionRequest.getAction();
       if (action instanceof SendMessageAction) {
+        log.debug("Consuming ActionRequest: " + actionRequest);
         client.sendMessage(((SendMessageAction) action).getMessage());
       }
     } catch (Exception unexpected) {
