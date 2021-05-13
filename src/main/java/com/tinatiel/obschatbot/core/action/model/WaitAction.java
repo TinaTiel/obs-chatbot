@@ -30,8 +30,7 @@ public class WaitAction implements Action<WaitAction> {
 
   @Override
   public long getTimeout() {
-    // timeout one second more than duration, TODO make dynamic?
-    return (waitDuration.plus(Duration.ofSeconds(10l))).toMillis();
+    return (waitDuration.toMillis());
   }
 
   public Duration getWaitDuration() {
