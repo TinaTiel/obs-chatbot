@@ -1,6 +1,6 @@
 package com.tinatiel.obschatbot.core.request.handler.chat;
 
-import com.tinatiel.obschatbot.core.command.CommandRepository;
+import com.tinatiel.obschatbot.core.command.CommandService;
 import com.tinatiel.obschatbot.core.request.handler.CommandRequestDispatcher;
 import com.tinatiel.obschatbot.core.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Configuration;
 public class ChatHandlerConfig {
 
   @Autowired
-  CommandRepository commandRepository;
+  CommandService commandService;
 
   @Autowired
   CommandRequestDispatcher commandRequestDispatcher;
@@ -26,7 +26,7 @@ public class ChatHandlerConfig {
   ChatRequestHandler chatRequestHandler() {
     return new ChatRequestHandlerImpl(
       chatMessageParser(),
-      commandRepository,
+      commandService,
       userService,
       commandRequestDispatcher
     );

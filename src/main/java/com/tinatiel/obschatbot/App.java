@@ -5,27 +5,18 @@
 
 package com.tinatiel.obschatbot;
 
-import com.tinatiel.obschatbot.core.action.Action;
 import com.tinatiel.obschatbot.core.action.model.ObsSourceVisibilityAction;
 import com.tinatiel.obschatbot.core.action.model.SendMessageAction;
 import com.tinatiel.obschatbot.core.action.model.WaitAction;
 import com.tinatiel.obschatbot.core.client.ClientManager;
-import com.tinatiel.obschatbot.core.client.obs.ObsClientManagerImpl;
 import com.tinatiel.obschatbot.core.command.Command;
-import com.tinatiel.obschatbot.core.command.CommandRepository;
-import com.tinatiel.obschatbot.core.request.ActionRequest;
-import com.tinatiel.obschatbot.core.request.CommandRequest;
-import com.tinatiel.obschatbot.core.request.RequestContext;
-import com.tinatiel.obschatbot.core.request.handler.CommandRequestDispatcher;
-import com.tinatiel.obschatbot.core.request.messaging.CommandRequestGateway;
+import com.tinatiel.obschatbot.core.command.CommandServiceInMemoryImpl;
 import com.tinatiel.obschatbot.core.sequencer.InOrderActionSequencer;
 import com.tinatiel.obschatbot.core.sequencer.RandomOrderActionSequencer;
 import com.tinatiel.obschatbot.core.user.Platform;
-import com.tinatiel.obschatbot.core.user.User;
 import com.tinatiel.obschatbot.core.user.local.LocalUser;
 import com.tinatiel.obschatbot.core.user.local.LocalUserRepository;
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import org.springframework.boot.SpringApplication;
@@ -72,10 +63,11 @@ public class App {
           new SendMessageAction("pong!")
         ), false));
 
-    CommandRepository commandRepository = context.getBean(CommandRepository.class);
-    commandRepository.save(randomText);
-    commandRepository.save(pingPong);
-    commandRepository.save(hideShow);
+    CommandServiceInMemoryImpl commandExecutableService = context.getBean(
+      CommandServiceInMemoryImpl.class);
+    commandExecutableService.save(randomText);
+    commandExecutableService.save(pingPong);
+    commandExecutableService.save(hideShow);
 
     // Register who the broadcaster is for the Twitch platform
     LocalUserRepository localUserRepository = context.getBean(LocalUserRepository.class);

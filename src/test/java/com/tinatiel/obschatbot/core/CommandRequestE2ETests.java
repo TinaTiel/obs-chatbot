@@ -45,7 +45,7 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
   SystemClientConfig.class
 })
 @SpringJUnitConfig
-public class CommandRequestE2eTests {
+public class CommandRequestE2ETests {
 
   @Autowired
   Queue<Message<?>> testChannelQueue;

@@ -57,11 +57,11 @@ public class CommandRequestDispatcherImpl implements CommandRequestDispatcher {
     } catch (CyclicalActionsException | ClientException e) {
       log.error(String.format(
           "Not able to execute command %s with context %s",
-          command, requestContext), e);
+        command, requestContext), e);
     } catch (Exception unexpected) {
       log.error(String.format(
           "Encountered unexpected exception while trying to execute command %s with context %s",
-          command, requestContext), unexpected);
+        command, requestContext), unexpected);
     }
   }
 

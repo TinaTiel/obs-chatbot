@@ -6,7 +6,7 @@
 package com.tinatiel.obschatbot.core.request.handler.chat;
 
 import com.tinatiel.obschatbot.core.command.Command;
-import com.tinatiel.obschatbot.core.command.CommandRepository;
+import com.tinatiel.obschatbot.core.command.CommandService;
 import com.tinatiel.obschatbot.core.request.RequestContext;
 import com.tinatiel.obschatbot.core.request.handler.CommandRequestDispatcher;
 import com.tinatiel.obschatbot.core.user.User;
@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Implementation of ${@link ChatRequestHandler} that delegates message parsing to a
- * ${@link ChatMessageParser}, looks up commands via ${@link CommandRepository}, builds a
+ * ${@link ChatMessageParser}, looks up commands via ${@link CommandService}, builds a
  * ${@link RequestContext} by looking up the user via the ${@link UserService}, and then finally
  * submits the context and command to the ${@link CommandRequestDispatcher} for execution.
  */
@@ -26,7 +26,7 @@ public class ChatRequestHandlerImpl implements ChatRequestHandler {
   private final Logger log = LoggerFactory.getLogger(this.getClass());
 
   private final ChatMessageParser parser;
-  private final CommandRepository commandRepository;
+  private final CommandService commandService;
   private final UserService userService;
   private final CommandRequestDispatcher dispatcher;
 
@@ -34,11 +34,11 @@ public class ChatRequestHandlerImpl implements ChatRequestHandler {
    * Construct a new ChatRequestHandlerImpl instance.
    */
   public ChatRequestHandlerImpl(ChatMessageParser parser,
-      CommandRepository commandRepository,
+      CommandService commandService,
       UserService userService,
       CommandRequestDispatcher dispatcher) {
     this.parser = parser;
-    this.commandRepository = commandRepository;
+    this.commandService = commandService;
     this.userService = userService;
     this.dispatcher = dispatcher;
   }
@@ -52,7 +52,7 @@ public class ChatRequestHandlerImpl implements ChatRequestHandler {
         .ifPresent(result -> {
 
           // Find a command corresponding to the command invoked, if one exists
-          Optional<Command> command = commandRepository.findByName(result.getCommandName());
+          Optional<Command> command = commandService.findByName(result.getCommandName());
           if (command.isPresent()) {
 
             // Lookup the full user, given what the chat client partially provided

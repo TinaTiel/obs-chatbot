@@ -10,9 +10,8 @@ import java.util.Optional;
 /**
  * Responsible for CRUD operations of Commands.
  */
-public interface CommandRepository {
+public interface CommandService {
 
   Optional<Command> findByName(String name);
 
-  Command save(Command command);
 }

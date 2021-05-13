@@ -18,8 +18,8 @@ import org.springframework.context.annotation.Import;
 public class CommandConfig {
 
   @Bean
-  public CommandRepository commandRepository() {
-    return new CommandRepositoryInMemoryImpl();
+  public CommandService commandRepository() {
+    return new CommandServiceInMemoryImpl();
   }
 
 }

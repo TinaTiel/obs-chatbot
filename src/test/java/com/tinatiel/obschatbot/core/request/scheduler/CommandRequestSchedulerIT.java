@@ -1,11 +1,7 @@
 package com.tinatiel.obschatbot.core.request.scheduler;
 
 import com.tinatiel.obschatbot.core.SpringIntegrationTestConfig;
-import com.tinatiel.obschatbot.core.client.ClientFactory;
-import com.tinatiel.obschatbot.core.client.twitch.chat.TwitchChatClientDelegate;
-import com.tinatiel.obschatbot.core.client.twitch.chat.TwitchChatClientSettings;
-import com.tinatiel.obschatbot.core.command.CommandRepository;
-import com.tinatiel.obschatbot.core.messaging.Listener;
+import com.tinatiel.obschatbot.core.command.CommandService;
 import com.tinatiel.obschatbot.core.request.*;
 import com.tinatiel.obschatbot.core.request.messaging.CommandRequestGateway;
 import com.tinatiel.obschatbot.core.user.*;
@@ -13,7 +9,6 @@ import java.util.Queue;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.pircbotx.PircBotX;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.TestConfiguration;
@@ -33,11 +28,9 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.BlockingQueue;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 @EnableIntegration
 @ContextConfiguration(classes = {
@@ -63,7 +56,7 @@ class CommandRequestSchedulerIT {
 
   // Mock out dependencies we don't want to use
   @MockBean
-  CommandRepository commandRepository;
+  CommandService commandService;
   @MockBean
   UserService userService;
 

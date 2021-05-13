@@ -227,7 +227,7 @@ public class CommandExpanderTest {
 
         // When a ton of clients try to use this class to enumerate the commands
         ExecutorService executorService = Executors.newFixedThreadPool(numClients);
-        for(Command command: mapCommandsToEnumeratedActions.keySet()) {
+        for(Command command : mapCommandsToEnumeratedActions.keySet()) {
             executorService.submit(() -> {
                 List<Action> enumeratedActions = commandExpander.expand(command);
                 mapCommandsToEnumeratedActions.put(command, enumeratedActions);

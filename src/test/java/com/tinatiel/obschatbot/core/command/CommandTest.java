@@ -81,12 +81,12 @@ public class CommandTest {
 
         // Given two instances of a command with the same name
         Command command1 = new Command().name("foo");
-        Command command1copy = new Command().name("foo");
+        Command command1Copy = new Command().name("foo");
 
         // Then they are equal
         assertThat(command1)
-                .isNotSameAs(command1copy)
-                .isEqualTo(command1copy);
+                .isNotSameAs(command1Copy)
+                .isEqualTo(command1Copy);
 
         // But given an instance with a different name
         Command command2 = new Command().name("bar");

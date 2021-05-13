@@ -7,7 +7,7 @@ import java.util.Set;
 /**
  * A temporary in-memory implementation currently being used for sanity-checking. Replace with JPA!
  */
-public class CommandRepositoryInMemoryImpl implements CommandRepository {
+public class CommandServiceInMemoryImpl implements CommandService {
 
   private final Set<Command> commands = new HashSet<>();
 
@@ -18,9 +18,9 @@ public class CommandRepositoryInMemoryImpl implements CommandRepository {
       .findFirst();
   }
 
-  @Override
   public Command save(Command command) {
     commands.add(command);
     return command;
   }
+
 }
