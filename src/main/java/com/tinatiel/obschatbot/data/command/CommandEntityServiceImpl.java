@@ -29,9 +29,9 @@ public class CommandEntityServiceImpl implements CommandEntityService {
   public CommandDto save(CommandDto request) throws DataPersistenceException {
     try {
       CommandEntity entity = repository.saveAndFlush(
-          mapper.dtoToEntity(request)
+          mapper.map(request)
       );
-      return mapper.entityToDto(entity);
+      return mapper.map(entity);
     } catch (Exception e) {
       throw new DataPersistenceException(request, e);
     }
@@ -39,17 +39,17 @@ public class CommandEntityServiceImpl implements CommandEntityService {
 
   @Override
   public Optional<CommandDto> findById(UUID id) {
-    return repository.findById(id).flatMap(entity -> Optional.of(mapper.entityToDto(entity)));
+    return repository.findById(id).flatMap(entity -> Optional.of(mapper.map(entity)));
   }
 
   @Override
   public Optional<CommandDto> findByName(String name) {
-    return repository.findByName(name).flatMap(entity -> Optional.of(mapper.entityToDto(entity)));
+    return repository.findByName(name).flatMap(entity -> Optional.of(mapper.map(entity)));
   }
 
   @Override
   public List<CommandDto> findAll() {
-    return repository.findAll().stream().map(mapper::entityToDto).collect(Collectors.toList());
+    return repository.findAll().stream().map(mapper::map).collect(Collectors.toList());
   }
 
   @Override

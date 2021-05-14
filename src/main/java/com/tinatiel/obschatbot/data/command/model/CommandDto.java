@@ -1,5 +1,6 @@
 package com.tinatiel.obschatbot.data.command.model;
 
+import com.tinatiel.obschatbot.data.command.model.sequencer.SequencerDto;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,4 +19,6 @@ public class CommandDto {
   private UUID id;
   private String name;
   private boolean disabled;
+  private SequencerDto sequencer;
+
 }

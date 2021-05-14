@@ -7,8 +7,8 @@ import com.tinatiel.obschatbot.data.CommonConfig;
 import com.tinatiel.obschatbot.data.command.entity.CommandEntity;
 import com.tinatiel.obschatbot.data.command.entity.CommandEntityRepository;
 import com.tinatiel.obschatbot.data.command.model.CommandDto;
+import com.tinatiel.obschatbot.data.command.model.sequencer.SequencerDto;
 import com.tinatiel.obschatbot.data.error.DataPersistenceException;
-import java.util.Arrays;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -160,6 +160,22 @@ public class CommandEntityServiceTest {
 
     // And there are no duplicates
     assertThat(repository.findAll()).hasSize(expectedIntialCount);
+
+  }
+
+  @Test
+  public void createCommandWithSequencer() {
+
+//    // Given a command with a sequencer
+//    CommandDto request = CommandDto.builder()
+//      .name("sequenced")
+//      .sequencerDto(SequencerDto.builder().build())
+//      .build();
+//
+//    // When saved and retrieved
+//
+//
+//    // Then it matches as expected
 
   }
 
