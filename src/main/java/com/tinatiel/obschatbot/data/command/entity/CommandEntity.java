@@ -21,7 +21,6 @@ import org.hibernate.annotations.NaturalId;
 public class CommandEntity extends BaseEntity {
 
   @NotBlank
-  @NaturalId
   @Column(nullable = false, unique = true)
   private String name;
   //  private SequencerEntity sequencer;

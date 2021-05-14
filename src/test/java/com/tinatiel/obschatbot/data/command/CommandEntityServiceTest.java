@@ -33,103 +33,134 @@ public class CommandEntityServiceTest {
 
   @BeforeEach
   void setUp() {
-    repository.deleteAll();
-    CommandEntity commandOnly = new CommandEntity();
-    commandOnly.setName("toplevel");
-    commandOnly.setDisabled(false);
-    CommandEntity commandOnly2 = new CommandEntity();
-    commandOnly2.setName("toplevel2");
-    commandOnly2.setDisabled(false);
+      repository.deleteAll();
+      CommandEntity commandOnly = new CommandEntity();
+      commandOnly.setName("toplevel");
+      commandOnly.setDisabled(false);
+      CommandEntity commandOnly2 = new CommandEntity();
+      commandOnly2.setName("toplevel2");
+      commandOnly2.setDisabled(false);
 
-    existingCommand = repository.saveAndFlush(commandOnly);
-    existingCommand2 = repository.saveAndFlush(commandOnly2);
+      existingCommand = repository.saveAndFlush(commandOnly);
+      existingCommand2 = repository.saveAndFlush(commandOnly2);
   }
 
   @Test
   void createAndRetrieveNewCommand() {
 
-    // Given a command
-    CommandDto request = CommandDto.builder()
-      .name("foo")
-      .build();
+      // Given a command
+      CommandDto request = CommandDto.builder()
+        .name("foo")
+        .build();
 
-    // When saved
-    CommandDto result = service.save(request);
+      // When saved
+      CommandDto result = service.save(request);
 
-    // Then it can be retrieved
-    assertThat(result.getId()).isNotNull();
-    Optional<CommandDto> byId = service.findById(result.getId());
-    Optional<CommandDto> byName = service.findByName(result.getName());
+      // Then it can be retrieved
+      assertThat(result.getId()).isNotNull();
+      Optional<CommandDto> byId = service.findById(result.getId());
+      Optional<CommandDto> byName = service.findByName(result.getName());
 
-    assertThat(byId).isPresent();
-    assertThat(byName).isPresent();
-    assertThat(result).usingRecursiveComparison().isEqualTo(byName.get()).isEqualTo(byId.get());
-    assertThat(result.getName()).isEqualTo(request.getName());
-    assertThat(result.isDisabled()).isFalse();
+      assertThat(byId).isPresent();
+      assertThat(byName).isPresent();
+      assertThat(result).usingRecursiveComparison().isEqualTo(byName.get()).isEqualTo(byId.get());
+      assertThat(result.getName()).isEqualTo(request.getName());
+      assertThat(result.isDisabled()).isFalse();
 
   }
 
   @Test
   void listAll() {
 
-    // Given some known number of commands exist
-    assertThat(service.findAll()).hasSize(expectedIntialCount);
+      // Given some known number of commands exist
+      assertThat(service.findAll()).hasSize(expectedIntialCount);
 
-    // When a new command is saved
-    service.save(CommandDto.builder()
-      .name("foo")
-      .build());
+      // When a new command is saved
+      service.save(CommandDto.builder()
+        .name("foo")
+        .build());
 
-    // Then one more command can be retrieved
-    assertThat(service.findAll()).hasSize(expectedIntialCount + 1);
+      // Then one more command can be retrieved
+      assertThat(service.findAll()).hasSize(expectedIntialCount + 1);
 
   }
 
   @Test
   void nameNotProvided() {
 
-    assertThatThrownBy(() -> {
-      service.save(CommandDto.builder()
-        .build());
-    }).isInstanceOf(DataPersistenceException.class);
+      assertThatThrownBy(() -> {
+        service.save(CommandDto.builder()
+          .build());
+      }).isInstanceOf(DataPersistenceException.class);
 
-    assertThatThrownBy(() -> {
-      service.save(CommandDto.builder()
-        .name("  ")
-        .build());
-    }).isInstanceOf(DataPersistenceException.class);
+      assertThatThrownBy(() -> {
+        service.save(CommandDto.builder()
+          .name("  ")
+          .build());
+      }).isInstanceOf(DataPersistenceException.class);
 
   }
 
   @Test
   void nameAlreadyExists() {
 
-    // Creating a new command on an existing name throws an exception
-    assertThatThrownBy(() -> {
-      service.save(CommandDto.builder()
-        .name(existingCommand.getName())
-        .build());
-    }).isInstanceOf(DataPersistenceException.class);
+      // Creating a new command on an existing name throws an exception
+      assertThatThrownBy(() -> {
+        service.save(CommandDto.builder()
+          .name(existingCommand.getName())
+          .build());
+      }).isInstanceOf(DataPersistenceException.class);
 
-    // Updating an existing command to the existing name
-    assertThatThrownBy(() -> {
-      service.save(CommandDto.builder()
-        .id(existingCommand2.getId())
-        .name(existingCommand.getName())
-        .build());
-    }).isInstanceOf(DataPersistenceException.class);
+      // Updating an existing command to the existing name
+      assertThatThrownBy(() -> {
+        service.save(CommandDto.builder()
+          .id(existingCommand2.getId())
+          .name(existingCommand.getName())
+          .build());
+      }).isInstanceOf(DataPersistenceException.class);
 
   }
 
-  //  @Test
-//  void disableCommand() {
-//
-//    // Given a request including the id
-//  }
+    @Test
+  void disableCommand() {
 
-//  @Test
-//  void renameCommand() {
-//
-//  }
+      // Given a command is not disabled
+      assertThat(existingCommand.isDisabled()).isFalse();
+
+      // Given a request to disable it
+      CommandDto disableRequest = CommandDto.builder()
+        .id(existingCommand.getId())
+        .name(existingCommand.getName())
+        .disabled(true)
+        .build();
+
+      // When updated
+      service.save(disableRequest);
+
+      // Then it is now disabled
+      assertThat(service.findById(disableRequest.getId()).get().isDisabled()).isTrue();
+
+  }
+
+  @Test
+  void renameCommand() {
+
+    // Given a request to rename an existing command
+    CommandDto disableRequest = CommandDto.builder()
+      .id(existingCommand.getId())
+      .name("newname")
+      .disabled(existingCommand.isDisabled())
+      .build();
+
+    // When updated
+    service.save(disableRequest);
+
+    // Then it is renamed
+    assertThat(service.findById(disableRequest.getId()).get().getName()).isEqualTo("newname");
+
+    // And there are no duplicates
+    assertThat(repository.findAll()).hasSize(expectedIntialCount);
+
+  }
 
 }
