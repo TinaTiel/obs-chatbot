@@ -9,9 +9,9 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 /**
- * Describes a generic event or request in this application. All events are timestamped and
- * have a unique ID to assist with serialization (should, for example, event handling be delegated
- * to a key-pair database or broker).
+ * Describes a generic event or request in this application. All events are timestamped and have a
+ * unique ID to assist with serialization (should, for example, event handling be delegated to a
+ * key-pair database or broker).
  */
 public interface ObsChatbotEvent extends Comparable<ObsChatbotEvent> {
 

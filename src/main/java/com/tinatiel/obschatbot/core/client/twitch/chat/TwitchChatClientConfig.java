@@ -29,20 +29,16 @@ import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 @Configuration
 public class TwitchChatClientConfig {
 
-  @Value("${TWITCH_TARGET_CHANNEL:noauth}")
-  private String targetChannel;
-
-  @Value("${TWITCH_USER:noauth}")
-  private String twitchUsername;
-
   @Autowired
   ChatRequestHandler chatRequestHandler;
-
   @Autowired
   OAuth2AuthorizedClientService authorizedClientService;
-
   @Autowired
   TwitchClientLifecycleGateway twitchClientLifecycleGateway;
+  @Value("${TWITCH_TARGET_CHANNEL:noauth}")
+  private String targetChannel;
+  @Value("${TWITCH_USER:noauth}")
+  private String twitchUsername;
 
   /**
    * Until we have this stored in a Repository, just hard-code it here.
@@ -67,7 +63,7 @@ public class TwitchChatClientConfig {
   @Bean
   PircBotxListener pircBotxListener() {
     return new PircBotxListener(
-      twitchClientLifecycleGateway,
+        twitchClientLifecycleGateway,
         chatRequestHandler,
         new TwitchChatClientTagsParser()
     );

@@ -5,6 +5,9 @@
 
 package com.tinatiel.obschatbot.core.error;
 
+/**
+ * Catch-all for unexpected runtime exceptions.
+ */
 public class UnexpectedException extends AbstractCodedException {
 
   public UnexpectedException(Code code, String message, Throwable throwable) {

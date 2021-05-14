@@ -15,14 +15,12 @@ import com.tinatiel.obschatbot.core.sequencer.RandomOrderActionSequencer;
 import com.tinatiel.obschatbot.core.user.Platform;
 import com.tinatiel.obschatbot.core.user.local.LocalUser;
 import com.tinatiel.obschatbot.core.user.local.LocalUserRepository;
-import com.tinatiel.obschatbot.data.CommonConfig;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.Date;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Import;
 import org.springframework.integration.config.EnableIntegration;
 
 /**
@@ -40,12 +38,12 @@ public class App {
 
     // Register a command
     Command randomText = new Command()
-        .name("test")
-        .actionSequencer(new RandomOrderActionSequencer(Arrays.asList(
-          new SendMessageAction("Test message #1, sent " + new Date()),
-          new SendMessageAction("Test message #2, sent " + new Date()),
-          new SendMessageAction("Test message #3, sent " + new Date())
-        ), 2));
+      .name("test")
+      .actionSequencer(new RandomOrderActionSequencer(Arrays.asList(
+        new SendMessageAction("Test message #1, sent " + new Date()),
+        new SendMessageAction("Test message #2, sent " + new Date()),
+        new SendMessageAction("Test message #3, sent " + new Date())
+      ), 2));
 
     Command hideShow = new Command()
       .name("hideshow")
@@ -59,10 +57,10 @@ public class App {
       ), false));
 
     Command pingPong = new Command()
-        .name("ping")
-        .actionSequencer(new InOrderActionSequencer(Arrays.asList(
-          new SendMessageAction("pong!")
-        ), false));
+      .name("ping")
+      .actionSequencer(new InOrderActionSequencer(Arrays.asList(
+        new SendMessageAction("pong!")
+      ), false));
 
     CommandServiceInMemoryImpl commandExecutableService = context.getBean(
       CommandServiceInMemoryImpl.class);

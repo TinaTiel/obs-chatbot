@@ -14,8 +14,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * An implementation of CommandRequestFactory that delegates expanding a given Command into
- * its Actions via a ${@link CommandExpander} that checks for potentially cyclical execution.
+ * An implementation of CommandRequestFactory that delegates expanding a given Command into its
+ * Actions via a ${@link CommandExpander} that checks for potentially cyclical execution.
  */
 public class CommandRequestFactoryImpl implements CommandRequestFactory {
 

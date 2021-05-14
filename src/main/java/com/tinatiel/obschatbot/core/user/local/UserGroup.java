@@ -6,7 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Represents a Group that an ${@link LocalUser} may be assigned to, for example a "regulars" group.
+ * Represents a Group that an ${@link LocalUser} may be assigned to, for example a "regulars"
+ * group.
  */
 @Builder
 @NoArgsConstructor

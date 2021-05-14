@@ -9,29 +9,29 @@ import com.tinatiel.obschatbot.core.command.Command;
 import com.tinatiel.obschatbot.core.error.ClientException;
 import com.tinatiel.obschatbot.core.error.CyclicalActionsException;
 import com.tinatiel.obschatbot.core.request.CommandRequest;
-import com.tinatiel.obschatbot.core.request.messaging.CommandRequestGateway;
 import com.tinatiel.obschatbot.core.request.RequestContext;
 import com.tinatiel.obschatbot.core.request.factory.CommandRequestFactory;
+import com.tinatiel.obschatbot.core.request.messaging.CommandRequestGateway;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Implementation of ${@link CommandRequestDispatcher} that passes a ${@link Command} and a
- * ${@link RequestContext} to a ${@link CommandRequestFactory} to build a ${@link CommandRequest}
- * that is passed to the CommandRequest Queue.
+ * Implementation of ${@link CommandRequestDispatcher} that passes a ${@link Command} and a ${@link
+ * RequestContext} to a ${@link CommandRequestFactory} to build a ${@link CommandRequest} that is
+ * passed to the CommandRequest Queue.
  */
 @Slf4j
 public class CommandRequestDispatcherImpl implements CommandRequestDispatcher {
 
   private final CommandRequestFactory commandRequestFactory;
-//  private final QueueClient<CommandRequest> commandRequestQueueClient;
+  //  private final QueueClient<CommandRequest> commandRequestQueueClient;
   private final CommandRequestGateway commandRequestGateway;
 
   /**
    * Create a new instance.
    *
    * @param commandRequestFactory Request factory that builds a ${@link CommandRequest}
-   * @param commandRequestGateway ${@link QueueClient} that submits requests to the
-   *                                 CommandRequest queue
+   * @param commandRequestGateway ${@link QueueClient} that submits requests to the CommandRequest
+   *                              queue
    */
   public CommandRequestDispatcherImpl(
       CommandRequestFactory commandRequestFactory,
@@ -57,11 +57,11 @@ public class CommandRequestDispatcherImpl implements CommandRequestDispatcher {
     } catch (CyclicalActionsException | ClientException e) {
       log.error(String.format(
           "Not able to execute command %s with context %s",
-        command, requestContext), e);
+          command, requestContext), e);
     } catch (Exception unexpected) {
       log.error(String.format(
           "Encountered unexpected exception while trying to execute command %s with context %s",
-        command, requestContext), unexpected);
+          command, requestContext), unexpected);
     }
   }
 

@@ -1,7 +1,6 @@
 package com.tinatiel.obschatbot.core.user.local;
 
 import com.tinatiel.obschatbot.core.user.Platform;
-import java.util.List;
 import java.util.Optional;
 
 /**

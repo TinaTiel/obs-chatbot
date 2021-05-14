@@ -8,13 +8,17 @@ import com.tinatiel.obschatbot.core.client.twitch.chat.messaging.TwitchClientLif
 import com.tinatiel.obschatbot.core.request.ActionRequest;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * An ActionCommandConsumer that can consume actions intended for the Twitch Chat Client, e.g.
+ * sending chat messages, banning, etc.
+ */
 @Slf4j
-public class TwitchChatActionCommandConsumer implements ActionCommandConsumer<TwitchChatClientDelegate> {
+public class TwitchChatActionCommandConsumer implements
+    ActionCommandConsumer<TwitchChatClientDelegate> {
 
   private final TwitchClientLifecycleGateway stateClient;
 
-  public TwitchChatActionCommandConsumer(
-    TwitchClientLifecycleGateway stateClient) {
+  public TwitchChatActionCommandConsumer(TwitchClientLifecycleGateway stateClient) {
     this.stateClient = stateClient;
   }
 
@@ -28,7 +32,7 @@ public class TwitchChatActionCommandConsumer implements ActionCommandConsumer<Tw
       }
     } catch (Exception unexpected) {
       stateClient.submit(new ClientErrorEvent(
-        "Encountered unexpected exception while consuming " + actionRequest, unexpected
+          "Encountered unexpected exception while consuming " + actionRequest, unexpected
       ));
     }
   }

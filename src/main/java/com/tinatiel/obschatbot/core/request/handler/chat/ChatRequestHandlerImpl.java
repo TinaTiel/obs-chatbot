@@ -16,10 +16,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Implementation of ${@link ChatRequestHandler} that delegates message parsing to a
- * ${@link ChatMessageParser}, looks up commands via ${@link CommandService}, builds a
- * ${@link RequestContext} by looking up the user via the ${@link UserService}, and then finally
- * submits the context and command to the ${@link CommandRequestDispatcher} for execution.
+ * Implementation of ${@link ChatRequestHandler} that delegates message parsing to a ${@link
+ * ChatMessageParser}, looks up commands via ${@link CommandService}, builds a ${@link
+ * RequestContext} by looking up the user via the ${@link UserService}, and then finally submits the
+ * context and command to the ${@link CommandRequestDispatcher} for execution.
  */
 public class ChatRequestHandlerImpl implements ChatRequestHandler {
 

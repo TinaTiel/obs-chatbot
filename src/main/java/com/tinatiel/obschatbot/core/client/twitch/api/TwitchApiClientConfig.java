@@ -1,25 +1,18 @@
 package com.tinatiel.obschatbot.core.client.twitch.api;
 
-import com.tinatiel.obschatbot.core.client.twitch.auth.TwitchAuthConnectionSettingsFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
-import org.springframework.web.client.RestTemplate;
 
+/**
+ * Configures the Twitch Api Client.
+ */
 @Configuration
 public class TwitchApiClientConfig {
 
   @Autowired
   OAuth2AuthorizedClientService authorizedClientService;
-
-//  @Bean
-//  RestTemplate twitchApiClientRestTemplate() {
-//    RestTemplate restTemplate = new RestTemplate();
-//    restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
-//    return restTemplate;
-//  }
 
   @Autowired
   TwitchApiClientSettingsFactory twitchApiClientSettingsFactory;

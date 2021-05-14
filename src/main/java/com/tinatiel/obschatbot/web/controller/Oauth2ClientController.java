@@ -2,8 +2,6 @@ package com.tinatiel.obschatbot.web.controller;
 
 import com.tinatiel.obschatbot.core.client.twitch.api.TwitchApiClient;
 import com.tinatiel.obschatbot.core.client.twitch.auth.TwitchAuthValidationService;
-import com.tinatiel.obschatbot.core.messaging.ObsChatbotEvent;
-import java.util.concurrent.BlockingQueue;
 import javax.websocket.server.PathParam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,28 +21,27 @@ import org.springframework.web.bind.annotation.RestController;
 public class Oauth2ClientController {
 
   @Autowired
+  TwitchApiClient twitchApiClient;
+  @Autowired
   private ClientRegistrationRepository clientRegistrationRepository;
-
   @Autowired
   private OAuth2AuthorizedClientService authorizedClientService;
-
   @Autowired
   private TwitchAuthValidationService twitchAuthValidationService;
-
-  @Autowired
-  TwitchApiClient twitchApiClient;
 
   @GetMapping("/test/twitch")
   public String index() {
     ClientRegistration clientRegistration = clientRegistrationRepository
-        .findByRegistrationId("twitch");
+      .findByRegistrationId("twitch");
 
     OAuth2AuthorizedClient authorizedClient = authorizedClientService
-        .loadAuthorizedClient("twitch", "SYSTEM");
+      .loadAuthorizedClient("twitch", "SYSTEM");
 
-    return "Access Token: " + authorizedClient.getAccessToken().getTokenValue() + System.lineSeparator()
+    return "Access Token: " + authorizedClient.getAccessToken().getTokenValue() + System
+      .lineSeparator()
       + "Expiring: " + authorizedClient.getAccessToken().getExpiresAt() + System.lineSeparator()
-      + "Refresh Token: " + authorizedClient.getRefreshToken().getTokenValue() + System.lineSeparator()
+      + "Refresh Token: " + authorizedClient.getRefreshToken().getTokenValue() + System
+      .lineSeparator()
       + "Expiring: " + authorizedClient.getRefreshToken().getExpiresAt();
 
   }
@@ -61,8 +58,10 @@ public class Oauth2ClientController {
   }
 
   @GetMapping("/following")
-  public boolean isFollowing(@PathParam("broadcasterId") String broadcasterId, @PathParam("viewerId") String viewerId) {
-    log.debug("Checking if viewer (" + viewerId + ") is following broadcaster (" + broadcasterId + ")");
+  public boolean isFollowing(@PathParam("broadcasterId") String broadcasterId,
+    @PathParam("viewerId") String viewerId) {
+    log.debug(
+      "Checking if viewer (" + viewerId + ") is following broadcaster (" + broadcasterId + ")");
     return twitchApiClient.isFollowing(broadcasterId, viewerId);
   }
 

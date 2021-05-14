@@ -16,16 +16,22 @@ import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
+/**
+ * Default implementation of the TwitchApiClient.
+ */
 @Slf4j
 public class TwitchApiClientImpl implements TwitchApiClient {
 
-  private WebClient webClient;
   private final OAuth2AuthorizedClientService authorizedClientService;
   private final TwitchApiClientSettingsFactory apiSettingsFactory;
+  private WebClient webClient;
 
+  /**
+   * Creates a new instance of the TwitchApiClient, internally intializing its WebClient.
+   */
   public TwitchApiClientImpl(
-    OAuth2AuthorizedClientService authorizedClientService,
-    TwitchApiClientSettingsFactory apiSettingsFactory) {
+      OAuth2AuthorizedClientService authorizedClientService,
+      TwitchApiClientSettingsFactory apiSettingsFactory) {
     this.authorizedClientService = authorizedClientService;
     this.apiSettingsFactory = apiSettingsFactory;
     init();
@@ -35,7 +41,8 @@ public class TwitchApiClientImpl implements TwitchApiClient {
     webClient = WebClient.builder().build();
   }
 
-//  @Cacheable(CacheConfig.TWITCH_FOLLOWS) // Commenting out until we add Twitch pub/sub/event support to invalidate cache on follow events
+  // Commenting out until we add Twitch pub/sub/event support to invalidate cache on follow events
+  // @Cacheable(CacheConfig.TWITCH_FOLLOWS)
   @Override
   public boolean isFollowing(String broadcasterId, String viewerId) {
 
@@ -44,9 +51,9 @@ public class TwitchApiClientImpl implements TwitchApiClient {
 
     // Get the current token and client id
     OAuth2AuthorizedClient authorizedClient = authorizedClientService.loadAuthorizedClient(
-      "twitch", User.SYSTEM_PRINCIPAL_NAME
+        "twitch", User.SYSTEM_PRINCIPAL_NAME
     );
-    if(authorizedClient == null || authorizedClient.getAccessToken() == null) {
+    if (authorizedClient == null || authorizedClient.getAccessToken() == null) {
       log.warn("No authorized client available, ignoring request");
       return result;
     }
@@ -68,19 +75,19 @@ public class TwitchApiClientImpl implements TwitchApiClient {
         })
         .accept(MediaType.APPLICATION_JSON)
         .retrieve()
-        .bodyToMono(new ParameterizedTypeReference<UsersFollowsResponse>(){})
+        .bodyToMono(new ParameterizedTypeReference<UsersFollowsResponse>() {
+        })
         .block(); // TODO make the project reactive so we don't need to block XD
     } catch (WebClientResponseException e) {
       log.warn(String.format(
-        "Could not determine if viewer id %s follows broadcaster id %s, due to %s \n%s",
-        viewerId, broadcasterId,
-        e.getStatusCode(),
-        e.getResponseBodyAsString()
-        ),
-        e);
+          "Could not determine if viewer id %s follows broadcaster id %s, due to %s \n%s",
+          viewerId, broadcasterId,
+          e.getStatusCode(),
+          e.getResponseBodyAsString()),
+          e);
     }
 
-    if(response != null && response.getTotal() > 0) {
+    if (response != null && response.getTotal() > 0) {
       result = true;
     }
 
@@ -97,9 +104,9 @@ public class TwitchApiClientImpl implements TwitchApiClient {
 
     // Get the current token and client id
     OAuth2AuthorizedClient authorizedClient = authorizedClientService.loadAuthorizedClient(
-      "twitch", User.SYSTEM_PRINCIPAL_NAME
+        "twitch", User.SYSTEM_PRINCIPAL_NAME
     );
-    if(authorizedClient == null || authorizedClient.getAccessToken() == null) {
+    if (authorizedClient == null || authorizedClient.getAccessToken() == null) {
       log.warn("No authorized client available, ignoring request");
       return result;
     }
@@ -122,19 +129,19 @@ public class TwitchApiClientImpl implements TwitchApiClient {
         })
         .accept(MediaType.APPLICATION_JSON)
         .retrieve()
-        .bodyToMono(new ParameterizedTypeReference<TwitchResponse<UsersDataResponse>>(){})
+        .bodyToMono(new ParameterizedTypeReference<TwitchResponse<UsersDataResponse>>() {
+        })
         .block(); // TODO make the project reactive so we don't need to block XD
     } catch (WebClientResponseException e) {
       log.warn(String.format(
-        "Could not retrieve id of username %s from Twitch, due to %s \n%s",
-        username,
-        e.getStatusCode(),
-        e.getResponseBodyAsString()
-      ),
-      e);
+          "Could not retrieve id of username %s from Twitch, due to %s \n%s",
+          username,
+          e.getStatusCode(),
+          e.getResponseBodyAsString()),
+          e);
     }
 
-    if(response != null
+    if (response != null
         && response.getData() != null
         && response.getData().size() >= 1) {
       result = response.getData().get(0).getId();

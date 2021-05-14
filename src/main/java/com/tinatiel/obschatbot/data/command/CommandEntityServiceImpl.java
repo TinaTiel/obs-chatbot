@@ -9,32 +9,32 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
-import org.springframework.dao.DataIntegrityViolationException;
 
+/**
+ * Default implementation of CommandEntityService.
+ */
 public class CommandEntityServiceImpl implements CommandEntityService {
 
   private final CommandEntityRepository repository;
   private final CommandMapper mapper;
 
   public CommandEntityServiceImpl(
-    CommandEntityRepository repository,
-    CommandMapper mapper) {
+      CommandEntityRepository repository,
+      CommandMapper mapper) {
     this.repository = repository;
     this.mapper = mapper;
   }
 
   @Override
   public CommandDto save(CommandDto request) throws DataPersistenceException {
-      try {
+    try {
       CommandEntity entity = repository.saveAndFlush(
-        mapper.dtoToEntity(request)
+          mapper.dtoToEntity(request)
       );
-        return mapper.entityToDto(entity);
-      } catch (Exception e) {
-        throw new DataPersistenceException(request, e);
-      }
+      return mapper.entityToDto(entity);
+    } catch (Exception e) {
+      throw new DataPersistenceException(request, e);
+    }
   }
 
   @Override

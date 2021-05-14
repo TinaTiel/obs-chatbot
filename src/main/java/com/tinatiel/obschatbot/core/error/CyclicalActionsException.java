@@ -10,8 +10,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * An Exception that should be thrown if expanding a ${@link Command}'s actions could result
- * in cyclical expansion (a ${@link StackOverflowError} if otherwise unchecked).
+ * An Exception that should be thrown if expanding a ${@link Command}'s actions could result in
+ * cyclical expansion (a ${@link StackOverflowError} if otherwise unchecked).
  */
 public class CyclicalActionsException extends AbstractCodedException {
 
@@ -20,11 +20,11 @@ public class CyclicalActionsException extends AbstractCodedException {
   }
 
   /**
-   * Constructs a new instance in the case that unexpectedly a cycle occurred during
-   * expansion of a Command (e.g. hopefully via expired timeout rather than StackOverflowError).
+   * Constructs a new instance in the case that unexpectedly a cycle occurred during expansion of a
+   * Command (e.g. hopefully via expired timeout rather than StackOverflowError).
    *
    * @param parentCommand The parent command. Safely prints only the name of the command.
-   * @param cause The cause, if applicable.
+   * @param cause         The cause, if applicable.
    */
   public CyclicalActionsException(Command parentCommand, Throwable cause) {
     this(
@@ -34,12 +34,12 @@ public class CyclicalActionsException extends AbstractCodedException {
   }
 
   /**
-   * Construct a new instance during inspection of a Command's actions, providing a
-   * list of Commands leading to the cyclical execution (like a stack trace).
+   * Construct a new instance during inspection of a Command's actions, providing a list of Commands
+   * leading to the cyclical execution (like a stack trace).
    *
    * @param parentCommand The top-level / entrypoint Command that contains the cyclical execution.
-   * @param breadcrumbs The list of Commands, in the order encountered, that led
-   *                    to cyclical execution.
+   * @param breadcrumbs   The list of Commands, in the order encountered, that led to cyclical
+   *                      execution.
    */
   public CyclicalActionsException(Command parentCommand, List<Command> breadcrumbs) {
     this(

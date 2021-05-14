@@ -9,6 +9,9 @@ import org.springframework.integration.handler.LoggingHandler;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageHandler;
 
+/**
+ * Configures messaging related to the Twitch Auth Client.
+ */
 @IntegrationComponentScan
 @Configuration
 public class TwitchAuthMessagingConfig {

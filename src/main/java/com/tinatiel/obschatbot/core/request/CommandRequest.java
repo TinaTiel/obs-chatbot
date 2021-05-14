@@ -11,8 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Encapsulates a request to execute a command, encompassing the (1) ${@link RequestContext} and
- * (2) list of Actions to execute (converted into ${@link ActionRequest}s).
+ * Encapsulates a request to execute a command, encompassing the (1) ${@link RequestContext} and (2)
+ * list of Actions to execute (converted into ${@link ActionRequest}s).
  */
 public class CommandRequest extends AbstractObsChatbotEvent {
 

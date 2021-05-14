@@ -21,8 +21,8 @@ public class TwitchChatClientFactory implements ClientFactory<PircBotX, TwitchCh
 
   /**
    * Create a new factory instance, using the specified ${@link ClientSettingsFactory} to get the
-   * latest Twitch chat settings, PircBotxListener as registered listener, and
-   * SSL connection factory.
+   * latest Twitch chat settings, PircBotxListener as registered listener, and SSL connection
+   * factory.
    */
   public TwitchChatClientFactory(
       ClientSettingsFactory<TwitchChatClientSettings> clientSettingsFactory,

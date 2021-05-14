@@ -12,9 +12,9 @@ import java.util.Random;
 
 /**
  * An ActionSequencer that is capable of picking a subset of Actions semi-randomly. This is not
- * "true" randomness, because this implementation internally tracks which actions have already
- * been picked and will guarantee that eventually all actions are picked (just in random order).
- * This guarantees, for example, that the same Action won't ever be picked many times in a row.
+ * "true" randomness, because this implementation internally tracks which actions have already been
+ * picked and will guarantee that eventually all actions are picked (just in random order). This
+ * guarantees, for example, that the same Action won't ever be picked many times in a row.
  */
 public class RandomOrderActionSequencer implements ActionSequencer {
 
@@ -27,9 +27,9 @@ public class RandomOrderActionSequencer implements ActionSequencer {
   /**
    * Create a new instance of this sequencer.
    *
-   * @param actions Actions to pick from.
-   * @param pickedPerExecution Number of actions to pick each invocation. If null or negative,
-   *                           it picks from the entire list of Actions.
+   * @param actions            Actions to pick from.
+   * @param pickedPerExecution Number of actions to pick each invocation. If null or negative, it
+   *                           picks from the entire list of Actions.
    */
   public RandomOrderActionSequencer(List<Action> actions, Integer pickedPerExecution) {
     // Sanitize

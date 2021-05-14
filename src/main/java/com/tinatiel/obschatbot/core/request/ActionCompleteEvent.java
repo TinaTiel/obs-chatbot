@@ -4,9 +4,9 @@ import com.tinatiel.obschatbot.core.messaging.AbstractObsChatbotEvent;
 import java.util.UUID;
 
 /**
- * Designates that an action has been completed, for example that a "wait" has finished timeout
- * or that a third-party has acknowledged a request has finished. Clients must emit this event
- * the action has been completed.
+ * Designates that an action has been completed, for example that a "wait" has finished timeout or
+ * that a third-party has acknowledged a request has finished. Clients must emit this event the
+ * action has been completed.
  */
 public class ActionCompleteEvent extends AbstractObsChatbotEvent {
 

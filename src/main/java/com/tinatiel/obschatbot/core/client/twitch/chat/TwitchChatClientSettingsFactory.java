@@ -12,7 +12,8 @@ import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 
 /**
- * A ClientSettingsFactory implementation that returns the latest ${@link TwitchChatClientSettings}.
+ * A ClientSettingsFactory implementation that returns the latest ${@link
+ * TwitchChatClientSettings}.
  */
 @Slf4j
 public class TwitchChatClientSettingsFactory implements

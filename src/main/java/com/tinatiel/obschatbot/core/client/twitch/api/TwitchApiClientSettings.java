@@ -5,6 +5,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Stores the configuration information required by the TwitchApiClient.
+ */
 @Builder
 @AllArgsConstructor
 @Data

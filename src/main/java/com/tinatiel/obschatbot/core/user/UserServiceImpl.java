@@ -5,13 +5,12 @@ import com.tinatiel.obschatbot.core.user.local.LocalUser;
 import com.tinatiel.obschatbot.core.user.local.LocalUserRepository;
 import com.tinatiel.obschatbot.core.user.local.UserGroup;
 import java.util.Set;
-import org.springframework.security.core.userdetails.User.UserBuilder;
 
 /**
- * Implementation of the UserService that fully builds the security details etc. of a given
- * user, ideally from a cached instance, otherwise attempts to fetch information locally (for
- * example, group membership) and remotely (for example, determining if a Twitch viewer follows
- * the broadcaster).
+ * Implementation of the UserService that fully builds the security details etc. of a given user,
+ * ideally from a cached instance, otherwise attempts to fetch information locally (for example,
+ * group membership) and remotely (for example, determining if a Twitch viewer follows the
+ * broadcaster).
  */
 public class UserServiceImpl implements UserService {
 
@@ -49,8 +48,9 @@ public class UserServiceImpl implements UserService {
 
     // Add any local groups if they exist
     LocalUser localUser = localUserRepository.findByPlatformAndUsername(
-        partialUserInfo.getPlatform(), partialUserInfo.getUsername())
-        .orElse(new LocalUser());
+        partialUserInfo.getPlatform(),
+        partialUserInfo.getUsername()
+    ).orElse(new LocalUser());
     Set<UserGroup> groups = localUser.getGroups();
     groups.addAll(partialUserInfo.getGroups());
     userBuilder.groups(groups);

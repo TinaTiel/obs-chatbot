@@ -19,8 +19,8 @@ public class ClientErrorEvent extends AbstractObsChatbotEvent {
 
   /**
    * Create a new ClientErrorEvent instance. If an exception was thrown, it should be supplied
-   * otherwise it can be null. Message should always be supplied, ideally in a language friendly
-   * to non-devs as these messages may be shown directly to users.
+   * otherwise it can be null. Message should always be supplied, ideally in a language friendly to
+   * non-devs as these messages may be shown directly to users.
    */
   public ClientErrorEvent(String message, Throwable cause) {
     super();
@@ -28,6 +28,9 @@ public class ClientErrorEvent extends AbstractObsChatbotEvent {
     this.message = message;
   }
 
+  /**
+   * Creates a new ClientErrorEvent instance with a generic error message and no throwable cause.
+   */
   public ClientErrorEvent(String message) {
     super();
     this.cause = null;

@@ -6,11 +6,15 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+/**
+ * Provides a user-presentable representation of a Command.
+ */
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Builder
 public class CommandDto {
+
   private UUID id;
   private String name;
   private boolean disabled;

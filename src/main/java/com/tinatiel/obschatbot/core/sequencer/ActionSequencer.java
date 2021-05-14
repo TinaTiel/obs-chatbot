@@ -17,7 +17,8 @@ import java.util.List;
  * eventually (such as a randomSequencer where X of Y actions are sequenced each call, but it's
  * cyclical/pseudorandom to ensure all actions eventually are sequenced).
  *
- * <p>Note also this is not called a Scheduler, as that would imply the actions would be executed at
+ * <p>Note also this is not called a Scheduler, as that would imply the actions would be executed
+ * at
  * some point in time. The ActionSequencer is only responsible for determining the order of
  * execution; scheduling should be delegated to an Executor to scheduled the actions be executed in
  * order (but at different times depending on the time it takes to execute an Action and when the OS

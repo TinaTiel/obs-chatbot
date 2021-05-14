@@ -6,11 +6,11 @@ package com.tinatiel.obschatbot.core.client.twitch.api;
 public interface TwitchApiClient {
 
   /**
-   * Verifies if a given view is following the broadcaster. Note that Twitch's APIs expect
-   * any user IDs to be in the form "123456" (not a GUID).
+   * Verifies if a given view is following the broadcaster. Note that Twitch's APIs expect any user
+   * IDs to be in the form "123456" (not a GUID).
    *
    * @param broadcasterId ID of the broadcaster.
-   * @param viewerId ID of the viewer.
+   * @param viewerId      ID of the viewer.
    * @return true if the given viewer is following the broadcaster. False otherwise, or by default
    *         if Twitch cannot be reached.
    */

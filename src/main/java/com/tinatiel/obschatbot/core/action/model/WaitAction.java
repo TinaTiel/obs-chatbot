@@ -3,6 +3,10 @@ package com.tinatiel.obschatbot.core.action.model;
 import com.tinatiel.obschatbot.core.action.Action;
 import java.time.Duration;
 
+/**
+ * An Action that introduces an artificial wait/delay during an action sequence, for example
+ * adding a wait when showing a media source in OBS before hiding it again.
+ */
 public class WaitAction implements Action<WaitAction> {
 
   private final Duration waitDuration;

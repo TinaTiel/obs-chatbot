@@ -1,7 +1,6 @@
 package com.tinatiel.obschatbot.core.client.twitch.auth;
 
 import com.tinatiel.obschatbot.core.client.twitch.auth.messaging.TwitchAuthClientMessagingGateway;
-import com.tinatiel.obschatbot.core.messaging.ObsChatbotEvent;
 import com.tinatiel.obschatbot.security.SystemPrincipalOauth2AuthorizedClientRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,9 +46,9 @@ public class TwitchOauth2ClientConfig {
     // support auth code and refresh token
     OAuth2AuthorizedClientProvider auth2AuthorizedClientProvider =
         OAuth2AuthorizedClientProviderBuilder.builder()
-        .authorizationCode()
-        .refreshToken()
-        .build();
+          .authorizationCode()
+          .refreshToken()
+          .build();
 
     // Twitch requires periodic calls to verify token validity for user-token API usage
     // (https://dev.twitch.tv/docs/authentication#validating-requests), so we must use

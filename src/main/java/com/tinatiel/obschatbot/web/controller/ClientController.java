@@ -1,14 +1,13 @@
 package com.tinatiel.obschatbot.web.controller;
 
 import com.tinatiel.obschatbot.core.client.ClientManager;
-import com.tinatiel.obschatbot.core.client.twitch.chat.TwitchChatClientManager;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * Represents clients as a resource, encompassing actions related to managing
- * their state and settings.
+ * Represents clients as a resource, encompassing actions related to managing their state and
+ * settings.
  */
 @RequestMapping("/api/v1/client")
 @RestController

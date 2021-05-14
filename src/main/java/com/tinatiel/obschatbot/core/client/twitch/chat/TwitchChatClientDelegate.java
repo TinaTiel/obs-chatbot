@@ -4,9 +4,9 @@ import com.tinatiel.obschatbot.core.client.ClientDelegate;
 import org.pircbotx.PircBotX;
 
 /**
- * A ClientDelegate pairing together the PircBotX IRC chatbot instance with the Twitch settings
- * used to instantiate it, and provides methods to interact directly with PircBotX (not meant to
- * be used directly, as the PircBotX instance should only be called when ready).
+ * A ClientDelegate pairing together the PircBotX IRC chatbot instance with the Twitch settings used
+ * to instantiate it, and provides methods to interact directly with PircBotX (not meant to be used
+ * directly, as the PircBotX instance should only be called when ready).
  */
 public class TwitchChatClientDelegate implements
     ClientDelegate<PircBotX, TwitchChatClientSettings> {

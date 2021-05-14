@@ -12,9 +12,9 @@ import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepo
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 
 /**
- * An implementation of ${@link OAuth2AuthorizedClientRepository} that always saves an
- * ${@link OAuth2AuthorizedClient} against the System user. By contrast, default implementations
- * will delegate anonymous requests (no Principle/Authorization present) to a specified repository.
+ * An implementation of ${@link OAuth2AuthorizedClientRepository} that always saves an ${@link
+ * OAuth2AuthorizedClient} against the System user. By contrast, default implementations will
+ * delegate anonymous requests (no Principle/Authorization present) to a specified repository.
  */
 public class SystemPrincipalOauth2AuthorizedClientRepository implements
     OAuth2AuthorizedClientRepository {
@@ -43,8 +43,11 @@ public class SystemPrincipalOauth2AuthorizedClientRepository implements
       HttpServletResponse httpServletResponse) {
     authorizedClientService.saveAuthorizedClient(
         authorizedClient,
-        new PreAuthenticatedAuthenticationToken(User.SYSTEM_PRINCIPAL_NAME,
-          new HashMap<>(), new ArrayList<>())
+        new PreAuthenticatedAuthenticationToken(
+          User.SYSTEM_PRINCIPAL_NAME,
+          new HashMap<>(),
+          new ArrayList<>()
+        )
     );
   }
 

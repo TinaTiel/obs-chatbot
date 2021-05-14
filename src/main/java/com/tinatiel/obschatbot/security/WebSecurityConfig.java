@@ -30,9 +30,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
   /**
    * This is responsible for noting that an authorization request was made. Without a registered
    * authorization request (initiated at /oauth2/authorization/{registrationId}, the corresponding
-   * security filters (e.g. OAuth2AuthorizationCodeGrantFilter) will not attempt code exchange.
-   * Even if we want to use the default, we need to redeclare it here because the default bean is
-   * final and cannot be mocked in tests.
+   * security filters (e.g. OAuth2AuthorizationCodeGrantFilter) will not attempt code exchange. Even
+   * if we want to use the default, we need to redeclare it here because the default bean is final
+   * and cannot be mocked in tests.
    */
   @Bean
   AuthorizationRequestRepository<OAuth2AuthorizationRequest> customAuthorizationRepository() {
@@ -59,8 +59,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
           .authorizationCodeGrant(codeGrant -> codeGrant
             .accessTokenResponseClient(this.accessTokenResponseClient())
             .authorizationRequestRepository(this.customAuthorizationRepository())
-          )
-        );
+          ));
 
   }
 

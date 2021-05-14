@@ -10,17 +10,21 @@ import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
+/**
+ * Collects fields common to all persistable entities.
+ */
 @Setter
 @Getter
 @MappedSuperclass
 public class BaseEntity {
+
   @Id
   @GeneratedValue(generator = "UUID")
   @GenericGenerator(
-    name = "UUID",
-    strategy = "org.hibernate.id.UUIDGenerator"
+      name = "UUID",
+      strategy = "org.hibernate.id.UUIDGenerator"
   )
-  @Type(type="org.hibernate.type.UUIDCharType")
-  @Column(length = 36, columnDefinition = "varchar", updatable = false, nullable = false )
+  @Type(type = "org.hibernate.type.UUIDCharType")
+  @Column(length = 36, columnDefinition = "varchar", updatable = false, nullable = false)
   private UUID id;
 }

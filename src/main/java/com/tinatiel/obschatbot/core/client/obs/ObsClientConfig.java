@@ -16,17 +16,18 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.Lazy;
 
+/**
+ * Configuration for the OBS Client.
+ */
 @Import(ObsMessagingConfig.class)
 @Configuration
 public class ObsClientConfig {
 
-  @Value("${OBS_PASSWORD:na}")
-  private String obsPassword;
-
   @Autowired
   ObsClientLifecycleGateway obsClientLifecycleGateway;
+  @Value("${OBS_PASSWORD:na}")
+  private String obsPassword;
 
   @Bean
   ObsClientSettingsFactory obsClientSettingsFactory() {
