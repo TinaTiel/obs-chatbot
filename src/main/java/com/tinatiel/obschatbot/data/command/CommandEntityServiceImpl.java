@@ -4,9 +4,14 @@ import com.tinatiel.obschatbot.data.command.entity.CommandEntity;
 import com.tinatiel.obschatbot.data.command.entity.CommandEntityRepository;
 import com.tinatiel.obschatbot.data.command.mapper.CommandMapper;
 import com.tinatiel.obschatbot.data.command.model.CommandDto;
+import com.tinatiel.obschatbot.data.error.DataPersistenceException;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import org.springframework.dao.DataIntegrityViolationException;
 
 public class CommandEntityServiceImpl implements CommandEntityService {
 
@@ -21,11 +26,15 @@ public class CommandEntityServiceImpl implements CommandEntityService {
   }
 
   @Override
-  public CommandDto save(CommandDto commandEntity) {
-    CommandEntity entity = repository.saveAndFlush(
-      mapper.dtoToEntity(commandEntity)
-    );
-    return mapper.entityToDto(entity);
+  public CommandDto save(CommandDto request) throws DataPersistenceException {
+      try {
+      CommandEntity entity = repository.saveAndFlush(
+        mapper.dtoToEntity(request)
+      );
+        return mapper.entityToDto(entity);
+      } catch (Exception e) {
+        throw new DataPersistenceException(request, e);
+      }
   }
 
   @Override
@@ -40,11 +49,11 @@ public class CommandEntityServiceImpl implements CommandEntityService {
 
   @Override
   public List<CommandDto> findAll() {
-    return null;
+    return repository.findAll().stream().map(mapper::entityToDto).collect(Collectors.toList());
   }
 
   @Override
-  public void delete(UUID id) {
+  public void delete(UUID id) throws DataPersistenceException {
 
   }
 }
