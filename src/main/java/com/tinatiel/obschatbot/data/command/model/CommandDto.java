@@ -4,6 +4,7 @@ import com.tinatiel.obschatbot.data.command.model.sequencer.SequencerDto;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -12,7 +13,7 @@ import lombok.NoArgsConstructor;
  */
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
+@Data
 @Builder
 public class CommandDto {
 

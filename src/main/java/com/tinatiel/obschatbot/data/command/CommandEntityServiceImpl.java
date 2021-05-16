@@ -28,9 +28,14 @@ public class CommandEntityServiceImpl implements CommandEntityService {
   @Override
   public CommandDto save(CommandDto request) throws DataPersistenceException {
     try {
-      CommandEntity entity = repository.saveAndFlush(
-          mapper.map(request)
+      CommandEntity requestEntity = mapper.map(request);
+      if(requestEntity.getSequencer() != null) {
+        requestEntity.getSequencer().setCommand(requestEntity); // set other side of relationship
+      }
+      CommandEntity entity = repository.save(
+          requestEntity
       );
+      repository.flush();
       return mapper.map(entity);
     } catch (Exception e) {
       throw new DataPersistenceException(request, e);

@@ -5,6 +5,7 @@ import com.tinatiel.obschatbot.data.common.BaseEntity;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
@@ -29,9 +30,10 @@ public class CommandEntity extends BaseEntity {
   @Column(nullable = false, unique = true)
   private String name;
 
-//  @PrimaryKeyJoinColumn
-//  @OneToOne(mappedBy = "command", cascade = CascadeType.ALL)
-  @Transient
+  @OneToOne(mappedBy = "command",
+    cascade = CascadeType.ALL,
+    fetch = FetchType.EAGER, // We will always need the sequencer
+    optional = false)
   private SequencerEntity sequencer;
 
   private boolean disabled;

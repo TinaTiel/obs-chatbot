@@ -7,6 +7,7 @@ import com.tinatiel.obschatbot.data.CommonConfig;
 import com.tinatiel.obschatbot.data.command.entity.CommandEntity;
 import com.tinatiel.obschatbot.data.command.entity.CommandEntityRepository;
 import com.tinatiel.obschatbot.data.command.model.CommandDto;
+import com.tinatiel.obschatbot.data.command.model.sequencer.InOrderSequencerDto;
 import com.tinatiel.obschatbot.data.command.model.sequencer.SequencerDto;
 import com.tinatiel.obschatbot.data.error.DataPersistenceException;
 import java.util.Optional;
@@ -166,17 +167,28 @@ public class CommandEntityServiceTest {
   @Test
   public void createCommandWithSequencer() {
 
-//    // Given a command with a sequencer
-//    CommandDto request = CommandDto.builder()
-//      .name("sequenced")
-//      .sequencerDto(SequencerDto.builder().build())
-//      .build();
-//
-//    // When saved and retrieved
-//
-//
-//    // Then it matches as expected
+    // Given a command with a sequencer
+    CommandDto request = CommandDto.builder()
+      .name("sequenced")
+      .sequencer(InOrderSequencerDto.builder().reversed(false).build())
+      .build();
+
+    // When saved and retrieved
+    CommandDto result = service.save(request);
+
+    // Then it matches as expected
+    CommandDto found = service.findById(result.getId()).get(); // will throw it not found, fine :)
+    System.out.println(found);
+    assertThat(found).usingRecursiveComparison().isEqualTo(result);
+    assertThat(found.getSequencer())
+      .isNotNull()
+      .usingRecursiveComparison().isEqualTo(request.getSequencer());
 
   }
+
+//  @Test
+//  void changeCommandSequencer() {
+//
+//  }
 
 }

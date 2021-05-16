@@ -9,7 +9,8 @@ logging:
     httpclient.wire: debug
     reactor.netty.http.client: debug # WARNING: Logs HTTP requests that includes PII
 #    org.springframework.security.oauth2.client: trace
-
+    org.hibernate.SQL: debug
+    org.hibernate.type.descriptor.sql.BasicBinder: trace
 spring:
   datasource:
 #    url: jdbc:h2:file:./DATA
@@ -18,11 +19,7 @@ spring:
     username: sa
     password:
   jpa:
-    show-sql: true
     database-platformType: org.hibernate.dialect.H2Dialect
-    properties:
-      hibernate:
-        format_sql: true
 
   h2:
     console:
