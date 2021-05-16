@@ -16,6 +16,8 @@ public interface SequencerMapper {
       return this.map((InOrderSequencerEntity) entity);
     } else if (entity instanceof RandomOrderSequencerEntity) {
       return this.map((RandomOrderSequencerEntity) entity);
+    } else if (entity == null) {
+      return null;
     } else {
       throw new RuntimeException("No mapping available");
     }
@@ -26,6 +28,8 @@ public interface SequencerMapper {
       return this.map((InOrderSequencerDto) dto);
     } else if (dto instanceof RandomOrderSequencerDto) {
       return this.map((RandomOrderSequencerDto) dto);
+    } else if (dto == null) {
+      return null;
     } else {
       throw new RuntimeException("No mapping available");
     }
