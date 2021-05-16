@@ -6,9 +6,12 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import com.tinatiel.obschatbot.data.CommonConfig;
 import com.tinatiel.obschatbot.data.command.entity.CommandEntity;
 import com.tinatiel.obschatbot.data.command.entity.CommandEntityRepository;
+import com.tinatiel.obschatbot.data.command.entity.sequencer.SequencerEntity;
+import com.tinatiel.obschatbot.data.command.entity.sequencer.SequencerEntity.Type;
+import com.tinatiel.obschatbot.data.command.entity.sequencer.SequencerRepository;
 import com.tinatiel.obschatbot.data.command.model.CommandDto;
 import com.tinatiel.obschatbot.data.command.model.sequencer.InOrderSequencerDto;
-import com.tinatiel.obschatbot.data.command.model.sequencer.SequencerDto;
+import com.tinatiel.obschatbot.data.command.model.sequencer.RandomOrderSequencerDto;
 import com.tinatiel.obschatbot.data.error.DataPersistenceException;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,15 +29,23 @@ public class CommandEntityServiceTest {
 
   @Autowired
   CommandEntityRepository repository;
+  @Autowired
+  SequencerRepository sequencerRepository;
 
   CommandEntity existingCommand;
   CommandEntity existingCommand2;
+  CommandEntity existingCommandWithSequencer;
 
-  int expectedIntialCount = 2;
+  int expectedIntialCount;
 
   @BeforeEach
   void setUp() {
+
+      // cleanup data
+      sequencerRepository.deleteAll();
       repository.deleteAll();
+
+      // create commands with no children
       CommandEntity commandOnly = new CommandEntity();
       commandOnly.setName("toplevel");
       commandOnly.setDisabled(false);
@@ -42,8 +53,25 @@ public class CommandEntityServiceTest {
       commandOnly2.setName("toplevel2");
       commandOnly2.setDisabled(false);
 
+      // create commands with sequencer
+      SequencerEntity seq1 = new SequencerEntity();
+      seq1.setSequencerType(Type.ORDERED);
+      seq1.setReversed(false);
+      CommandEntity commandWithSeq1 = new CommandEntity();
+      commandWithSeq1.setName("inorder");
+      commandWithSeq1.setSequencer(seq1);
+      seq1.setCommand(commandWithSeq1);
+
+      // save commands
       existingCommand = repository.saveAndFlush(commandOnly);
       existingCommand2 = repository.saveAndFlush(commandOnly2);
+      existingCommandWithSequencer = repository.saveAndFlush(commandWithSeq1);
+      sequencerRepository.flush();
+
+      // update the total
+      expectedIntialCount = 3;
+
+      System.out.println("FINISHED INITIALIZING TEST DATA");
   }
 
   @Test
@@ -186,9 +214,33 @@ public class CommandEntityServiceTest {
 
   }
 
-//  @Test
-//  void changeCommandSequencer() {
-//
-//  }
+  @Test
+  void changeCommandSequencer() {
+
+    // Given an initial count of sequencer entities
+//    long intialSeqCount = sequencerRepository.count();
+
+    // Given a request to update the sequencer of an existing command
+    CommandDto request = CommandDto.builder()
+      .id(existingCommandWithSequencer.getId())
+      .name(existingCommandWithSequencer.getName())
+      .sequencer(RandomOrderSequencerDto.builder()
+        .pickedPerExecution(69)
+        .build()
+      )
+      .build();
+
+    // When saved
+    CommandDto result = service.save(request);
+
+    // Then it was updated as expected
+    CommandDto found = service.findById(existingCommandWithSequencer.getId()).get();
+    assertThat(found).isNotNull().usingRecursiveComparison().isEqualTo(result);
+    assertThat(found.getSequencer()).usingRecursiveComparison().isEqualTo(request.getSequencer());
+
+    // And there are no duplicates
+//    assertThat(sequencerRepository.count()).isEqualTo(intialSeqCount);
+
+  }
 
 }

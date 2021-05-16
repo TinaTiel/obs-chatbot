@@ -2,12 +2,8 @@ package com.tinatiel.obschatbot.data.command.mapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.tinatiel.obschatbot.data.command.entity.CommandEntity;
-import com.tinatiel.obschatbot.data.command.entity.sequencer.InOrderSequencerEntity;
-import com.tinatiel.obschatbot.data.command.entity.sequencer.RandomOrderSequencerEntity;
 import com.tinatiel.obschatbot.data.command.entity.sequencer.SequencerEntity;
-import com.tinatiel.obschatbot.data.command.mapper.SequencerMapper;
-import com.tinatiel.obschatbot.data.command.model.CommandDto;
+import com.tinatiel.obschatbot.data.command.entity.sequencer.SequencerEntity.Type;
 import com.tinatiel.obschatbot.data.command.model.sequencer.InOrderSequencerDto;
 import com.tinatiel.obschatbot.data.command.model.sequencer.RandomOrderSequencerDto;
 import com.tinatiel.obschatbot.data.command.model.sequencer.SequencerDto;
@@ -22,8 +18,9 @@ public class SequencerMapperTests {
   void mapInOrderSequencer() {
 
     // Given commands
-    SequencerEntity entity = new InOrderSequencerEntity();
-    ((InOrderSequencerEntity) entity).setReversed(true);
+    SequencerEntity entity = new SequencerEntity();
+    entity.setSequencerType(Type.ORDERED);
+    entity.setReversed(true);
 
     SequencerDto dto = InOrderSequencerDto.builder()
       .reversed(true)
@@ -43,8 +40,9 @@ public class SequencerMapperTests {
   void mapRandomOrderSequencer() {
 
     // Given commands
-    SequencerEntity entity = new RandomOrderSequencerEntity();
-    ((RandomOrderSequencerEntity) entity).setPickedPerExecution(24);
+    SequencerEntity entity = new SequencerEntity();
+    entity.setSequencerType(Type.RANDOM_ORDER);
+    entity.setPickedPerExecution(24);
 
     SequencerDto dto = RandomOrderSequencerDto.builder()
       .pickedPerExecution(24)

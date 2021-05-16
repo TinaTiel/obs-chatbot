@@ -3,8 +3,8 @@ package com.tinatiel.obschatbot.data.command.mapper;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.tinatiel.obschatbot.data.command.entity.CommandEntity;
-import com.tinatiel.obschatbot.data.command.entity.sequencer.InOrderSequencerEntity;
-import com.tinatiel.obschatbot.data.command.mapper.CommandMapper;
+import com.tinatiel.obschatbot.data.command.entity.sequencer.SequencerEntity;
+import com.tinatiel.obschatbot.data.command.entity.sequencer.SequencerEntity.Type;
 import com.tinatiel.obschatbot.data.command.model.CommandDto;
 import com.tinatiel.obschatbot.data.command.model.sequencer.InOrderSequencerDto;
 import java.util.UUID;
@@ -45,7 +45,8 @@ public class CommandMapperTests {
   void mapCommandWithInOrderSequencer() {
 
     // Given commands
-    InOrderSequencerEntity sequencerEntity = new InOrderSequencerEntity();
+    SequencerEntity sequencerEntity = new SequencerEntity();
+    sequencerEntity.setSequencerType(Type.ORDERED);
     sequencerEntity.setReversed(true);
     CommandEntity entity = new CommandEntity();
     entity.setSequencer(sequencerEntity);

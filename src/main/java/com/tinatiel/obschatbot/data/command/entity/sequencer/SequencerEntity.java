@@ -5,12 +5,14 @@ import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.DiscriminatorType;
+import javax.persistence.Embeddable;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -28,11 +30,9 @@ import org.hibernate.annotations.Type;
 @NoArgsConstructor
 @Entity
 @Table(name = "sequencer")
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name="entity_type", discriminatorType = DiscriminatorType.STRING)
-public abstract class SequencerEntity {
+public class SequencerEntity {
 
-  protected static final class Type {
+  public static final class Type {
     public static final String ORDERED = "ORDERED";
     public static final String RANDOM_ORDER = "RANDOM_ORDER";
   }
@@ -43,7 +43,15 @@ public abstract class SequencerEntity {
   protected UUID id;
 
   @MapsId
-  @OneToOne(fetch = FetchType.LAZY)
+  @ManyToOne(fetch = FetchType.EAGER)
   protected CommandEntity command;
+
+  private String sequencerType;
+
+  // InOrder
+  private boolean reversed;
+
+  // RandomOrder
+  private int pickedPerExecution;
 
 }
