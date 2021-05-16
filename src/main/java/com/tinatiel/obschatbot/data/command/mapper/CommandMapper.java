@@ -10,12 +10,11 @@ import org.mapstruct.Mapper;
  */
 @Mapper(
   imports = UUID.class,
-  uses = {SequencerMapper.class}
+  uses = {SequencerMapper.class, ActionMapper.class}
 )
 public interface CommandMapper {
 
   CommandDto map(CommandEntity entity);
-
   CommandEntity map(CommandDto dto);
 
 }

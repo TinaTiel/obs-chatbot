@@ -218,7 +218,7 @@ public class CommandEntityServiceTest {
   void changeCommandSequencer() {
 
     // Given an initial count of sequencer entities
-//    long intialSeqCount = sequencerRepository.count();
+    long intialSeqCount = sequencerRepository.count();
 
     // Given a request to update the sequencer of an existing command
     CommandDto request = CommandDto.builder()
@@ -239,7 +239,7 @@ public class CommandEntityServiceTest {
     assertThat(found.getSequencer()).usingRecursiveComparison().isEqualTo(request.getSequencer());
 
     // And there are no duplicates
-//    assertThat(sequencerRepository.count()).isEqualTo(intialSeqCount);
+    assertThat(sequencerRepository.count()).isEqualTo(intialSeqCount);
 
   }
 

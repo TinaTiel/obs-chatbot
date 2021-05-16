@@ -1,7 +1,10 @@
 package com.tinatiel.obschatbot.data.command.entity;
 
+import com.tinatiel.obschatbot.data.command.entity.action.ActionEntity;
 import com.tinatiel.obschatbot.data.command.entity.sequencer.SequencerEntity;
 import com.tinatiel.obschatbot.data.common.BaseEntity;
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -37,6 +40,8 @@ public class CommandEntity extends BaseEntity {
   private SequencerEntity sequencer;
 
   private boolean disabled;
-  //  private List<ActionEntity> actions = new ArrayList<>();
+
+  @Transient
+  private List<ActionEntity> actions = new ArrayList<>();
 
 }
