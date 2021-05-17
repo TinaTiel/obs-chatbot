@@ -2,6 +2,7 @@ package com.tinatiel.obschatbot.data.command;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import com.tinatiel.obschatbot.data.CommonConfig;
 import com.tinatiel.obschatbot.data.command.entity.CommandEntity;
@@ -10,9 +11,15 @@ import com.tinatiel.obschatbot.data.command.entity.sequencer.SequencerEntity;
 import com.tinatiel.obschatbot.data.command.entity.sequencer.SequencerEntity.Type;
 import com.tinatiel.obschatbot.data.command.entity.sequencer.SequencerRepository;
 import com.tinatiel.obschatbot.data.command.model.CommandDto;
+import com.tinatiel.obschatbot.data.command.model.action.ActionRepository;
+import com.tinatiel.obschatbot.data.command.model.action.ObsSourceVisibilityActionDto;
+import com.tinatiel.obschatbot.data.command.model.action.SendMessageActionDto;
+import com.tinatiel.obschatbot.data.command.model.action.WaitActionDto;
 import com.tinatiel.obschatbot.data.command.model.sequencer.InOrderSequencerDto;
 import com.tinatiel.obschatbot.data.command.model.sequencer.RandomOrderSequencerDto;
 import com.tinatiel.obschatbot.data.error.DataPersistenceException;
+import java.time.Duration;
+import java.util.Arrays;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,9 +35,11 @@ public class CommandEntityServiceTest {
   CommandEntityService service;
 
   @Autowired
-  CommandEntityRepository repository;
+  CommandEntityRepository commandRepository;
   @Autowired
   SequencerRepository sequencerRepository;
+  @Autowired
+  ActionRepository actionRepository;
 
   CommandEntity existingCommand;
   CommandEntity existingCommand2;
@@ -43,7 +52,11 @@ public class CommandEntityServiceTest {
 
       // cleanup data
       sequencerRepository.deleteAll();
-      repository.deleteAll();
+      actionRepository.deleteAll();
+      commandRepository.deleteAll();
+      assertThat(sequencerRepository.count()).isZero();
+      assertThat(actionRepository.count()).isZero();
+      assertThat(commandRepository.count()).isZero();
 
       // create commands with no children
       CommandEntity commandOnly = new CommandEntity();
@@ -63,9 +76,9 @@ public class CommandEntityServiceTest {
       seq1.setCommand(commandWithSeq1);
 
       // save commands
-      existingCommand = repository.saveAndFlush(commandOnly);
-      existingCommand2 = repository.saveAndFlush(commandOnly2);
-      existingCommandWithSequencer = repository.saveAndFlush(commandWithSeq1);
+      existingCommand = commandRepository.saveAndFlush(commandOnly);
+      existingCommand2 = commandRepository.saveAndFlush(commandOnly2);
+      existingCommandWithSequencer = commandRepository.saveAndFlush(commandWithSeq1);
       sequencerRepository.flush();
 
       // update the total
@@ -188,7 +201,7 @@ public class CommandEntityServiceTest {
     assertThat(service.findById(disableRequest.getId()).get().getName()).isEqualTo("newname");
 
     // And there are no duplicates
-    assertThat(repository.findAll()).hasSize(expectedIntialCount);
+    assertThat(commandRepository.findAll()).hasSize(expectedIntialCount);
 
   }
 
@@ -241,6 +254,49 @@ public class CommandEntityServiceTest {
     // And there are no duplicates
     assertThat(sequencerRepository.count()).isEqualTo(intialSeqCount);
 
+  }
+
+  @Test
+  void createCommandWithActions() {
+
+    // Given a command with actions
+    CommandDto request = CommandDto.builder()
+      .name("withactions")
+      .actions(Arrays.asList(
+          SendMessageActionDto.builder().position(1).message("donate!").build(),
+          ObsSourceVisibilityActionDto.builder().position(2).sourceName("donate").visible(true).build(),
+          WaitActionDto.builder().position(3).waitDuration(Duration.ofSeconds(2)).build(),
+          ObsSourceVisibilityActionDto.builder().position(4).sourceName("donate").visible(false).build()
+        ))
+      .build();
+
+    // When saved
+    CommandDto result = service.save(request);
+
+    // Then it can be retrieved with those actions
+    CommandDto found = service.findById(result.getId()).get();
+    System.out.println(found.getActions());
+    assertThat(found).isNotNull().usingRecursiveComparison().isEqualTo(result);
+    assertThat(found.getActions())
+      .usingFieldByFieldElementComparator()
+      .usingRecursiveComparison()
+      .isEqualTo(result.getActions());
+
+  }
+
+  @Test
+  void reduceCommandActions() {
+    fail("todo");
+  }
+
+  @Test
+  void increaseCommandActions() {
+    fail("todo");
+  }
+
+  @Test
+  void reorderCommandActions() {
+    fail("todo");
   }
 
 }

@@ -1,7 +1,10 @@
 package com.tinatiel.obschatbot.data.command.entity.action;
 
 import com.tinatiel.obschatbot.core.action.Action;
+import com.tinatiel.obschatbot.data.command.entity.action.ActionEntity.Type;
 import java.time.Duration;
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,6 +16,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+@Entity
+@DiscriminatorValue(Type.WAIT)
 public class WaitActionEntity extends ActionEntity {
 
   private Duration waitDuration;

@@ -1,7 +1,21 @@
 package com.tinatiel.obschatbot.data.command.entity.action;
 
 import com.tinatiel.obschatbot.data.command.entity.CommandEntity;
+import com.tinatiel.obschatbot.data.common.BaseEntity;
 import java.util.UUID;
+import javax.persistence.Column;
+import javax.persistence.DiscriminatorColumn;
+import javax.persistence.DiscriminatorType;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.MapsId;
+import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -14,18 +28,20 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public abstract class ActionEntity {
-  //  @Id
-//  @org.hibernate.annotations.Type(type = "org.hibernate.type.UUIDCharType")
-//  @Column(name = "command_id", length = 36, columnDefinition = "varchar", updatable = false, nullable = false)
-  protected UUID id;
+@Entity
+@Table(name = "action")
+@Inheritance(strategy =  InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "action_type", discriminatorType = DiscriminatorType.STRING)
+public abstract class ActionEntity extends BaseEntity {
 
-  //  @MapsId
-//  @ManyToOne(fetch = FetchType.EAGER)
-  protected CommandEntity command;
+  public static final class Type {
+    public static final String EXECUTE_COMMAND = "EXECUTE_COMMAND";
+    public static final String OBS_SOURCE_VIZ = "OBS_SOURCE_VIZ";
+    public static final String SEND_MESSAGE = "SEND_MESSAGE";
+    public static final String WAIT = "WAIT";
+  }
 
-  //  @NotNull(message = "Position is required")
-//  @Column(nullable = false)
+  @Column(nullable = false)
   private Integer position;
 
 }

@@ -9,6 +9,8 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
@@ -41,7 +43,11 @@ public class CommandEntity extends BaseEntity {
 
   private boolean disabled;
 
-  @Transient
+  @OneToMany(
+    cascade = {CascadeType.ALL},
+    orphanRemoval = true
+  )
+  @JoinColumn(name = "command_id")
   private List<ActionEntity> actions = new ArrayList<>();
 
 }

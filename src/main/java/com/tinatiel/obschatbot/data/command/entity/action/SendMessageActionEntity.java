@@ -6,6 +6,9 @@
 package com.tinatiel.obschatbot.data.command.entity.action;
 
 import com.tinatiel.obschatbot.core.action.Action;
+import com.tinatiel.obschatbot.data.command.entity.action.ActionEntity.Type;
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -16,6 +19,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+@Entity
+@DiscriminatorValue(Type.SEND_MESSAGE)
 public class SendMessageActionEntity extends ActionEntity {
 
   private String message;

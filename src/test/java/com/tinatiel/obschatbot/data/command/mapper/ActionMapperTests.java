@@ -24,10 +24,13 @@ public class ActionMapperTests {
 
     // Given actions
     UUID commandId = UUID.randomUUID();
+    UUID actionId = UUID.randomUUID();
     ExecuteCommandActionEntity entity = new ExecuteCommandActionEntity();
+    entity.setId(actionId);
     entity.setPosition(42);
     entity.setTarget(commandId);
     ExecuteCommandActionDto dto = ExecuteCommandActionDto.builder()
+      .id(actionId)
       .position(42)
       .target(commandId)
       .build();
@@ -46,12 +49,15 @@ public class ActionMapperTests {
   void mapObsSourceVisibilityAction() {
 
     // Given actions
+    UUID actionId = UUID.randomUUID();
     ObsSourceVisibilityActionEntity entity = new ObsSourceVisibilityActionEntity();
+    entity.setId(actionId);
     entity.setPosition(42);
     entity.setSourceName("sourcename");
     entity.setSceneName("scenename");
     entity.setVisible(true);
     ObsSourceVisibilityActionDto dto = ObsSourceVisibilityActionDto.builder()
+      .id(actionId)
       .position(42)
       .sourceName("sourcename")
       .sceneName("scenename")
@@ -72,10 +78,13 @@ public class ActionMapperTests {
   void mapSendMessageAction() {
 
     // Given actions
+    UUID actionId = UUID.randomUUID();
     SendMessageActionEntity entity = new SendMessageActionEntity();
+    entity.setId(actionId);
     entity.setPosition(42);
     entity.setMessage("howdy");
     SendMessageActionDto dto = SendMessageActionDto.builder()
+      .id(actionId)
       .position(42)
       .message("howdy")
       .build();
@@ -94,10 +103,13 @@ public class ActionMapperTests {
   void mapWaitAction() {
 
     // Given actions
+    UUID actionId = UUID.randomUUID();
     WaitActionEntity entity = new WaitActionEntity();
+    entity.setId(actionId);
     entity.setPosition(42);
     entity.setWaitDuration(Duration.ofSeconds(5));
     WaitActionDto dto = WaitActionDto.builder()
+      .id(actionId)
       .position(42)
       .waitDuration(Duration.ofSeconds(5))
       .build();

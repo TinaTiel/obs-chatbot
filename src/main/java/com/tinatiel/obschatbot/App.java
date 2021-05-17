@@ -15,6 +15,11 @@ import com.tinatiel.obschatbot.core.sequencer.RandomOrderActionSequencer;
 import com.tinatiel.obschatbot.core.user.Platform;
 import com.tinatiel.obschatbot.core.user.local.LocalUser;
 import com.tinatiel.obschatbot.core.user.local.LocalUserRepository;
+import com.tinatiel.obschatbot.data.command.CommandEntityService;
+import com.tinatiel.obschatbot.data.command.model.CommandDto;
+import com.tinatiel.obschatbot.data.command.model.action.ObsSourceVisibilityActionDto;
+import com.tinatiel.obschatbot.data.command.model.action.SendMessageActionDto;
+import com.tinatiel.obschatbot.data.command.model.action.WaitActionDto;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.Date;
@@ -104,6 +109,21 @@ public class App {
 //      e.printStackTrace();
 //    }
 //    commandRequestDispatcher.submit(hideShow, requestContext);
+
+    CommandDto request = CommandDto.builder()
+      .name("withactions")
+      .actions(Arrays.asList(
+        SendMessageActionDto.builder().position(1).message("donate!").build(),
+        ObsSourceVisibilityActionDto.builder().position(2).sourceName("donate").visible(true).build(),
+        WaitActionDto.builder().position(3).waitDuration(Duration.ofSeconds(2)).build(),
+        ObsSourceVisibilityActionDto.builder().position(4).sourceName("donate").visible(false).build()
+      ))
+      .build();
+
+    CommandEntityService commandEntityService = context.getBean(CommandEntityService.class);
+
+    // When saved
+    CommandDto result = commandEntityService.save(request);
 
   }
 }

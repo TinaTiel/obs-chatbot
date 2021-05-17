@@ -21,6 +21,5 @@ import lombok.experimental.SuperBuilder;
 public class WaitActionDto extends ActionDto {
 
   private Duration waitDuration;
-  private Duration waitTimeout;
   
 }

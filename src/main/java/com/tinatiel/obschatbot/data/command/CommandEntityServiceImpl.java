@@ -3,6 +3,7 @@ package com.tinatiel.obschatbot.data.command;
 import com.tinatiel.obschatbot.core.error.UnexpectedException;
 import com.tinatiel.obschatbot.data.command.entity.CommandEntity;
 import com.tinatiel.obschatbot.data.command.entity.CommandEntityRepository;
+import com.tinatiel.obschatbot.data.command.entity.action.ActionEntity;
 import com.tinatiel.obschatbot.data.command.entity.sequencer.SequencerEntity;
 import com.tinatiel.obschatbot.data.command.entity.sequencer.SequencerRepository;
 import com.tinatiel.obschatbot.data.command.mapper.CommandMapper;
@@ -53,9 +54,12 @@ public class CommandEntityServiceImpl implements CommandEntityService {
 
   private CommandDto createCommand(CommandEntity request) {
     try {
+      // update the sequencer relationships
       if(request.getSequencer() != null) {
         request.getSequencer().setCommand(request); // set other side of relationship
       }
+
+      // save
       CommandEntity result = repository.save(
         request
       );
