@@ -18,8 +18,7 @@ public class InOrderActionSequencer implements ActionSequencer {
   private final List<Action> actions = new ArrayList<>();
   private final boolean reversed;
 
-  public InOrderActionSequencer(List<Action> actions, boolean reversed) {
-    this.actions.addAll(actions);
+  public InOrderActionSequencer(boolean reversed) {
     this.reversed = reversed;
   }
 
@@ -35,6 +34,11 @@ public class InOrderActionSequencer implements ActionSequencer {
   @Override
   public List<Action> listAll() {
     return actions;
+  }
+
+  @Override
+  public void setActions(List<Action> actions) {
+    this.actions.addAll(actions);
   }
 
   public boolean isReversed() {

@@ -103,16 +103,16 @@ public class CommandExpanderImpl implements CommandExpander {
   @Override
   public void checkForCyclicalActions(Command command) throws CyclicalActionsException {
 
-    List<Command> visited = new ArrayList<>();
-    visited.add(command);
-    checkForCyclicalActions(command, command, visited);
+    List<String> visited = new ArrayList<>();
+    visited.add(command.getName());
+    checkForCyclicalActions(command.getName(), command, visited);
 
   }
 
   private void checkForCyclicalActions(
-      Command rootCommand,
+      String rootCommand,
       Command currentCommand,
-      List<Command> visitedCommands) {
+      List<String> visitedCommands) {
 
     // Find all of the ExecuteCommandAction commands of the current command, and collect
     // the Commands each targets.
@@ -125,10 +125,10 @@ public class CommandExpanderImpl implements CommandExpander {
     // Iterate over the collected commands. If any of them have already been visited, then
     // a cycle has occurred.
     for (Command command : commands) {
-      if (visitedCommands.contains(command)) {
-        throw new CyclicalActionsException(rootCommand, visitedCommands);
+      if (visitedCommands.contains(command.getName())) {
+        throw CyclicalActionsException.fromNameAndBreadcrumbs(rootCommand, visitedCommands);
       } else {
-        visitedCommands.add(command);
+        visitedCommands.add(command.getName());
       }
       checkForCyclicalActions(rootCommand, command, visitedCommands);
     }

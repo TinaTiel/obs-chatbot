@@ -6,5 +6,5 @@ import com.tinatiel.obschatbot.data.command.model.sequencer.SequencerDto;
 import java.util.List;
 
 public interface ExecutableSequencerMapper {
-  ActionSequencer map(SequencerDto dto, List<ActionDto> actions);
+  ActionSequencer map(SequencerDto dto);
 }

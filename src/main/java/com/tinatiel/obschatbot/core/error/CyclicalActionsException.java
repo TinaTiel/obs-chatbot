@@ -6,7 +6,9 @@
 package com.tinatiel.obschatbot.core.error;
 
 import com.tinatiel.obschatbot.core.command.Command;
+import com.tinatiel.obschatbot.data.command.model.CommandDto;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -41,12 +43,21 @@ public class CyclicalActionsException extends AbstractCodedException {
    * @param breadcrumbs   The list of Commands, in the order encountered, that led to cyclical
    *                      execution.
    */
-  public CyclicalActionsException(Command parentCommand, List<Command> breadcrumbs) {
-    this(
+  public static CyclicalActionsException fromCommandAndBreadcrumbs(Command parentCommand, List<Command> breadcrumbs) {
+    return new CyclicalActionsException(
         "An infinite loop was detected on root command !" + parentCommand.getName()
         + "; execution chain was: " + breadcrumbs.stream()
         .map(it -> "!" + it.getName()).collect(Collectors.joining(" -> "))
         + " -> (loop back to !" + parentCommand.getName() + ")", null
+    );
+  }
+
+  public static CyclicalActionsException fromNameAndBreadcrumbs(String parentCommand, List<String> breadcrumbs) {
+    return new CyclicalActionsException(
+      "An infinite loop was detected on root command !" + parentCommand
+        + "; execution chain was: " + breadcrumbs.stream()
+        .map(it -> "!" + it).collect(Collectors.joining(" -> "))
+        + " -> (loop back to !" + parentCommand + ")", null
     );
   }
 

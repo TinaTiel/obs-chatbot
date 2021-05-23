@@ -74,4 +74,12 @@ public class Command {
   public int hashCode() {
     return Objects.hash(name);
   }
+
+  @Override
+  public String toString() {
+    return "Command{"
+      + "name='" + name + '\''
+      + ", disabled=" + disabled
+      + '}';
+  }
 }

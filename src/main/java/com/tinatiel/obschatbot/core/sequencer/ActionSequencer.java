@@ -30,4 +30,6 @@ public interface ActionSequencer {
 
   List<Action> listAll();
 
+  void setActions(List<Action> actions);
+
 }

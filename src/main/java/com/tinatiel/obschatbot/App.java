@@ -5,25 +5,14 @@
 
 package com.tinatiel.obschatbot;
 
-import com.tinatiel.obschatbot.core.action.model.ObsSourceVisibilityAction;
-import com.tinatiel.obschatbot.core.action.model.SendMessageAction;
-import com.tinatiel.obschatbot.core.action.model.WaitAction;
-import com.tinatiel.obschatbot.core.command.Command;
-import com.tinatiel.obschatbot.core.command.CommandServiceInMemoryImpl;
-import com.tinatiel.obschatbot.core.sequencer.InOrderActionSequencer;
-import com.tinatiel.obschatbot.core.sequencer.RandomOrderActionSequencer;
-import com.tinatiel.obschatbot.core.user.Platform;
-import com.tinatiel.obschatbot.core.user.local.LocalUser;
-import com.tinatiel.obschatbot.core.user.local.LocalUserRepository;
+import com.tinatiel.obschatbot.core.client.ClientManager;
 import com.tinatiel.obschatbot.data.command.CommandEntityService;
 import com.tinatiel.obschatbot.data.command.model.CommandDto;
 import com.tinatiel.obschatbot.data.command.model.action.ObsSourceVisibilityActionDto;
-import com.tinatiel.obschatbot.data.command.model.action.SendMessageActionDto;
 import com.tinatiel.obschatbot.data.command.model.action.WaitActionDto;
 import com.tinatiel.obschatbot.data.command.model.sequencer.InOrderSequencerDto;
 import java.time.Duration;
 import java.util.Arrays;
-import java.util.Date;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
@@ -42,50 +31,50 @@ public class App {
   public static void main(String[] args) {
     ApplicationContext context = SpringApplication.run(App.class);
 
-    // Register a command
-    Command randomText = new Command()
-      .name("test")
-      .actionSequencer(new RandomOrderActionSequencer(Arrays.asList(
-        new SendMessageAction("Test message #1, sent " + new Date()),
-        new SendMessageAction("Test message #2, sent " + new Date()),
-        new SendMessageAction("Test message #3, sent " + new Date())
-      ), 2));
-
-    Command hideShow = new Command()
-      .name("hideshow")
-      .actionSequencer(new InOrderActionSequencer(Arrays.asList(
-        new SendMessageAction("Hiding the test scene item..."),
-        new ObsSourceVisibilityAction("scene1", "text1", false),
-        new SendMessageAction("Waiting..."),
-        new WaitAction(Duration.ofSeconds(2), Duration.ofSeconds(30)),
-        new SendMessageAction("Showing the test scene item..."),
-        new ObsSourceVisibilityAction("scene1", "text1", true)
-      ), false));
-
-    Command pingPong = new Command()
-      .name("ping")
-      .actionSequencer(new InOrderActionSequencer(Arrays.asList(
-        new SendMessageAction("pong!")
-      ), false));
-
-    CommandServiceInMemoryImpl commandExecutableService = context.getBean(
-      CommandServiceInMemoryImpl.class);
-    commandExecutableService.save(randomText);
-    commandExecutableService.save(pingPong);
-    commandExecutableService.save(hideShow);
-
-    // Register who the broadcaster is for the Twitch platform
-    LocalUserRepository localUserRepository = context.getBean(LocalUserRepository.class);
-    localUserRepository.save(LocalUser.builder()
-      .platform(Platform.TWITCH)
-      .username("tinatiel")
-      .broadcaster(true)
-      .build()
-    );
+//    // Register a command
+//    Command randomText = new Command()
+//      .name("test")
+//      .actionSequencer(new RandomOrderActionSequencer(Arrays.asList(
+//        new SendMessageAction("Test message #1, sent " + new Date()),
+//        new SendMessageAction("Test message #2, sent " + new Date()),
+//        new SendMessageAction("Test message #3, sent " + new Date())
+//      ), 2));
+//
+//    Command hideShow = new Command()
+//      .name("hideshow")
+//      .actionSequencer(new InOrderActionSequencer(Arrays.asList(
+//        new SendMessageAction("Hiding the test scene item..."),
+//        new ObsSourceVisibilityAction("scene1", "text1", false),
+//        new SendMessageAction("Waiting..."),
+//        new WaitAction(Duration.ofSeconds(2), Duration.ofSeconds(30)),
+//        new SendMessageAction("Showing the test scene item..."),
+//        new ObsSourceVisibilityAction("scene1", "text1", true)
+//      ), false));
+//
+//    Command pingPong = new Command()
+//      .name("ping")
+//      .actionSequencer(new InOrderActionSequencer(Arrays.asList(
+//        new SendMessageAction("pong!")
+//      ), false));
+//
+//    CommandServiceInMemoryImpl commandExecutableService = context.getBean(
+//      CommandServiceInMemoryImpl.class);
+//    commandExecutableService.save(randomText);
+//    commandExecutableService.save(pingPong);
+//    commandExecutableService.save(hideShow);
+//
+//    // Register who the broadcaster is for the Twitch platform
+//    LocalUserRepository localUserRepository = context.getBean(LocalUserRepository.class);
+//    localUserRepository.save(LocalUser.builder()
+//      .platform(Platform.TWITCH)
+//      .username("tinatiel")
+//      .broadcaster(true)
+//      .build()
+//    );
 
     // Get the OBS Client manager and start it
-//    ClientManager obsClientManager = context.getBean("obsClientManager", ClientManager.class);
-//    obsClientManager.startClient();
+    ClientManager obsClientManager = context.getBean("obsClientManager", ClientManager.class);
+    obsClientManager.startClient();
 //    try {
 //      Thread.sleep(500);
 //    } catch (InterruptedException e) {
@@ -101,7 +90,7 @@ public class App {
 //      e.printStackTrace();
 //    }
 //    obsClientManager.onActionRequest(new ActionRequest(requestContext, showAction));
-
+//
 //    CommandRequestDispatcher commandRequestDispatcher = context.getBean(CommandRequestDispatcher.class);
 //    commandRequestDispatcher.submit(hideShow, requestContext);
 //    try {
@@ -115,38 +104,16 @@ public class App {
 
     // Given a command
     CommandDto request = CommandDto.builder()
-      .name("somecommandwitheverything")
+      .name("donate")
       .sequencer(InOrderSequencerDto.builder().build())
       .actions(Arrays.asList(
         ObsSourceVisibilityActionDto.builder().position(2).sourceName("donate").visible(true).build(),
-        WaitActionDto.builder().position(3).waitDuration(Duration.ofSeconds(2)).build(),
+        WaitActionDto.builder().position(3).waitDuration(Duration.ofSeconds(3)).build(),
         ObsSourceVisibilityActionDto.builder().position(4).sourceName("donate").visible(false).build()
       ))
       .build();
 
-    // When saved
-    CommandDto result = commandEntityService.save(request);
-
-    // Then it can be retrieved
-    CommandDto found = commandEntityService.findById(result.getId()).get();
-    System.out.println(found);
-
-    // And when updated
-    CommandDto updateRequest = found;
-    updateRequest.setActions(Arrays.asList(
-      SendMessageActionDto.builder().position(1).message("donate!").build(),
-      result.getActions().get(0),
-      result.getActions().get(1),
-      result.getActions().get(2)
-    ));
-
-    CommandDto updateResult = commandEntityService.save(updateRequest);
-
-    // Then it can be retrieved again
-    CommandDto foundAgain = commandEntityService.findById(updateResult.getId()).get();
-    System.out.println(foundAgain);
-
-//    commandEntityService.delete(foundAgain.getId());
+    commandEntityService.save(request);
 
   }
 }

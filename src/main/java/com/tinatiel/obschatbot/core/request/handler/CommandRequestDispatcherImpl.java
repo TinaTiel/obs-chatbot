@@ -26,13 +26,6 @@ public class CommandRequestDispatcherImpl implements CommandRequestDispatcher {
   //  private final QueueClient<CommandRequest> commandRequestQueueClient;
   private final CommandRequestGateway commandRequestGateway;
 
-  /**
-   * Create a new instance.
-   *
-   * @param commandRequestFactory Request factory that builds a ${@link CommandRequest}
-   * @param commandRequestGateway ${@link QueueClient} that submits requests to the CommandRequest
-   *                              queue
-   */
   public CommandRequestDispatcherImpl(
       CommandRequestFactory commandRequestFactory,
       CommandRequestGateway commandRequestGateway) {

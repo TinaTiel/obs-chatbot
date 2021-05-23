@@ -15,38 +15,21 @@ import org.springframework.stereotype.Component;
 @Component
 public class ExecutableSequencerMapperImpl implements ExecutableSequencerMapper{
 
-  private final ExecutableActionMapper actionMapper;
-
-  public ExecutableSequencerMapperImpl(
-    ExecutableActionMapper actionMapper) {
-    this.actionMapper = actionMapper;
-  }
-
   @Override
-  public ActionSequencer map(SequencerDto dto, List<ActionDto> actions) {
-
-    // Map the actions
-    List<Action> executableActions = new ArrayList<>();
-    if(actions != null) {
-      actions.forEach(actionDto -> {
-        executableActions.add(actionMapper.map(actionDto));
-      });
-    }
+  public ActionSequencer map(SequencerDto dto) {
 
     // Use the InOrder sequencer as default if not provided
     if(dto == null) {
-      return new InOrderActionSequencer(executableActions, false);
+      return new InOrderActionSequencer(false);
     }
 
     // Else map
     if(dto instanceof InOrderSequencerDto) {
       return new InOrderActionSequencer(
-        executableActions,
         ((InOrderSequencerDto) dto).isReversed()
       );
     } else if(dto instanceof RandomOrderSequencerDto) {
       return new RandomOrderActionSequencer(
-        executableActions,
         ((RandomOrderSequencerDto) dto).getPickedPerExecution()
       );
     } else {

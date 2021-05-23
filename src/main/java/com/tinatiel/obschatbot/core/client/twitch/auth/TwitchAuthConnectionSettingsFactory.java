@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
  * the OAuth client required to communicate with Twitch's APIs.
  */
 @Setter
-@ConfigurationProperties("com.tinatiel.twitch.auth")
+  @ConfigurationProperties("com.tinatiel.twitch.auth")
 @Configuration
 public class TwitchAuthConnectionSettingsFactory implements
     ClientSettingsFactory<TwitchAuthConnectionSettings> {
