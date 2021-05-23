@@ -146,5 +146,7 @@ public class App {
     CommandDto foundAgain = commandEntityService.findById(updateResult.getId()).get();
     System.out.println(foundAgain);
 
+//    commandEntityService.delete(foundAgain.getId());
+
   }
 }

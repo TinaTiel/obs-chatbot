@@ -26,6 +26,7 @@ import com.tinatiel.obschatbot.data.error.DataPersistenceException;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -426,4 +427,38 @@ public class CommandEntityServiceTest {
       .isEqualTo(result.getActions());
   }
 
+  @Test
+  void deleteCommandWithSequencer() {
+
+    // When a command is deleted
+    service.delete(existingCommandWithSequencer.getId());
+
+    // Then it is deleted
+    assertThat(commandRepository.count()).isEqualTo(initialCommandCount - 1);
+
+    // Then there are no remaining children
+    assertThat(sequencerRepository.count()).isZero();
+
+  }
+
+  @Test
+  void deleteCommandWithActions() {
+
+    // When a command is deleted
+    service.delete(existingCommandWithActions.getId());
+
+    // Then it is deleted
+    assertThat(commandRepository.count()).isEqualTo(initialCommandCount - 1);
+
+    // Then there are no remaining children
+    assertThat(actionRepository.count()).isZero();
+
+  }
+
+  @Test
+  void deleteCommandThatDoesntExist() {
+    assertThatThrownBy(() -> {
+      service.delete(UUID.randomUUID());
+    }).isInstanceOf(DataPersistenceException.class);
+  }
 }

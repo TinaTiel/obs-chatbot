@@ -2,7 +2,10 @@ package com.tinatiel.obschatbot.data.command;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.tinatiel.obschatbot.data.command.entity.CommandEntityRepository;
+import com.tinatiel.obschatbot.data.command.entity.sequencer.SequencerRepository;
 import com.tinatiel.obschatbot.data.command.model.CommandDto;
+import com.tinatiel.obschatbot.data.command.model.action.ActionRepository;
 import com.tinatiel.obschatbot.data.command.model.action.ObsSourceVisibilityActionDto;
 import com.tinatiel.obschatbot.data.command.model.action.SendMessageActionDto;
 import com.tinatiel.obschatbot.data.command.model.action.WaitActionDto;
@@ -18,9 +21,15 @@ public class CommandEntityServiceIT {
 
   @Autowired
   CommandEntityService service;
+  @Autowired
+  CommandEntityRepository commandEntityRepository;
+  @Autowired
+  SequencerRepository sequencerRepository;
+  @Autowired
+  ActionRepository actionRepository;
 
   @Test
-  void saveRetrieveUpdateRetrieve() {
+  void saveRetrieveUpdateRetrieveDelete() {
 
     // Given a command
     CommandDto request = CommandDto.builder()
@@ -53,6 +62,12 @@ public class CommandEntityServiceIT {
     // Then it can be retrieved again
     CommandDto foundAgain = service.findById(updateResult.getId()).get();
     assertThat(foundAgain).isNotNull();
+
+    // And finally deleted
+    service.delete(foundAgain.getId());
+    assertThat(commandEntityRepository.count()).isZero();
+    assertThat(actionRepository.count()).isZero();
+    assertThat(sequencerRepository.count()).isZero();
 
   }
 

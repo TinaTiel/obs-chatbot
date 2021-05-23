@@ -120,6 +120,8 @@ public class CommandEntityServiceImpl implements CommandEntityService {
 
   @Override
   public void delete(UUID id) throws DataPersistenceException {
-
+    repository.delete(repository.findById(id).orElseThrow(() ->
+      new DataPersistenceException("Did not find existing command with id " + id)
+    ));
   }
 }
