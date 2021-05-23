@@ -14,9 +14,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class ClientController {
 
   private final ClientManager twitchChatClientManager;
+  private final ClientManager obsClientManager;
 
-  public ClientController(ClientManager twitchChatClientManager) {
+  public ClientController(ClientManager twitchChatClientManager,
+    ClientManager obsClientManager) {
     this.twitchChatClientManager = twitchChatClientManager;
+    this.obsClientManager = obsClientManager;
   }
 
   @PostMapping(path = "/twitch/start")
@@ -27,6 +30,16 @@ public class ClientController {
   @PostMapping(path = "/twitch/stop")
   void twitchStop() {
     twitchChatClientManager.stopClient();
+  }
+
+  @PostMapping(path = "/obs/start")
+  void obsStart() {
+    obsClientManager.startClient();
+  }
+
+  @PostMapping(path = "/obs/stop")
+  void obsStop() {
+    obsClientManager.stopClient();
   }
 
 }

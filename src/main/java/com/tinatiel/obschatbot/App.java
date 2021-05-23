@@ -11,6 +11,7 @@ import com.tinatiel.obschatbot.data.command.model.CommandDto;
 import com.tinatiel.obschatbot.data.command.model.action.ObsSourceVisibilityActionDto;
 import com.tinatiel.obschatbot.data.command.model.action.WaitActionDto;
 import com.tinatiel.obschatbot.data.command.model.sequencer.InOrderSequencerDto;
+import com.tinatiel.obschatbot.data.command.model.sequencer.RandomOrderSequencerDto;
 import java.time.Duration;
 import java.util.Arrays;
 import org.springframework.boot.SpringApplication;
@@ -73,8 +74,8 @@ public class App {
 //    );
 
     // Get the OBS Client manager and start it
-    ClientManager obsClientManager = context.getBean("obsClientManager", ClientManager.class);
-    obsClientManager.startClient();
+//    ClientManager obsClientManager = context.getBean("obsClientManager", ClientManager.class);
+//    obsClientManager.startClient();
 //    try {
 //      Thread.sleep(500);
 //    } catch (InterruptedException e) {

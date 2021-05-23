@@ -152,6 +152,7 @@ public class ObsClientManagerImpl implements ClientManager {
       // we can clear it out and send a Stopped event
       lifecycleGateway.submit(new ClientStoppedEvent());
       clientDelegate = null;
+      ready = false;
     } else if (event instanceof ClientReadyEvent) {
       ready = true;
     }
