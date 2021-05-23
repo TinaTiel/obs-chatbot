@@ -50,4 +50,26 @@ public class CommandEntity extends BaseEntity {
   @JoinColumn(name = "command_id")
   private List<ActionEntity> actions = new ArrayList<>();
 
+  public void setActions(List<ActionEntity> newActions) {
+    this.actions.clear();
+    for(ActionEntity action:newActions) {
+      addAction(action);
+    }
+  }
+
+  public void addAction(ActionEntity action) {
+//    action.setPosition(this.actions.size());
+    this.actions.add(action);
+  }
+
+  public void removeAction(ActionEntity action) {
+    this.actions.remove(action);
+  }
+
+  public void removeActions() {
+    for(ActionEntity action:actions) {
+      removeAction(action);
+    }
+  }
+
 }

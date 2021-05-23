@@ -93,6 +93,11 @@ public class CommandEntityServiceImpl implements CommandEntityService {
 
       }
 
+      // Update the actions
+      if(request.getActions() != null) {
+        existing.setActions(request.getActions());
+      }
+
       // Save and flush the changes
       CommandEntity result = repository.save(
         existing

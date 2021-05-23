@@ -7,10 +7,15 @@ import static org.junit.jupiter.api.Assertions.fail;
 import com.tinatiel.obschatbot.data.CommonConfig;
 import com.tinatiel.obschatbot.data.command.entity.CommandEntity;
 import com.tinatiel.obschatbot.data.command.entity.CommandEntityRepository;
+import com.tinatiel.obschatbot.data.command.entity.action.ActionEntity;
+import com.tinatiel.obschatbot.data.command.entity.action.ObsSourceVisibilityActionEntity;
+import com.tinatiel.obschatbot.data.command.entity.action.SendMessageActionEntity;
+import com.tinatiel.obschatbot.data.command.entity.action.WaitActionEntity;
 import com.tinatiel.obschatbot.data.command.entity.sequencer.SequencerEntity;
 import com.tinatiel.obschatbot.data.command.entity.sequencer.SequencerEntity.Type;
 import com.tinatiel.obschatbot.data.command.entity.sequencer.SequencerRepository;
 import com.tinatiel.obschatbot.data.command.model.CommandDto;
+import com.tinatiel.obschatbot.data.command.model.action.ActionDto;
 import com.tinatiel.obschatbot.data.command.model.action.ActionRepository;
 import com.tinatiel.obschatbot.data.command.model.action.ObsSourceVisibilityActionDto;
 import com.tinatiel.obschatbot.data.command.model.action.SendMessageActionDto;
@@ -44,8 +49,10 @@ public class CommandEntityServiceTest {
   CommandEntity existingCommand;
   CommandEntity existingCommand2;
   CommandEntity existingCommandWithSequencer;
+  CommandEntity existingCommandWithActions;
 
-  int expectedIntialCount;
+  int initialCommandCount;
+  int initialActionCount;
 
   @BeforeEach
   void setUp() {
@@ -75,14 +82,35 @@ public class CommandEntityServiceTest {
       commandWithSeq1.setSequencer(seq1);
       seq1.setCommand(commandWithSeq1);
 
+      // create command with actions
+      ObsSourceVisibilityActionEntity action1 = new ObsSourceVisibilityActionEntity();
+      action1.setPosition(1);
+      action1.setSourceName("meme");
+      action1.setVisible(true);
+      WaitActionEntity action2 = new WaitActionEntity();
+      action2.setPosition(2);
+      action2.setWaitDuration(Duration.ofSeconds(2));
+      ObsSourceVisibilityActionEntity action3 = new ObsSourceVisibilityActionEntity();
+      action3.setPosition(3);
+      action3.setSourceName("meme");
+      action3.setVisible(false);
+      CommandEntity commandWithActions = new CommandEntity();
+      commandWithActions.setName("twoactions");
+      commandWithActions.setActions(Arrays.asList(action1, action2, action3));
+
       // save commands
       existingCommand = commandRepository.saveAndFlush(commandOnly);
       existingCommand2 = commandRepository.saveAndFlush(commandOnly2);
       existingCommandWithSequencer = commandRepository.saveAndFlush(commandWithSeq1);
+      existingCommandWithActions = commandRepository.saveAndFlush(commandWithActions);
       sequencerRepository.flush();
 
       // update the total
-      expectedIntialCount = 3;
+      initialCommandCount = 4;
+      initialActionCount = 3;
+
+      assertThat(commandRepository.count()).isEqualTo(initialCommandCount);
+      assertThat(actionRepository.count()).isEqualTo(initialActionCount);
 
       System.out.println("FINISHED INITIALIZING TEST DATA");
   }
@@ -115,7 +143,7 @@ public class CommandEntityServiceTest {
   void listAll() {
 
       // Given some known number of commands exist
-      assertThat(service.findAll()).hasSize(expectedIntialCount);
+      assertThat(service.findAll()).hasSize(initialCommandCount);
 
       // When a new command is saved
       service.save(CommandDto.builder()
@@ -123,7 +151,7 @@ public class CommandEntityServiceTest {
         .build());
 
       // Then one more command can be retrieved
-      assertThat(service.findAll()).hasSize(expectedIntialCount + 1);
+      assertThat(service.findAll()).hasSize(initialCommandCount + 1);
 
   }
 
@@ -201,7 +229,7 @@ public class CommandEntityServiceTest {
     assertThat(service.findById(disableRequest.getId()).get().getName()).isEqualTo("newname");
 
     // And there are no duplicates
-    assertThat(commandRepository.findAll()).hasSize(expectedIntialCount);
+    assertThat(commandRepository.findAll()).hasSize(initialCommandCount);
 
   }
 
@@ -286,17 +314,116 @@ public class CommandEntityServiceTest {
 
   @Test
   void reduceCommandActions() {
-    fail("todo");
+
+    // Given an existing command with actions
+    CommandDto existing = service.findById(existingCommandWithActions.getId())
+      .orElseThrow(() -> new AssertionError("command doesn't exist as expected"));
+
+    // And given a request to reduce those actions
+    CommandDto request = CommandDto.builder()
+      .id(existing.getId())
+      .name(existing.getName())
+      .actions(Arrays.asList(
+        existing.getActions().get(1)
+      ))
+      .build();
+
+    // When saved
+    CommandDto result = service.save(request);
+
+    // Then there are now fewer actions
+    assertThat(actionRepository.count()).isEqualTo(1);
+
+    // And it has the expected actions
+    CommandDto found = service.findById(result.getId()).get();
+    System.out.println(found.getActions());
+    assertThat(found).isNotNull().usingRecursiveComparison().isEqualTo(result);
+    assertThat(found.getActions())
+      .hasSameSizeAs(request.getActions())
+      .usingFieldByFieldElementComparator()
+      .usingRecursiveComparison()
+      .isEqualTo(result.getActions());
+
   }
 
   @Test
-  void increaseCommandActions() {
-    fail("todo");
+  void insertCommandActions() {
+    // Given an existing command with actions
+    CommandDto existing = service.findById(existingCommandWithActions.getId())
+      .orElseThrow(() -> new AssertionError("command doesn't exist as expected"));
+
+    // And given a request to insert an additional action
+    ActionDto action1 = existing.getActions().get(0);
+    action1.setPosition(1);
+    ActionDto action2 = SendMessageActionDto.builder()
+      .message("Whoohoo!")
+      .position(2)
+      .build();
+    ActionDto action3 = existing.getActions().get(1);
+    action3.setPosition(2);
+    ActionDto action4 = existing.getActions().get(2);
+    action4.setPosition(3);
+    CommandDto request = CommandDto.builder()
+      .id(existing.getId())
+      .name(existing.getName())
+      .actions(Arrays.asList(
+        action1, action2, action3, action4
+      ))
+      .build();
+
+    // When saved
+    CommandDto result = service.save(request);
+
+    // Then there are now more actions
+    assertThat(actionRepository.count()).isEqualTo(initialActionCount+1);
+
+    // And it has the expected actions
+    CommandDto found = service.findById(result.getId()).get();
+    System.out.println(found.getActions());
+    assertThat(found).isNotNull().usingRecursiveComparison().isEqualTo(result);
+    assertThat(found.getActions())
+      .hasSameSizeAs(request.getActions())
+      .usingFieldByFieldElementComparator()
+      .usingRecursiveComparison()
+      .isEqualTo(result.getActions());
   }
 
   @Test
   void reorderCommandActions() {
-    fail("todo");
+
+    // Given an existing command with actions
+    CommandDto existing = service.findById(existingCommandWithActions.getId())
+      .orElseThrow(() -> new AssertionError("command doesn't exist as expected"));
+
+    // And given a request to reorder those actions
+    ActionDto action1 = existing.getActions().get(1);
+    action1.setPosition(1);
+    ActionDto action2 = existing.getActions().get(0);
+    action2.setPosition(2);
+    ActionDto action3 = existing.getActions().get(2);
+    action3.setPosition(3);
+
+    CommandDto request = CommandDto.builder()
+      .id(existing.getId())
+      .name(existing.getName())
+      .actions(Arrays.asList(action1, action2, action3))
+      .build();
+
+    // When saved
+    CommandDto result = service.save(request);
+
+    // Then there are the same number of actions
+    assertThat(actionRepository.count()).isEqualTo(initialActionCount);
+
+    // But it has been reordered
+    CommandDto found = service.findById(result.getId()).get();
+    System.out.println(found.getActions());
+    assertThat(found).isNotNull().usingRecursiveComparison().isEqualTo(result);
+    assertThat(found.getActions())
+      .hasSameSizeAs(request.getActions())
+      .usingFieldByFieldElementComparator()
+      .usingRecursiveComparison()
+      .isEqualTo(result.getActions());
   }
 
 }
