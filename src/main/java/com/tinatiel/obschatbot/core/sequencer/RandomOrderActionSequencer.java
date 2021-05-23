@@ -81,6 +81,10 @@ public class RandomOrderActionSequencer implements ActionSequencer {
     return original;
   }
 
+  public Integer getPickedPerExecution() {
+    return pickedPerExecution;
+  }
+
   @Override
   public String toString() {
     return "RandomOrderActionSequencer{"

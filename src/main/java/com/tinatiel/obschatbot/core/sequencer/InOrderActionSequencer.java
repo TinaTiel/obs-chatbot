@@ -36,4 +36,17 @@ public class InOrderActionSequencer implements ActionSequencer {
   public List<Action> listAll() {
     return actions;
   }
+
+  public boolean isReversed() {
+    return reversed;
+  }
+
+  @Override
+  public String toString() {
+    return "InOrderActionSequencer{"
+      + "originalActions=" + actions
+      + ", reversed=" + reversed
+      + '}';
+  }
+
 }
