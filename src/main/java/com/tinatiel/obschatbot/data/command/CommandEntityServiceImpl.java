@@ -3,6 +3,7 @@ package com.tinatiel.obschatbot.data.command;
 import com.tinatiel.obschatbot.core.error.UnexpectedException;
 import com.tinatiel.obschatbot.data.command.entity.CommandEntity;
 import com.tinatiel.obschatbot.data.command.entity.CommandEntityRepository;
+import com.tinatiel.obschatbot.data.command.entity.sequencer.SequencerRepository;
 import com.tinatiel.obschatbot.data.command.mapper.CommandMapper;
 import com.tinatiel.obschatbot.data.command.model.CommandDto;
 import com.tinatiel.obschatbot.data.error.DataPersistenceException;
@@ -10,8 +11,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 
 /**
@@ -21,12 +20,15 @@ import javax.transaction.Transactional;
 public class CommandEntityServiceImpl implements CommandEntityService {
 
   private final CommandEntityRepository repository;
+  private final SequencerRepository sequencerRepository;
   private final CommandMapper mapper;
 
   public CommandEntityServiceImpl(
     CommandEntityRepository repository,
+    SequencerRepository sequencerRepository,
     CommandMapper mapper) {
     this.repository = repository;
+    this.sequencerRepository = sequencerRepository;
     this.mapper = mapper;
   }
 
@@ -48,12 +50,6 @@ public class CommandEntityServiceImpl implements CommandEntityService {
 
   private CommandDto createCommand(CommandEntity request) {
     try {
-      // update the sequencer relationships
-      if(request.getSequencer() != null) {
-        request.getSequencer().setCommand(request); // set other side of relationship
-      }
-
-      // save
       CommandEntity result = repository.save(
         request
       );
@@ -80,11 +76,9 @@ public class CommandEntityServiceImpl implements CommandEntityService {
 
       // Update the sequencer
       if(existing.getSequencer() != null) {
+        sequencerRepository.delete(existing.getSequencer());
 
-        existing.getSequencer().setSequencerType(request.getSequencer().getSequencerType());
-        existing.getSequencer().setReversed(request.getSequencer().isReversed());
-        existing.getSequencer().setPickedPerExecution(request.getSequencer().getPickedPerExecution());
-
+        existing.setSequencer(request.getSequencer());
       }
 
       // Update the actions

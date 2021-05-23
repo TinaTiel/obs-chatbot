@@ -5,7 +5,7 @@
 
 package com.tinatiel.obschatbot.data.command.entity.action;
 
-import com.tinatiel.obschatbot.data.command.entity.action.ActionEntity.Type;
+import com.tinatiel.obschatbot.data.common.ActionType;
 import java.util.UUID;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
@@ -20,7 +20,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @Entity
-@DiscriminatorValue(Type.EXECUTE_COMMAND)
+@DiscriminatorValue(ActionType.EXECUTE_COMMAND)
 public class ExecuteCommandActionEntity extends ActionEntity {
 
   private UUID target;

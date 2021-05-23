@@ -32,10 +32,11 @@ public class CommandEntity extends BaseEntity {
   @Column(nullable = false, unique = true)
   private String name;
 
-  @OneToOne(mappedBy = "command",
-    cascade = CascadeType.ALL,
-    fetch = FetchType.EAGER, // We will always need the sequencer
-    optional = false)
+  @OneToOne(
+    cascade = {CascadeType.ALL},
+    orphanRemoval = true
+  )
+  @JoinColumn(name = "sequencer_id")
   private SequencerEntity sequencer;
 
   private boolean disabled;
@@ -61,12 +62,6 @@ public class CommandEntity extends BaseEntity {
 
   public void removeAction(ActionEntity action) {
     this.actions.remove(action);
-  }
-
-  public void removeActions() {
-    for(ActionEntity action:actions) {
-      removeAction(action);
-    }
   }
 
 }

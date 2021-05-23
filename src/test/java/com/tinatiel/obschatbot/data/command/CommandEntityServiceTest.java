@@ -2,17 +2,13 @@ package com.tinatiel.obschatbot.data.command;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import com.tinatiel.obschatbot.data.CommonConfig;
 import com.tinatiel.obschatbot.data.command.entity.CommandEntity;
 import com.tinatiel.obschatbot.data.command.entity.CommandEntityRepository;
-import com.tinatiel.obschatbot.data.command.entity.action.ActionEntity;
 import com.tinatiel.obschatbot.data.command.entity.action.ObsSourceVisibilityActionEntity;
-import com.tinatiel.obschatbot.data.command.entity.action.SendMessageActionEntity;
 import com.tinatiel.obschatbot.data.command.entity.action.WaitActionEntity;
-import com.tinatiel.obschatbot.data.command.entity.sequencer.SequencerEntity;
-import com.tinatiel.obschatbot.data.command.entity.sequencer.SequencerEntity.Type;
+import com.tinatiel.obschatbot.data.command.entity.sequencer.InOrderSequencerEntity;
 import com.tinatiel.obschatbot.data.command.entity.sequencer.SequencerRepository;
 import com.tinatiel.obschatbot.data.command.model.CommandDto;
 import com.tinatiel.obschatbot.data.command.model.action.ActionDto;
@@ -75,13 +71,11 @@ public class CommandEntityServiceTest {
       commandOnly2.setDisabled(false);
 
       // create commands with sequencer
-      SequencerEntity seq1 = new SequencerEntity();
-      seq1.setSequencerType(Type.ORDERED);
+      InOrderSequencerEntity seq1 = new InOrderSequencerEntity();
       seq1.setReversed(false);
       CommandEntity commandWithSeq1 = new CommandEntity();
       commandWithSeq1.setName("inorder");
       commandWithSeq1.setSequencer(seq1);
-      seq1.setCommand(commandWithSeq1);
 
       // create command with actions
       ObsSourceVisibilityActionEntity action1 = new ObsSourceVisibilityActionEntity();

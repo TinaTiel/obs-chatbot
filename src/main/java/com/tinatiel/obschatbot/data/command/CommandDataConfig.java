@@ -1,6 +1,7 @@
 package com.tinatiel.obschatbot.data.command;
 
 import com.tinatiel.obschatbot.data.command.entity.CommandEntityRepository;
+import com.tinatiel.obschatbot.data.command.entity.sequencer.SequencerRepository;
 import com.tinatiel.obschatbot.data.command.mapper.CommandMapper;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,9 @@ public class CommandDataConfig {
   @Autowired
   CommandEntityRepository commandEntityRepository;
 
+  @Autowired
+  SequencerRepository sequencerRepository;
+
   @Bean
   CommandMapper commandMapper() {
     return Mappers.getMapper(CommandMapper.class);
@@ -25,7 +29,7 @@ public class CommandDataConfig {
 
   @Bean
   CommandEntityService commandEntityService() {
-    return new CommandEntityServiceImpl(commandEntityRepository, commandMapper());
+    return new CommandEntityServiceImpl(commandEntityRepository, sequencerRepository, commandMapper());
   }
 
 }

@@ -1,7 +1,8 @@
 package com.tinatiel.obschatbot.data.command.mapper;
 
+import com.tinatiel.obschatbot.data.command.entity.sequencer.InOrderSequencerEntity;
+import com.tinatiel.obschatbot.data.command.entity.sequencer.RandomOrderSequencerEntity;
 import com.tinatiel.obschatbot.data.command.entity.sequencer.SequencerEntity;
-import com.tinatiel.obschatbot.data.command.entity.sequencer.SequencerEntity.Type;
 import com.tinatiel.obschatbot.data.command.model.sequencer.InOrderSequencerDto;
 import com.tinatiel.obschatbot.data.command.model.sequencer.RandomOrderSequencerDto;
 import com.tinatiel.obschatbot.data.command.model.sequencer.SequencerDto;
@@ -11,16 +12,12 @@ import org.mapstruct.Mapper;
 public interface SequencerMapper {
 
   default SequencerDto map(SequencerEntity entity) {
-    if(entity == null || entity.getSequencerType() == null) {
+    if(entity == null) {
       return null;
-    } else if (entity.getSequencerType().equals(Type.ORDERED)) {
-      return InOrderSequencerDto.builder()
-        .reversed(entity.isReversed())
-        .build();
-    } else if (entity.getSequencerType().equals(Type.RANDOM_ORDER)) {
-      return RandomOrderSequencerDto.builder()
-        .pickedPerExecution(entity.getPickedPerExecution())
-        .build();
+    } else if (entity instanceof InOrderSequencerEntity) {
+      return map((InOrderSequencerEntity) entity);
+    } else if (entity instanceof RandomOrderSequencerEntity) {
+      return map((RandomOrderSequencerEntity) entity);
     } else {
       throw new RuntimeException("No mapping available");
     }
@@ -31,16 +28,18 @@ public interface SequencerMapper {
     SequencerEntity entity = new SequencerEntity();
 
     if(dto instanceof InOrderSequencerDto) {
-      entity.setSequencerType(Type.ORDERED);
-      entity.setReversed(((InOrderSequencerDto) dto).isReversed());
-      return entity;
+      return map((InOrderSequencerDto) dto);
     } else if (dto instanceof RandomOrderSequencerDto) {
-      entity.setSequencerType(Type.RANDOM_ORDER);
-      entity.setPickedPerExecution(((RandomOrderSequencerDto) dto).getPickedPerExecution());
-      return entity;
+      return map((RandomOrderSequencerDto) dto);
     } else {
       throw new RuntimeException("No mapping available");
     }
   }
+
+  InOrderSequencerDto map(InOrderSequencerEntity entity);
+  InOrderSequencerEntity map(InOrderSequencerDto dto);
+
+  RandomOrderSequencerDto map(RandomOrderSequencerEntity entity);
+  RandomOrderSequencerEntity map(RandomOrderSequencerDto dto);
 
 }

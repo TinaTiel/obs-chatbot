@@ -5,7 +5,7 @@
 
 package com.tinatiel.obschatbot.data.command.entity.action;
 
-import com.tinatiel.obschatbot.data.command.entity.action.ActionEntity.Type;
+import com.tinatiel.obschatbot.data.common.ActionType;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import lombok.Getter;
@@ -19,7 +19,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @Entity
-@DiscriminatorValue(Type.OBS_SOURCE_VIZ)
+@DiscriminatorValue(ActionType.OBS_SOURCE_VIZ)
 public class ObsSourceVisibilityActionEntity extends ActionEntity {
 
   private String sceneName;

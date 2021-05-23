@@ -26,13 +26,6 @@ import lombok.Setter;
 @DiscriminatorColumn(name = "action_type", discriminatorType = DiscriminatorType.STRING)
 public abstract class ActionEntity extends BaseEntity {
 
-  public static final class Type {
-    public static final String EXECUTE_COMMAND = "EXECUTE_COMMAND";
-    public static final String OBS_SOURCE_VIZ = "OBS_SOURCE_VIZ";
-    public static final String SEND_MESSAGE = "SEND_MESSAGE";
-    public static final String WAIT = "WAIT";
-  }
-
   @Column(nullable = false)
   private Integer position;
 
