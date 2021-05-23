@@ -1,6 +1,5 @@
 package com.tinatiel.obschatbot.data.command.entity.action;
 
-import com.tinatiel.obschatbot.core.action.Action;
 import com.tinatiel.obschatbot.data.command.entity.action.ActionEntity.Type;
 import java.time.Duration;
 import javax.persistence.DiscriminatorValue;

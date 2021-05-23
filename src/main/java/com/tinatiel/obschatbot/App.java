@@ -20,6 +20,7 @@ import com.tinatiel.obschatbot.data.command.model.CommandDto;
 import com.tinatiel.obschatbot.data.command.model.action.ObsSourceVisibilityActionDto;
 import com.tinatiel.obschatbot.data.command.model.action.SendMessageActionDto;
 import com.tinatiel.obschatbot.data.command.model.action.WaitActionDto;
+import com.tinatiel.obschatbot.data.command.model.sequencer.InOrderSequencerDto;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.Date;
@@ -110,20 +111,40 @@ public class App {
 //    }
 //    commandRequestDispatcher.submit(hideShow, requestContext);
 
+    CommandEntityService commandEntityService = context.getBean(CommandEntityService.class);
+
+    // Given a command
     CommandDto request = CommandDto.builder()
-      .name("withactions")
+      .name("somecommandwitheverything")
+      .sequencer(InOrderSequencerDto.builder().build())
       .actions(Arrays.asList(
-        SendMessageActionDto.builder().position(1).message("donate!").build(),
         ObsSourceVisibilityActionDto.builder().position(2).sourceName("donate").visible(true).build(),
         WaitActionDto.builder().position(3).waitDuration(Duration.ofSeconds(2)).build(),
         ObsSourceVisibilityActionDto.builder().position(4).sourceName("donate").visible(false).build()
       ))
       .build();
 
-    CommandEntityService commandEntityService = context.getBean(CommandEntityService.class);
-
     // When saved
     CommandDto result = commandEntityService.save(request);
+
+    // Then it can be retrieved
+    CommandDto found = commandEntityService.findById(result.getId()).get();
+    System.out.println(found);
+
+    // And when updated
+    CommandDto updateRequest = found;
+    updateRequest.setActions(Arrays.asList(
+      SendMessageActionDto.builder().position(1).message("donate!").build(),
+      result.getActions().get(0),
+      result.getActions().get(1),
+      result.getActions().get(2)
+    ));
+
+    CommandDto updateResult = commandEntityService.save(updateRequest);
+
+    // Then it can be retrieved again
+    CommandDto foundAgain = commandEntityService.findById(updateResult.getId()).get();
+    System.out.println(foundAgain);
 
   }
 }

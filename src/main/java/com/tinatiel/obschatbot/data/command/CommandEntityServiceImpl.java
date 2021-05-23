@@ -3,9 +3,6 @@ package com.tinatiel.obschatbot.data.command;
 import com.tinatiel.obschatbot.core.error.UnexpectedException;
 import com.tinatiel.obschatbot.data.command.entity.CommandEntity;
 import com.tinatiel.obschatbot.data.command.entity.CommandEntityRepository;
-import com.tinatiel.obschatbot.data.command.entity.action.ActionEntity;
-import com.tinatiel.obschatbot.data.command.entity.sequencer.SequencerEntity;
-import com.tinatiel.obschatbot.data.command.entity.sequencer.SequencerRepository;
 import com.tinatiel.obschatbot.data.command.mapper.CommandMapper;
 import com.tinatiel.obschatbot.data.command.model.CommandDto;
 import com.tinatiel.obschatbot.data.error.DataPersistenceException;
@@ -25,9 +22,6 @@ public class CommandEntityServiceImpl implements CommandEntityService {
 
   private final CommandEntityRepository repository;
   private final CommandMapper mapper;
-
-  @PersistenceContext
-  private EntityManager entityManager;
 
   public CommandEntityServiceImpl(
     CommandEntityRepository repository,

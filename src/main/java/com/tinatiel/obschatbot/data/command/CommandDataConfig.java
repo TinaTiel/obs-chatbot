@@ -1,7 +1,6 @@
 package com.tinatiel.obschatbot.data.command;
 
 import com.tinatiel.obschatbot.data.command.entity.CommandEntityRepository;
-import com.tinatiel.obschatbot.data.command.entity.sequencer.SequencerRepository;
 import com.tinatiel.obschatbot.data.command.mapper.CommandMapper;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -5,7 +5,6 @@
 
 package com.tinatiel.obschatbot.data.command.entity.action;
 
-import com.tinatiel.obschatbot.core.action.Action;
 import com.tinatiel.obschatbot.data.command.entity.action.ActionEntity.Type;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;

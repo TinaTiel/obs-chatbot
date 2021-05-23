@@ -5,8 +5,6 @@
 
 package com.tinatiel.obschatbot.data.command.entity.action;
 
-import com.tinatiel.obschatbot.core.action.Action;
-import com.tinatiel.obschatbot.core.command.Command;
 import com.tinatiel.obschatbot.data.command.entity.action.ActionEntity.Type;
 import java.util.UUID;
 import javax.persistence.DiscriminatorValue;
