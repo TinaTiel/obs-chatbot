@@ -57,4 +57,9 @@ public class CommandDataConfig {
     return new CommandEntityServiceImpl(commandEntityRepository, sequencerRepository, commandMapper());
   }
 
+  @Bean
+  public CommandService commandRepository() {
+    return new CommandServiceImpl(commandEntityService(), executableCommandMapper());
+  }
+
 }

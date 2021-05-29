@@ -1,10 +1,8 @@
-package com.tinatiel.obschatbot.core.command;
+package com.tinatiel.obschatbot.data.command;
 
-import com.tinatiel.obschatbot.data.command.CommandEntityService;
+import com.tinatiel.obschatbot.core.command.Command;
 import com.tinatiel.obschatbot.data.command.mapper.executable.ExecutableCommandMapper;
-import java.util.HashSet;
 import java.util.Optional;
-import java.util.Set;
 
 /**
  * A temporary in-memory implementation currently being used for sanity-checking. Replace with JPA!

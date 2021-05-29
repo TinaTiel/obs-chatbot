@@ -1,7 +1,7 @@
 package com.tinatiel.obschatbot.core.request.scheduler;
 
 import com.tinatiel.obschatbot.core.SpringIntegrationTestConfig;
-import com.tinatiel.obschatbot.core.command.CommandService;
+import com.tinatiel.obschatbot.data.command.CommandService;
 import com.tinatiel.obschatbot.core.request.*;
 import com.tinatiel.obschatbot.core.request.messaging.CommandRequestGateway;
 import com.tinatiel.obschatbot.core.user.*;

@@ -3,8 +3,9 @@
  * GNU General Public License v3.0. See LICENSE or go to https://fsf.org/ for more details.
  */
 
-package com.tinatiel.obschatbot.core.command;
+package com.tinatiel.obschatbot.data.command;
 
+import com.tinatiel.obschatbot.core.command.Command;
 import java.util.Optional;
 
 /**

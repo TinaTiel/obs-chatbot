@@ -6,7 +6,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import com.tinatiel.obschatbot.data.command.CommandEntityService;
-import com.tinatiel.obschatbot.data.command.entity.CommandEntity;
+import com.tinatiel.obschatbot.data.command.CommandService;
+import com.tinatiel.obschatbot.data.command.CommandServiceImpl;
 import com.tinatiel.obschatbot.data.command.mapper.executable.ExecutableCommandMapper;
 import com.tinatiel.obschatbot.data.command.model.CommandDto;
 import java.util.Optional;
