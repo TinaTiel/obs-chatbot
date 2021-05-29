@@ -113,8 +113,9 @@ public class App {
         ObsSourceVisibilityActionDto.builder().position(4).sourceName("donate").visible(false).build()
       ))
       .build();
-
-    commandEntityService.save(request);
+    if(commandEntityService.findByName(request.getName()).isEmpty()) {
+      commandEntityService.save(request);
+    }
 
   }
 }

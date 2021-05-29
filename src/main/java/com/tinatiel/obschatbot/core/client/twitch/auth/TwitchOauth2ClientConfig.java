@@ -6,9 +6,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.oauth2.client.AuthorizedClientServiceOAuth2AuthorizedClientManager;
 import org.springframework.security.oauth2.client.InMemoryOAuth2AuthorizedClientService;
+import org.springframework.security.oauth2.client.JdbcOAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientProvider;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientProviderBuilder;
@@ -31,13 +33,16 @@ public class TwitchOauth2ClientConfig {
   @Autowired
   TwitchAuthClientMessagingGateway twitchAuthQueueClient;
 
+  @Autowired
+  JdbcTemplate jdbcTemplate;
+
   /**
    * manages **authorized** clients TODO Replace with JdbcOAuth2AuthorizedClientService
    * https://docs.spring.io/spring-security/site/docs/current/api/org/springframework/security/oauth2/client/JdbcOAuth2AuthorizedClientService.html
    */
   @Bean
   OAuth2AuthorizedClientService authorizedClientService() {
-    return new InMemoryOAuth2AuthorizedClientService(clientRegistrationRepository());
+    return new JdbcOAuth2AuthorizedClientService(jdbcTemplate, clientRegistrationRepository());
   }
 
   @Bean

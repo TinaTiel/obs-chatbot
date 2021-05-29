@@ -19,6 +19,7 @@ import java.time.Duration;
 import java.util.Arrays;
 import java.util.Optional;
 import javax.persistence.criteria.CriteriaBuilder.In;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -36,6 +37,13 @@ public class CommandDataServicesIT {
   SequencerRepository sequencerRepository;
   @Autowired
   ActionRepository actionRepository;
+
+  @BeforeEach
+  void beforeEach() {
+    commandEntityService.findAll().forEach(it -> {
+      commandEntityService.delete(it.getId());
+    });
+  }
 
   @Test
   void saveRetrieveUpdateRetrieveDelete() {
