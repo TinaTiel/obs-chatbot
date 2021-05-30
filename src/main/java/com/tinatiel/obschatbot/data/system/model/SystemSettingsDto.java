@@ -1,9 +1,11 @@
 package com.tinatiel.obschatbot.data.system.model;
 
+import com.tinatiel.obschatbot.data.common.IdentifiableDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 /**
  * An user-presentable representation of global system settings.
@@ -11,20 +13,19 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-@Builder
-public class SystemSettingsDto {
+@SuperBuilder
+public class SystemSettingsDto extends IdentifiableDto {
+
 
   /**
    * Maximum number of actions executed at once in a batch
    */
-  @Builder.Default
-  private int maxActionBatchSize = 3; // RequestSchedulerConfig
+  private int maxActionBatchSize;
 
   /**
    * Milliseconds timeout for expanding a Command into actions; failsafe
    * in the case when cycle detection fails.
    */
-  @Builder.Default
-  private int recursionTimeoutMillis = 1000; // CommandExpanderConfig
+  private int recursionTimeoutMillis;
 
 }

@@ -3,7 +3,7 @@ package com.tinatiel.obschatbot.data.command;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import com.tinatiel.obschatbot.data.CommonConfig;
+import com.tinatiel.obschatbot.data.common.CommonConfig;
 import com.tinatiel.obschatbot.data.command.entity.CommandEntity;
 import com.tinatiel.obschatbot.data.command.entity.CommandEntityRepository;
 import com.tinatiel.obschatbot.data.command.entity.action.ObsSourceVisibilityActionEntity;
@@ -12,7 +12,7 @@ import com.tinatiel.obschatbot.data.command.entity.sequencer.InOrderSequencerEnt
 import com.tinatiel.obschatbot.data.command.entity.sequencer.SequencerRepository;
 import com.tinatiel.obschatbot.data.command.model.CommandDto;
 import com.tinatiel.obschatbot.data.command.model.action.ActionDto;
-import com.tinatiel.obschatbot.data.command.model.action.ActionRepository;
+import com.tinatiel.obschatbot.data.command.entity.action.ActionRepository;
 import com.tinatiel.obschatbot.data.command.model.action.ObsSourceVisibilityActionDto;
 import com.tinatiel.obschatbot.data.command.model.action.SendMessageActionDto;
 import com.tinatiel.obschatbot.data.command.model.action.WaitActionDto;
@@ -27,11 +27,17 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.test.context.ContextConfiguration;
 
-@ContextConfiguration(classes = {CommonConfig.class, CommandDataConfig.class})
+@ContextConfiguration(classes = {CommonConfig.class, CommandDataConfig.class, CommandEntityServiceTest.TestConfig.class})
 @DataJpaTest
 public class CommandEntityServiceTest {
+
+  @Configuration
+  @EnableJpaRepositories(basePackages = "com.tinatiel.obschatbot.data.command.entity")
+  static class TestConfig { }
 
   @Autowired
   CommandEntityService service;

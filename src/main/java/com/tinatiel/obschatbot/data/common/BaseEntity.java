@@ -1,5 +1,6 @@
 package com.tinatiel.obschatbot.data.common;
 
+import com.tinatiel.obschatbot.core.user.User;
 import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
@@ -27,4 +28,7 @@ public class BaseEntity {
   @Type(type = "org.hibernate.type.UUIDCharType")
   @Column(length = 36, columnDefinition = "varchar", updatable = false, nullable = false)
   private UUID id;
+
+  private String owner = User.SYSTEM_PRINCIPAL_NAME;
+
 }

@@ -1,4 +1,4 @@
-package com.tinatiel.obschatbot.data.command.model.action;
+package com.tinatiel.obschatbot.data.command.entity.action;
 
 import com.tinatiel.obschatbot.data.command.entity.action.ActionEntity;
 import java.util.UUID;
