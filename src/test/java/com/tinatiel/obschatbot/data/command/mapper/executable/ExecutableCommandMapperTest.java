@@ -19,7 +19,7 @@ import com.tinatiel.obschatbot.data.command.entity.action.ActionRepository;
 import com.tinatiel.obschatbot.data.command.model.action.ExecuteCommandActionDto;
 import com.tinatiel.obschatbot.data.command.model.action.SendMessageActionDto;
 import com.tinatiel.obschatbot.data.command.model.sequencer.InOrderSequencerDto;
-import com.tinatiel.obschatbot.data.owner.OwnerConfig;
+import com.tinatiel.obschatbot.security.owner.OwnerConfig;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;

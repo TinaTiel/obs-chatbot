@@ -4,6 +4,7 @@ import com.tinatiel.obschatbot.core.client.twitch.auth.messaging.TwitchAuthClien
 import com.tinatiel.obschatbot.core.client.twitch.auth.messaging.TwitchAuthValidationFailureEvent;
 import com.tinatiel.obschatbot.core.client.twitch.auth.messaging.TwitchAuthValidationSuccessEvent;
 import com.tinatiel.obschatbot.core.user.User;
+import com.tinatiel.obschatbot.security.owner.OwnerService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.oauth2.client.OAuth2AuthorizeRequest;
@@ -18,6 +19,7 @@ import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 @Slf4j
 public class TwitchAuthValidationService {
 
+  private final OwnerService ownerService;
   private final OAuth2AuthorizedClientService authorizedClientService;
   private final OAuth2AuthorizedClientManager authorizedClientManager;
   private final TwitchAuthClientMessagingGateway twitchAuthQueueClient;
@@ -27,10 +29,12 @@ public class TwitchAuthValidationService {
    * Creates a new instance.
    */
   public TwitchAuthValidationService(
-      OAuth2AuthorizedClientService authorizedClientService,
-      OAuth2AuthorizedClientManager authorizedClientManager,
-      TwitchAuthClientMessagingGateway twitchAuthQueueClient,
-      TwitchAuthClient twitchAuthClient) {
+    OwnerService ownerService,
+    OAuth2AuthorizedClientService authorizedClientService,
+    OAuth2AuthorizedClientManager authorizedClientManager,
+    TwitchAuthClientMessagingGateway twitchAuthQueueClient,
+    TwitchAuthClient twitchAuthClient) {
+    this.ownerService = ownerService;
     this.authorizedClientService = authorizedClientService;
     this.authorizedClientManager = authorizedClientManager;
     this.twitchAuthQueueClient = twitchAuthQueueClient;
@@ -47,7 +51,7 @@ public class TwitchAuthValidationService {
 
     // Get the twitch client
     OAuth2AuthorizedClient twitchClient = authorizedClientService
-        .loadAuthorizedClient("twitch", User.SYSTEM_PRINCIPAL_NAME);
+        .loadAuthorizedClient("twitch", ownerService.getOwner().getName());
 
     // If there was no authorized client, then log a warning TODO communicate state to show user
     if (twitchClient == null) {
@@ -60,7 +64,7 @@ public class TwitchAuthValidationService {
     authorizedClientManager.authorize(
         OAuth2AuthorizeRequest
           .withAuthorizedClient(twitchClient)
-          .principal(User.SYSTEM_PRINCIPAL_NAME)
+          .principal(ownerService.getOwner().getName())
           .build()
     );
 

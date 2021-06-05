@@ -21,6 +21,7 @@ import com.tinatiel.obschatbot.core.request.handler.chat.ChatRequestHandler;
 import com.tinatiel.obschatbot.core.request.messaging.ActionRequestGateway;
 import com.tinatiel.obschatbot.core.request.messaging.CommandRequestGateway;
 import com.tinatiel.obschatbot.core.request.messaging.RequestMessagingConfig;
+import com.tinatiel.obschatbot.security.owner.OwnerConfig;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -35,7 +36,8 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 @EnableIntegration
 @ContextConfiguration(classes = {
   TwitchChatClientConfig.class,
-  RequestMessagingConfig.class
+  RequestMessagingConfig.class,
+  OwnerConfig.class
 })
 @SpringJUnitConfig
 public class ChatActionRequestIT {

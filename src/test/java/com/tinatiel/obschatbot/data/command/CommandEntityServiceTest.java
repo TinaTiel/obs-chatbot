@@ -20,7 +20,7 @@ import com.tinatiel.obschatbot.data.command.model.action.WaitActionDto;
 import com.tinatiel.obschatbot.data.command.model.sequencer.InOrderSequencerDto;
 import com.tinatiel.obschatbot.data.command.model.sequencer.RandomOrderSequencerDto;
 import com.tinatiel.obschatbot.data.error.DataPersistenceException;
-import com.tinatiel.obschatbot.data.owner.OwnerConfig;
+import com.tinatiel.obschatbot.security.owner.OwnerConfig;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.Optional;

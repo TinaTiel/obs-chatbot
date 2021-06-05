@@ -9,13 +9,12 @@ import com.tinatiel.obschatbot.data.command.mapper.executable.ExecutableCommandM
 import com.tinatiel.obschatbot.data.command.mapper.executable.ExecutableCommandMapperImpl;
 import com.tinatiel.obschatbot.data.command.mapper.executable.ExecutableSequencerMapper;
 import com.tinatiel.obschatbot.data.command.mapper.executable.ExecutableSequencerMapperImpl;
-import com.tinatiel.obschatbot.data.owner.OwnerService;
+import com.tinatiel.obschatbot.security.owner.OwnerService;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 /**
  * Configure the command domain services and entities.

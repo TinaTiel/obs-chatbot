@@ -1,7 +1,5 @@
 package com.tinatiel.obschatbot.data.system;
 
-import com.tinatiel.obschatbot.data.owner.OwnerService;
-import com.tinatiel.obschatbot.data.owner.SystemOwnerService;
 import com.tinatiel.obschatbot.data.system.entity.SystemSettingsRepository;
 import com.tinatiel.obschatbot.data.system.mapper.SystemSettingsMapper;
 import org.mapstruct.factory.Mappers;

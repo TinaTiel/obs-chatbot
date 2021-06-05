@@ -10,6 +10,7 @@ import com.tinatiel.obschatbot.data.command.model.CommandDto;
 import com.tinatiel.obschatbot.data.command.model.action.ObsSourceVisibilityActionDto;
 import com.tinatiel.obschatbot.data.command.model.action.WaitActionDto;
 import com.tinatiel.obschatbot.data.command.model.sequencer.InOrderSequencerDto;
+import com.tinatiel.obschatbot.security.owner.SystemOwnerService;
 import java.time.Duration;
 import java.util.Arrays;
 import org.springframework.boot.SpringApplication;
@@ -103,6 +104,7 @@ public class App {
 //
 //    // Given a command
 //    CommandDto request = CommandDto.builder()
+//      .owner(SystemOwnerService.SYSTEM_ID)
 //      .name("donate")
 //      .sequencer(InOrderSequencerDto.builder().build())
 //      .actions(Arrays.asList(
@@ -111,7 +113,7 @@ public class App {
 //        ObsSourceVisibilityActionDto.builder().position(4).sourceName("donate").visible(false).build()
 //      ))
 //      .build();
-//    if(commandEntityService.findByNameAndOwner(request.getName()).isEmpty()) {
+//    if(commandEntityService.findByNameAndOwner(request.getName(), SystemOwnerService.SYSTEM_ID).isEmpty()) {
 //      commandEntityService.save(request);
 //    }
 

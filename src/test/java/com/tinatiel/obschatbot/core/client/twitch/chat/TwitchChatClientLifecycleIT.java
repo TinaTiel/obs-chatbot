@@ -11,6 +11,7 @@ import com.tinatiel.obschatbot.core.client.ClientManager;
 import com.tinatiel.obschatbot.core.client.event.*;
 import com.tinatiel.obschatbot.core.messaging.ObsChatbotEvent;
 import com.tinatiel.obschatbot.core.request.handler.chat.ChatRequestHandler;
+import com.tinatiel.obschatbot.security.owner.OwnerConfig;
 import java.util.Queue;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -44,7 +45,11 @@ import static org.mockito.Mockito.when;
  * changes how login to their IRC servers changes.
  */
 @EnableIntegration
-@ContextConfiguration(classes = {TwitchChatClientConfig.class, SpringIntegrationTestConfig.class})
+@ContextConfiguration(classes = {
+  TwitchChatClientConfig.class,
+  SpringIntegrationTestConfig.class,
+  OwnerConfig.class
+})
 @SpringJUnitConfig
 public class TwitchChatClientLifecycleIT {
 

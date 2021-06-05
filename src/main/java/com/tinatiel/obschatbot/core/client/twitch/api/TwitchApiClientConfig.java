@@ -1,5 +1,6 @@
 package com.tinatiel.obschatbot.core.client.twitch.api;
 
+import com.tinatiel.obschatbot.security.owner.OwnerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,11 +18,14 @@ public class TwitchApiClientConfig {
   @Autowired
   TwitchApiClientSettingsFactory twitchApiClientSettingsFactory;
 
+  @Autowired
+  OwnerService ownerService;
+
   @Bean
   TwitchApiClient twitchApiClient() {
 
     return new TwitchApiClientImpl(
-      authorizedClientService,
+      ownerService, authorizedClientService,
       twitchApiClientSettingsFactory
     );
   }

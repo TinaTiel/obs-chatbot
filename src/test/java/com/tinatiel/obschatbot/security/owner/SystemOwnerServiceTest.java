@@ -1,4 +1,4 @@
-package com.tinatiel.obschatbot.data.owner;
+package com.tinatiel.obschatbot.security.owner;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

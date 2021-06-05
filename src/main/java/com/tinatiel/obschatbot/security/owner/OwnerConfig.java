@@ -1,4 +1,4 @@
-package com.tinatiel.obschatbot.data.owner;
+package com.tinatiel.obschatbot.security.owner;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

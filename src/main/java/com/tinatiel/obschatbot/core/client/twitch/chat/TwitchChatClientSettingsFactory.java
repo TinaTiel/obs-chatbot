@@ -7,6 +7,7 @@ package com.tinatiel.obschatbot.core.client.twitch.chat;
 
 import com.tinatiel.obschatbot.core.client.ClientSettingsFactory;
 import com.tinatiel.obschatbot.core.user.User;
+import com.tinatiel.obschatbot.security.owner.OwnerService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
@@ -19,12 +20,15 @@ import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 public class TwitchChatClientSettingsFactory implements
     ClientSettingsFactory<TwitchChatClientSettings> {
 
+  private final OwnerService ownerService;
   private final TwitchChatClientSettings settings;
   private final OAuth2AuthorizedClientService clientService;
 
   public TwitchChatClientSettingsFactory(
-      TwitchChatClientSettings settings,
-      OAuth2AuthorizedClientService clientService) {
+    OwnerService ownerService,
+    TwitchChatClientSettings settings,
+    OAuth2AuthorizedClientService clientService) {
+    this.ownerService = ownerService;
     this.settings = settings;
     this.clientService = clientService;
   }
@@ -33,7 +37,7 @@ public class TwitchChatClientSettingsFactory implements
   public TwitchChatClientSettings getSettings() {
     // Load the (authorized) OAuth2 client
     OAuth2AuthorizedClient authorizedClient = clientService.loadAuthorizedClient(
-        "twitch", User.SYSTEM_PRINCIPAL_NAME);
+        "twitch", ownerService.getOwner().getName());
 
     if (authorizedClient != null) {
       settings.setOauthUserToken(authorizedClient.getAccessToken().getTokenValue());

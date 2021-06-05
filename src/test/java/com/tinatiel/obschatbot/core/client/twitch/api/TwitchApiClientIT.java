@@ -5,6 +5,9 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import com.tinatiel.obschatbot.core.user.User;
+import com.tinatiel.obschatbot.security.owner.OwnerDto;
+import com.tinatiel.obschatbot.security.owner.OwnerService;
+import java.util.UUID;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import org.junit.jupiter.api.AfterAll;
@@ -16,13 +19,14 @@ import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
-import org.springframework.web.client.RestTemplate;
 
 public class TwitchApiClientIT {
 
   public static MockWebServer twitchServer;
   TwitchApiClientSettings apiSettings;
 
+  OwnerService ownerService;
+  OwnerDto owner;
   OAuth2AuthorizedClientService authorizedClientService;
   TwitchApiClientSettingsFactory apiSettingsFactory;
 
@@ -52,11 +56,18 @@ public class TwitchApiClientIT {
 
 
     // Setup the SUT
+    ownerService = mock(OwnerService.class);
+    owner = (OwnerDto.builder()
+      .id(UUID.randomUUID())
+      .name("foo")
+      .build());
     authorizedClientService = mock(OAuth2AuthorizedClientService.class);
     apiSettingsFactory = mock(TwitchApiClientSettingsFactory.class);
-    when(apiSettingsFactory.getSettings()).thenReturn(apiSettings);
 
-    twitchApiClient = new TwitchApiClientImpl(authorizedClientService, apiSettingsFactory);
+    twitchApiClient = new TwitchApiClientImpl(ownerService, authorizedClientService, apiSettingsFactory);
+
+    when(apiSettingsFactory.getSettings()).thenReturn(apiSettings);
+    when(ownerService.getOwner()).thenReturn(owner);
 
   }
 
@@ -258,7 +269,7 @@ public class TwitchApiClientIT {
       .tokenUri("doesntmatter")
       .clientId(clientId)
       .build();
-    when(authorizedClientService.loadAuthorizedClient("twitch", User.SYSTEM_PRINCIPAL_NAME))
+    when(authorizedClientService.loadAuthorizedClient("twitch", owner.getName()))
       .thenReturn(authorizedClient);
     when(authorizedClient.getAccessToken()).thenReturn(accessToken);
     when(accessToken.getTokenValue()).thenReturn(tokenValue);

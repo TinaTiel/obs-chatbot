@@ -2,9 +2,12 @@ package com.tinatiel.obschatbot.core.client.twitch.auth;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import com.tinatiel.obschatbot.core.user.User;
+import com.tinatiel.obschatbot.security.owner.OwnerDto;
+import com.tinatiel.obschatbot.security.owner.OwnerService;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -15,6 +18,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
@@ -59,6 +63,10 @@ public class TwitchAuthE2eIT {
   @Autowired
   TwitchAuthValidationService twitchAuthValidationService;
 
+  @MockBean
+  OwnerService ownerService;
+  OwnerDto owner;
+
   private WebTestClient webClient;
 
   @BeforeAll
@@ -74,6 +82,13 @@ public class TwitchAuthE2eIT {
 
   @BeforeEach
   void setUp() {
+
+    // Setup the owner service
+    owner = OwnerDto.builder()
+      .id(UUID.randomUUID())
+      .name("foo")
+      .build();
+    when(ownerService.getOwner()).thenReturn(owner);
 
     // Setup the app settings
     String thisHost = "http://localhost:" + localPort;
@@ -129,7 +144,7 @@ public class TwitchAuthE2eIT {
 
     // (but no authorized client yet)
     assertThat((OAuth2AuthorizedClient) authorizedClientService
-      .loadAuthorizedClient("twitch", User.SYSTEM_PRINCIPAL_NAME)
+      .loadAuthorizedClient("twitch", owner.getName())
     ).isNull();
 
     // When we are redirected back to our server
@@ -164,8 +179,9 @@ public class TwitchAuthE2eIT {
       .contains("redirect_uri=" + authSettings.getRedirectUri());
 
     // And we can verify the token was stored successfully
-    OAuth2AuthorizedClient authorizedClient = authorizedClientService.loadAuthorizedClient("twitch",
-      User.SYSTEM_PRINCIPAL_NAME);
+    OAuth2AuthorizedClient authorizedClient = authorizedClientService.loadAuthorizedClient(
+      "twitch",
+      owner.getName());
     assertThat(authorizedClient).isNotNull();
     assertThat(authorizedClient.getAccessToken().getTokenValue()).isEqualTo(accessToken);
     assertThat(authorizedClient.getRefreshToken().getTokenValue()).isEqualTo(refreshToken);
@@ -182,8 +198,9 @@ public class TwitchAuthE2eIT {
     twitchAuthValidationService.refreshTokenIfNeeded();
 
     // Then we have a new token
-    OAuth2AuthorizedClient newAuthorizedClient = authorizedClientService.loadAuthorizedClient("twitch",
-      User.SYSTEM_PRINCIPAL_NAME);
+    OAuth2AuthorizedClient newAuthorizedClient = authorizedClientService.loadAuthorizedClient(
+      "twitch",
+      owner.getName());
     assertThat(newAuthorizedClient).isNotNull();
     assertThat(newAuthorizedClient.getAccessToken().getTokenValue()).isEqualTo(newAccessToken);
     assertThat(newAuthorizedClient.getRefreshToken().getTokenValue()).isEqualTo(newRefreshToken);

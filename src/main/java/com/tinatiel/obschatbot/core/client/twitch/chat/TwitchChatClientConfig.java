@@ -12,6 +12,7 @@ import com.tinatiel.obschatbot.core.client.ClientSettingsFactory;
 import com.tinatiel.obschatbot.core.client.twitch.chat.messaging.TwitchChatClientMessagingConfig;
 import com.tinatiel.obschatbot.core.client.twitch.chat.messaging.TwitchClientLifecycleGateway;
 import com.tinatiel.obschatbot.core.request.handler.chat.ChatRequestHandler;
+import com.tinatiel.obschatbot.security.owner.OwnerService;
 import javax.net.ssl.SSLSocketFactory;
 import org.pircbotx.PircBotX;
 import org.pircbotx.UtilSSLSocketFactory;
@@ -35,6 +36,9 @@ public class TwitchChatClientConfig {
   OAuth2AuthorizedClientService authorizedClientService;
   @Autowired
   TwitchClientLifecycleGateway twitchClientLifecycleGateway;
+  @Autowired
+  OwnerService ownerService;
+
   @Value("${TWITCH_TARGET_CHANNEL:noauth}")
   private String targetChannel;
   @Value("${TWITCH_USER:noauth}")
@@ -52,7 +56,7 @@ public class TwitchChatClientConfig {
         "OBS Chatbot is ready! Type !help to see available commands",
         "OBS Chatbot is shutting down"
     );
-    return new TwitchChatClientSettingsFactory(settings, authorizedClientService);
+    return new TwitchChatClientSettingsFactory(ownerService, settings, authorizedClientService);
   }
 
   @Bean

@@ -15,8 +15,8 @@ import com.tinatiel.obschatbot.data.command.model.action.ObsSourceVisibilityActi
 import com.tinatiel.obschatbot.data.command.model.action.SendMessageActionDto;
 import com.tinatiel.obschatbot.data.command.model.action.WaitActionDto;
 import com.tinatiel.obschatbot.data.command.model.sequencer.InOrderSequencerDto;
-import com.tinatiel.obschatbot.data.owner.OwnerService;
-import com.tinatiel.obschatbot.data.owner.SystemOwnerService;
+import com.tinatiel.obschatbot.security.owner.OwnerService;
+import com.tinatiel.obschatbot.security.owner.SystemOwnerService;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.Optional;

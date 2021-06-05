@@ -1,6 +1,7 @@
 package com.tinatiel.obschatbot.core.client.twitch.auth;
 
 import com.tinatiel.obschatbot.core.user.User;
+import com.tinatiel.obschatbot.security.owner.OwnerService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,7 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 @Slf4j
 public class TwitchAuthClientImpl implements TwitchAuthClient {
 
+  private final OwnerService ownerService;
   private final OAuth2AuthorizedClientService authorizedClientService;
   private final TwitchAuthConnectionSettingsFactory authSettingsFactory;
   private WebClient webClient;
@@ -23,8 +25,10 @@ public class TwitchAuthClientImpl implements TwitchAuthClient {
    * Creates a new instance.
    */
   public TwitchAuthClientImpl(
-      OAuth2AuthorizedClientService authorizedClientService,
-      TwitchAuthConnectionSettingsFactory authSettingsFactory) {
+    OwnerService ownerService,
+    OAuth2AuthorizedClientService authorizedClientService,
+    TwitchAuthConnectionSettingsFactory authSettingsFactory) {
+    this.ownerService = ownerService;
     this.authorizedClientService = authorizedClientService;
     this.authSettingsFactory = authSettingsFactory;
     init();
@@ -45,7 +49,7 @@ public class TwitchAuthClientImpl implements TwitchAuthClient {
 
     // Get the twitch client
     OAuth2AuthorizedClient twitchClient = authorizedClientService
-        .loadAuthorizedClient("twitch", User.SYSTEM_PRINCIPAL_NAME);
+        .loadAuthorizedClient("twitch", ownerService.getOwner().getName());
     if (twitchClient == null || twitchClient.getAccessToken() == null) {
       log.warn("No authorized client to validate; must authorize first!");
       return tokenIsValid;

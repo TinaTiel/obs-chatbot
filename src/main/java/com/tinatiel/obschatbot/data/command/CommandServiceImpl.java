@@ -2,9 +2,8 @@ package com.tinatiel.obschatbot.data.command;
 
 import com.tinatiel.obschatbot.core.command.Command;
 import com.tinatiel.obschatbot.data.command.mapper.executable.ExecutableCommandMapper;
-import com.tinatiel.obschatbot.data.owner.OwnerService;
+import com.tinatiel.obschatbot.security.owner.OwnerService;
 import java.util.Optional;
-import java.util.UUID;
 
 /**
  * A temporary in-memory implementation currently being used for sanity-checking. Replace with JPA!

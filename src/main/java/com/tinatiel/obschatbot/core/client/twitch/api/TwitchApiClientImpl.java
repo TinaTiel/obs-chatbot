@@ -5,6 +5,7 @@ import com.tinatiel.obschatbot.core.client.twitch.api.model.TwitchResponse;
 import com.tinatiel.obschatbot.core.client.twitch.api.model.UsersDataResponse;
 import com.tinatiel.obschatbot.core.client.twitch.api.model.UsersFollowsResponse;
 import com.tinatiel.obschatbot.core.user.User;
+import com.tinatiel.obschatbot.security.owner.OwnerService;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +23,7 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 @Slf4j
 public class TwitchApiClientImpl implements TwitchApiClient {
 
+  private final OwnerService ownerService;
   private final OAuth2AuthorizedClientService authorizedClientService;
   private final TwitchApiClientSettingsFactory apiSettingsFactory;
   private WebClient webClient;
@@ -30,8 +32,10 @@ public class TwitchApiClientImpl implements TwitchApiClient {
    * Creates a new instance of the TwitchApiClient, internally intializing its WebClient.
    */
   public TwitchApiClientImpl(
-      OAuth2AuthorizedClientService authorizedClientService,
-      TwitchApiClientSettingsFactory apiSettingsFactory) {
+    OwnerService ownerService,
+    OAuth2AuthorizedClientService authorizedClientService,
+    TwitchApiClientSettingsFactory apiSettingsFactory) {
+    this.ownerService = ownerService;
     this.authorizedClientService = authorizedClientService;
     this.apiSettingsFactory = apiSettingsFactory;
     init();
@@ -51,7 +55,7 @@ public class TwitchApiClientImpl implements TwitchApiClient {
 
     // Get the current token and client id
     OAuth2AuthorizedClient authorizedClient = authorizedClientService.loadAuthorizedClient(
-        "twitch", User.SYSTEM_PRINCIPAL_NAME
+        "twitch", ownerService.getOwner().getName()
     );
     if (authorizedClient == null || authorizedClient.getAccessToken() == null) {
       log.warn("No authorized client available, ignoring request");
@@ -104,7 +108,7 @@ public class TwitchApiClientImpl implements TwitchApiClient {
 
     // Get the current token and client id
     OAuth2AuthorizedClient authorizedClient = authorizedClientService.loadAuthorizedClient(
-        "twitch", User.SYSTEM_PRINCIPAL_NAME
+        "twitch", ownerService.getOwner().getName()
     );
     if (authorizedClient == null || authorizedClient.getAccessToken() == null) {
       log.warn("No authorized client available, ignoring request");
