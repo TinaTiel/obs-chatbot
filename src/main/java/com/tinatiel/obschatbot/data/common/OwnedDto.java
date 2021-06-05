@@ -10,8 +10,9 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @Data
 @SuperBuilder
-public class IdentifiableDto {
+public class OwnedDto {
 
+  private UUID owner;
   private UUID id;
 
 }

@@ -5,13 +5,11 @@
 
 package com.tinatiel.obschatbot;
 
-import com.tinatiel.obschatbot.core.client.ClientManager;
 import com.tinatiel.obschatbot.data.command.CommandEntityService;
 import com.tinatiel.obschatbot.data.command.model.CommandDto;
 import com.tinatiel.obschatbot.data.command.model.action.ObsSourceVisibilityActionDto;
 import com.tinatiel.obschatbot.data.command.model.action.WaitActionDto;
 import com.tinatiel.obschatbot.data.command.model.sequencer.InOrderSequencerDto;
-import com.tinatiel.obschatbot.data.command.model.sequencer.RandomOrderSequencerDto;
 import java.time.Duration;
 import java.util.Arrays;
 import org.springframework.boot.SpringApplication;
@@ -101,21 +99,21 @@ public class App {
 //    }
 //    commandRequestDispatcher.submit(hideShow, requestContext);
 
-    CommandEntityService commandEntityService = context.getBean(CommandEntityService.class);
-
-    // Given a command
-    CommandDto request = CommandDto.builder()
-      .name("donate")
-      .sequencer(InOrderSequencerDto.builder().build())
-      .actions(Arrays.asList(
-        ObsSourceVisibilityActionDto.builder().position(2).sourceName("donate").visible(true).build(),
-        WaitActionDto.builder().position(3).waitDuration(Duration.ofSeconds(3)).build(),
-        ObsSourceVisibilityActionDto.builder().position(4).sourceName("donate").visible(false).build()
-      ))
-      .build();
-    if(commandEntityService.findByName(request.getName()).isEmpty()) {
-      commandEntityService.save(request);
-    }
+//    CommandEntityService commandEntityService = context.getBean(CommandEntityService.class);
+//
+//    // Given a command
+//    CommandDto request = CommandDto.builder()
+//      .name("donate")
+//      .sequencer(InOrderSequencerDto.builder().build())
+//      .actions(Arrays.asList(
+//        ObsSourceVisibilityActionDto.builder().position(2).sourceName("donate").visible(true).build(),
+//        WaitActionDto.builder().position(3).waitDuration(Duration.ofSeconds(3)).build(),
+//        ObsSourceVisibilityActionDto.builder().position(4).sourceName("donate").visible(false).build()
+//      ))
+//      .build();
+//    if(commandEntityService.findByNameAndOwner(request.getName()).isEmpty()) {
+//      commandEntityService.save(request);
+//    }
 
   }
 }

@@ -2,6 +2,7 @@ package com.tinatiel.obschatbot.data.command;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import com.tinatiel.obschatbot.data.common.CommonConfig;
 import com.tinatiel.obschatbot.data.command.entity.CommandEntity;
@@ -19,6 +20,7 @@ import com.tinatiel.obschatbot.data.command.model.action.WaitActionDto;
 import com.tinatiel.obschatbot.data.command.model.sequencer.InOrderSequencerDto;
 import com.tinatiel.obschatbot.data.command.model.sequencer.RandomOrderSequencerDto;
 import com.tinatiel.obschatbot.data.error.DataPersistenceException;
+import com.tinatiel.obschatbot.data.owner.OwnerConfig;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.Optional;
@@ -31,7 +33,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.test.context.ContextConfiguration;
 
-@ContextConfiguration(classes = {CommonConfig.class, CommandDataConfig.class, CommandEntityServiceTest.TestConfig.class})
+@ContextConfiguration(classes = {
+  CommonConfig.class,
+  CommandDataConfig.class,
+  OwnerConfig.class,
+  CommandEntityServiceTest.TestConfig.class})
 @DataJpaTest
 public class CommandEntityServiceTest {
 
@@ -49,6 +55,7 @@ public class CommandEntityServiceTest {
   @Autowired
   ActionRepository actionRepository;
 
+  UUID owner = UUID.randomUUID();
   CommandEntity existingCommand;
   CommandEntity existingCommand2;
   CommandEntity existingCommandWithSequencer;
@@ -70,9 +77,12 @@ public class CommandEntityServiceTest {
 
       // create commands with no children
       CommandEntity commandOnly = new CommandEntity();
+      commandOnly.setOwner(owner);
       commandOnly.setName("toplevel");
       commandOnly.setDisabled(false);
+
       CommandEntity commandOnly2 = new CommandEntity();
+      commandOnly2.setOwner(owner);
       commandOnly2.setName("toplevel2");
       commandOnly2.setDisabled(false);
 
@@ -80,6 +90,7 @@ public class CommandEntityServiceTest {
       InOrderSequencerEntity seq1 = new InOrderSequencerEntity();
       seq1.setReversed(false);
       CommandEntity commandWithSeq1 = new CommandEntity();
+      commandWithSeq1.setOwner(owner);
       commandWithSeq1.setName("inorder");
       commandWithSeq1.setSequencer(seq1);
 
@@ -96,6 +107,7 @@ public class CommandEntityServiceTest {
       action3.setSourceName("meme");
       action3.setVisible(false);
       CommandEntity commandWithActions = new CommandEntity();
+      commandWithActions.setOwner(owner);
       commandWithActions.setName("twoactions");
       commandWithActions.setActions(Arrays.asList(action1, action2, action3));
 
@@ -121,6 +133,7 @@ public class CommandEntityServiceTest {
 
       // Given a command
       CommandDto request = CommandDto.builder()
+        .owner(UUID.randomUUID())
         .name("foo")
         .build();
 
@@ -130,7 +143,7 @@ public class CommandEntityServiceTest {
       // Then it can be retrieved
       assertThat(result.getId()).isNotNull();
       Optional<CommandDto> byId = service.findById(result.getId());
-      Optional<CommandDto> byName = service.findByName(result.getName());
+      Optional<CommandDto> byName = service.findByNameAndOwner(request.getName(), request.getOwner());
 
       assertThat(byId).isPresent();
       assertThat(byName).isPresent();
@@ -141,18 +154,38 @@ public class CommandEntityServiceTest {
   }
 
   @Test
-  void listAll() {
+  void findByNameAndOwner() {
+
+    assertThat(service.findByNameAndOwner(existingCommand.getName(), null)).isEmpty();
+    assertThat(service.findByNameAndOwner(null, existingCommand.getOwner())).isEmpty();
+    assertThat(service.findByNameAndOwner(existingCommand.getName(), existingCommand.getOwner())).isPresent();
+
+  }
+
+  @Test
+  void listAllByOwner() {
 
       // Given some known number of commands exist
-      assertThat(service.findAll()).hasSize(initialCommandCount);
+      assertThat(service.findByOwner(owner)).hasSize(initialCommandCount);
 
-      // When a new command is saved
+      // When a new command for same owner is saved
       service.save(CommandDto.builder()
+        .owner(owner)
         .name("foo")
         .build());
 
-      // Then one more command can be retrieved
-      assertThat(service.findAll()).hasSize(initialCommandCount + 1);
+      // And a new command for a different owner is saved with the same name
+      UUID otherOwner = UUID.randomUUID();
+      service.save(CommandDto.builder()
+        .owner(otherOwner)
+        .name("foo")
+        .build());
+
+      // Then one more command can be retrieved for the existing owner
+      assertThat(service.findByOwner(owner)).hasSize(initialCommandCount + 1);
+
+      // And the created command for the other owner
+      assertThat(service.findByOwner(otherOwner)).hasSize(1);
 
   }
 
@@ -161,11 +194,13 @@ public class CommandEntityServiceTest {
 
       assertThatThrownBy(() -> {
         service.save(CommandDto.builder()
+          .owner(owner)
           .build());
       }).isInstanceOf(DataPersistenceException.class);
 
       assertThatThrownBy(() -> {
         service.save(CommandDto.builder()
+          .owner(owner)
           .name("  ")
           .build());
       }).isInstanceOf(DataPersistenceException.class);
@@ -173,11 +208,23 @@ public class CommandEntityServiceTest {
   }
 
   @Test
-  void nameAlreadyExists() {
+  void ownerNotProvided() {
+
+    assertThatThrownBy(() -> {
+      service.save(CommandDto.builder()
+        .name("foo")
+        .build());
+    }).isInstanceOf(DataPersistenceException.class);
+
+  }
+
+  @Test
+  void nameAlreadyExistsForOwner() {
 
       // Creating a new command on an existing name throws an exception
       assertThatThrownBy(() -> {
         service.save(CommandDto.builder()
+          .owner(owner)
           .name(existingCommand.getName())
           .build());
       }).isInstanceOf(DataPersistenceException.class);
@@ -185,6 +232,7 @@ public class CommandEntityServiceTest {
       // Updating an existing command to the existing name
       assertThatThrownBy(() -> {
         service.save(CommandDto.builder()
+          .owner(owner)
           .id(existingCommand2.getId())
           .name(existingCommand.getName())
           .build());
@@ -192,7 +240,19 @@ public class CommandEntityServiceTest {
 
   }
 
-    @Test
+  @Test
+  void sameNameDifferentOwnerIsOkay() {
+
+    // Create a new command, same name as existing but with different owner throws no exceptions
+    UUID otherOwner = UUID.randomUUID();
+    service.save(CommandDto.builder()
+      .owner(otherOwner)
+      .name(existingCommand.getName())
+      .build());
+
+  }
+
+  @Test
   void disableCommand() {
 
       // Given a command is not disabled
@@ -200,6 +260,7 @@ public class CommandEntityServiceTest {
 
       // Given a request to disable it
       CommandDto disableRequest = CommandDto.builder()
+        .owner(owner)
         .id(existingCommand.getId())
         .name(existingCommand.getName())
         .disabled(true)
@@ -218,6 +279,7 @@ public class CommandEntityServiceTest {
 
     // Given a request to rename an existing command
     CommandDto disableRequest = CommandDto.builder()
+      .owner(owner)
       .id(existingCommand.getId())
       .name("newname")
       .disabled(existingCommand.isDisabled())
@@ -239,6 +301,7 @@ public class CommandEntityServiceTest {
 
     // Given a command with a sequencer
     CommandDto request = CommandDto.builder()
+      .owner(UUID.randomUUID())
       .name("sequenced")
       .sequencer(InOrderSequencerDto.builder().reversed(false).build())
       .build();
@@ -264,6 +327,7 @@ public class CommandEntityServiceTest {
 
     // Given a request to update the sequencer of an existing command
     CommandDto request = CommandDto.builder()
+      .owner(owner)
       .id(existingCommandWithSequencer.getId())
       .name(existingCommandWithSequencer.getName())
       .sequencer(RandomOrderSequencerDto.builder()
@@ -290,6 +354,7 @@ public class CommandEntityServiceTest {
 
     // Given a command with actions
     CommandDto request = CommandDto.builder()
+      .owner(UUID.randomUUID())
       .name("withactions")
       .actions(Arrays.asList(
           SendMessageActionDto.builder().position(1).message("donate!").build(),
@@ -322,6 +387,7 @@ public class CommandEntityServiceTest {
 
     // And given a request to reduce those actions
     CommandDto request = CommandDto.builder()
+      .owner(owner)
       .id(existing.getId())
       .name(existing.getName())
       .actions(Arrays.asList(
@@ -365,6 +431,7 @@ public class CommandEntityServiceTest {
     ActionDto action4 = existing.getActions().get(2);
     action4.setPosition(3);
     CommandDto request = CommandDto.builder()
+      .owner(owner)
       .id(existing.getId())
       .name(existing.getName())
       .actions(Arrays.asList(
@@ -405,6 +472,7 @@ public class CommandEntityServiceTest {
     action3.setPosition(3);
 
     CommandDto request = CommandDto.builder()
+      .owner(owner)
       .id(existing.getId())
       .name(existing.getName())
       .actions(Arrays.asList(action1, action2, action3))

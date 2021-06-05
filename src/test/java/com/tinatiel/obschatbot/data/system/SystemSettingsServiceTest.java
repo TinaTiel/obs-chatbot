@@ -1,8 +1,11 @@
 package com.tinatiel.obschatbot.data.system;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Fail.fail;
 
 import com.tinatiel.obschatbot.data.common.CommonConfig;
+import com.tinatiel.obschatbot.data.error.DataPersistenceException;
 import com.tinatiel.obschatbot.data.owner.SystemOwnerService;
 import com.tinatiel.obschatbot.data.system.entity.SystemSettingsEntity;
 import com.tinatiel.obschatbot.data.system.entity.SystemSettingsRepository;
@@ -14,6 +17,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.test.context.ContextConfiguration;
 
@@ -58,6 +62,7 @@ public class SystemSettingsServiceTest {
     // Then the expected DTO is returned
     assertThat(actual).isPresent();
     SystemSettingsDto expected = SystemSettingsDto.builder()
+      .owner(existingSystemSettings.getOwner())
       .id(existingSystemSettings.getId())
       .maxActionBatchSize(69)
       .recursionTimeoutMillis(42)
@@ -67,7 +72,44 @@ public class SystemSettingsServiceTest {
   }
 
   @Test
-  void saveNewSettings() {
+  void saveRetrieveNewSettings() {
+
+    // Given a request for new settings
+    SystemSettingsDto request = SystemSettingsDto.builder()
+      .owner(UUID.randomUUID())
+      .maxActionBatchSize(156)
+      .recursionTimeoutMillis(979797)
+      .build();
+
+    // When saved
+    SystemSettingsDto result = systemSettingsService.save(request);
+
+    // Then record count has increased
+    assertThat(systemSettingsRepository.count()).isEqualTo(2);
+
+    // And it matches as expected
+    SystemSettingsDto retrieved = systemSettingsService.findByOwner(request.getOwner()).get();
+    assertThat(result).usingRecursiveComparison().ignoringFields("id").isEqualTo(request);
+    assertThat(result).usingRecursiveComparison().isEqualTo(retrieved);
+
+  }
+
+  @Test
+  void nullOwner() {
+    assertThatThrownBy(() -> {
+      systemSettingsService.save(SystemSettingsDto.builder()
+        .build());
+    }).isInstanceOf(DataPersistenceException.class);
+  }
+
+  @Test
+  void ownerOnlyAllowedOneSettingsSet() {
+
+    assertThatThrownBy(() -> {
+      systemSettingsService.save(SystemSettingsDto.builder()
+        .owner(existingSystemSettings.getOwner())
+        .build());
+    }).isInstanceOf(DataPersistenceException.class);
 
   }
 
@@ -79,6 +121,7 @@ public class SystemSettingsServiceTest {
 
     // When updated
     SystemSettingsDto request = SystemSettingsDto.builder()
+      .owner(existingSystemSettings.getOwner())
       .id(existingSystemSettings.getId())
       .maxActionBatchSize(101)
       .recursionTimeoutMillis(3434)
@@ -87,6 +130,7 @@ public class SystemSettingsServiceTest {
 
     // Then the record count is the same
     assertThat(systemSettingsRepository.count()).isEqualTo(1);
+    assertThat(actual.getOwner()).isNotNull();
 
     // And the expected DTO is returned
     assertThat(actual).usingRecursiveComparison().isEqualTo(request);

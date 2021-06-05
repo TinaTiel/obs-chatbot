@@ -103,13 +103,13 @@ public class CommandEntityServiceImpl implements CommandEntityService {
   }
 
   @Override
-  public Optional<CommandDto> findByName(String name) {
-    return repository.findByName(name).flatMap(entity -> Optional.of(mapper.map(entity)));
+  public Optional<CommandDto> findByNameAndOwner(String name, UUID owner) {
+    return repository.findByNameAndOwner(name, owner).flatMap(entity -> Optional.of(mapper.map(entity)));
   }
 
   @Override
-  public List<CommandDto> findAll() {
-    return repository.findAll().stream().map(mapper::map).collect(Collectors.toList());
+  public List<CommandDto> findByOwner(UUID owner) {
+    return repository.findByOwner(owner).stream().map(mapper::map).collect(Collectors.toList());
   }
 
   @Override

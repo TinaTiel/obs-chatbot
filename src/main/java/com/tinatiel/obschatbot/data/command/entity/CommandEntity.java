@@ -3,6 +3,7 @@ package com.tinatiel.obschatbot.data.command.entity;
 import com.tinatiel.obschatbot.data.command.entity.action.ActionEntity;
 import com.tinatiel.obschatbot.data.command.entity.sequencer.SequencerEntity;
 import com.tinatiel.obschatbot.data.common.BaseEntity;
+import com.tinatiel.obschatbot.data.common.OwnedEntity;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
@@ -13,6 +14,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,12 +26,12 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "command")
+@Table(name = "command", uniqueConstraints = {@UniqueConstraint(columnNames = {"owner", "name"})})
 @Entity
-public class CommandEntity extends BaseEntity {
+public class CommandEntity extends OwnedEntity {
 
   @NotBlank
-  @Column(nullable = false, unique = true)
+  @Column(nullable = false)
   private String name;
 
   @OneToOne(

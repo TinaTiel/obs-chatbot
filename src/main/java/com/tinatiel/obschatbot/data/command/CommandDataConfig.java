@@ -9,6 +9,7 @@ import com.tinatiel.obschatbot.data.command.mapper.executable.ExecutableCommandM
 import com.tinatiel.obschatbot.data.command.mapper.executable.ExecutableCommandMapperImpl;
 import com.tinatiel.obschatbot.data.command.mapper.executable.ExecutableSequencerMapper;
 import com.tinatiel.obschatbot.data.command.mapper.executable.ExecutableSequencerMapperImpl;
+import com.tinatiel.obschatbot.data.owner.OwnerService;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -28,6 +29,9 @@ public class CommandDataConfig {
 
   @Autowired
   SequencerRepository sequencerRepository;
+
+  @Autowired
+  OwnerService ownerService;
 
   @Bean
   CommandMapper commandMapper() {
@@ -60,7 +64,7 @@ public class CommandDataConfig {
 
   @Bean
   public CommandService commandRepository() {
-    return new CommandServiceImpl(commandEntityService(), executableCommandMapper());
+    return new CommandServiceImpl(ownerService, commandEntityService(), executableCommandMapper());
   }
 
 }

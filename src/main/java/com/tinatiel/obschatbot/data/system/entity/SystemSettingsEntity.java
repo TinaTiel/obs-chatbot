@@ -2,6 +2,7 @@ package com.tinatiel.obschatbot.data.system.entity;
 
 import com.tinatiel.obschatbot.core.user.User;
 import com.tinatiel.obschatbot.data.common.BaseEntity;
+import com.tinatiel.obschatbot.data.common.OwnedEntity;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -16,7 +17,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "settings_system")
 @NoArgsConstructor
 @Data
-public class SystemSettingsEntity extends BaseEntity {
+public class SystemSettingsEntity extends OwnedEntity {
 
   /**
    * Maximum number of actions executed at once in a batch

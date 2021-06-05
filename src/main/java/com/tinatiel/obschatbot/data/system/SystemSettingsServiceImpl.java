@@ -1,9 +1,6 @@
 package com.tinatiel.obschatbot.data.system;
 
-import com.tinatiel.obschatbot.core.user.User;
-import com.tinatiel.obschatbot.data.owner.OwnerService;
-import com.tinatiel.obschatbot.data.owner.SystemOwnerService;
-import com.tinatiel.obschatbot.data.system.entity.SystemSettingsEntity;
+import com.tinatiel.obschatbot.data.error.DataPersistenceException;
 import com.tinatiel.obschatbot.data.system.entity.SystemSettingsRepository;
 import com.tinatiel.obschatbot.data.system.mapper.SystemSettingsMapper;
 import com.tinatiel.obschatbot.data.system.model.SystemSettingsDto;
@@ -23,8 +20,22 @@ public class SystemSettingsServiceImpl implements SystemSettingsService {
   }
 
   @Override
-  public SystemSettingsDto save(SystemSettingsDto dto) {
-    return mapper.map(repository.saveAndFlush(mapper.map(dto)));
+  public SystemSettingsDto save(SystemSettingsDto dto) throws DataPersistenceException {
+    // If this is new but the owner already has an entry, throw exception
+    if(dto != null
+        && dto.getOwner() != null
+        && dto.getId() == null
+        && repository.existsByOwner(dto.getOwner())
+    ) {
+      throw new DataPersistenceException("Only one setting is permitted per owner");
+    }
+
+    // Otherwise save
+    try{
+      return mapper.map(repository.saveAndFlush(mapper.map(dto)));
+    } catch (Exception e) {
+      throw new DataPersistenceException("Could not save " + dto, e);
+    }
   }
 
   @Override

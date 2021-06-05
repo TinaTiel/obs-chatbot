@@ -1,8 +1,7 @@
 package com.tinatiel.obschatbot.data.system.model;
 
-import com.tinatiel.obschatbot.data.common.IdentifiableDto;
+import com.tinatiel.obschatbot.data.common.OwnedDto;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -14,7 +13,7 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @Data
 @SuperBuilder
-public class SystemSettingsDto extends IdentifiableDto {
+public class SystemSettingsDto extends OwnedDto {
 
 
   /**

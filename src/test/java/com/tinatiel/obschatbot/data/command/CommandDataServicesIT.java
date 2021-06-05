@@ -15,9 +15,12 @@ import com.tinatiel.obschatbot.data.command.model.action.ObsSourceVisibilityActi
 import com.tinatiel.obschatbot.data.command.model.action.SendMessageActionDto;
 import com.tinatiel.obschatbot.data.command.model.action.WaitActionDto;
 import com.tinatiel.obschatbot.data.command.model.sequencer.InOrderSequencerDto;
+import com.tinatiel.obschatbot.data.owner.OwnerService;
+import com.tinatiel.obschatbot.data.owner.SystemOwnerService;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,9 +40,15 @@ public class CommandDataServicesIT {
   @Autowired
   ActionRepository actionRepository;
 
+  @Autowired
+  OwnerService ownerService;
+
+  UUID owner = UUID.randomUUID();
+
   @BeforeEach
   void beforeEach() {
-    commandEntityService.findAll().forEach(it -> {
+    commandEntityRepository.findAll().forEach(it -> {
+      System.out.println("Cleaning up command " + it.getId() + "('" + it.getName() + "')");
       commandEntityService.delete(it.getId());
     });
   }
@@ -53,6 +62,7 @@ public class CommandDataServicesIT {
 
     // Given a command
     CommandDto request = CommandDto.builder()
+      .owner(owner)
       .name("somecommandwitheverything")
       .sequencer(InOrderSequencerDto.builder().build())
       .actions(Arrays.asList(
@@ -94,8 +104,12 @@ public class CommandDataServicesIT {
   @Test
   void retrieveExecutableCommand() {
 
-    // Given we save a command
+    // Given we are using the System implementation of the Owner Service
+    assertThat(ownerService).isInstanceOf(SystemOwnerService.class);
+
+    // Given we save a command owned by the system
     CommandDto innerCommandDto = commandEntityService.save(CommandDto.builder()
+      .owner(SystemOwnerService.SYSTEM_ID)
       .name("inner")
       .sequencer(InOrderSequencerDto.builder().build())
       .actions(Arrays.asList(
@@ -105,6 +119,7 @@ public class CommandDataServicesIT {
 
     // And given we save another command that references that command
     CommandDto outerCommandDto = commandEntityService.save(CommandDto.builder()
+      .owner(SystemOwnerService.SYSTEM_ID)
       .name("outer")
       .sequencer(InOrderSequencerDto.builder().build())
       .actions(Arrays.asList(

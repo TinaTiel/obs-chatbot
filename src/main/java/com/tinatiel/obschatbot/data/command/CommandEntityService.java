@@ -15,9 +15,9 @@ public interface CommandEntityService {
 
   Optional<CommandDto> findById(UUID id);
 
-  Optional<CommandDto> findByName(String name);
+  Optional<CommandDto> findByNameAndOwner(String name, UUID owner);
 
-  List<CommandDto> findAll();
+  List<CommandDto> findByOwner(UUID owner);
 
   void delete(UUID id) throws DataPersistenceException;
 }

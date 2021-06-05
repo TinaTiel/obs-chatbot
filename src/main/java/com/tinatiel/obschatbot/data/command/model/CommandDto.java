@@ -19,6 +19,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class CommandDto {
 
+  private UUID owner;
   private UUID id;
   private String name;
   private boolean disabled;

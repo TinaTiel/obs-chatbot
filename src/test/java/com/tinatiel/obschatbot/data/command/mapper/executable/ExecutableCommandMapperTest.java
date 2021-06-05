@@ -19,6 +19,7 @@ import com.tinatiel.obschatbot.data.command.entity.action.ActionRepository;
 import com.tinatiel.obschatbot.data.command.model.action.ExecuteCommandActionDto;
 import com.tinatiel.obschatbot.data.command.model.action.SendMessageActionDto;
 import com.tinatiel.obschatbot.data.command.model.sequencer.InOrderSequencerDto;
+import com.tinatiel.obschatbot.data.owner.OwnerConfig;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -29,7 +30,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
-@ContextConfiguration(classes = {CommandDataConfig.class})
+@ContextConfiguration(classes = {CommandDataConfig.class, OwnerConfig.class})
 @SpringJUnitConfig
 public class ExecutableCommandMapperTest {
 

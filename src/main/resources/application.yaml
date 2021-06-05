@@ -13,8 +13,8 @@ logging:
     org.hibernate.type.descriptor.sql.BasicBinder: trace
 spring:
   datasource:
-    url: jdbc:h2:file:./target/testdb
-#    url: jdbc:h2:mem:testdb
+#    url: jdbc:h2:file:./target/testdb
+    url: jdbc:h2:mem:testdb
     driverClassName: org.h2.Driver
     username: sa
     password:
