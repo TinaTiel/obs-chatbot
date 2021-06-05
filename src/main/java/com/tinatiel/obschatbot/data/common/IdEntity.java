@@ -16,7 +16,7 @@ import org.hibernate.annotations.Type;
 @Setter
 @Getter
 @MappedSuperclass
-public class BaseEntity {
+public class IdEntity {
 
   @Id
   @GeneratedValue(generator = "UUID")

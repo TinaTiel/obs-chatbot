@@ -8,5 +8,4 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface SystemSettingsRepository extends JpaRepository<SystemSettingsEntity, UUID> {
   Optional<SystemSettingsEntity> findByOwner(UUID owner);
-  boolean existsByOwner(UUID owner);
 }

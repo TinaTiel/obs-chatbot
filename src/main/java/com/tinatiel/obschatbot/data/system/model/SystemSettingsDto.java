@@ -1,6 +1,6 @@
 package com.tinatiel.obschatbot.data.system.model;
 
-import com.tinatiel.obschatbot.data.common.OwnedDto;
+import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,8 +13,9 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @Data
 @SuperBuilder
-public class SystemSettingsDto extends OwnedDto {
+public class SystemSettingsDto {
 
+  private UUID owner;
 
   /**
    * Maximum number of actions executed at once in a batch

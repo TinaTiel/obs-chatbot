@@ -1,6 +1,6 @@
 package com.tinatiel.obschatbot.data.command.entity.action;
 
-import com.tinatiel.obschatbot.data.common.BaseEntity;
+import com.tinatiel.obschatbot.data.common.IdEntity;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.DiscriminatorType;
@@ -24,7 +24,7 @@ import lombok.Setter;
 @Table(name = "action")
 @Inheritance(strategy =  InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "action_type", discriminatorType = DiscriminatorType.STRING)
-public abstract class ActionEntity extends BaseEntity {
+public abstract class ActionEntity extends IdEntity {
 
   @Column(nullable = false)
   private Integer position;

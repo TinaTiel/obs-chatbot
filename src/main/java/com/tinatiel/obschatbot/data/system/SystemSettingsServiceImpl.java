@@ -22,13 +22,13 @@ public class SystemSettingsServiceImpl implements SystemSettingsService {
   @Override
   public SystemSettingsDto save(SystemSettingsDto dto) throws DataPersistenceException {
     // If this is new but the owner already has an entry, throw exception
-    if(dto != null
-        && dto.getOwner() != null
-        && dto.getId() == null
-        && repository.existsByOwner(dto.getOwner())
-    ) {
-      throw new DataPersistenceException("Only one setting is permitted per owner");
-    }
+//    if(dto != null
+//        && dto.getOwner() != null
+//        && dto.getId() == null
+//        && repository.existsByOwner(dto.getOwner())
+//    ) {
+//      throw new DataPersistenceException("Only one setting is permitted per owner");
+//    }
 
     // Otherwise save
     try{

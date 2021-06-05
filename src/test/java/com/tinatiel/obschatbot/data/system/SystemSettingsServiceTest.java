@@ -2,11 +2,9 @@ package com.tinatiel.obschatbot.data.system;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.assertj.core.api.Fail.fail;
 
 import com.tinatiel.obschatbot.data.common.CommonConfig;
 import com.tinatiel.obschatbot.data.error.DataPersistenceException;
-import com.tinatiel.obschatbot.data.owner.SystemOwnerService;
 import com.tinatiel.obschatbot.data.system.entity.SystemSettingsEntity;
 import com.tinatiel.obschatbot.data.system.entity.SystemSettingsRepository;
 import com.tinatiel.obschatbot.data.system.model.SystemSettingsDto;
@@ -17,7 +15,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.test.context.ContextConfiguration;
 
@@ -47,7 +44,7 @@ public class SystemSettingsServiceTest {
     existing.setRecursionTimeoutMillis(42);
     existing.setMaxActionBatchSize(69);
     existingSystemSettings = systemSettingsRepository.saveAndFlush(existing);
-    assertThat(existingSystemSettings.getId()).isNotNull();
+    assertThat(existingSystemSettings.getOwner()).isNotNull();
   }
 
   @Test
@@ -63,7 +60,6 @@ public class SystemSettingsServiceTest {
     assertThat(actual).isPresent();
     SystemSettingsDto expected = SystemSettingsDto.builder()
       .owner(existingSystemSettings.getOwner())
-      .id(existingSystemSettings.getId())
       .maxActionBatchSize(69)
       .recursionTimeoutMillis(42)
       .build();
@@ -105,11 +101,13 @@ public class SystemSettingsServiceTest {
   @Test
   void ownerOnlyAllowedOneSettingsSet() {
 
-    assertThatThrownBy(() -> {
-      systemSettingsService.save(SystemSettingsDto.builder()
-        .owner(existingSystemSettings.getOwner())
-        .build());
-    }).isInstanceOf(DataPersistenceException.class);
+    // Given a setting is saved for an existing owner succeeds
+    systemSettingsService.save(SystemSettingsDto.builder()
+      .owner(existingSystemSettings.getOwner())
+      .build());
+
+    // Then the count is the same as before
+    assertThat(systemSettingsRepository.count()).isEqualTo(1);
 
   }
 
@@ -122,7 +120,6 @@ public class SystemSettingsServiceTest {
     // When updated
     SystemSettingsDto request = SystemSettingsDto.builder()
       .owner(existingSystemSettings.getOwner())
-      .id(existingSystemSettings.getId())
       .maxActionBatchSize(101)
       .recursionTimeoutMillis(3434)
       .build();
