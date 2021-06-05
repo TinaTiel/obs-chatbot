@@ -3,9 +3,12 @@ package com.tinatiel.obschatbot.data.system;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.tinatiel.obschatbot.data.common.CommonConfig;
+import com.tinatiel.obschatbot.data.owner.SystemOwnerService;
 import com.tinatiel.obschatbot.data.system.entity.SystemSettingsEntity;
 import com.tinatiel.obschatbot.data.system.entity.SystemSettingsRepository;
 import com.tinatiel.obschatbot.data.system.model.SystemSettingsDto;
+import java.util.Optional;
+import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +39,7 @@ public class SystemSettingsServiceTest {
   void setUp() {
     systemSettingsRepository.deleteAll();
     SystemSettingsEntity existing = new SystemSettingsEntity();
+    existing.setOwner(UUID.randomUUID());
     existing.setRecursionTimeoutMillis(42);
     existing.setMaxActionBatchSize(69);
     existingSystemSettings = systemSettingsRepository.saveAndFlush(existing);
@@ -49,15 +53,16 @@ public class SystemSettingsServiceTest {
     assertThat(systemSettingsRepository.count()).isEqualTo(1);
 
     // When called
-    SystemSettingsDto actual = systemSettingsService.getForSystem();
+    Optional<SystemSettingsDto> actual = systemSettingsService.findByOwner(existingSystemSettings.getOwner());
 
     // Then the expected DTO is returned
+    assertThat(actual).isPresent();
     SystemSettingsDto expected = SystemSettingsDto.builder()
       .id(existingSystemSettings.getId())
       .maxActionBatchSize(69)
       .recursionTimeoutMillis(42)
       .build();
-    assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
+    assertThat(actual.get()).usingRecursiveComparison().isEqualTo(expected);
 
   }
 
@@ -74,18 +79,17 @@ public class SystemSettingsServiceTest {
 
     // When updated
     SystemSettingsDto request = SystemSettingsDto.builder()
+      .id(existingSystemSettings.getId())
       .maxActionBatchSize(101)
       .recursionTimeoutMillis(3434)
       .build();
     SystemSettingsDto actual = systemSettingsService.save(request);
 
-    // Then the expected DTO is returned
-    SystemSettingsDto expected = SystemSettingsDto.builder()
-      .id(existingSystemSettings.getId())
-      .maxActionBatchSize(69)
-      .recursionTimeoutMillis(42)
-      .build();
-    assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
+    // Then the record count is the same
+    assertThat(systemSettingsRepository.count()).isEqualTo(1);
+
+    // And the expected DTO is returned
+    assertThat(actual).usingRecursiveComparison().isEqualTo(request);
 
   }
 }
