@@ -85,7 +85,7 @@ public class SystemSettingsDataServiceTest {
 
     // And it matches as expected
     SystemSettingsDto retrieved = systemSettingsDataService.findByOwner(request.getOwner()).get();
-    assertThat(result).usingRecursiveComparison().ignoringFields("id").isEqualTo(request);
+    assertThat(result).usingRecursiveComparison().isEqualTo(request);
     assertThat(result).usingRecursiveComparison().isEqualTo(retrieved);
 
   }
@@ -123,14 +123,15 @@ public class SystemSettingsDataServiceTest {
       .maxActionBatchSize(101)
       .recursionTimeoutMillis(3434)
       .build();
-    SystemSettingsDto actual = systemSettingsDataService.save(request);
+    SystemSettingsDto result = systemSettingsDataService.save(request);
 
     // Then the record count is the same
     assertThat(systemSettingsRepository.count()).isEqualTo(1);
-    assertThat(actual.getOwner()).isNotNull();
 
     // And the expected DTO is returned
-    assertThat(actual).usingRecursiveComparison().isEqualTo(request);
+    SystemSettingsDto retrieved = systemSettingsDataService.findByOwner(request.getOwner()).get();
+    assertThat(result).usingRecursiveComparison().isEqualTo(request);
+    assertThat(result).usingRecursiveComparison().isEqualTo(retrieved);
 
   }
 }

@@ -7,6 +7,7 @@ import static org.mockito.Mockito.when;
 
 import com.tinatiel.obschatbot.data.client.twitch.TwitchClientDataConfig;
 import com.tinatiel.obschatbot.data.client.twitch.TwitchClientDataService;
+import com.tinatiel.obschatbot.data.client.twitch.entity.TwitchClientDataRepository;
 import com.tinatiel.obschatbot.data.client.twitch.model.TwitchClientDataDto;
 import com.tinatiel.obschatbot.security.owner.OwnerConfig;
 import com.tinatiel.obschatbot.security.owner.OwnerService;
@@ -15,6 +16,7 @@ import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Answers;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -47,6 +49,9 @@ public class TwitchAuthConnectionSettingsFactoryTest {
 
   @Autowired
   TwitchAuthConnectionSettingsFactory twitchAuthConnectionSettingsFactory;
+
+  @MockBean
+  TwitchClientDataRepository twitchClientDataRepository;
 
   @Test
   void settingsCombineWithDatabase() {
