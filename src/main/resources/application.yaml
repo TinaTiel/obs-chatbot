@@ -39,6 +39,7 @@ com:
           - channel:moderate
           - chat:read
           - chat:edit
+        redirect-uri: http://localhost:8080/foo/bar
       api:
         host: https://api.twitch.tv
         users-follows-path: /helix/users/follows

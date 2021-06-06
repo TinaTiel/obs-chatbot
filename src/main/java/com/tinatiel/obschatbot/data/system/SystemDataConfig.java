@@ -21,8 +21,8 @@ public class SystemDataConfig {
   }
 
   @Bean
-  SystemSettingsService systemSettingsService() {
-    return new SystemSettingsServiceImpl(systemSettingsRepository, systemSettingsMapper());
+  SystemSettingsDataService systemSettingsService() {
+    return new SystemSettingsDataServiceImpl(systemSettingsRepository, systemSettingsMapper());
   }
 
 }

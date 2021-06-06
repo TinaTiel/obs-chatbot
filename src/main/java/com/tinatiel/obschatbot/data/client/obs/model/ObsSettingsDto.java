@@ -1,4 +1,4 @@
-package com.tinatiel.obschatbot.data.client.model;
+package com.tinatiel.obschatbot.data.client.obs.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

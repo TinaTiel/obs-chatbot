@@ -18,9 +18,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.test.context.ContextConfiguration;
 
-@ContextConfiguration(classes = {CommonConfig.class, SystemDataConfig.class, SystemSettingsServiceTest.TestConfig.class})
+@ContextConfiguration(classes = {CommonConfig.class, SystemDataConfig.class, SystemSettingsDataServiceTest.TestConfig.class})
 @DataJpaTest
-public class SystemSettingsServiceTest {
+public class SystemSettingsDataServiceTest {
 
   @EnableJpaRepositories(basePackages = "com.tinatiel.obschatbot.data.system.entity")
   @Configuration
@@ -32,7 +32,7 @@ public class SystemSettingsServiceTest {
   SystemSettingsRepository systemSettingsRepository;
 
   @Autowired
-  SystemSettingsService systemSettingsService;
+  SystemSettingsDataService systemSettingsDataService;
 
   SystemSettingsEntity existingSystemSettings;
 
@@ -54,7 +54,7 @@ public class SystemSettingsServiceTest {
     assertThat(systemSettingsRepository.count()).isEqualTo(1);
 
     // When called
-    Optional<SystemSettingsDto> actual = systemSettingsService.findByOwner(existingSystemSettings.getOwner());
+    Optional<SystemSettingsDto> actual = systemSettingsDataService.findByOwner(existingSystemSettings.getOwner());
 
     // Then the expected DTO is returned
     assertThat(actual).isPresent();
@@ -78,13 +78,13 @@ public class SystemSettingsServiceTest {
       .build();
 
     // When saved
-    SystemSettingsDto result = systemSettingsService.save(request);
+    SystemSettingsDto result = systemSettingsDataService.save(request);
 
     // Then record count has increased
     assertThat(systemSettingsRepository.count()).isEqualTo(2);
 
     // And it matches as expected
-    SystemSettingsDto retrieved = systemSettingsService.findByOwner(request.getOwner()).get();
+    SystemSettingsDto retrieved = systemSettingsDataService.findByOwner(request.getOwner()).get();
     assertThat(result).usingRecursiveComparison().ignoringFields("id").isEqualTo(request);
     assertThat(result).usingRecursiveComparison().isEqualTo(retrieved);
 
@@ -93,7 +93,7 @@ public class SystemSettingsServiceTest {
   @Test
   void nullOwner() {
     assertThatThrownBy(() -> {
-      systemSettingsService.save(SystemSettingsDto.builder()
+      systemSettingsDataService.save(SystemSettingsDto.builder()
         .build());
     }).isInstanceOf(DataPersistenceException.class);
   }
@@ -102,7 +102,7 @@ public class SystemSettingsServiceTest {
   void ownerOnlyAllowedOneSettingsSet() {
 
     // Given a setting is saved for an existing owner succeeds
-    systemSettingsService.save(SystemSettingsDto.builder()
+    systemSettingsDataService.save(SystemSettingsDto.builder()
       .owner(existingSystemSettings.getOwner())
       .build());
 
@@ -123,7 +123,7 @@ public class SystemSettingsServiceTest {
       .maxActionBatchSize(101)
       .recursionTimeoutMillis(3434)
       .build();
-    SystemSettingsDto actual = systemSettingsService.save(request);
+    SystemSettingsDto actual = systemSettingsDataService.save(request);
 
     // Then the record count is the same
     assertThat(systemSettingsRepository.count()).isEqualTo(1);

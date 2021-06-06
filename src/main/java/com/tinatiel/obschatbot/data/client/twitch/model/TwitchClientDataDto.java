@@ -1,4 +1,4 @@
-package com.tinatiel.obschatbot.data.client.model;
+package com.tinatiel.obschatbot.data.client.twitch.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,7 +12,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Data
 @Builder
-public class TwitchSettingsDto {
+public class TwitchClientDataDto {
+  private String clientId;
+  private String clientSecret;
   private String botAccountUsername;
   private String broadcasterChannelUsername;
   private long connectionTimeoutMs;

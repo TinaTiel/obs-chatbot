@@ -7,12 +7,12 @@ import com.tinatiel.obschatbot.data.system.model.SystemSettingsDto;
 import java.util.Optional;
 import java.util.UUID;
 
-public class SystemSettingsServiceImpl implements SystemSettingsService {
+public class SystemSettingsDataServiceImpl implements SystemSettingsDataService {
 
   private final SystemSettingsRepository repository;
   private final SystemSettingsMapper mapper;
 
-  public SystemSettingsServiceImpl(
+  public SystemSettingsDataServiceImpl(
     SystemSettingsRepository repository,
     SystemSettingsMapper mapper) {
     this.repository = repository;
