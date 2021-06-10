@@ -13,7 +13,7 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @Data
 @SuperBuilder
-public class TwitchClientDataDto extends OwnerDto {
+public class TwitchClientAuthDataDto extends OwnerDto {
   private String clientId;
   private String clientSecret;
 }

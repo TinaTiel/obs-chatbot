@@ -8,7 +8,7 @@ import static org.mockito.Mockito.when;
 import com.tinatiel.obschatbot.data.client.twitch.auth.TwitchClientAuthDataConfig;
 import com.tinatiel.obschatbot.data.client.twitch.auth.TwitchClientAuthDataService;
 import com.tinatiel.obschatbot.data.client.twitch.auth.entity.TwitchClientAuthDataRepository;
-import com.tinatiel.obschatbot.data.client.twitch.auth.model.TwitchClientDataDto;
+import com.tinatiel.obschatbot.data.client.twitch.auth.model.TwitchClientAuthDataDto;
 import com.tinatiel.obschatbot.security.owner.OwnerConfig;
 import com.tinatiel.obschatbot.security.owner.OwnerService;
 import java.util.Arrays;
@@ -58,13 +58,14 @@ public class TwitchAuthConnectionSettingsFactoryEnvOverrideTest {
   void environmentOverridesDatabase() {
 
     // Given the database returns these settings
-    TwitchClientDataDto twitchClientDataDto = TwitchClientDataDto.builder()
+    TwitchClientAuthDataDto twitchClientAuthDataDto = TwitchClientAuthDataDto.builder()
       .clientId("correcthorse")
       .clientSecret("batterystaple")
       .build();
-    when(twitchClientAuthDataService.findByOwner(any())).thenReturn(Optional.of(twitchClientDataDto));
+    when(twitchClientAuthDataService.findByOwner(any())).thenReturn(Optional.of(
+      twitchClientAuthDataDto));
     assertThat(twitchClientAuthDataService.findByOwner(UUID.randomUUID()).get())
-      .usingRecursiveComparison().isEqualTo(twitchClientDataDto);
+      .usingRecursiveComparison().isEqualTo(twitchClientAuthDataDto);
 
     // When called
     TwitchAuthConnectionSettings actual = twitchAuthConnectionSettingsFactory.getSettings();

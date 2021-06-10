@@ -7,7 +7,7 @@ import com.tinatiel.obschatbot.data.client.twitch.auth.TwitchClientAuthDataConfi
 import com.tinatiel.obschatbot.data.client.twitch.auth.TwitchClientAuthDataService;
 import com.tinatiel.obschatbot.data.client.twitch.auth.entity.TwitchClientAuthDataEntity;
 import com.tinatiel.obschatbot.data.client.twitch.auth.entity.TwitchClientAuthDataRepository;
-import com.tinatiel.obschatbot.data.client.twitch.auth.model.TwitchClientDataDto;
+import com.tinatiel.obschatbot.data.client.twitch.auth.model.TwitchClientAuthDataDto;
 import com.tinatiel.obschatbot.data.common.CommonConfig;
 import com.tinatiel.obschatbot.data.error.DataPersistenceException;
 import java.util.Optional;
@@ -60,12 +60,12 @@ public class TwitchClientAuthDataServiceTest {
     assertThat(twitchClientAuthDataRepository.count()).isEqualTo(1);
 
     // When called
-    Optional<TwitchClientDataDto> actual = twitchClientAuthDataService.findByOwner(
+    Optional<TwitchClientAuthDataDto> actual = twitchClientAuthDataService.findByOwner(
       existingTwitchClientData.getOwner());
 
     // Then the expected DTO is returned
     assertThat(actual).isPresent();
-    TwitchClientDataDto expected = TwitchClientDataDto.builder()
+    TwitchClientAuthDataDto expected = TwitchClientAuthDataDto.builder()
       .owner(existingTwitchClientData.getOwner())
       .clientId(existingTwitchClientData.getClientId())
       .clientSecret(existingTwitchClientData.getClientSecret())
@@ -78,20 +78,20 @@ public class TwitchClientAuthDataServiceTest {
   void saveRetrieveNewSettings() {
 
     // Given a request for new settings
-    TwitchClientDataDto request = TwitchClientDataDto.builder()
+    TwitchClientAuthDataDto request = TwitchClientAuthDataDto.builder()
       .owner(UUID.randomUUID())
       .clientId("whehehehehe")
       .clientSecret("shhhhhh")
       .build();
 
     // When saved
-    TwitchClientDataDto result = twitchClientAuthDataService.save(request);
+    TwitchClientAuthDataDto result = twitchClientAuthDataService.save(request);
 
     // Then record count has increased
     assertThat(twitchClientAuthDataRepository.count()).isEqualTo(2);
 
     // And it matches as expected
-    TwitchClientDataDto retrieved = twitchClientAuthDataService.findByOwner(request.getOwner()).get();
+    TwitchClientAuthDataDto retrieved = twitchClientAuthDataService.findByOwner(request.getOwner()).get();
     assertThat(result).usingRecursiveComparison().isEqualTo(request);
     assertThat(result).usingRecursiveComparison().isEqualTo(retrieved);
 
@@ -100,7 +100,7 @@ public class TwitchClientAuthDataServiceTest {
   @Test
   void nullOwner() {
     assertThatThrownBy(() -> {
-      twitchClientAuthDataService.save(TwitchClientDataDto.builder()
+      twitchClientAuthDataService.save(TwitchClientAuthDataDto.builder()
         .build());
     }).isInstanceOf(DataPersistenceException.class);
   }
@@ -109,7 +109,7 @@ public class TwitchClientAuthDataServiceTest {
   void ownerOnlyAllowedOneSettingsSet() {
 
     // Given a setting is saved for an existing owner succeeds
-    twitchClientAuthDataService.save(TwitchClientDataDto.builder()
+    twitchClientAuthDataService.save(TwitchClientAuthDataDto.builder()
       .owner(existingTwitchClientData.getOwner())
       .build());
 
@@ -125,18 +125,18 @@ public class TwitchClientAuthDataServiceTest {
     assertThat(twitchClientAuthDataRepository.count()).isEqualTo(1);
 
     // When updated
-    TwitchClientDataDto request = TwitchClientDataDto.builder()
+    TwitchClientAuthDataDto request = TwitchClientAuthDataDto.builder()
       .owner(existingTwitchClientData.getOwner())
       .clientId("whehehehehe")
       .clientSecret("shhhhhh")
       .build();
-    TwitchClientDataDto result = twitchClientAuthDataService.save(request);
+    TwitchClientAuthDataDto result = twitchClientAuthDataService.save(request);
 
     // Then the record count is the same
     assertThat(twitchClientAuthDataRepository.count()).isEqualTo(1);
 
     // And the expected DTO is returned
-    TwitchClientDataDto retrieved = twitchClientAuthDataService.findByOwner(request.getOwner()).get();
+    TwitchClientAuthDataDto retrieved = twitchClientAuthDataService.findByOwner(request.getOwner()).get();
     assertThat(result).usingRecursiveComparison().isEqualTo(request);
     assertThat(result).usingRecursiveComparison().isEqualTo(retrieved);
 
