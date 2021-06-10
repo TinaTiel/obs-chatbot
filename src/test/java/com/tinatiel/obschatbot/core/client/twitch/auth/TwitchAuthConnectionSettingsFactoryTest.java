@@ -5,18 +5,16 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-import com.tinatiel.obschatbot.data.client.twitch.TwitchClientDataConfig;
-import com.tinatiel.obschatbot.data.client.twitch.TwitchClientDataService;
-import com.tinatiel.obschatbot.data.client.twitch.entity.TwitchClientDataRepository;
-import com.tinatiel.obschatbot.data.client.twitch.model.TwitchClientDataDto;
+import com.tinatiel.obschatbot.data.client.twitch.auth.TwitchClientAuthDataConfig;
+import com.tinatiel.obschatbot.data.client.twitch.auth.TwitchClientAuthDataService;
+import com.tinatiel.obschatbot.data.client.twitch.auth.entity.TwitchClientAuthDataRepository;
+import com.tinatiel.obschatbot.data.client.twitch.auth.model.TwitchClientDataDto;
 import com.tinatiel.obschatbot.security.owner.OwnerConfig;
 import com.tinatiel.obschatbot.security.owner.OwnerService;
 import java.util.Arrays;
 import java.util.Optional;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Answers;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -36,13 +34,13 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 @ContextConfiguration(classes = {
   OwnerConfig.class,
   TwitchAuthConnectionSettingsFactory.class,
-  TwitchClientDataConfig.class
+  TwitchClientAuthDataConfig.class
 })
 @SpringJUnitConfig
 public class TwitchAuthConnectionSettingsFactoryTest {
 
   @MockBean
-  TwitchClientDataService twitchClientDataService;
+  TwitchClientAuthDataService twitchClientAuthDataService;
 
   @MockBean(answer = Answers.RETURNS_DEEP_STUBS)
   OwnerService ownerService;
@@ -51,7 +49,7 @@ public class TwitchAuthConnectionSettingsFactoryTest {
   TwitchAuthConnectionSettingsFactory twitchAuthConnectionSettingsFactory;
 
   @MockBean
-  TwitchClientDataRepository twitchClientDataRepository;
+  TwitchClientAuthDataRepository twitchClientAuthDataRepository;
 
   @Test
   void settingsCombineWithDatabase() {
@@ -61,7 +59,7 @@ public class TwitchAuthConnectionSettingsFactoryTest {
       .clientId("correcthorse")
       .clientSecret("batterystaple")
       .build();
-    when(twitchClientDataService.findByOwner(any())).thenReturn(Optional.of(twitchClientDataDto));
+    when(twitchClientAuthDataService.findByOwner(any())).thenReturn(Optional.of(twitchClientDataDto));
 
     // When called
     TwitchAuthConnectionSettings actual = twitchAuthConnectionSettingsFactory.getSettings();
@@ -85,7 +83,7 @@ public class TwitchAuthConnectionSettingsFactoryTest {
   void noSettingsFromDatabase() {
 
     // Given the database returns no settings
-    when(twitchClientDataService.findByOwner(any())).thenReturn(Optional.empty());
+    when(twitchClientAuthDataService.findByOwner(any())).thenReturn(Optional.empty());
 
     // When called, then an exception is thrown
     assertThatThrownBy(() -> {

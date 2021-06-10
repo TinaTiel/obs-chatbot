@@ -1,8 +1,7 @@
 package com.tinatiel.obschatbot.core.client.twitch.auth;
 
 import com.tinatiel.obschatbot.core.client.ClientSettingsFactory;
-import com.tinatiel.obschatbot.data.client.twitch.TwitchClientDataService;
-import com.tinatiel.obschatbot.data.client.twitch.model.TwitchClientDataDto;
+import com.tinatiel.obschatbot.data.client.twitch.auth.TwitchClientAuthDataService;
 import com.tinatiel.obschatbot.security.owner.OwnerDto;
 import com.tinatiel.obschatbot.security.owner.OwnerService;
 import java.util.List;
@@ -31,14 +30,14 @@ public class TwitchAuthConnectionSettingsFactory implements
   private String redirectUri;
 
   @Setter(AccessLevel.NONE)
-  private final TwitchClientDataService twitchClientDataService;
+  private final TwitchClientAuthDataService twitchClientAuthDataService;
   @Setter(AccessLevel.NONE)
   private final OwnerService ownerService;
 
   public TwitchAuthConnectionSettingsFactory(
-    TwitchClientDataService twitchClientDataService,
+    TwitchClientAuthDataService twitchClientAuthDataService,
     OwnerService ownerService) {
-    this.twitchClientDataService = twitchClientDataService;
+    this.twitchClientAuthDataService = twitchClientAuthDataService;
     this.ownerService = ownerService;
   }
 
@@ -59,7 +58,7 @@ public class TwitchAuthConnectionSettingsFactory implements
     if(clientId == null || clientSecret == null) {
       OwnerDto owner = ownerService.getOwner();
       if(owner != null) {
-        twitchClientDataService.findByOwner(owner.getId()).ifPresentOrElse(it -> {
+        twitchClientAuthDataService.findByOwner(owner.getId()).ifPresentOrElse(it -> {
           builder.clientId(it.getClientId());
           builder.clientSecret(it.getClientSecret());
         }, () -> {
