@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 @Data
 @Entity
 public class TwitchClientChatDataEntity extends OwnerEntity {
-  private String botAccountUsername;
   private String broadcasterChannelUsername;
   private long connectionTimeoutMs;
   private int connectionAttempts;

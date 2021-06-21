@@ -1,14 +1,17 @@
 package com.tinatiel.obschatbot.core.request.scheduler;
 
 import com.tinatiel.obschatbot.core.SpringIntegrationTestConfig;
+import com.tinatiel.obschatbot.data.client.twitch.chat.TwitchClientChatDataService;
 import com.tinatiel.obschatbot.data.command.CommandService;
 import com.tinatiel.obschatbot.core.request.*;
 import com.tinatiel.obschatbot.core.request.messaging.CommandRequestGateway;
 import com.tinatiel.obschatbot.core.user.*;
+import com.tinatiel.obschatbot.security.owner.OwnerService;
 import java.util.Queue;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Answers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.TestConfiguration;
@@ -59,6 +62,10 @@ class CommandRequestSchedulerIT {
   CommandService commandService;
   @MockBean
   UserService userService;
+  @MockBean(answer = Answers.RETURNS_DEEP_STUBS)
+  OwnerService ownerService;
+  @MockBean(answer = Answers.RETURNS_DEEP_STUBS)
+  TwitchClientChatDataService twitchClientChatDataService;
 
   @TestConfiguration
   static class TestConfig {

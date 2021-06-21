@@ -8,6 +8,7 @@ package com.tinatiel.obschatbot.core.client.twitch.chat;
 import com.tinatiel.obschatbot.core.SpringIntegrationTestConfig;
 import com.tinatiel.obschatbot.core.client.ClientFactory;
 import com.tinatiel.obschatbot.core.client.ClientManager;
+import com.tinatiel.obschatbot.core.client.ClientSettingsFactory;
 import com.tinatiel.obschatbot.core.client.event.*;
 import com.tinatiel.obschatbot.core.messaging.ObsChatbotEvent;
 import com.tinatiel.obschatbot.core.request.handler.chat.ChatRequestHandler;
@@ -16,6 +17,7 @@ import java.util.Queue;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Answers;
 import org.mockito.Mockito;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.events.*;
@@ -79,6 +81,8 @@ public class TwitchChatClientLifecycleIT {
 
     @MockBean
     OAuth2AuthorizedClientService oAuth2AuthorizedClientService;
+    @MockBean(answer = Answers.RETURNS_DEEP_STUBS)
+    ClientSettingsFactory<TwitchChatClientSettings> twitchChatClientSettingsClientSettingsFactory;
 
     @BeforeEach
     void setUp() {

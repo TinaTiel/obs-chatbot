@@ -15,12 +15,11 @@ import lombok.experimental.SuperBuilder;
 @Data
 @SuperBuilder
 public class TwitchClientChatDataDto extends OwnerDto {
-  private String botAccountUsername;
   private String broadcasterChannelUsername;
   private long connectionTimeoutMs;
   private int connectionAttempts;
-  private String trigger;
-  private boolean parseEntireMessage;
   private String joinMessage;
   private String leaveMessage;
+  private String trigger;
+  private boolean parseEntireMessage;
 }

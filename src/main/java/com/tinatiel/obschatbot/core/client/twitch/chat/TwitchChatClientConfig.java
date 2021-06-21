@@ -12,6 +12,7 @@ import com.tinatiel.obschatbot.core.client.ClientSettingsFactory;
 import com.tinatiel.obschatbot.core.client.twitch.chat.messaging.TwitchChatClientMessagingConfig;
 import com.tinatiel.obschatbot.core.client.twitch.chat.messaging.TwitchClientLifecycleGateway;
 import com.tinatiel.obschatbot.core.request.handler.chat.ChatRequestHandler;
+import com.tinatiel.obschatbot.data.client.twitch.chat.TwitchClientChatDataService;
 import com.tinatiel.obschatbot.security.owner.OwnerService;
 import javax.net.ssl.SSLSocketFactory;
 import org.pircbotx.PircBotX;
@@ -33,31 +34,17 @@ public class TwitchChatClientConfig {
   @Autowired
   ChatRequestHandler chatRequestHandler;
   @Autowired
+  OwnerService ownerService;
+  @Autowired
   OAuth2AuthorizedClientService authorizedClientService;
   @Autowired
   TwitchClientLifecycleGateway twitchClientLifecycleGateway;
-  @Autowired
-  OwnerService ownerService;
-
-  @Value("${TWITCH_TARGET_CHANNEL:noauth}")
-  private String targetChannel;
-  @Value("${TWITCH_USER:noauth}")
-  private String twitchUsername;
 
   /**
    * Until we have this stored in a Repository, just hard-code it here.
    */
-  @Bean
-  ClientSettingsFactory<TwitchChatClientSettings> twitchChatClientSettingsFactory() {
-    TwitchChatClientSettings settings = new TwitchChatClientSettings(
-        TwitchChatClientSettings.DEFAULT_HOST, TwitchChatClientSettings.DEFAULT_PORT,
-        twitchUsername, "foo", targetChannel,
-        1000, 1,
-        "OBS Chatbot is ready! Type !help to see available commands",
-        "OBS Chatbot is shutting down"
-    );
-    return new TwitchChatClientSettingsFactory(ownerService, settings, authorizedClientService);
-  }
+  @Autowired
+  ClientSettingsFactory<TwitchChatClientSettings> twitchChatClientSettingsFactory;
 
   @Bean
   SSLSocketFactory sslSocketFactory() {
@@ -76,7 +63,9 @@ public class TwitchChatClientConfig {
   @Bean
   ClientFactory<PircBotX, TwitchChatClientSettings> twitchChatClientFactory() {
     return new TwitchChatClientFactory(
-      twitchChatClientSettingsFactory(),
+      ownerService,
+      authorizedClientService,
+      twitchChatClientSettingsFactory,
       sslSocketFactory(),
       pircBotxListener()
     );

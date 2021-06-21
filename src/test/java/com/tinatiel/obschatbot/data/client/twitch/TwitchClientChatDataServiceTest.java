@@ -2,6 +2,7 @@ package com.tinatiel.obschatbot.data.client.twitch;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Fail.fail;
 
 import com.tinatiel.obschatbot.data.client.twitch.auth.model.TwitchClientAuthDataDto;
 import com.tinatiel.obschatbot.data.client.twitch.chat.TwitchClientChatDataConfig;
@@ -47,7 +48,6 @@ public class TwitchClientChatDataServiceTest {
     twitchClientChatDataRepository.deleteAll();
     TwitchClientChatDataEntity existing = new TwitchClientChatDataEntity();
     existing.setOwner(UUID.randomUUID());
-    existing.setBotAccountUsername("mrdata");
     existing.setBroadcasterChannelUsername("fleetstar");
     existing.setConnectionAttempts(42);
     existing.setConnectionTimeoutMs(6969);
@@ -74,7 +74,6 @@ public class TwitchClientChatDataServiceTest {
     assertThat(actual).isPresent();
     TwitchClientChatDataDto expected = TwitchClientChatDataDto.builder()
       .owner(existingTwitchClientData.getOwner())
-      .botAccountUsername(existingTwitchClientData.getBotAccountUsername())
       .broadcasterChannelUsername(existingTwitchClientData.getBroadcasterChannelUsername())
       .connectionAttempts(existingTwitchClientData.getConnectionAttempts())
       .connectionTimeoutMs(existingTwitchClientData.getConnectionTimeoutMs())
@@ -93,7 +92,6 @@ public class TwitchClientChatDataServiceTest {
     // Given a request for new settings
     TwitchClientChatDataDto request = TwitchClientChatDataDto.builder()
       .owner(UUID.randomUUID())
-      .botAccountUsername("mrroboto")
       .broadcasterChannelUsername("80sbeast")
       .connectionAttempts(67)
       .connectionTimeoutMs(9999)
@@ -117,7 +115,7 @@ public class TwitchClientChatDataServiceTest {
   }
 
   @Test
-  void nullOwner() {
+  void saveNullOwner() {
     assertThatThrownBy(() -> {
       twitchClientChatDataService.save(TwitchClientChatDataDto.builder()
         .build());
@@ -146,7 +144,6 @@ public class TwitchClientChatDataServiceTest {
     // When updated
     TwitchClientChatDataDto request = TwitchClientChatDataDto.builder()
       .owner(existingTwitchClientData.getOwner())
-      .botAccountUsername("johnny5")
       .broadcasterChannelUsername("80snerd")
       .connectionAttempts(78)
       .connectionTimeoutMs(1234)

@@ -34,7 +34,7 @@ public class TwitchChatClientDelegate implements
    */
   public void sendMessage(String message) {
     delegate.sendIRC().message(
-        "#" + settings.getBroadcasterChannel(),
+        "#" + settings.getBroadcasterAccountUsername(),
         message
     );
   }
