@@ -5,20 +5,45 @@
 
 package com.tinatiel.obschatbot.core.request.handler.chat;
 
+import com.tinatiel.obschatbot.data.client.twitch.chat.TwitchClientChatDataService;
+import com.tinatiel.obschatbot.data.client.twitch.chat.model.TwitchClientChatDataDto;
+import com.tinatiel.obschatbot.security.owner.OwnerDto;
+import com.tinatiel.obschatbot.security.owner.OwnerService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class ChatMessageParserTest {
+
+    OwnerService ownerService;
+    TwitchClientChatDataService dataService;
+
+    ChatMessageParser parser;
+
+    @BeforeEach
+    void setUp() {
+        ownerService = mock(OwnerService.class);
+        when(ownerService.getOwner()).thenReturn(mock(OwnerDto.class));
+        dataService = mock(TwitchClientChatDataService.class);
+        parser = new ChatMessageParserImpl(ownerService, dataService);
+    }
 
     @Test
     void messageMissingTriggerReturnsNothing() {
 
-        // Given a parser
-        ChatMessageParser parser = new ChatMessageParserImpl("!", true);
+        // Given the entire message is parsed for a trigger
+//        ChatMessageParser parser = new ChatMessageParserImpl("!", true);
+        when(dataService.findByOwner(any())).thenReturn(Optional.of(TwitchClientChatDataDto.builder()
+          .trigger("!")
+          .parseEntireMessage(true)
+          .build()));
 
         // When parsed with a message not containing the trigger
         Optional<ChatMessageParseResult> result = parser.parse("wont trigger");
@@ -33,7 +58,11 @@ public class ChatMessageParserTest {
     void parseTriggeringOnlyOnFirstChar() {
 
         // given parser only cares about first char
-        ChatMessageParser parser = new ChatMessageParserImpl("!", false);
+//        ChatMessageParser parser = new ChatMessageParserImpl("!", false);
+        when(dataService.findByOwner(any())).thenReturn(Optional.of(TwitchClientChatDataDto.builder()
+          .trigger("!")
+          .parseEntireMessage(false)
+          .build()));
 
         // When parsed
         Optional<ChatMessageParseResult> firstCharResult = parser.parse("!run with these args");
@@ -41,7 +70,7 @@ public class ChatMessageParserTest {
 
         // then only the message starting with the trigger returns a result
         ChatMessageParseResult expectedResult = new ChatMessageParseResult("run", Arrays.asList("with", "these", "args"));
-        assertThat(firstCharResult).isPresent().get().isEqualToComparingFieldByField(expectedResult);
+        assertThat(firstCharResult).isPresent().get().usingRecursiveComparison().isEqualTo(expectedResult);
         assertThat(fullMessageResult).isNotPresent();
 
     }
@@ -50,7 +79,11 @@ public class ChatMessageParserTest {
     void parseTriggeringOnEntireMessage() {
 
         // given parser parses entire message
-        ChatMessageParser parser = new ChatMessageParserImpl("!", true);
+//        ChatMessageParser parser = new ChatMessageParserImpl("!", true);
+        when(dataService.findByOwner(any())).thenReturn(Optional.of(TwitchClientChatDataDto.builder()
+          .trigger("!")
+          .parseEntireMessage(true)
+          .build()));
 
         // When parsed
         Optional<ChatMessageParseResult> firstCharResult = parser.parse("!run with these args");

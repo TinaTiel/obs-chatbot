@@ -43,14 +43,14 @@ public class ChatHandlerConfig {
 
   @Bean
   ChatMessageParser chatMessageParser() {
-//    return new ChatMessageParserImpl(
-//      ownerService,
-//      twitchClientChatDataService
-//    );
     return new ChatMessageParserImpl(
-      "!",
-      true
+      ownerService,
+      twitchClientChatDataService
     );
+//    return new ChatMessageParserImpl(
+//      "!",
+//      true
+//    );
   }
 
 }

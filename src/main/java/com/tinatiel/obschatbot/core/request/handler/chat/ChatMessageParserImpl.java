@@ -5,6 +5,9 @@
 
 package com.tinatiel.obschatbot.core.request.handler.chat;
 
+import com.tinatiel.obschatbot.data.client.twitch.chat.TwitchClientChatDataService;
+import com.tinatiel.obschatbot.data.client.twitch.chat.model.TwitchClientChatDataDto;
+import com.tinatiel.obschatbot.security.owner.OwnerService;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -17,37 +20,50 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class ChatMessageParserImpl implements ChatMessageParser {
 
-  private final String trigger;
-  private final boolean parseEntireMessage;
+//  private final String trigger;
+//  private final boolean parseEntireMessage;
 
-  /**
-   * Specify how a chat message will be parsed.
-   *
-   * @param trigger            the trigger word (or character) that prefixes the command to execute
-   * @param parseEntireMessage if true, will look through the entire message for the trigger.
-   *                           Otherwise expects the first word in the message to be the trigger.
-   */
-  public ChatMessageParserImpl(String trigger, boolean parseEntireMessage) {
-    this.trigger = trigger;
-    this.parseEntireMessage = parseEntireMessage;
+//  /**
+//   * Specify how a chat message will be parsed.
+//   *
+//   * @param trigger            the trigger word (or character) that prefixes the command to execute
+//   * @param parseEntireMessage if true, will look through the entire message for the trigger.
+//   *                           Otherwise expects the first word in the message to be the trigger.
+//   */
+//  public ChatMessageParserImpl(String trigger, boolean parseEntireMessage) {
+//    this.trigger = trigger;
+//    this.parseEntireMessage = parseEntireMessage;
+//  }
+
+  private final OwnerService ownerService;
+  private final TwitchClientChatDataService dataService;
+
+  public ChatMessageParserImpl(OwnerService ownerService,
+    TwitchClientChatDataService dataService) {
+    this.ownerService = ownerService;
+    this.dataService = dataService;
   }
 
   @Override
   public Optional<ChatMessageParseResult> parse(String message) {
 
-    if (parseEntireMessage) {
+    TwitchClientChatDataDto settings = dataService.findByOwner(ownerService.getOwner().getId())
+      .orElseThrow(() -> new IllegalStateException("Could not retrieve chat settings"));
+
+    String trigger = settings.getTrigger();
+    if (settings.isParseEntireMessage()) {
       if (message.contains(trigger)) {
-        return Optional.of(parseMessage(message));
+        return Optional.of(parseMessage(message, trigger));
       }
     } else {
       if (message.startsWith(trigger)) {
-        return Optional.of(parseMessage(message));
+        return Optional.of(parseMessage(message, trigger));
       }
     }
     return Optional.empty();
   }
 
-  private ChatMessageParseResult parseMessage(String message) {
+  private ChatMessageParseResult parseMessage(String message, String trigger) {
     String afterTrigger = StringUtils.substringAfter(message, trigger).trim();
     List<String> parts = Arrays.stream(StringUtils.split(afterTrigger))
         .collect(Collectors.toList());
