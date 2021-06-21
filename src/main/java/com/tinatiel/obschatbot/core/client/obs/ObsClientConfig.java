@@ -10,6 +10,8 @@ import com.tinatiel.obschatbot.core.client.ClientFactory;
 import com.tinatiel.obschatbot.core.client.ClientManager;
 import com.tinatiel.obschatbot.core.client.obs.messaging.ObsClientLifecycleGateway;
 import com.tinatiel.obschatbot.core.client.obs.messaging.ObsMessagingConfig;
+import com.tinatiel.obschatbot.data.client.obs.ObsClientDataService;
+import com.tinatiel.obschatbot.security.owner.OwnerService;
 import net.twasi.obsremotejava.OBSRemoteController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,15 +28,17 @@ public class ObsClientConfig {
 
   @Autowired
   ObsClientLifecycleGateway obsClientLifecycleGateway;
-  @Value("${OBS_PASSWORD:na}")
-  private String obsPassword;
+//  @Value("${OBS_PASSWORD:na}")
+//  private String obsPassword;
+
+  @Autowired
+  OwnerService ownerService;
+  @Autowired
+  ObsClientDataService dataService;
 
   @Bean
   ObsClientSettingsFactory obsClientSettingsFactory() {
-    String pass = obsPassword.equals("na") ? null : obsPassword;
-    return new ObsClientSettingsFactory(new ObsClientSettings(
-      "localhost", 4444, pass, 1000
-    ));
+    return new ObsClientSettingsFactory(ownerService, dataService);
   }
 
   @Bean

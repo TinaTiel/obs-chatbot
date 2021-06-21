@@ -47,10 +47,6 @@ public class ChatHandlerConfig {
       ownerService,
       twitchClientChatDataService
     );
-//    return new ChatMessageParserImpl(
-//      "!",
-//      true
-//    );
   }
 
 }

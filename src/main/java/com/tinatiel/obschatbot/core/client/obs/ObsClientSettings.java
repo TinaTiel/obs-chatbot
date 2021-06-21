@@ -6,12 +6,14 @@
 package com.tinatiel.obschatbot.core.client.obs;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.ToString;
 
 /**
  * Encompasses the connection settings required to initiate connection with OBS.
  */
+@Builder
 @Data
 @AllArgsConstructor
 @ToString
