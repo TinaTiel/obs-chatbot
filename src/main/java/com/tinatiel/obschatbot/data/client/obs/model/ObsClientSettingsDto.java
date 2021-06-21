@@ -1,10 +1,10 @@
 package com.tinatiel.obschatbot.data.client.obs.model;
 
+import com.tinatiel.obschatbot.data.common.OwnerDto;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.experimental.SuperBuilder;
 
 /**
  * Provides an user-presentable representation of OBS-related settings
@@ -12,19 +12,12 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-@Builder
-public class ObsSettingsDto {
+@SuperBuilder
+public class ObsClientSettingsDto extends OwnerDto {
 
-  @Builder.Default
-  private String host = "localhost";
-
-  @Builder.Default
-  private int port = 4444;
-
-  @ToString.Exclude
+  private String host;
+  private int port;
   private String password;
-
-  @Builder.Default
-  private long connectionTimeoutMs = 1000;
+  private long connectionTimeoutMs;
 
 }

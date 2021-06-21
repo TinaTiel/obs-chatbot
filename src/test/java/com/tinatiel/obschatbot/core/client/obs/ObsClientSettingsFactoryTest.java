@@ -6,7 +6,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import com.tinatiel.obschatbot.data.client.obs.ObsClientDataService;
-import com.tinatiel.obschatbot.data.client.obs.model.ObsSettingsDto;
+import com.tinatiel.obschatbot.data.client.obs.model.ObsClientSettingsDto;
 import com.tinatiel.obschatbot.security.owner.OwnerDto;
 import com.tinatiel.obschatbot.security.owner.OwnerService;
 import java.util.Optional;
@@ -39,7 +39,7 @@ public class ObsClientSettingsFactoryTest {
   void getSettingsAsExpected() {
 
     // Given the data service returns data
-    ObsSettingsDto data = ObsSettingsDto.builder()
+    ObsClientSettingsDto data = ObsClientSettingsDto.builder()
       .host("localhost")
       .port(4567)
       .connectionTimeoutMs(1234)
