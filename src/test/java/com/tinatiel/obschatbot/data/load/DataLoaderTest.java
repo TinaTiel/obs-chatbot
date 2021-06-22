@@ -10,6 +10,7 @@ import static org.mockito.Mockito.when;
 import com.tinatiel.obschatbot.data.client.obs.ObsClientDataService;
 import com.tinatiel.obschatbot.data.client.obs.model.ObsClientSettingsDto;
 import com.tinatiel.obschatbot.data.client.twitch.auth.TwitchClientAuthDataService;
+import com.tinatiel.obschatbot.data.client.twitch.auth.model.TwitchClientAuthDataDto;
 import com.tinatiel.obschatbot.data.client.twitch.chat.TwitchClientChatDataService;
 import com.tinatiel.obschatbot.data.client.twitch.chat.model.TwitchClientChatDataDto;
 import com.tinatiel.obschatbot.data.system.SystemSettingsDataService;
@@ -126,7 +127,47 @@ public class DataLoaderTest {
     dataLoader.loadTwitchChatSettings();
 
     // then no data is saved
-    verify(obsClientDataService, never()).save(any());
+    verify(twitchClientChatDataService, never()).save(any());
+
+  }
+
+  @Test
+  void loadNewTwitchAuthSettings() {
+
+    // given no existing data is found
+    assertThat(twitchClientAuthDataService.findByOwner(ownerDto.getId())).isEmpty();
+
+    // when loaded
+    dataLoader.loadTwitchAuthSettings();
+
+    // then the expected data is loaded
+    ArgumentCaptor<TwitchClientAuthDataDto> captor = ArgumentCaptor.forClass(TwitchClientAuthDataDto.class);
+    verify(twitchClientAuthDataService).save(captor.capture());
+    TwitchClientAuthDataDto actual = captor.getValue();
+    TwitchClientAuthDataDto expected = TwitchClientAuthDataDto.builder()
+      .owner(ownerDto.getId())
+      .clientId(null)
+      .clientSecret(null)
+      .build();
+
+    assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
+
+  }
+
+  @Test
+  void loadExistingTwitchAuthSettings() {
+
+    // given existing data is found
+    TwitchClientAuthDataDto expected = TwitchClientAuthDataDto.builder()
+      .owner(ownerDto.getId())
+      .build();
+    when(twitchClientAuthDataService.findByOwner(eq(ownerDto.getId()))).thenReturn(Optional.of(expected));
+
+    // when loaded
+    dataLoader.loadTwitchAuthSettings();
+
+    // then no data is saved
+    verify(twitchClientAuthDataService, never()).save(any());
 
   }
 

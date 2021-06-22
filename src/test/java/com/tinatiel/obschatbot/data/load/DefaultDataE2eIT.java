@@ -44,7 +44,7 @@ public class DefaultDataE2eIT {
     // And settings are retrievable (we verify what they are in separate tests)
     assertThat(obsClientDataService.findByOwner(ownerDto.getId())).isPresent();
     assertThat(twitchClientChatDataService.findByOwner(ownerDto.getId())).isPresent();
-//    assertThat(twitchClientAuthDataService.findByOwner(ownerDto.getId())).isPresent();
+    assertThat(twitchClientAuthDataService.findByOwner(ownerDto.getId())).isPresent();
 //    assertThat(systemSettingsDataService.findByOwner(ownerDto.getId())).isPresent();
 
   }
