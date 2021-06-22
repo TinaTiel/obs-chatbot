@@ -22,6 +22,7 @@ public class DataLoaderListener implements ApplicationListener<ContextRefreshedE
         dataLoader.loadObsSettings();
         dataLoader.loadTwitchChatSettings();
         dataLoader.loadTwitchAuthSettings();
+        dataLoader.loadSystemSettings();
       } catch (Exception e) {
         log.error("Unable to initialize settings", e);
       } finally {

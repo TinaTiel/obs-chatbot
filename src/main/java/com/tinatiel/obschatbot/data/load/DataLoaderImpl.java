@@ -7,6 +7,7 @@ import com.tinatiel.obschatbot.data.client.twitch.auth.model.TwitchClientAuthDat
 import com.tinatiel.obschatbot.data.client.twitch.chat.TwitchClientChatDataService;
 import com.tinatiel.obschatbot.data.client.twitch.chat.model.TwitchClientChatDataDto;
 import com.tinatiel.obschatbot.data.system.SystemSettingsDataService;
+import com.tinatiel.obschatbot.data.system.model.SystemSettingsDto;
 import com.tinatiel.obschatbot.security.owner.OwnerDto;
 import com.tinatiel.obschatbot.security.owner.OwnerService;
 
@@ -85,6 +86,16 @@ public class DataLoaderImpl implements DataLoader {
 
   @Override
   public void loadSystemSettings() {
-
+    OwnerDto ownerDto = ownerService.getOwner();
+    systemSettingsDataService.findByOwner(ownerDto.getId()).ifPresentOrElse(
+      (existing) -> {
+        // do nothing to existing data
+      }, () -> {
+        systemSettingsDataService.save(SystemSettingsDto.builder()
+          .owner(ownerDto.getId())
+          .maxActionBatchSize(10)
+          .recursionTimeoutMillis(2000)
+          .build());
+      });
   }
 }

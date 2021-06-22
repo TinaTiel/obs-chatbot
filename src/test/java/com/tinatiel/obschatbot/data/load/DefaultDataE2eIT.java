@@ -45,7 +45,7 @@ public class DefaultDataE2eIT {
     assertThat(obsClientDataService.findByOwner(ownerDto.getId())).isPresent();
     assertThat(twitchClientChatDataService.findByOwner(ownerDto.getId())).isPresent();
     assertThat(twitchClientAuthDataService.findByOwner(ownerDto.getId())).isPresent();
-//    assertThat(systemSettingsDataService.findByOwner(ownerDto.getId())).isPresent();
+    assertThat(systemSettingsDataService.findByOwner(ownerDto.getId())).isPresent();
 
   }
 

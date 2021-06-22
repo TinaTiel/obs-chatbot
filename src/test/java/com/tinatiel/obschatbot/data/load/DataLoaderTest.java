@@ -14,6 +14,7 @@ import com.tinatiel.obschatbot.data.client.twitch.auth.model.TwitchClientAuthDat
 import com.tinatiel.obschatbot.data.client.twitch.chat.TwitchClientChatDataService;
 import com.tinatiel.obschatbot.data.client.twitch.chat.model.TwitchClientChatDataDto;
 import com.tinatiel.obschatbot.data.system.SystemSettingsDataService;
+import com.tinatiel.obschatbot.data.system.model.SystemSettingsDto;
 import com.tinatiel.obschatbot.security.owner.OwnerDto;
 import com.tinatiel.obschatbot.security.owner.OwnerService;
 import java.util.Optional;
@@ -168,6 +169,46 @@ public class DataLoaderTest {
 
     // then no data is saved
     verify(twitchClientAuthDataService, never()).save(any());
+
+  }
+
+  @Test
+  void loadNewSystemSettings() {
+
+    // given no existing data is found
+    assertThat(systemSettingsDataService.findByOwner(ownerDto.getId())).isEmpty();
+
+    // when loaded
+    dataLoader.loadSystemSettings();
+
+    // then the expected data is loaded
+    ArgumentCaptor<SystemSettingsDto> captor = ArgumentCaptor.forClass(SystemSettingsDto.class);
+    verify(systemSettingsDataService).save(captor.capture());
+    SystemSettingsDto actual = captor.getValue();
+    SystemSettingsDto expected = SystemSettingsDto.builder()
+      .owner(ownerDto.getId())
+      .maxActionBatchSize(10)
+      .recursionTimeoutMillis(2000)
+      .build();
+
+    assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
+
+  }
+
+  @Test
+  void loadExistingSystemSettings() {
+
+    // given existing data is found
+    SystemSettingsDto expected = SystemSettingsDto.builder()
+      .owner(ownerDto.getId())
+      .build();
+    when(systemSettingsDataService.findByOwner(eq(ownerDto.getId()))).thenReturn(Optional.of(expected));
+
+    // when loaded
+    dataLoader.loadSystemSettings();
+
+    // then no data is saved
+    verify(systemSettingsDataService, never()).save(any());
 
   }
 
