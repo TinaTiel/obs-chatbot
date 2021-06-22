@@ -47,8 +47,9 @@ public class AuthorizedClientSchemaLoader implements ApplicationListener<Context
         connection.close();
       } catch (SQLException sqlException) {
         log.error("Could not fetch connection from datasource: " + dataSource, sqlException);
+      } finally {
+        completed = true;
       }
-      completed = true;
       log.debug("...Initialization complete!");
     }
   }
