@@ -1,20 +1,15 @@
-package com.tinatiel.obschatbot.data;
+package com.tinatiel.obschatbot.data.load;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
 import com.tinatiel.obschatbot.data.client.obs.ObsClientDataService;
-import com.tinatiel.obschatbot.data.client.obs.entity.ObsClientDataRepository;
 import com.tinatiel.obschatbot.data.client.twitch.auth.TwitchClientAuthDataService;
-import com.tinatiel.obschatbot.data.client.twitch.auth.entity.TwitchClientAuthDataRepository;
 import com.tinatiel.obschatbot.data.client.twitch.chat.TwitchClientChatDataService;
-import com.tinatiel.obschatbot.data.client.twitch.chat.entity.TwitchClientChatDataRepository;
 import com.tinatiel.obschatbot.data.system.SystemSettingsDataService;
-import com.tinatiel.obschatbot.data.system.entity.SystemSettingsRepository;
 import com.tinatiel.obschatbot.security.owner.OwnerDto;
 import com.tinatiel.obschatbot.security.owner.OwnerService;
 import com.tinatiel.obschatbot.security.owner.SystemOwnerService;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -48,7 +43,7 @@ public class DefaultDataE2eIT {
 
     // And settings are retrievable (we verify what they are in separate tests)
     assertThat(obsClientDataService.findByOwner(ownerDto.getId())).isPresent();
-//    assertThat(twitchClientChatDataService.findByOwner(ownerDto.getId())).isPresent();
+    assertThat(twitchClientChatDataService.findByOwner(ownerDto.getId())).isPresent();
 //    assertThat(twitchClientAuthDataService.findByOwner(ownerDto.getId())).isPresent();
 //    assertThat(systemSettingsDataService.findByOwner(ownerDto.getId())).isPresent();
 

@@ -4,6 +4,7 @@ import com.tinatiel.obschatbot.data.client.obs.ObsClientDataService;
 import com.tinatiel.obschatbot.data.client.obs.model.ObsClientSettingsDto;
 import com.tinatiel.obschatbot.data.client.twitch.auth.TwitchClientAuthDataService;
 import com.tinatiel.obschatbot.data.client.twitch.chat.TwitchClientChatDataService;
+import com.tinatiel.obschatbot.data.client.twitch.chat.model.TwitchClientChatDataDto;
 import com.tinatiel.obschatbot.data.system.SystemSettingsDataService;
 import com.tinatiel.obschatbot.security.owner.OwnerDto;
 import com.tinatiel.obschatbot.security.owner.OwnerService;
@@ -48,7 +49,22 @@ public class DataLoaderImpl implements DataLoader {
 
   @Override
   public void loadTwitchChatSettings() {
-
+    OwnerDto ownerDto = ownerService.getOwner();
+    twitchClientChatDataService.findByOwner(ownerDto.getId()).ifPresentOrElse(
+      (existing) -> {
+        // do nothing to existing data
+      }, () -> {
+        twitchClientChatDataService.save(TwitchClientChatDataDto.builder()
+          .owner(ownerDto.getId())
+          .broadcasterChannelUsername(null)
+          .trigger("!")
+          .parseEntireMessage(false)
+          .joinMessage("OBS Chatbot has joined!")
+          .leaveMessage("Obs Chatbot is leaving...")
+          .connectionAttempts(3)
+          .connectionTimeoutMs(10000)
+          .build());
+      });
   }
 
   @Override

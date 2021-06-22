@@ -1,12 +1,8 @@
 package com.tinatiel.obschatbot.data.load;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
-import org.springframework.stereotype.Component;
 
 @Slf4j
 public class DataLoaderListener implements ApplicationListener<ContextRefreshedEvent> {
@@ -24,6 +20,7 @@ public class DataLoaderListener implements ApplicationListener<ContextRefreshedE
       log.info("Initializing Settings...");
       try{
         dataLoader.loadObsSettings();
+        dataLoader.loadTwitchChatSettings();
       } catch (Exception e) {
         log.error("Unable to initialize settings", e);
       } finally {
