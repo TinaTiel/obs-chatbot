@@ -1,12 +1,16 @@
 package com.tinatiel.obschatbot.data.localuser.model;
 
 import com.tinatiel.obschatbot.core.user.Platform;
+import com.tinatiel.obschatbot.data.common.OwnerDto;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 /**
  * Stores the most minimal information required to associate an user with a locally-created group
@@ -16,13 +20,12 @@ import lombok.NoArgsConstructor;
  */
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@SuperBuilder
 @Data
-public class LocalUserDto {
-
+public class LocalUserDto extends OwnerDto {
   private Platform platform;
   private String username;
   @Builder.Default
-  private Set<LocalGroupDto> groups = new HashSet<>();
+  private List<LocalGroupDto> groups = new ArrayList<>();
   private boolean broadcaster;
 }

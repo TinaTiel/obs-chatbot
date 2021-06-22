@@ -63,11 +63,11 @@ public class UserServiceTest {
                 .build();
 
         // And given an user has group memberships
-        Set<LocalGroupDto> expectedGroups = new HashSet<>(Arrays.asList(
+        List<LocalGroupDto> expectedGroups = Arrays.asList(
                 LocalGroupDto.builder().name("raffle winners").build(),
                 LocalGroupDto.builder().name("regulars").build(),
                 LocalGroupDto.builder().name("obviously a cat").build()
-        ));
+        );
         when(localUserService.findByOwnerAndPlatformAndUsername(eq(owner.getId()), any(), any())).thenReturn(
                 Optional.of(LocalUserDto.builder()
                     .username(partialUser.getUsername())

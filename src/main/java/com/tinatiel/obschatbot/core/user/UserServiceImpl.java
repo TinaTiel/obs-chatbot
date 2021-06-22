@@ -6,6 +6,7 @@ import com.tinatiel.obschatbot.data.localuser.LocalUserService;
 import com.tinatiel.obschatbot.data.localuser.model.LocalGroupDto;
 import com.tinatiel.obschatbot.security.owner.OwnerDto;
 import com.tinatiel.obschatbot.security.owner.OwnerService;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -60,7 +61,7 @@ public class UserServiceImpl implements UserService {
       owner.getId(),
       partialUserInfo.getPlatform(),
       partialUserInfo.getUsername()).orElse(new LocalUserDto());
-    Set<LocalGroupDto> groups = localUserDto.getGroups();
+    List<LocalGroupDto> groups = localUserDto.getGroups();
     groups.addAll(partialUserInfo.getGroups());
     userBuilder.groups(groups);
 

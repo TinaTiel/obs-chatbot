@@ -6,7 +6,9 @@
 package com.tinatiel.obschatbot.core.user;
 
 import com.tinatiel.obschatbot.data.localuser.model.LocalGroupDto;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import lombok.AllArgsConstructor;
@@ -33,7 +35,7 @@ public class User {
   private final UserSecurityDetails userSecurityDetails = UserSecurityDetails.builder().build();
 
   @Builder.Default
-  private final Set<LocalGroupDto> groups = new HashSet<>();
+  private final List<LocalGroupDto> groups = new ArrayList<>();
 
   /**
    * Returns the SYSTEM user; a Local user that has admin (broadcaster) permissions.
