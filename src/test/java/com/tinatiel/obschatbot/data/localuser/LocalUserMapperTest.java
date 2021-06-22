@@ -22,7 +22,9 @@ public class LocalUserMapperTest {
 
     // Given users
     UUID owner = UUID.randomUUID();
+    UUID id = UUID.randomUUID();
     LocalUserDto expectedDto = LocalUserDto.builder()
+      .id(id)
       .owner(owner)
       .platform(Platform.LOCAL)
       .username("mr_roboto")
@@ -30,6 +32,7 @@ public class LocalUserMapperTest {
       .build();
 
     LocalUserEntity expectedEntity = new LocalUserEntity();
+    expectedEntity.setId(id);
     expectedEntity.setOwner(owner);
     expectedEntity.setPlatform(Platform.LOCAL);
     expectedEntity.setUsername("mr_roboto");
@@ -50,21 +53,27 @@ public class LocalUserMapperTest {
 
     // Given users with groups
     UUID owner = UUID.randomUUID();
+    UUID groupId1 = UUID.randomUUID();
+    UUID groupId2 = UUID.randomUUID();
+    UUID groupId3 = UUID.randomUUID();
     LocalUserDto expectedDto = LocalUserDto.builder()
       .groups(Arrays.asList(
-        LocalGroupDto.builder().owner(owner).name("group1").build(),
-        LocalGroupDto.builder().owner(owner).name("group2").build(),
-        LocalGroupDto.builder().owner(owner).name("group3").build()
+        LocalGroupDto.builder().id(groupId1).owner(owner).name("group1").build(),
+        LocalGroupDto.builder().id(groupId2).owner(owner).name("group2").build(),
+        LocalGroupDto.builder().id(groupId3).owner(owner).name("group3").build()
       ))
       .build();
 
     LocalGroupEntity groupEntity1 = new LocalGroupEntity();
+    groupEntity1.setId(groupId1);
     groupEntity1.setOwner(owner);
     groupEntity1.setName("group1");
     LocalGroupEntity groupEntity2 = new LocalGroupEntity();
+    groupEntity2.setId(groupId2);
     groupEntity2.setOwner(owner);
     groupEntity2.setName("group2");
     LocalGroupEntity groupEntity3 = new LocalGroupEntity();
+    groupEntity3.setId(groupId3);
     groupEntity3.setOwner(owner);
     groupEntity3.setName("group3");
     LocalUserEntity expectedEntity = new LocalUserEntity();

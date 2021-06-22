@@ -1,17 +1,29 @@
 package com.tinatiel.obschatbot.data.localuser.entity;
 
 import com.tinatiel.obschatbot.core.user.Platform;
+import com.tinatiel.obschatbot.data.common.IdEntity;
 import com.tinatiel.obschatbot.data.common.OwnerEntity;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Transient;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Type;
 
 @NoArgsConstructor
 @Data
-public class LocalUserEntity extends OwnerEntity {
+@Entity
+public class LocalUserEntity extends IdEntity {
+
+  @Type(type = "org.hibernate.type.UUIDCharType")
+  @Column(length = 36, columnDefinition = "varchar", updatable = false, nullable = false)
+  private UUID owner;
   private Platform platform;
   private String username;
+  @Transient
   private List<LocalGroupEntity> groups = new ArrayList<>();
   private boolean broadcaster;
 }

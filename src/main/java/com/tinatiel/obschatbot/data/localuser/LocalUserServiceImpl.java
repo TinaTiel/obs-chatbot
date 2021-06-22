@@ -1,12 +1,29 @@
 package com.tinatiel.obschatbot.data.localuser;
 
 import com.tinatiel.obschatbot.core.user.Platform;
+import com.tinatiel.obschatbot.data.localuser.entity.LocalUserRepository;
+import com.tinatiel.obschatbot.data.localuser.mapper.LocalUserMapper;
 import com.tinatiel.obschatbot.data.localuser.model.LocalUserDto;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 public class LocalUserServiceImpl implements LocalUserService {
+
+  private final LocalUserRepository repository;
+  private final LocalUserMapper mapper;
+
+  public LocalUserServiceImpl(
+    LocalUserRepository repository,
+    LocalUserMapper mapper) {
+    this.repository = repository;
+    this.mapper = mapper;
+  }
+
+  @Override
+  public Optional<LocalUserDto> findById(UUID id) {
+    return repository.findById(id).flatMap(it -> Optional.of(mapper.map(it)));
+  }
 
   @Override
   public List<LocalUserDto> findByOwner(UUID ownerId) {
@@ -27,7 +44,9 @@ public class LocalUserServiceImpl implements LocalUserService {
 
   @Override
   public LocalUserDto save(LocalUserDto localUserDto) {
-    return null;
+    return mapper.map(
+      repository.save(mapper.map(localUserDto))
+    );
   }
 
   @Override

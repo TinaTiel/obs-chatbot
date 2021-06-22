@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,6 +24,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @Data
 public class LocalUserDto extends OwnerDto {
+  private UUID id;
   private Platform platform;
   private String username;
   @Builder.Default

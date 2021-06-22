@@ -1,22 +1,41 @@
 package com.tinatiel.obschatbot.data.localuser;
 
+import com.tinatiel.obschatbot.data.localuser.entity.LocalGroupRepository;
+import com.tinatiel.obschatbot.data.localuser.entity.LocalUserRepository;
+import com.tinatiel.obschatbot.data.localuser.mapper.LocalUserMapper;
+import org.mapstruct.Mapper;
+import org.mapstruct.factory.Mappers;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
  * Configuration for the local user package.
  */
+@EntityScan("com.tinatiel.obschatbot.data.localuser.entity")
 @Configuration
 public class LocalUserConfig {
 
+  @Autowired
+  LocalUserRepository localUserRepository;
+
+//  @Autowired
+//  LocalGroupRepository localGroupRepository;
+
   @Bean
-  LocalUserService localUserRepository() {
-    return new LocalUserServiceImpl();
+  LocalUserMapper localUserMapper() {
+    return Mappers.getMapper(LocalUserMapper.class);
   }
 
   @Bean
-  LocalGroupService localGroupService() {
-    return new LocalGroupServiceImpl();
+  LocalUserService localUserService() {
+    return new LocalUserServiceImpl(localUserRepository, localUserMapper());
   }
+
+//  @Bean
+//  LocalGroupService localGroupService() {
+//    return new LocalGroupServiceImpl(localGroupRepository);
+//  }
 
 }

@@ -1,6 +1,7 @@
 package com.tinatiel.obschatbot.data.localuser.model;
 
 import com.tinatiel.obschatbot.data.common.OwnerDto;
+import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,5 +17,6 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @Data
 public class LocalGroupDto extends OwnerDto {
+  private UUID id;
   private String name;
 }

@@ -12,6 +12,8 @@ import java.util.UUID;
  */
 public interface LocalUserService {
 
+  Optional<LocalUserDto> findById(UUID id);
+
   List<LocalUserDto> findByOwner(UUID ownerId);
 
   Optional<LocalUserDto> findByOwnerAndPlatformAndUsername(UUID ownerId, Platform platform, String username);
