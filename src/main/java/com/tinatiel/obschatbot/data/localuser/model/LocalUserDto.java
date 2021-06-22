@@ -1,4 +1,4 @@
-package com.tinatiel.obschatbot.core.user.local;
+package com.tinatiel.obschatbot.data.localuser.model;
 
 import com.tinatiel.obschatbot.core.user.Platform;
 import java.util.HashSet;
@@ -18,11 +18,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @Data
-public class LocalUser {
+public class LocalUserDto {
 
   private Platform platform;
   private String username;
   @Builder.Default
-  private Set<UserGroup> groups = new HashSet<>();
+  private Set<LocalGroupDto> groups = new HashSet<>();
   private boolean broadcaster;
 }

@@ -1,10 +1,13 @@
 package com.tinatiel.obschatbot.core.user;
 
 import com.tinatiel.obschatbot.core.client.twitch.api.TwitchApiClient;
-import com.tinatiel.obschatbot.core.user.local.LocalUser;
-import com.tinatiel.obschatbot.core.user.local.LocalUserRepository;
-import com.tinatiel.obschatbot.core.user.local.UserGroup;
+import com.tinatiel.obschatbot.data.localuser.model.LocalUserDto;
+import com.tinatiel.obschatbot.data.localuser.LocalUserService;
+import com.tinatiel.obschatbot.data.localuser.model.LocalGroupDto;
+import com.tinatiel.obschatbot.security.owner.OwnerDto;
+import com.tinatiel.obschatbot.security.owner.OwnerService;
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * Implementation of the UserService that fully builds the security details etc. of a given user,
@@ -14,11 +17,14 @@ import java.util.Set;
  */
 public class UserServiceImpl implements UserService {
 
-  private final LocalUserRepository localUserRepository;
+  private final OwnerService ownerService;
+  private final LocalUserService localUserService;
   private final TwitchApiClient twitchApiClient;
 
-  public UserServiceImpl(LocalUserRepository localUserRepository, TwitchApiClient twitchApiClient) {
-    this.localUserRepository = localUserRepository;
+  public UserServiceImpl(OwnerService ownerService,
+    LocalUserService localUserService, TwitchApiClient twitchApiClient) {
+    this.ownerService = ownerService;
+    this.localUserService = localUserService;
     this.twitchApiClient = twitchApiClient;
   }
 
@@ -29,6 +35,9 @@ public class UserServiceImpl implements UserService {
     if (partialUserInfo.getPlatform() == null || partialUserInfo.getUsername() == null) {
       throw new IllegalArgumentException("Username and Platform are required");
     }
+
+    OwnerDto owner = ownerService.getOwner();
+    if(owner == null) throw new IllegalStateException("Could not retrieve owner");
 
     // Initialize the new user
     User.UserBuilder userBuilder = User.builder()
@@ -47,11 +56,11 @@ public class UserServiceImpl implements UserService {
           .following(originalSecurity.getFollowing());
 
     // Add any local groups if they exist
-    LocalUser localUser = localUserRepository.findByPlatformAndUsername(
-        partialUserInfo.getPlatform(),
-        partialUserInfo.getUsername()
-    ).orElse(new LocalUser());
-    Set<UserGroup> groups = localUser.getGroups();
+    LocalUserDto localUserDto = localUserService.findByOwnerAndPlatformAndUsername(
+      owner.getId(),
+      partialUserInfo.getPlatform(),
+      partialUserInfo.getUsername()).orElse(new LocalUserDto());
+    Set<LocalGroupDto> groups = localUserDto.getGroups();
     groups.addAll(partialUserInfo.getGroups());
     userBuilder.groups(groups);
 
@@ -63,7 +72,7 @@ public class UserServiceImpl implements UserService {
       newUserSecurityDetailsBuilder.following(false);
 
       // get the broadcaster account and proceed if it exists
-      localUserRepository.findByPlatformAndBroadcasterTrue(Platform.TWITCH)
+      localUserService.findBroadcasterForOwnerAndPlatform(owner.getId(), Platform.TWITCH)
           .ifPresent((broadcaster) -> {
 
             // Get the broadcaster's id

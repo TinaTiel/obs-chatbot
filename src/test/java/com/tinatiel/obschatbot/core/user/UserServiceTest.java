@@ -1,11 +1,12 @@
 package com.tinatiel.obschatbot.core.user;
 
 import com.tinatiel.obschatbot.core.client.twitch.api.TwitchApiClient;
-import com.tinatiel.obschatbot.core.user.local.LocalUser;
-import com.tinatiel.obschatbot.core.user.local.LocalUserRepository;
-import com.tinatiel.obschatbot.core.user.local.UserGroup;
+import com.tinatiel.obschatbot.data.localuser.model.LocalUserDto;
+import com.tinatiel.obschatbot.data.localuser.LocalUserService;
+import com.tinatiel.obschatbot.data.localuser.model.LocalGroupDto;
+import com.tinatiel.obschatbot.security.owner.OwnerDto;
+import com.tinatiel.obschatbot.security.owner.OwnerService;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.*;
@@ -18,17 +19,25 @@ import static org.mockito.Mockito.*;
 
 public class UserServiceTest {
 
-    LocalUserRepository localUserRepository;
+    OwnerDto owner;
+    OwnerService ownerService;
+    LocalUserService localUserService;
     TwitchApiClient twitchApiClient;
 
     UserService userService;
 
     @BeforeEach
     void setUp() {
-        localUserRepository = mock(LocalUserRepository.class);
+        owner = OwnerDto.builder()
+          .name("some owner")
+          .id(UUID.randomUUID())
+          .build();
+        ownerService = mock(OwnerService.class);
+        when(ownerService.getOwner()).thenReturn(owner);
+        localUserService = mock(LocalUserService.class);
         twitchApiClient = mock(TwitchApiClient.class);
 
-        userService = new UserServiceImpl(localUserRepository, twitchApiClient);
+        userService = new UserServiceImpl(ownerService, localUserService, twitchApiClient);
     }
 
     @Test
@@ -54,13 +63,13 @@ public class UserServiceTest {
                 .build();
 
         // And given an user has group memberships
-        Set<UserGroup> expectedGroups = new HashSet<>(Arrays.asList(
-                UserGroup.builder().name("raffle winners").build(),
-                UserGroup.builder().name("regulars").build(),
-                UserGroup.builder().name("obviously a cat").build()
+        Set<LocalGroupDto> expectedGroups = new HashSet<>(Arrays.asList(
+                LocalGroupDto.builder().name("raffle winners").build(),
+                LocalGroupDto.builder().name("regulars").build(),
+                LocalGroupDto.builder().name("obviously a cat").build()
         ));
-        when(localUserRepository.findByPlatformAndUsername(any(), any())).thenReturn(
-                Optional.of(LocalUser.builder()
+        when(localUserService.findByOwnerAndPlatformAndUsername(eq(owner.getId()), any(), any())).thenReturn(
+                Optional.of(LocalUserDto.builder()
                     .username(partialUser.getUsername())
                         .platform(partialUser.getPlatform())
                         .groups(expectedGroups)
@@ -89,10 +98,9 @@ public class UserServiceTest {
           .build();
 
         // Given the broadcaster exists for the Twitch platform
-        LocalUser broadcaster = LocalUser.builder().username("tinatiel").broadcaster(true).build();
-        when(localUserRepository.findByPlatformAndBroadcasterTrue(Platform.TWITCH)).thenReturn(
-          Optional.of(broadcaster)
-        );
+        LocalUserDto broadcaster = LocalUserDto.builder().username("tinatiel").broadcaster(true).build();
+        when(localUserService.findBroadcasterForOwnerAndPlatform(eq(owner.getId()), eq(Platform.TWITCH)))
+          .thenReturn(Optional.of(broadcaster));
 
         // And given we can get the id of the broadcaster and user
         when(twitchApiClient.getUserIdFromUsername(broadcaster.getUsername())).thenReturn(broadcasterid);
@@ -123,9 +131,8 @@ public class UserServiceTest {
           .build();
 
         // Given the broadcaster does NOT exist for the Twitch platform
-        when(localUserRepository.findByPlatformAndBroadcasterTrue(Platform.TWITCH)).thenReturn(
-          Optional.empty()
-        );
+        when(localUserService.findBroadcasterForOwnerAndPlatform(eq(owner.getId()), eq(Platform.TWITCH)))
+          .thenReturn(Optional.empty());
 
         // When retrieved
         User fullUser = userService.getUserFromPartial(partialUser);
@@ -146,10 +153,9 @@ public class UserServiceTest {
           .build();
 
         // Given the broadcaster exists for the Twitch platform
-        LocalUser broadcaster = LocalUser.builder().username("tinatiel").broadcaster(true).build();
-        when(localUserRepository.findByPlatformAndBroadcasterTrue(Platform.TWITCH)).thenReturn(
-          Optional.of(broadcaster)
-        );
+        LocalUserDto broadcaster = LocalUserDto.builder().username("tinatiel").broadcaster(true).build();
+        when(localUserService.findBroadcasterForOwnerAndPlatform(eq(owner.getId()), eq(Platform.TWITCH)))
+          .thenReturn(Optional.of(broadcaster));
 
         // But given we cannot retrieve the id of the broadcaster or viewer
         when(twitchApiClient.getUserIdFromUsername(any())).thenReturn(null);

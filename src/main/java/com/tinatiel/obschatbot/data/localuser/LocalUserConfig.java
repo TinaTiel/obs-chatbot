@@ -1,4 +1,4 @@
-package com.tinatiel.obschatbot.core.user.local;
+package com.tinatiel.obschatbot.data.localuser;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,8 +10,13 @@ import org.springframework.context.annotation.Configuration;
 public class LocalUserConfig {
 
   @Bean
-  LocalUserRepository localUserRepository() {
-    return new LocalUserRepositoryInMemoryImpl();
+  LocalUserService localUserRepository() {
+    return new LocalUserServiceImpl();
+  }
+
+  @Bean
+  LocalGroupService localGroupService() {
+    return new LocalGroupServiceImpl();
   }
 
 }
