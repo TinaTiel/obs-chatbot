@@ -4,10 +4,13 @@ import com.tinatiel.obschatbot.core.user.Platform;
 import com.tinatiel.obschatbot.data.common.IdEntity;
 import com.tinatiel.obschatbot.data.common.OwnerEntity;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.ManyToMany;
 import javax.persistence.Transient;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,7 +26,7 @@ public class LocalUserEntity extends IdEntity {
   private UUID owner;
   private Platform platform;
   private String username;
-  @Transient
-  private List<LocalGroupEntity> groups = new ArrayList<>();
+  @ManyToMany(mappedBy = "users")
+  private Set<LocalGroupEntity> groups = new HashSet<>();
   private boolean broadcaster;
 }

@@ -7,7 +7,9 @@ import com.tinatiel.obschatbot.data.localuser.model.LocalUserDto;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import javax.transaction.Transactional;
 
+@Transactional // we are always pulling user's groups
 public class LocalUserServiceImpl implements LocalUserService {
 
   private final LocalUserRepository repository;

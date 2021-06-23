@@ -9,6 +9,7 @@ import com.tinatiel.obschatbot.data.localuser.mapper.LocalUserMapper;
 import com.tinatiel.obschatbot.data.localuser.model.LocalGroupDto;
 import com.tinatiel.obschatbot.data.localuser.model.LocalUserDto;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
@@ -77,7 +78,7 @@ public class LocalUserMapperTest {
     groupEntity3.setOwner(owner);
     groupEntity3.setName("group3");
     LocalUserEntity expectedEntity = new LocalUserEntity();
-    expectedEntity.setGroups(Arrays.asList(groupEntity1, groupEntity2, groupEntity3));
+    expectedEntity.setGroups(new HashSet<>(Arrays.asList(groupEntity1, groupEntity2, groupEntity3)));
 
     // When mapped
     LocalUserEntity actualEntity = mapper.map(expectedDto);

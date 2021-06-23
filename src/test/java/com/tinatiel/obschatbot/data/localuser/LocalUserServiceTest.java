@@ -7,9 +7,12 @@ import com.tinatiel.obschatbot.core.user.Platform;
 import com.tinatiel.obschatbot.data.common.CommonConfig;
 import com.tinatiel.obschatbot.data.localuser.entity.LocalGroupRepository;
 import com.tinatiel.obschatbot.data.localuser.entity.LocalUserRepository;
+import com.tinatiel.obschatbot.data.localuser.model.LocalGroupDto;
 import com.tinatiel.obschatbot.data.localuser.model.LocalUserDto;
 import com.tinatiel.obschatbot.data.system.SystemDataConfig;
 import com.tinatiel.obschatbot.data.system.SystemSettingsDataServiceTest;
+import java.util.Arrays;
+import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +52,7 @@ public class LocalUserServiceTest {
 
     // Given a new user
     LocalUserDto request = LocalUserDto.builder()
+      .owner(UUID.randomUUID())
       .platform(Platform.LOCAL)
       .username("mango")
       .build();
@@ -65,7 +69,27 @@ public class LocalUserServiceTest {
 
   @Test
   void createNewUserWithGroup() {
-    fail("todo");
+
+    // Given a new user
+    LocalUserDto request = LocalUserDto.builder()
+      .owner(UUID.randomUUID())
+      .platform(Platform.LOCAL)
+      .username("mango")
+      .groups(Arrays.asList(
+        LocalGroupDto.builder().owner(UUID.randomUUID()).name("group1").build(),
+        LocalGroupDto.builder().owner(UUID.randomUUID()).name("group2").build(),
+        LocalGroupDto.builder().owner(UUID.randomUUID()).name("group3").build()
+      ))
+      .build();
+
+    // When saved
+    LocalUserDto result = localUserService.save(request);
+
+    // Then it can be retrieved
+    LocalUserDto actual = localUserService.findById(result.getId()).get();
+    assertThat(actual).usingRecursiveComparison().isEqualTo(result);
+    assertThat(request).usingRecursiveComparison().ignoringFields("id").isEqualTo(actual);
+
   }
 
   @Test
