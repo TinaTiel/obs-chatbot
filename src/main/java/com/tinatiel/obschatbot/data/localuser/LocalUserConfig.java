@@ -2,8 +2,8 @@ package com.tinatiel.obschatbot.data.localuser;
 
 import com.tinatiel.obschatbot.data.localuser.entity.LocalGroupRepository;
 import com.tinatiel.obschatbot.data.localuser.entity.LocalUserRepository;
+import com.tinatiel.obschatbot.data.localuser.mapper.LocalGroupMapper;
 import com.tinatiel.obschatbot.data.localuser.mapper.LocalUserMapper;
-import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -20,8 +20,8 @@ public class LocalUserConfig {
   @Autowired
   LocalUserRepository localUserRepository;
 
-//  @Autowired
-//  LocalGroupRepository localGroupRepository;
+  @Autowired
+  LocalGroupRepository localGroupRepository;
 
   @Bean
   LocalUserMapper localUserMapper() {
@@ -29,13 +29,18 @@ public class LocalUserConfig {
   }
 
   @Bean
+  LocalGroupMapper localGroupMapper() {
+    return Mappers.getMapper(LocalGroupMapper.class);
+  }
+
+  @Bean
   LocalUserService localUserService() {
     return new LocalUserServiceImpl(localUserRepository, localUserMapper());
   }
 
-//  @Bean
-//  LocalGroupService localGroupService() {
-//    return new LocalGroupServiceImpl(localGroupRepository);
-//  }
+  @Bean
+  LocalGroupService localGroupService() {
+    return new LocalGroupServiceImpl(localGroupRepository, localGroupMapper());
+  }
 
 }

@@ -1,6 +1,7 @@
 package com.tinatiel.obschatbot.data.localuser;
 
 import com.tinatiel.obschatbot.core.user.Platform;
+import com.tinatiel.obschatbot.data.localuser.entity.LocalUserEntity;
 import com.tinatiel.obschatbot.data.localuser.entity.LocalUserRepository;
 import com.tinatiel.obschatbot.data.localuser.mapper.LocalUserMapper;
 import com.tinatiel.obschatbot.data.localuser.model.LocalUserDto;
@@ -46,8 +47,20 @@ public class LocalUserServiceImpl implements LocalUserService {
 
   @Override
   public LocalUserDto save(LocalUserDto localUserDto) {
+    if(localUserDto.getOwner() == null
+      || localUserDto.getPlatform() == null
+      || localUserDto.getUsername() == null) {
+      throw new IllegalArgumentException("User owner, platform, and username are required");
+    }
+    LocalUserEntity entity = repository.save(mapper.map(localUserDto));
+    localUserDto.getGroups().forEach(it -> {
+      if(it.getOwner() == null || it.getName() == null) {
+        throw new IllegalArgumentException("Group owner and name are required");
+      }
+//      entity.getGroups().add(mapper.map(it));
+    });
     return mapper.map(
-      repository.save(mapper.map(localUserDto))
+      repository.saveAndFlush(entity)
     );
   }
 

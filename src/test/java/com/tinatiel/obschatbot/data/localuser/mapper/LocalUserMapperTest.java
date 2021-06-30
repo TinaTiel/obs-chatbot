@@ -1,4 +1,4 @@
-package com.tinatiel.obschatbot.data.localuser;
+package com.tinatiel.obschatbot.data.localuser.mapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -50,7 +50,7 @@ public class LocalUserMapperTest {
   }
 
   @Test
-  void mapLocalUserWithGroups() {
+  void mapLocalUserWithGroupsAreIgnored() {
 
     // Given users with groups
     UUID owner = UUID.randomUUID();
@@ -85,8 +85,12 @@ public class LocalUserMapperTest {
     LocalUserDto actualDto = mapper.map(expectedEntity);
 
     // Then they match
-    assertThat(actualDto).usingRecursiveComparison().isEqualTo(expectedDto);
-    assertThat(actualEntity).usingRecursiveComparison().isEqualTo(expectedEntity);
+    assertThat(actualDto).usingRecursiveComparison().ignoringFields("groups").isEqualTo(expectedDto);
+    assertThat(actualEntity).usingRecursiveComparison().ignoringFields("groups").isEqualTo(expectedEntity);
+
+    // And groups are ignored
+    assertThat(actualDto.getGroups()).isEmpty();
+    assertThat(actualEntity.getGroups()).isEmpty();
 
   }
 

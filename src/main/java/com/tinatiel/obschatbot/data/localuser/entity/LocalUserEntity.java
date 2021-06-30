@@ -6,6 +6,7 @@ import com.tinatiel.obschatbot.data.common.OwnerEntity;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import javax.persistence.Column;
@@ -29,4 +30,22 @@ public class LocalUserEntity extends IdEntity {
   @ManyToMany(mappedBy = "users")
   private Set<LocalGroupEntity> groups = new HashSet<>();
   private boolean broadcaster;
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    LocalUserEntity entity = (LocalUserEntity) o;
+    return owner.equals(entity.owner) && platform == entity.platform && username
+      .equals(entity.username);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(owner, platform, username);
+  }
 }
