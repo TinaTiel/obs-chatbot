@@ -17,10 +17,17 @@ public interface LocalUserMapper {
   LocalUserDto map(LocalUserEntity entity);
 
   default List<LocalGroupDto> mapGroupEntities(Set<LocalGroupEntity> groupEntities) {
-    return new ArrayList<>();
+    List<LocalGroupDto> results = new ArrayList<>();
+    if(groupEntities != null) {
+      groupEntities.forEach(it -> results.add(map(it)));
+    }
+    return results;
   }
 
   default Set<LocalGroupEntity> mapGroupDtos(List<LocalGroupDto> groupDtos) {
     return new HashSet<>();
   }
+
+  LocalGroupDto map(LocalGroupEntity groupEntity);
+
 }

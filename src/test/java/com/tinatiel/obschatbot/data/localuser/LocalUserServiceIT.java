@@ -13,6 +13,7 @@ import com.tinatiel.obschatbot.data.localuser.model.LocalGroupDto;
 import com.tinatiel.obschatbot.data.localuser.model.LocalUserDto;
 import java.util.Arrays;
 import java.util.UUID;
+import org.apache.tomcat.jni.Local;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -47,7 +48,7 @@ public class LocalUserServiceIT {
 
   UUID existingOwner = UUID.randomUUID();
   LocalUserEntity existingLocalUserEntity;
-  LocalGroupEntity existingGroupEntity;
+  LocalUserEntity existingLocalUserEntityWithGroups;
 
   @BeforeEach
   void setUp() {
@@ -60,17 +61,26 @@ public class LocalUserServiceIT {
     vExistingUser.setPlatform(Platform.LOCAL);
     vExistingUser.setUsername("existing user");
     vExistingUser.setBroadcaster(true);
-    existingLocalUserEntity = localUserRepository.save(vExistingUser);
+    existingLocalUserEntity = localUserRepository.saveAndFlush(vExistingUser);
 
-    // Create an existing group
+    // Create an existing entity with a group
+    LocalUserEntity vExistingUserWithGroup = new LocalUserEntity();
+    vExistingUserWithGroup.setOwner(existingOwner);
+    vExistingUserWithGroup.setPlatform(Platform.TWITCH);
+    vExistingUserWithGroup.setUsername("existing user with group");
+    vExistingUserWithGroup.setBroadcaster(true);
+
     LocalGroupEntity vExistingGroup = new LocalGroupEntity();
     vExistingGroup.setOwner(existingOwner);
     vExistingGroup.setName("existing group");
-    existingGroupEntity = localGroupRepository.save(vExistingGroup);
+
+    vExistingUserWithGroup.getGroups().add(vExistingGroup);
+    vExistingGroup.getUsers().add(vExistingUser);
+    existingLocalUserEntityWithGroups = localUserRepository.saveAndFlush(vExistingUserWithGroup);
 
     // Verify initial counts
     assertThat(localGroupRepository.count()).isEqualTo(1);
-    assertThat(localUserRepository.count()).isEqualTo(1);
+    assertThat(localUserRepository.count()).isEqualTo(2);
   }
 
   @Test
@@ -175,9 +185,41 @@ public class LocalUserServiceIT {
     );
   }
 
-  @Disabled
   @Test
   void retrieveExistingUserWithGroups() {
-    fail("to do");
+    LocalGroupEntity localGroupEntity = existingLocalUserEntityWithGroups.getGroups().stream().findFirst().get();
+
+    LocalUserDto expected = LocalUserDto.builder()
+      .id(existingLocalUserEntityWithGroups.getId())
+      .owner(existingLocalUserEntityWithGroups.getOwner())
+      .platform(existingLocalUserEntityWithGroups.getPlatform())
+      .username(existingLocalUserEntityWithGroups.getUsername())
+      .broadcaster(existingLocalUserEntityWithGroups.isBroadcaster())
+      .groups(Arrays.asList(
+        LocalGroupDto.builder()
+          .id(localGroupEntity.getId())
+          .owner(localGroupEntity.getOwner())
+          .name(localGroupEntity.getName())
+          .build()
+      ))
+      .build();
+
+    assertThat(localUserService.findById(existingLocalUserEntityWithGroups.getId()))
+      .get().usingRecursiveComparison().isEqualTo(expected);
+    assertThat(localUserService.findByOwner(existingLocalUserEntityWithGroups.getOwner()).stream()
+      .filter(it -> it.getId().equals(existingLocalUserEntityWithGroups.getId()))
+      .findFirst())
+      .get().usingRecursiveComparison().isEqualTo(expected);
+    assertThat(localUserService.findByOwnerAndPlatformAndUsername(
+      existingLocalUserEntityWithGroups.getOwner(),
+      existingLocalUserEntityWithGroups.getPlatform(),
+      existingLocalUserEntityWithGroups.getUsername()
+    )).get().usingRecursiveComparison().isEqualTo(expected);
+    assertThat(existingLocalUserEntityWithGroups.isBroadcaster()).isTrue();
+    assertThat(localUserService.findBroadcasterForOwnerAndPlatform(
+      existingLocalUserEntityWithGroups.getOwner(),
+      existingLocalUserEntityWithGroups.getPlatform()
+    )).get().usingRecursiveComparison().isEqualTo(expected);
+
   }
 }

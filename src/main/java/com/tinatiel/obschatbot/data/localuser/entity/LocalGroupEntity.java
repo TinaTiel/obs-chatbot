@@ -26,19 +26,8 @@ public class LocalGroupEntity extends IdEntity {
   private UUID owner;
   private String name;
 
-  @ManyToMany(cascade = {
-    CascadeType.PERSIST,
-    CascadeType.MERGE
-  })
-  @JoinTable(name = "local_user_group",
-    joinColumns = @JoinColumn(name = "local_user_id"),
-    inverseJoinColumns = @JoinColumn(name = "local_group_id")
-  )
+  @ManyToMany(mappedBy = "groups")
   private Set<LocalUserEntity> users = new HashSet<>();
-
-  public void addUser(LocalUserEntity localUserEntity) {
-    this.getUsers().add(localUserEntity);
-  }
 
   @Override
   public boolean equals(Object o) {

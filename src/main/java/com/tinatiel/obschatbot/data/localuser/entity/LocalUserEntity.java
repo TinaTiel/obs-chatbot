@@ -9,8 +9,11 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Transient;
 import lombok.Data;
@@ -27,7 +30,15 @@ public class LocalUserEntity extends IdEntity {
   private UUID owner;
   private Platform platform;
   private String username;
-  @ManyToMany(mappedBy = "users")
+
+  @ManyToMany(cascade = {
+    CascadeType.PERSIST,
+    CascadeType.MERGE
+  })
+  @JoinTable(name = "local_user_group",
+    joinColumns = @JoinColumn(name = "local_user_id"),
+    inverseJoinColumns = @JoinColumn(name = "local_group_id")
+  )
   private Set<LocalGroupEntity> groups = new HashSet<>();
   private boolean broadcaster;
 

@@ -50,7 +50,7 @@ public class LocalUserMapperTest {
   }
 
   @Test
-  void mapLocalUserWithGroupsAreIgnored() {
+  void mapLocalUserWithGroupsAreIgnoredInButNotOut() {
 
     // Given users with groups
     UUID owner = UUID.randomUUID();
@@ -65,6 +65,7 @@ public class LocalUserMapperTest {
       ))
       .build();
 
+    // And given entity with groups
     LocalGroupEntity groupEntity1 = new LocalGroupEntity();
     groupEntity1.setId(groupId1);
     groupEntity1.setOwner(owner);
@@ -84,13 +85,13 @@ public class LocalUserMapperTest {
     LocalUserEntity actualEntity = mapper.map(expectedDto);
     LocalUserDto actualDto = mapper.map(expectedEntity);
 
-    // Then they match
-    assertThat(actualDto).usingRecursiveComparison().ignoringFields("groups").isEqualTo(expectedDto);
-    assertThat(actualEntity).usingRecursiveComparison().ignoringFields("groups").isEqualTo(expectedEntity);
+    // Then the entity is mapped exactly; e.g. results of search always return groups
+    assertThat(actualDto.getGroups()).hasSize(3);
+    assertThat(actualDto).usingRecursiveComparison().ignoringCollectionOrder().isEqualTo(expectedDto);
 
-    // And groups are ignored
-    assertThat(actualDto.getGroups()).isEmpty();
+    // But the dto is ignored; e.g. inbound requests ignore groups
     assertThat(actualEntity.getGroups()).isEmpty();
+    assertThat(actualEntity).usingRecursiveComparison().ignoringFields("groups").isEqualTo(expectedEntity);
 
   }
 
