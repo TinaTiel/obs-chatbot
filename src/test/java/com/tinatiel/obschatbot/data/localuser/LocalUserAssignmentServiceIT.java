@@ -146,16 +146,6 @@ public class LocalUserAssignmentServiceIT {
 //
 //  }
 
-  @Disabled
-  @Test
-  void deleteUserDoesNotDeleteGroup() {
-    fail("todo");
-  }
 
-  @Disabled
-  @Test
-  void deleteGroupDoesNotDeleteUsers() {
-    fail("todo");
-  }
 
 }

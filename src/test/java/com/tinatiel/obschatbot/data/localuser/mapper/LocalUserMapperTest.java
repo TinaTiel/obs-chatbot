@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.tinatiel.obschatbot.core.user.Platform;
 import com.tinatiel.obschatbot.data.localuser.entity.LocalGroupEntity;
 import com.tinatiel.obschatbot.data.localuser.entity.LocalUserEntity;
-import com.tinatiel.obschatbot.data.localuser.mapper.LocalUserMapper;
 import com.tinatiel.obschatbot.data.localuser.model.LocalGroupDto;
 import com.tinatiel.obschatbot.data.localuser.model.LocalUserDto;
 import java.util.Arrays;

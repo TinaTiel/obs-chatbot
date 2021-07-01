@@ -5,13 +5,14 @@ import com.tinatiel.obschatbot.data.localuser.entity.LocalUserEntity;
 import com.tinatiel.obschatbot.data.localuser.entity.LocalUserRepository;
 import com.tinatiel.obschatbot.data.localuser.mapper.LocalUserMapper;
 import com.tinatiel.obschatbot.data.localuser.model.LocalUserDto;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import javax.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Transactional // we are always pulling user's groups
 public class LocalUserServiceImpl implements LocalUserService {
 
@@ -67,6 +68,23 @@ public class LocalUserServiceImpl implements LocalUserService {
 
   @Override
   public void delete(UUID id) {
+    // Find existing
+    repository.findById(id).ifPresentOrElse(
+      found -> {
+        log.debug("Deleting user with id " + id);
 
+        // update the references
+        found.getGroups().forEach(group -> group.getUsers().remove(found));
+
+        // delete
+        repository.delete(found);
+        repository.flush();
+        log.debug("User deleted");
+      },
+      () -> {
+        log.debug("No user found with id " + id);
+        // do nothing if not found
+      }
+    );
   }
 }

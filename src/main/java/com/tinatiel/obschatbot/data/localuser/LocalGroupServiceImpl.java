@@ -1,13 +1,20 @@
 package com.tinatiel.obschatbot.data.localuser;
 
 import com.tinatiel.obschatbot.data.localuser.entity.LocalGroupRepository;
+import com.tinatiel.obschatbot.data.localuser.entity.LocalUserEntity;
+import com.tinatiel.obschatbot.data.localuser.entity.LocalUserRepository;
 import com.tinatiel.obschatbot.data.localuser.mapper.LocalGroupMapper;
 import com.tinatiel.obschatbot.data.localuser.model.LocalGroupDto;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import javax.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class LocalGroupServiceImpl implements LocalGroupService {
 
   private final LocalGroupRepository repository;
@@ -41,6 +48,23 @@ public class LocalGroupServiceImpl implements LocalGroupService {
 
   @Override
   public void delete(UUID id) {
+    repository.findById(id).ifPresentOrElse(
+      found -> {
+        log.debug("Deleting group with id " + id);
+        // Update the references
+        found.getUsers().forEach(user -> user.getGroups().remove(found));
+        found.getUsers().clear();
 
+        // Delete
+        repository.delete(found);
+        repository.flush();
+        log.debug("Group deleted");
+      },
+      () -> {
+        log.debug("No group found with id " + id);
+        // do nothing
+      }
+    );
   }
+
 }

@@ -12,8 +12,8 @@ import com.tinatiel.obschatbot.data.localuser.entity.LocalUserRepository;
 import com.tinatiel.obschatbot.data.localuser.model.LocalGroupDto;
 import com.tinatiel.obschatbot.data.localuser.model.LocalUserDto;
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.UUID;
-import org.apache.tomcat.jni.Local;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -48,6 +48,7 @@ public class LocalUserServiceIT {
 
   UUID existingOwner = UUID.randomUUID();
   LocalUserEntity existingLocalUserEntity;
+  LocalGroupEntity existingLocalGroupEntity;
   LocalUserEntity existingLocalUserEntityWithGroups;
 
   @BeforeEach
@@ -75,12 +76,14 @@ public class LocalUserServiceIT {
     vExistingGroup.setName("existing group");
 
     vExistingUserWithGroup.getGroups().add(vExistingGroup);
-    vExistingGroup.getUsers().add(vExistingUser);
+    vExistingGroup.getUsers().add(vExistingUserWithGroup);
     existingLocalUserEntityWithGroups = localUserRepository.saveAndFlush(vExistingUserWithGroup);
+    existingLocalGroupEntity = existingLocalUserEntityWithGroups.getGroups().stream().findFirst().get();
 
     // Verify initial counts
     assertThat(localGroupRepository.count()).isEqualTo(1);
     assertThat(localUserRepository.count()).isEqualTo(2);
+    assertThat(vExistingUserWithGroup.getGroups()).hasSize(1);
   }
 
   @Test
@@ -222,4 +225,42 @@ public class LocalUserServiceIT {
     )).get().usingRecursiveComparison().isEqualTo(expected);
 
   }
+
+  @Test
+  void deleteUserDoesNotDeleteGroup() {
+
+    // Given we can retrieve an user and group attached to an user
+    Optional<LocalUserDto> existing = localUserService.findById(existingLocalUserEntityWithGroups.getId());
+    assertThat(existing).isPresent();
+    assertThat(existing.get().getGroups()).hasSize(1);
+    assertThat(localGroupService.findById(existing.get().getGroups().get(0).getId())).isPresent();
+
+    // When an user is deleted
+    localUserService.delete(existing.get().getId());
+
+    // Then the user is deleted, but not the group
+    assertThat(localUserService.findById(existing.get().getId())).isEmpty();
+    assertThat(localGroupService.findById(existing.get().getGroups().get(0).getId())).isPresent();
+
+  }
+
+  @Test
+  void deleteGroupDoesNotDeleteUsers() {
+
+    // Given we can retrieve an user and group attached to an user
+    Optional<LocalUserDto> existing = localUserService.findById(existingLocalUserEntityWithGroups.getId());
+    assertThat(existing).isPresent();
+    assertThat(existing.get().getGroups()).hasSize(1);
+    assertThat(localGroupService.findById(existing.get().getGroups().get(0).getId())).isPresent();
+
+    // When the group is deleted
+    localGroupService.delete(existing.get().getGroups().get(0).getId());
+
+    // Then the group is deleted, but not the user
+    assertThat(localUserService.findById(existing.get().getId())).isPresent();
+    assertThat(localUserService.findById(existing.get().getId()).get().getGroups()).isEmpty();
+    assertThat(localGroupService.findById(existing.get().getGroups().get(0).getId())).isEmpty();
+
+  }
+
 }
