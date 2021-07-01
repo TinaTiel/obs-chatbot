@@ -6,6 +6,11 @@
 package com.tinatiel.obschatbot.core.command;
 
 import com.tinatiel.obschatbot.core.request.factory.expand.CommandExpanderConfig;
+import com.tinatiel.obschatbot.data.command.CommandEntityService;
+import com.tinatiel.obschatbot.data.command.CommandService;
+import com.tinatiel.obschatbot.data.command.CommandServiceImpl;
+import com.tinatiel.obschatbot.data.command.mapper.executable.ExecutableCommandMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -16,10 +21,5 @@ import org.springframework.context.annotation.Import;
 @Import(CommandExpanderConfig.class)
 @Configuration
 public class CommandConfig {
-
-  @Bean
-  public CommandRepository commandRepository() {
-    return new CommandRepositoryInMemoryImpl();
-  }
 
 }

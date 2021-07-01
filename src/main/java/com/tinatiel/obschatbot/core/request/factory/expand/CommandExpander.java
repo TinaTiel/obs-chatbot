@@ -12,8 +12,8 @@ import java.util.List;
 
 /**
  * Given a command, implementations are responsible for expanding that command into a list of
- * actions. This includes checking for cyclical configuration that could result in a
- * ${@link StackOverflowError} when expanding the command.
+ * actions. This includes checking for cyclical configuration that could result in a ${@link
+ * StackOverflowError} when expanding the command.
  */
 public interface CommandExpander {
 

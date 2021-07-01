@@ -12,5 +12,6 @@ package com.tinatiel.obschatbot.core.messaging;
  * @param <T> The type of event this listener processes.
  */
 public interface Listener<T> {
+
   void onEvent(T event);
 }

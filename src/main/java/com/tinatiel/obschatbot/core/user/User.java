@@ -5,8 +5,10 @@
 
 package com.tinatiel.obschatbot.core.user;
 
-import com.tinatiel.obschatbot.core.user.local.UserGroup;
+import com.tinatiel.obschatbot.data.localuser.model.LocalGroupDto;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import lombok.AllArgsConstructor;
@@ -23,8 +25,6 @@ import lombok.ToString;
 @ToString
 public class User {
 
-  public static final String SYSTEM_PRINCIPAL_NAME = "SYSTEM";
-
   private final String id;
 
   private final Platform platform;
@@ -35,7 +35,7 @@ public class User {
   private final UserSecurityDetails userSecurityDetails = UserSecurityDetails.builder().build();
 
   @Builder.Default
-  private final Set<UserGroup> groups = new HashSet<>();
+  private final List<LocalGroupDto> groups = new ArrayList<>();
 
   /**
    * Returns the SYSTEM user; a Local user that has admin (broadcaster) permissions.
@@ -43,7 +43,7 @@ public class User {
   public static User systemUser() {
     return User.builder()
       .platform(Platform.LOCAL)
-      .username(SYSTEM_PRINCIPAL_NAME)
+      .username("INTERNAL") // TODO: Should this match what ownerService returns?
       .userSecurityDetails(UserSecurityDetails.builder().broadcaster(true).build())
       .build();
   }

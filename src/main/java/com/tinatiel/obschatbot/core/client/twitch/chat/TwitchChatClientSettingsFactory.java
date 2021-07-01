@@ -6,40 +6,62 @@
 package com.tinatiel.obschatbot.core.client.twitch.chat;
 
 import com.tinatiel.obschatbot.core.client.ClientSettingsFactory;
-import com.tinatiel.obschatbot.core.user.User;
+import com.tinatiel.obschatbot.data.client.twitch.chat.TwitchClientChatDataService;
+import com.tinatiel.obschatbot.security.owner.OwnerService;
+import lombok.AccessLevel;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.PropertySources;
 
 /**
- * A ClientSettingsFactory implementation that returns the latest ${@link TwitchChatClientSettings}.
+ * A ClientSettingsFactory implementation that returns the latest ${@link
+ * TwitchChatClientSettings}.
  */
 @Slf4j
+@Setter
+@ConfigurationProperties("com.tinatiel.twitch.chat")
+@Configuration
 public class TwitchChatClientSettingsFactory implements
     ClientSettingsFactory<TwitchChatClientSettings> {
 
-  private final TwitchChatClientSettings settings;
-  private final OAuth2AuthorizedClientService clientService;
+  @Setter(AccessLevel.NONE)
+  private final OwnerService ownerService;
+  @Setter(AccessLevel.NONE)
+  private final TwitchClientChatDataService dataService;
+
+  private String ircHost;
+  private Integer ircPort;
 
   public TwitchChatClientSettingsFactory(
-      TwitchChatClientSettings settings,
-      OAuth2AuthorizedClientService clientService) {
-    this.settings = settings;
-    this.clientService = clientService;
+    OwnerService ownerService,
+    TwitchClientChatDataService dataService) {
+    this.ownerService = ownerService;
+    this.dataService = dataService;
   }
 
   @Override
   public TwitchChatClientSettings getSettings() {
-    // Load the (authorized) OAuth2 client
-    OAuth2AuthorizedClient authorizedClient = clientService.loadAuthorizedClient(
-        "twitch", User.SYSTEM_PRINCIPAL_NAME);
 
-    if (authorizedClient != null) {
-      settings.setOauthUserToken(authorizedClient.getAccessToken().getTokenValue());
-    } else {
-      // TODO revisit, see if we can alert / respond better than logging
-      log.warn("No Authorized Client found for Twitch + SYSTEM user");
-    }
-    return settings;
+    TwitchChatClientSettings.TwitchChatClientSettingsBuilder builder = TwitchChatClientSettings
+      .builder()
+      .ircHost(ircHost)
+      .ircPort(ircPort);
+
+    dataService.findByOwner(ownerService.getOwner().getId()).ifPresent(data -> {
+      builder
+        .broadcasterAccountUsername(data.getBroadcasterChannelUsername())
+        .connectionAttempts(data.getConnectionAttempts())
+        .connectionTimeoutMs(data.getConnectionTimeoutMs())
+        .joinMessage(data.getJoinMessage())
+        .leaveMessage(data.getLeaveMessage())
+        .trigger(data.getTrigger())
+        .parseEntireMessage(data.isParseEntireMessage());
+    });
+
+    return builder.build();
+
   }
 }

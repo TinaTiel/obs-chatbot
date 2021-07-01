@@ -1,4 +1,4 @@
-#server.port: 8080
+server.port: 8080
 logging:
   level:
     root: warn
@@ -7,8 +7,25 @@ logging:
     org.pircbotx: warn # WARNING: Prints credentials to log in Debug mode
     org.apache.http: debug
     httpclient.wire: debug
-    reactor.netty.http.client: debug # WARNING: Logs HTTP requests that includes PII
+    reactor.netty.http.client: debug # WARNING: debug level includes HTTP requests with PII
 #    org.springframework.security.oauth2.client: trace
+    org.hibernate.SQL: debug
+    org.hibernate.type.descriptor.sql.BasicBinder: trace
+spring:
+  datasource:
+#    url: jdbc:h2:file:./target/testdb
+    url: jdbc:h2:mem:testdb
+    driverClassName: org.h2.Driver
+    username: sa
+    password:
+  jpa:
+    database-platformType: org.hibernate.dialect.H2Dialect
+    ddl-auto: create
+    generate-ddl: true
+
+  h2:
+    console:
+      enabled: true
 
 com:
   tinatiel:
@@ -22,7 +39,11 @@ com:
           - channel:moderate
           - chat:read
           - chat:edit
+        redirect-uri: http://localhost:8080/foo/bar
       api:
         host: https://api.twitch.tv
         users-follows-path: /helix/users/follows
         users-path: /helix/users
+      chat:
+        irc-host: irc.chat.twitch.tv
+        irc-port: 6697

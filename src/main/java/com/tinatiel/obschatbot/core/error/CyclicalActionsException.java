@@ -6,12 +6,14 @@
 package com.tinatiel.obschatbot.core.error;
 
 import com.tinatiel.obschatbot.core.command.Command;
+import com.tinatiel.obschatbot.data.command.model.CommandDto;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
- * An Exception that should be thrown if expanding a ${@link Command}'s actions could result
- * in cyclical expansion (a ${@link StackOverflowError} if otherwise unchecked).
+ * An Exception that should be thrown if expanding a ${@link Command}'s actions could result in
+ * cyclical expansion (a ${@link StackOverflowError} if otherwise unchecked).
  */
 public class CyclicalActionsException extends AbstractCodedException {
 
@@ -20,11 +22,11 @@ public class CyclicalActionsException extends AbstractCodedException {
   }
 
   /**
-   * Constructs a new instance in the case that unexpectedly a cycle occurred during
-   * expansion of a Command (e.g. hopefully via expired timeout rather than StackOverflowError).
+   * Constructs a new instance in the case that unexpectedly a cycle occurred during expansion of a
+   * Command (e.g. hopefully via expired timeout rather than StackOverflowError).
    *
    * @param parentCommand The parent command. Safely prints only the name of the command.
-   * @param cause The cause, if applicable.
+   * @param cause         The cause, if applicable.
    */
   public CyclicalActionsException(Command parentCommand, Throwable cause) {
     this(
@@ -34,19 +36,28 @@ public class CyclicalActionsException extends AbstractCodedException {
   }
 
   /**
-   * Construct a new instance during inspection of a Command's actions, providing a
-   * list of Commands leading to the cyclical execution (like a stack trace).
+   * Construct a new instance during inspection of a Command's actions, providing a list of Commands
+   * leading to the cyclical execution (like a stack trace).
    *
    * @param parentCommand The top-level / entrypoint Command that contains the cyclical execution.
-   * @param breadcrumbs The list of Commands, in the order encountered, that led
-   *                    to cyclical execution.
+   * @param breadcrumbs   The list of Commands, in the order encountered, that led to cyclical
+   *                      execution.
    */
-  public CyclicalActionsException(Command parentCommand, List<Command> breadcrumbs) {
-    this(
+  public static CyclicalActionsException fromCommandAndBreadcrumbs(Command parentCommand, List<Command> breadcrumbs) {
+    return new CyclicalActionsException(
         "An infinite loop was detected on root command !" + parentCommand.getName()
         + "; execution chain was: " + breadcrumbs.stream()
         .map(it -> "!" + it.getName()).collect(Collectors.joining(" -> "))
         + " -> (loop back to !" + parentCommand.getName() + ")", null
+    );
+  }
+
+  public static CyclicalActionsException fromNameAndBreadcrumbs(String parentCommand, List<String> breadcrumbs) {
+    return new CyclicalActionsException(
+      "An infinite loop was detected on root command !" + parentCommand
+        + "; execution chain was: " + breadcrumbs.stream()
+        .map(it -> "!" + it).collect(Collectors.joining(" -> "))
+        + " -> (loop back to !" + parentCommand + ")", null
     );
   }
 

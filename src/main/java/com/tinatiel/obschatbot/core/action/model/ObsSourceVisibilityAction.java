@@ -19,9 +19,9 @@ public class ObsSourceVisibilityAction implements Action<ObsSourceVisibilityActi
   /**
    * Construct a new instance of this action.
    *
-   * @param sceneName Optional. If not specified, OBS uses the current scene.
+   * @param sceneName  Optional. If not specified, OBS uses the current scene.
    * @param sourceName Required. The (case-sensitive) name of the source to hide/show.
-   * @param visible Required. If true, will show a source; else will hide a source.
+   * @param visible    Required. If true, will show a source; else will hide a source.
    */
   public ObsSourceVisibilityAction(String sceneName, String sourceName, boolean visible) {
     if (sourceName == null) {

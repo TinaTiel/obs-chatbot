@@ -3,10 +3,12 @@ package com.tinatiel.obschatbot.core.request.messaging;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.annotation.IntegrationComponentScan;
-import org.springframework.integration.channel.DirectChannel;
 import org.springframework.integration.channel.PublishSubscribeChannel;
 import org.springframework.messaging.MessageChannel;
 
+/**
+ * Encapsulates configuration related to shared messaging channels/queues and gateways.
+ */
 @IntegrationComponentScan
 @Configuration
 public class RequestMessagingConfig {
@@ -22,6 +24,8 @@ public class RequestMessagingConfig {
   }
 
   @Bean
-  MessageChannel actionRequestStatusChannel() { return new PublishSubscribeChannel(); }
+  MessageChannel actionRequestStatusChannel() {
+    return new PublishSubscribeChannel();
+  }
 
 }

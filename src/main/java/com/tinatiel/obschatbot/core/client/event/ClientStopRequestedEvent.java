@@ -8,8 +8,8 @@ package com.tinatiel.obschatbot.core.client.event;
 import com.tinatiel.obschatbot.core.messaging.AbstractObsChatbotEvent;
 
 /**
- * Acknowledges a request to stop a client. A client may subsequently follow this with an
- * ${@link ClientRequestIgnoredEvent} if, for example, the client is already stopped or stopping.
+ * Acknowledges a request to stop a client. A client may subsequently follow this with an ${@link
+ * ClientRequestIgnoredEvent} if, for example, the client is already stopped or stopping.
  */
 public class ClientStopRequestedEvent extends AbstractObsChatbotEvent {
 

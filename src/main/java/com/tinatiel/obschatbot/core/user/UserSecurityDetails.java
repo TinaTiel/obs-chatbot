@@ -6,10 +6,10 @@ import lombok.Getter;
 import lombok.ToString;
 
 /**
- * Encompasses the security-relevant attributes of an user on a specific platform, e.g. if they
- * are following or not, paying money, moderate the channel, etc.
- * These attributes may optionally be used by the broadcaster to gate access to specific commands,
- * for example reserving special commands only for patrons and a smaller set for guests.
+ * Encompasses the security-relevant attributes of an user on a specific platform, e.g. if they are
+ * following or not, paying money, moderate the channel, etc. These attributes may optionally be
+ * used by the broadcaster to gate access to specific commands, for example reserving special
+ * commands only for patrons and a smaller set for guests.
  */
 @Builder
 @Getter
@@ -17,8 +17,8 @@ import lombok.ToString;
 public class UserSecurityDetails {
 
   /**
-   * Designates if a viewer is 'following' a broadcaster
-   * ('follow' on Twitch, 'subscribe' on YouTube).
+   * Designates if a viewer is 'following' a broadcaster ('follow' on Twitch, 'subscribe' on
+   * YouTube).
    */
   private final Boolean following;
 

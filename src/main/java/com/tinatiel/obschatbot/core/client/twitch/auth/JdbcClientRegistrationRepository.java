@@ -1,8 +1,5 @@
 package com.tinatiel.obschatbot.core.client.twitch.auth;
 
-import java.util.Iterator;
-import java.util.Spliterator;
-import java.util.function.Consumer;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;

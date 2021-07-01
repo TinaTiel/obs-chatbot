@@ -18,9 +18,9 @@ public class RequestContext {
   private final List<String> arguments;
 
   /**
-   * Construct a new instance from an User and list of (String) arguments -- excluding the
-   * command being requested. For example, the message "Howdy, !donate to our cause" executed by
-   * a moderator would include the moderator's information and the arguments "to", "our", "cause".
+   * Construct a new instance from an User and list of (String) arguments -- excluding the command
+   * being requested. For example, the message "Howdy, !donate to our cause" executed by a moderator
+   * would include the moderator's information and the arguments "to", "our", "cause".
    */
   public RequestContext(User user, List<String> arguments) {
     if (user == null || arguments == null) {

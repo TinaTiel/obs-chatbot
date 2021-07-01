@@ -11,6 +11,9 @@ import java.util.TimerTask;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.integration.annotation.ServiceActivator;
 
+/**
+ * An implementation of ClientManager that handles action requests for Waits and other system calls.
+ */
 @Slf4j
 public class SystemClientManager implements ClientManager {
 
@@ -18,7 +21,7 @@ public class SystemClientManager implements ClientManager {
   private Timer timer = new Timer();
 
   public SystemClientManager(
-    ActionRequestStatusGateway actionRequestStatusGateway) {
+      ActionRequestStatusGateway actionRequestStatusGateway) {
     this.actionRequestStatusGateway = actionRequestStatusGateway;
   }
 
@@ -45,7 +48,7 @@ public class SystemClientManager implements ClientManager {
   @ServiceActivator(inputChannel = "actionRequestChannel")
   @Override
   public void onActionRequest(ActionRequest actionRequest) {
-    if(actionRequest.getAction() instanceof WaitAction) {
+    if (actionRequest.getAction() instanceof WaitAction) {
       log.debug("Consuming WAIT: " + actionRequest);
       long waitMills = ((WaitAction) actionRequest.getAction()).getWaitDuration().toMillis();
       timer.schedule(new TimerTask() {

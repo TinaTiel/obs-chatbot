@@ -20,8 +20,8 @@ public class BroadcasterModeratorElseWorkGroupRouter implements WorkGroupRouter 
    * Create a new (immutable) instance of the BroadcasterModeratorElseWorkGroupRouter.
    *
    * @param broadcasterWg Workgroup that will receive broadcaster actions.
-   * @param moderatorWg Workgroup that will receive moderator actions.
-   * @param otherWg Workgroup that will receive all other actions.
+   * @param moderatorWg   Workgroup that will receive moderator actions.
+   * @param otherWg       Workgroup that will receive all other actions.
    */
   public BroadcasterModeratorElseWorkGroupRouter(
       WorkGroup broadcasterWg,

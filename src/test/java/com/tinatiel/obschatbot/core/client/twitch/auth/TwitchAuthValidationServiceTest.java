@@ -10,6 +10,9 @@ import com.tinatiel.obschatbot.core.client.twitch.auth.messaging.TwitchAuthClien
 import com.tinatiel.obschatbot.core.client.twitch.auth.messaging.TwitchAuthValidationFailureEvent;
 import com.tinatiel.obschatbot.core.client.twitch.auth.messaging.TwitchAuthValidationSuccessEvent;
 import com.tinatiel.obschatbot.core.messaging.ObsChatbotEvent;
+import com.tinatiel.obschatbot.security.owner.OwnerDto;
+import com.tinatiel.obschatbot.security.owner.OwnerService;
+import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -20,6 +23,8 @@ public class TwitchAuthValidationServiceTest {
 
   ArgumentCaptor<ObsChatbotEvent> argumentCaptor;
 
+  OwnerService ownerService;
+  OwnerDto owner;
   OAuth2AuthorizedClientService authorizedClientService;
   OAuth2AuthorizedClientManager authorizedClientManager;
   TwitchAuthClientMessagingGateway twitchAuthQueueClient;
@@ -29,6 +34,12 @@ public class TwitchAuthValidationServiceTest {
 
   @BeforeEach
   void setUp() {
+    ownerService = mock(OwnerService.class);
+    owner = (OwnerDto.builder()
+      .id(UUID.randomUUID())
+      .name("foo")
+      .build());
+    when(ownerService.getOwner()).thenReturn(owner);
     authorizedClientService = mock(OAuth2AuthorizedClientService.class);
     authorizedClientManager = mock(OAuth2AuthorizedClientManager.class);
     twitchAuthQueueClient = mock(TwitchAuthClientMessagingGateway.class);
@@ -38,7 +49,7 @@ public class TwitchAuthValidationServiceTest {
     doNothing().when(twitchAuthQueueClient).submit(argumentCaptor.capture());
 
     twitchAuthValidationService = new TwitchAuthValidationService(
-      authorizedClientService,
+      ownerService, authorizedClientService,
       authorizedClientManager,
       twitchAuthQueueClient,
       twitchAuthClient

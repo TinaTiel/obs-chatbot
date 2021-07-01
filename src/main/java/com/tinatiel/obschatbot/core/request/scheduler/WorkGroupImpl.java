@@ -4,7 +4,6 @@ import com.tinatiel.obschatbot.core.request.ActionCompleteEvent;
 import com.tinatiel.obschatbot.core.request.ActionRequest;
 import com.tinatiel.obschatbot.core.request.CommandRequest;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
@@ -15,18 +14,19 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.locks.ReentrantLock;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.integration.annotation.ServiceActivator;
 
 /**
- * Implementation of WorkGroup that will generate batches of ActionRequests up to the
- * maximum batch size, iterating over the CommandRequests in the order received.
+ * Implementation of WorkGroup that will generate batches of ActionRequests up to the maximum batch
+ * size, iterating over the CommandRequests in the order received.
  */
 @Slf4j
 public class WorkGroupImpl implements WorkGroup {
 
   private final Timer timer = new Timer();
-  private final ConcurrentLinkedQueue<CommandRequestWrapper> workableRequests = new ConcurrentLinkedQueue<>();
-  private final ConcurrentHashMap<UUID, CommandRequestWrapper> blockedRequests = new ConcurrentHashMap<>();
+  private final ConcurrentLinkedQueue<CommandRequestWrapper> workableRequests =
+      new ConcurrentLinkedQueue<>();
+  private final ConcurrentHashMap<UUID, CommandRequestWrapper> blockedRequests =
+      new ConcurrentHashMap<>();
   private final ReentrantLock lock = new ReentrantLock();
   private int maxBatchSize = 0;
 

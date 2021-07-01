@@ -5,7 +5,6 @@
 
 package com.tinatiel.obschatbot.core.client.obs;
 
-import com.tinatiel.obschatbot.core.action.model.SendMessageAction;
 import com.tinatiel.obschatbot.core.client.ActionCommandConsumer;
 import com.tinatiel.obschatbot.core.client.ClientDelegate;
 import com.tinatiel.obschatbot.core.client.ClientFactory;
@@ -23,28 +22,18 @@ import com.tinatiel.obschatbot.core.client.event.ClientStopRequestedEvent;
 import com.tinatiel.obschatbot.core.client.event.ClientStoppedEvent;
 import com.tinatiel.obschatbot.core.client.event.ClientStoppingEvent;
 import com.tinatiel.obschatbot.core.client.obs.messaging.ObsClientLifecycleGateway;
-import com.tinatiel.obschatbot.core.client.twitch.chat.TwitchChatClientDelegate;
-import com.tinatiel.obschatbot.core.client.twitch.chat.TwitchChatClientSettings;
 import com.tinatiel.obschatbot.core.error.ClientException;
 import com.tinatiel.obschatbot.core.messaging.ObsChatbotEvent;
 import com.tinatiel.obschatbot.core.request.ActionRequest;
-import com.tinatiel.obschatbot.core.request.RequestContext;
-import com.tinatiel.obschatbot.core.user.User;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import lombok.extern.slf4j.Slf4j;
 import net.twasi.obsremotejava.OBSRemoteController;
-import org.pircbotx.PircBotX;
-import org.pircbotx.exception.IrcException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.integration.annotation.ServiceActivator;
+
+/**
+ * A ClientManager implementation providing lifecycle management and action execution for OBS.
+ */
 @Slf4j
 public class ObsClientManagerImpl implements ClientManager {
 
@@ -56,10 +45,17 @@ public class ObsClientManagerImpl implements ClientManager {
   private volatile ObsClientDelegate clientDelegate;
   private volatile boolean ready;
 
+  /**
+   * Create a new OBSClientManagerImpl instance.
+   *
+   * @param lifecycleGateway gateway for submitting lifecycle events.
+   * @param clientFactory generates instances of client delegates. ({@link ObsClientDelegate})
+   * @param consumer consumes incoming action requests targeted towards OBS.
+   */
   public ObsClientManagerImpl(
-    ObsClientLifecycleGateway lifecycleGateway,
-    ClientFactory<OBSRemoteController, ObsClientSettings> clientFactory,
-    ActionCommandConsumer<ObsClientDelegate> consumer) {
+      ObsClientLifecycleGateway lifecycleGateway,
+      ClientFactory<OBSRemoteController, ObsClientSettings> clientFactory,
+      ActionCommandConsumer<ObsClientDelegate> consumer) {
     this.lifecycleGateway = lifecycleGateway;
     this.clientFactory = clientFactory;
     this.consumer = consumer;
@@ -82,7 +78,8 @@ public class ObsClientManagerImpl implements ClientManager {
     lifecycleGateway.submit(new ClientStartingEvent());
 
     // Generate a new client delegate, checking it's the type we want
-    ClientDelegate<OBSRemoteController, ObsClientSettings> generatedDelegate = clientFactory.generate();
+    ClientDelegate<OBSRemoteController, ObsClientSettings> generatedDelegate = clientFactory
+        .generate();
     if (generatedDelegate instanceof ObsClientDelegate) {
       clientDelegate = (ObsClientDelegate) generatedDelegate;
     } else {
@@ -93,7 +90,9 @@ public class ObsClientManagerImpl implements ClientManager {
 
     // Acknowledge the client will now start connecting
     lifecycleGateway.submit(new ClientConnectingEvent());
-    if(clientDelegate.getSettings().getPassword() != null) lifecycleGateway.submit(new ClientAuthenticatingEvent());
+    if (clientDelegate.getSettings().getPassword() != null) {
+      lifecycleGateway.submit(new ClientAuthenticatingEvent());
+    }
 
     // Start the client, isolating the process in its own thread so it cannot block main
     executorService.execute(() -> {
@@ -101,8 +100,8 @@ public class ObsClientManagerImpl implements ClientManager {
         clientDelegate.getClient().connect();
       } catch (Exception e) {
         lifecycleGateway.submit(new ClientErrorEvent(
-          "OBS client encountered an unexpected error during start/run: "
-            + e.getMessage(), e
+            "OBS client encountered an unexpected error during start/run: "
+              + e.getMessage(), e
         ));
       }
     });
@@ -126,7 +125,7 @@ public class ObsClientManagerImpl implements ClientManager {
     log.info("Obs Client Manager Event: " + event);
     // Check if the client is already stopped; we don't want an unexpected error to cause
     // the client to leave the stopped state, e.g. due to underlying timeout of the wss client
-    if(!ready && event instanceof ClientErrorEvent) {
+    if (!ready && event instanceof ClientErrorEvent) {
       log.error("Unexpected event while stopped: " + event);
       return;
     }
@@ -136,10 +135,10 @@ public class ObsClientManagerImpl implements ClientManager {
 
       // Check specifically for not connecting to OBS due to it not running; the client doesn't
       // emit any further events, so we must initiate the stop process.
-      if(castEvent.getMessage() != null
-        && castEvent.getMessage().toLowerCase().contains("websocket error")) {
-//        lifecycleGateway.submit(new ClientStopRequestedEvent(castEvent.getMessage()));
-//        lifecycleGateway.submit(new ClientDisconnectedEvent(castEvent.getMessage()));
+      if (castEvent.getMessage() != null
+          && castEvent.getMessage().toLowerCase().contains("websocket error")) {
+            // lifecycleGateway.submit(new ClientStopRequestedEvent(castEvent.getMessage()));
+            // lifecycleGateway.submit(new ClientDisconnectedEvent(castEvent.getMessage()));
       } else {
         // Any error event must stop the client; something is wrong
         privateStop("Stopping due to error: " + castEvent.getMessage());
@@ -153,6 +152,7 @@ public class ObsClientManagerImpl implements ClientManager {
       // we can clear it out and send a Stopped event
       lifecycleGateway.submit(new ClientStoppedEvent());
       clientDelegate = null;
+      ready = false;
     } else if (event instanceof ClientReadyEvent) {
       ready = true;
     }
@@ -168,7 +168,7 @@ public class ObsClientManagerImpl implements ClientManager {
       consumer.consume(clientDelegate, actionRequest);
     } else {
       lifecycleGateway.submit(new ClientRequestIgnoredEvent("Ignoring request "
-        + actionRequest + ": Client not ready"));
+          + actionRequest + ": Client not ready"));
     }
   }
 

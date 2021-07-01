@@ -40,7 +40,8 @@ public class RandomOrderActionSequencerTest {
         for(Action action:input) sequenceResults.put(action, 0);
 
         // Given sequencer will randomly execute at most two of the actions provided
-        ActionSequencer sequencer = new RandomOrderActionSequencer(input, 2);
+        ActionSequencer sequencer = new RandomOrderActionSequencer(2);
+        sequencer.setActions(input);
 
         // when sequenced
         List<Action> sequence = sequencer.nextSequence();
@@ -85,7 +86,8 @@ public class RandomOrderActionSequencerTest {
         List<Action> input = Arrays.asList(action1, action2, action3);
 
         // Given random order sequencer with null args
-        ActionSequencer sequencer = new RandomOrderActionSequencer(input, null);
+        ActionSequencer sequencer = new RandomOrderActionSequencer(null);
+        sequencer.setActions(input);
 
         // when executed
         List<Action> sequence = sequencer.nextSequence();
@@ -110,7 +112,8 @@ public class RandomOrderActionSequencerTest {
         List<Action> input = Arrays.asList(action1, action2, action3);
 
         // Given random order sequencer with null args
-        ActionSequencer sequencer = new RandomOrderActionSequencer(input, 999);
+        ActionSequencer sequencer = new RandomOrderActionSequencer(999);
+        sequencer.setActions(input);
 
         // when executed
         List<Action> sequence = sequencer.nextSequence();
@@ -135,7 +138,8 @@ public class RandomOrderActionSequencerTest {
         List<Action> input = Arrays.asList(action1, action2, action3);
 
         // Given random order sequencer, where pick per execution is irrelevant
-        ActionSequencer sequencer = new RandomOrderActionSequencer(input, 1);
+        ActionSequencer sequencer = new RandomOrderActionSequencer(1);
+        sequencer.setActions(input);
 
         // when executed, the result of getActions is the same after each execution
         sequencer.nextSequence();
@@ -152,6 +156,20 @@ public class RandomOrderActionSequencerTest {
 
         sequencer.nextSequence();
         assertThat(sequencer.listAll()).containsExactlyElementsOf(input);
+
+    }
+
+    @Test
+    void nullPickWithUnsetActions() {
+
+        // Given null pick
+        ActionSequencer sequencer = new RandomOrderActionSequencer(null);
+
+        // When sequenced without any actions
+        List<Action> result = sequencer.nextSequence();
+
+        // Then an empty list is returned
+        assertThat(result).isEmpty();
 
     }
 }

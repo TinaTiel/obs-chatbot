@@ -6,20 +6,33 @@
 package com.tinatiel.obschatbot.core.client.obs;
 
 import com.tinatiel.obschatbot.core.client.ClientSettingsFactory;
+import com.tinatiel.obschatbot.data.client.obs.ObsClientDataService;
+import com.tinatiel.obschatbot.data.client.obs.model.ObsClientSettingsDto;
+import com.tinatiel.obschatbot.security.owner.OwnerService;
 
 /**
  * Provides up-to-date settings for the OBS Client.
  */
 public class ObsClientSettingsFactory implements ClientSettingsFactory<ObsClientSettings> {
 
-  private final ObsClientSettings settings;
+  private final OwnerService ownerService;
+  private final ObsClientDataService dataService;
 
-  public ObsClientSettingsFactory(ObsClientSettings settings) {
-    this.settings = settings;
+  public ObsClientSettingsFactory(OwnerService ownerService,
+    ObsClientDataService dataService) {
+    this.ownerService = ownerService;
+    this.dataService = dataService;
   }
 
   @Override
   public ObsClientSettings getSettings() {
-    return settings;
+    ObsClientSettingsDto settings = dataService.findByOwner(ownerService.getOwner().getId())
+      .orElseThrow(() -> new IllegalStateException("Could not retrieve OBS settings"));
+    return ObsClientSettings.builder()
+      .host(settings.getHost())
+      .port(settings.getPort())
+      .password(settings.getPassword())
+      .connectionTimeoutMs(settings.getConnectionTimeoutMs())
+      .build();
   }
 }

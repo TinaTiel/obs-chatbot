@@ -35,7 +35,8 @@ public class InOrderActionSequencerTest {
         List<Action> input = Arrays.asList(action1, action2, action3);
 
         // Given an in-order sequencer
-        ActionSequencer sequencer = new InOrderActionSequencer(input, false);
+        ActionSequencer sequencer = new InOrderActionSequencer(false);
+        sequencer.setActions(input);
 
         // When sequenced
         List<Action> sequence = sequencer.nextSequence();
@@ -63,7 +64,8 @@ public class InOrderActionSequencerTest {
         List<Action> input = Arrays.asList(action1, action2, action3);
 
         // Given an in-order scheduler, but reversed
-        ActionSequencer sequencer = new InOrderActionSequencer(input, true);
+        ActionSequencer sequencer = new InOrderActionSequencer(true);
+        sequencer.setActions(input);
 
         // When scheduled
         List<Action> sequence = sequencer.nextSequence();

@@ -5,10 +5,15 @@ import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * An implementation of ClientSettingsFactory returning instances of settings required for the
+ * TwitchApiClient.
+ */
 @Setter
 @ConfigurationProperties("com.tinatiel.twitch.api")
 @Configuration
-public class TwitchApiClientSettingsFactory implements ClientSettingsFactory<TwitchApiClientSettings> {
+public class TwitchApiClientSettingsFactory implements
+    ClientSettingsFactory<TwitchApiClientSettings> {
 
   private String host;
   private String usersFollowsPath;

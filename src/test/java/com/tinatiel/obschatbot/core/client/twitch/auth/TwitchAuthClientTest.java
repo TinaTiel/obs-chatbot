@@ -5,8 +5,10 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 
-import com.tinatiel.obschatbot.core.client.twitch.api.TwitchApiClientSettings;
 import com.tinatiel.obschatbot.core.user.User;
+import com.tinatiel.obschatbot.security.owner.OwnerDto;
+import com.tinatiel.obschatbot.security.owner.OwnerService;
+import java.util.UUID;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import org.junit.jupiter.api.AfterAll;
@@ -23,6 +25,8 @@ public class TwitchAuthClientTest {
 
   public static MockWebServer twitchServer;
 
+  OwnerService ownerService;
+  OwnerDto owner;
   OAuth2AuthorizedClientService authorizedClientService;
   TwitchAuthConnectionSettingsFactory authSettingsFactory;
   TwitchAuthConnectionSettings authSettings;
@@ -44,9 +48,15 @@ public class TwitchAuthClientTest {
   void setUp() {
 
     // Setup the auth client
+    ownerService = mock(OwnerService.class);
+    owner = (OwnerDto.builder()
+      .id(UUID.randomUUID())
+      .name("foo")
+      .build());
+    when(ownerService.getOwner()).thenReturn(owner);
     authorizedClientService = mock(OAuth2AuthorizedClientService.class);
     authSettingsFactory = mock(TwitchAuthConnectionSettingsFactory.class);
-    twitchAuthClient = new TwitchAuthClientImpl(authorizedClientService, authSettingsFactory);
+    twitchAuthClient = new TwitchAuthClientImpl(ownerService, authorizedClientService, authSettingsFactory);
 
     // Setup the app settings
     String twitchHost = "http://localhost:" + twitchServer.getPort();
@@ -159,7 +169,7 @@ public class TwitchAuthClientTest {
       .tokenUri("doesntmatter")
       .clientId(clientId)
       .build();
-    when(authorizedClientService.loadAuthorizedClient("twitch", User.SYSTEM_PRINCIPAL_NAME))
+    when(authorizedClientService.loadAuthorizedClient("twitch", owner.getName()))
       .thenReturn(authorizedClient);
     when(authorizedClient.getAccessToken()).thenReturn(accessToken);
     when(accessToken.getTokenValue()).thenReturn(tokenValue);

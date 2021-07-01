@@ -12,11 +12,11 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * Represents a (1) named, (2) sequence of (3) actions to execute. Commands must always be unique
- * by name, as this is how they are referred to for example in a chat application. The sequence
- * represents the order (or portion) of actions that will be executed, for example this could be
- * in an order, or picked at random. ${@link Action}s represent the actual work to be done, for
- * example sending a chat message, turning on the lights, showing a scene in OBS, etc.
+ * Represents a (1) named, (2) sequence of (3) actions to execute. Commands must always be unique by
+ * name, as this is how they are referred to for example in a chat application. The sequence
+ * represents the order (or portion) of actions that will be executed, for example this could be in
+ * an order, or picked at random. ${@link Action}s represent the actual work to be done, for example
+ * sending a chat message, turning on the lights, showing a scene in OBS, etc.
  */
 public class Command {
 
@@ -73,5 +73,13 @@ public class Command {
   @Override
   public int hashCode() {
     return Objects.hash(name);
+  }
+
+  @Override
+  public String toString() {
+    return "Command{"
+      + "name='" + name + '\''
+      + ", disabled=" + disabled
+      + '}';
   }
 }

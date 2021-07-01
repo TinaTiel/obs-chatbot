@@ -5,7 +5,6 @@
 
 package com.tinatiel.obschatbot.core.client;
 
-import com.tinatiel.obschatbot.core.messaging.Listener;
 import com.tinatiel.obschatbot.core.messaging.ObsChatbotEvent;
 import com.tinatiel.obschatbot.core.request.ActionRequest;
 
@@ -35,8 +34,8 @@ public interface ClientManager {
   void reloadClient();
 
   /**
-   * Defines behavior of the client on different lifecycle events, for example transitioning to
-   * a "ready" state when passed an "authentication success" event.
+   * Defines behavior of the client on different lifecycle events, for example transitioning to a
+   * "ready" state when passed an "authentication success" event.
    */
   void onLifecycleEvent(ObsChatbotEvent lifecycleEvent);
 

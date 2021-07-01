@@ -49,11 +49,11 @@ public class PircBotxListener extends ListenerAdapter {
   /**
    * Construct a new instance of this listener.
    *
-   * @param stateClient submits state events into the queue shared with the manager.
+   * @param stateClient        submits state events into the queue shared with the manager.
    * @param chatRequestHandler handles chat messages, triggering CommandRequests if applicable.
-   * @param tagsParser parses IRC tags, to help construct the
-   *                   ${@link com.tinatiel.obschatbot.core.request.RequestContext} required by
-   *                   the ChatRequestHandler.
+   * @param tagsParser         parses IRC tags, to help construct the
+   *                           ${@link com.tinatiel.obschatbot.core.request.RequestContext}
+   *                           required by the ChatRequestHandler.
    */
   public PircBotxListener(
       TwitchClientLifecycleGateway stateClient,
@@ -102,25 +102,25 @@ public class PircBotxListener extends ListenerAdapter {
     if (event.getNotice().toLowerCase().contains("improperly formatted auth")) {
       // "Improperly formatted auth" => improperly formatted auth; developer error
       stateClient.submit(new ClientErrorEvent(
-        "Unable to connect to Twitch: Improperly formatted auth, contact the developer!", null
+          "Unable to connect to Twitch: Improperly formatted auth, contact the developer!", null
       ));
 
     } else if (event.getNotice().toLowerCase().contains("unsuccessful")) {
       // "login unsuccessful" => if token doesn't have needed scopes, or
       // isn't an user access token; developer error
       stateClient.submit(new ClientErrorEvent(
-        "Unable to connect to Twitch: Not an User Token; contact the developer!", null
+          "Unable to connect to Twitch: Not an User Token; contact the developer!", null
       ));
 
     } else if (
         event.getNotice().toLowerCase().contains("permission to perform")
-        || event.getNotice().toLowerCase().contains("authentication failed")
+          || event.getNotice().toLowerCase().contains("authentication failed")
     ) {
       // "You don't have permission to perform that action" => if token
       // revoked during session; user-error
       stateClient.submit(new ClientErrorEvent(
-        "Unable to connect to Twitch: Connection (token) has been removed"
-                + " or revoked; re-approve and try again.", null
+          "Unable to connect to Twitch: Connection (token) has been removed"
+            + " or revoked; re-approve and try again.", null
       ));
 
     }
@@ -136,8 +136,8 @@ public class PircBotxListener extends ListenerAdapter {
   public void onMessage(MessageEvent event) throws Exception {
     log.trace("ON MESSAGE event: " + event);
     log.trace(
-          "Received Message from user '"
-          + event.getUser().getNick() + "' : '" + event.getMessage() + "'"
+        "Received Message from user '"
+        + event.getUser().getNick() + "' : '" + event.getMessage() + "'"
     );
     log.trace("Tags: " + event.getTags());
     chatRequestHandler.handle(
@@ -174,9 +174,9 @@ public class PircBotxListener extends ListenerAdapter {
   public void onConnectAttemptFailed(ConnectAttemptFailedEvent event) throws Exception {
     log.error("Failed to connect to Twitch: " + event.getConnectExceptions().entrySet());
     stateClient.submit(new ClientErrorEvent(
-      "Could not connect to Twitch, "
-            + "your (1) network connection, (2) that Twitch is up, "
-            + "and (3) verify the port and host are correct", null
+        "Could not connect to Twitch, "
+        + "your (1) network connection, (2) that Twitch is up, "
+        + "and (3) verify the port and host are correct", null
     ));
   }
 }

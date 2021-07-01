@@ -36,9 +36,9 @@ import org.springframework.integration.annotation.ServiceActivator;
 
 /**
  * Implementation of ClientManager that manages the Twitch (IRC) chat client, using an event queue
- * to communicate with the PircBotX listener during lifecycle changes. As an
- * ${@link ActionCommandConsumer}, this implementation also accepts ActionRequests related to chat
- * commands if in the ready state.
+ * to communicate with the PircBotX listener during lifecycle changes. As an ${@link
+ * ActionCommandConsumer}, this implementation also accepts ActionRequests related to chat commands
+ * if in the ready state.
  */
 @Slf4j
 public class TwitchChatClientManager implements ClientManager {
@@ -46,18 +46,21 @@ public class TwitchChatClientManager implements ClientManager {
   // Client factory produces new client instances
   private final TwitchClientLifecycleGateway lifecycleGateway;
   private final ClientFactory<PircBotX, TwitchChatClientSettings> clientFactory;
-  private final ActionCommandConsumer<TwitchChatClientDelegate> twitchChatClientActionCommandConsumer;
+  private final ActionCommandConsumer<TwitchChatClientDelegate> consumer;
   ExecutorService executorService = Executors.newSingleThreadExecutor();
   private volatile TwitchChatClientDelegate clientDelegate;
   private volatile boolean ready = false;
 
+  /**
+   * Creates a new instance.
+   */
   public TwitchChatClientManager(
-    TwitchClientLifecycleGateway lifecycleGateway,
-    ClientFactory<PircBotX, TwitchChatClientSettings> clientFactory,
-    ActionCommandConsumer<TwitchChatClientDelegate> twitchChatClientActionCommandConsumer) {
+      TwitchClientLifecycleGateway lifecycleGateway,
+      ClientFactory<PircBotX, TwitchChatClientSettings> clientFactory,
+      ActionCommandConsumer<TwitchChatClientDelegate> consumer) {
     this.lifecycleGateway = lifecycleGateway;
     this.clientFactory = clientFactory;
-    this.twitchChatClientActionCommandConsumer = twitchChatClientActionCommandConsumer;
+    this.consumer = consumer;
   }
 
   @Override
@@ -97,8 +100,9 @@ public class TwitchChatClientManager implements ClientManager {
         clientDelegate.getClient().startBot();
       } catch (IOException | IrcException e) {
         lifecycleGateway.submit(new ClientErrorEvent(
-          "Twitch client encountered an unexpected error during start/run: "
-                  + e.getMessage(), e
+            "Twitch client encountered an unexpected error during start/run: "
+            + e.getMessage(),
+            e
         ));
       }
     });
@@ -124,15 +128,15 @@ public class TwitchChatClientManager implements ClientManager {
 
   /**
    * Consumes the specified ActionRequest if it can be delegated to PircBotX (sending messages,
-   * executing bans, etc.), but only if this manager is in the ${@link ClientReadyEvent} state. If
-   * a request comes in during a non-ready state, an ${@link ClientRequestIgnoredEvent} is emitted
+   * executing bans, etc.), but only if this manager is in the ${@link ClientReadyEvent} state. If a
+   * request comes in during a non-ready state, an ${@link ClientRequestIgnoredEvent} is emitted
    * instead of silently dropping the request entirely.
    */
   @Override
   @ServiceActivator(inputChannel = "actionRequestChannel")
   public void onActionRequest(ActionRequest actionRequest) {
     if (ready) {
-      twitchChatClientActionCommandConsumer.consume(clientDelegate, actionRequest);
+      consumer.consume(clientDelegate, actionRequest);
     } else {
       lifecycleGateway.submit(new ClientRequestIgnoredEvent("Ignoring request "
           + actionRequest + ": Client not ready"));
@@ -140,8 +144,8 @@ public class TwitchChatClientManager implements ClientManager {
   }
 
   /**
-   * Responds to lifecycle events from the state queue (shared with ${@link PircBotxListener}).
-   * Any error event will cause this client manager to shut down. If configured, once in the ready
+   * Responds to lifecycle events from the state queue (shared with ${@link PircBotxListener}). Any
+   * error event will cause this client manager to shut down. If configured, once in the ready
    * state, this manager can send a join message to chat to let viewers know the bot is available.
    */
   @ServiceActivator(inputChannel = "twitchClientLifecycleChannel")

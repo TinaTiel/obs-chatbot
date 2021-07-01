@@ -1,6 +1,7 @@
 package com.tinatiel.obschatbot.security;
 
-import com.tinatiel.obschatbot.core.user.User;
+import com.tinatiel.obschatbot.security.owner.OwnerDto;
+import com.tinatiel.obschatbot.security.owner.OwnerService;
 import java.util.ArrayList;
 import java.util.HashMap;
 import javax.servlet.http.HttpServletRequest;
@@ -12,17 +13,20 @@ import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepo
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 
 /**
- * An implementation of ${@link OAuth2AuthorizedClientRepository} that always saves an
- * ${@link OAuth2AuthorizedClient} against the System user. By contrast, default implementations
- * will delegate anonymous requests (no Principle/Authorization present) to a specified repository.
+ * An implementation of ${@link OAuth2AuthorizedClientRepository} that always saves an ${@link
+ * OAuth2AuthorizedClient} against the System user. By contrast, default implementations will
+ * delegate anonymous requests (no Principle/Authorization present) to a specified repository.
  */
 public class SystemPrincipalOauth2AuthorizedClientRepository implements
     OAuth2AuthorizedClientRepository {
 
+  private final OwnerService ownerService;
   private final OAuth2AuthorizedClientService authorizedClientService;
 
   public SystemPrincipalOauth2AuthorizedClientRepository(
-      OAuth2AuthorizedClientService authorizedClientService) {
+    OwnerService ownerService,
+    OAuth2AuthorizedClientService authorizedClientService) {
+    this.ownerService = ownerService;
     this.authorizedClientService = authorizedClientService;
   }
 
@@ -32,7 +36,7 @@ public class SystemPrincipalOauth2AuthorizedClientRepository implements
       Authentication authentication,
       HttpServletRequest httpServletRequest) {
     return authorizedClientService
-      .loadAuthorizedClient(clientRegistrationId, User.SYSTEM_PRINCIPAL_NAME);
+      .loadAuthorizedClient(clientRegistrationId, ownerService.getOwner().getName());
   }
 
   @Override
@@ -41,10 +45,14 @@ public class SystemPrincipalOauth2AuthorizedClientRepository implements
       Authentication authentication,
       HttpServletRequest httpServletRequest,
       HttpServletResponse httpServletResponse) {
+    OwnerDto owner = ownerService.getOwner();
     authorizedClientService.saveAuthorizedClient(
         authorizedClient,
-        new PreAuthenticatedAuthenticationToken(User.SYSTEM_PRINCIPAL_NAME,
-          new HashMap<>(), new ArrayList<>())
+        new PreAuthenticatedAuthenticationToken(
+          owner.getName(),
+          new HashMap<>(),
+          new ArrayList<>()
+        )
     );
   }
 
@@ -55,6 +63,6 @@ public class SystemPrincipalOauth2AuthorizedClientRepository implements
       HttpServletRequest httpServletRequest,
       HttpServletResponse httpServletResponse) {
     authorizedClientService
-      .removeAuthorizedClient(clientRegistrationId, User.SYSTEM_PRINCIPAL_NAME);
+      .removeAuthorizedClient(clientRegistrationId, ownerService.getOwner().getName());
   }
 }

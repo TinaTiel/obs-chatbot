@@ -6,10 +6,10 @@ import org.springframework.integration.annotation.ServiceActivator;
 
 /**
  * An implementation of WorkGroupManager that delegates routing and priority-ordering of
- * CommandRequests to an ${@link WorkGroupRouter}. Instead, the WorkGroupRouter routes requests
- * to the appropriate WorkGroup and is responsible for returning the WorkGroups in priority order.
- * The WorkGroupManagerImpl, in turn, pulls these WorkGroups from the router -- finding the first
- * that has work that can be done.
+ * CommandRequests to an ${@link WorkGroupRouter}. Instead, the WorkGroupRouter routes requests to
+ * the appropriate WorkGroup and is responsible for returning the WorkGroups in priority order. The
+ * WorkGroupManagerImpl, in turn, pulls these WorkGroups from the router -- finding the first that
+ * has work that can be done.
  *
  * @see WorkGroupRouter
  * @see WorkGroup

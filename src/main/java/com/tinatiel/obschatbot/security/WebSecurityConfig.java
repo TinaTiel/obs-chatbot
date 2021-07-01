@@ -30,9 +30,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
   /**
    * This is responsible for noting that an authorization request was made. Without a registered
    * authorization request (initiated at /oauth2/authorization/{registrationId}, the corresponding
-   * security filters (e.g. OAuth2AuthorizationCodeGrantFilter) will not attempt code exchange.
-   * Even if we want to use the default, we need to redeclare it here because the default bean is
-   * final and cannot be mocked in tests.
+   * security filters (e.g. OAuth2AuthorizationCodeGrantFilter) will not attempt code exchange. Even
+   * if we want to use the default, we need to redeclare it here because the default bean is final
+   * and cannot be mocked in tests.
    */
   @Bean
   AuthorizationRequestRepository<OAuth2AuthorizationRequest> customAuthorizationRepository() {
@@ -43,10 +43,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
   protected void configure(HttpSecurity http) throws Exception {
     http
         // All web requests are served and consumed on localhost
-        .authorizeRequests().anyRequest().permitAll()
+        .authorizeRequests().anyRequest().permitAll().and()
 
         // Disable CSRF, again everything is entirely local
-        .and().csrf().disable()
+        .csrf().disable()
+
+        // Same-origin iframes (for h2-console)
+        .headers().frameOptions().sameOrigin().and()
 
         // Enable the oAuth2 Client
         // We specify the accessTokenResponseClient only so that in DEBUG mode
@@ -56,8 +59,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
           .authorizationCodeGrant(codeGrant -> codeGrant
             .accessTokenResponseClient(this.accessTokenResponseClient())
             .authorizationRequestRepository(this.customAuthorizationRepository())
-          )
-        );
+          ));
 
   }
 

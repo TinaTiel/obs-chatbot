@@ -41,10 +41,9 @@ public class UserSecurityDetailsResolver {
     boolean isModerator = maybeNullSecurityDetails.getModerator() == null
         ? false
         : maybeNullSecurityDetails.getModerator();
-    boolean isPatron =
-        maybeNullSecurityDetails.getPatron() == null
-          ? false
-          : maybeNullSecurityDetails.getPatron();
+    boolean isPatron = maybeNullSecurityDetails.getPatron() == null
+        ? false
+        : maybeNullSecurityDetails.getPatron();
     Period patronPeriod = maybeNullSecurityDetails.getPatronPeriod() == null
         ? Period.ZERO
         : maybeNullSecurityDetails.getPatronPeriod();

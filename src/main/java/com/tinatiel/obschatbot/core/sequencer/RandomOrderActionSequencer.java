@@ -12,46 +12,35 @@ import java.util.Random;
 
 /**
  * An ActionSequencer that is capable of picking a subset of Actions semi-randomly. This is not
- * "true" randomness, because this implementation internally tracks which actions have already
- * been picked and will guarantee that eventually all actions are picked (just in random order).
- * This guarantees, for example, that the same Action won't ever be picked many times in a row.
+ * "true" randomness, because this implementation internally tracks which actions have already been
+ * picked and will guarantee that eventually all actions are picked (just in random order). This
+ * guarantees, for example, that the same Action won't ever be picked many times in a row.
  */
 public class RandomOrderActionSequencer implements ActionSequencer {
 
   private final List<Action> original = new ArrayList<>();
   private final List<Action> available = new ArrayList<>();
   private final List<Action> sequenced = new ArrayList<>();
-  private final Integer pickedPerExecution;
+  private Integer pickedPerExecution;
   private final Random random = new Random();
 
   /**
    * Create a new instance of this sequencer.
    *
-   * @param actions Actions to pick from.
-   * @param pickedPerExecution Number of actions to pick each invocation. If null or negative,
-   *                           it picks from the entire list of Actions.
+   * @param pickedPerExecution Number of actions to pick each invocation. If null or negative, it
+   *                           picks from the entire list of Actions.
    */
-  public RandomOrderActionSequencer(List<Action> actions, Integer pickedPerExecution) {
-    // Sanitize
-    if (actions == null) {
-      throw new IllegalArgumentException("actions cannot be null");
-    }
-
-    // Initialize the pool of actions to pick from
-    original.addAll(actions);
-    available.addAll(actions);
-
-    // Determine how many to pick from the pool each execution
-    if (pickedPerExecution == null || pickedPerExecution > actions.size()) {
-      this.pickedPerExecution = actions.size();
-    } else {
-      this.pickedPerExecution = pickedPerExecution;
-    }
-
+  public RandomOrderActionSequencer(Integer pickedPerExecution) {
+    this.pickedPerExecution = pickedPerExecution;
   }
 
   @Override
   public List<Action> nextSequence() {
+
+    // Set pick per execution if unset
+    if (pickedPerExecution == null || pickedPerExecution > original.size()) {
+      pickedPerExecution = original.size();
+    }
 
     // Init empty list of picks
     List<Action> picked = new ArrayList<>();
@@ -79,6 +68,16 @@ public class RandomOrderActionSequencer implements ActionSequencer {
   @Override
   public List<Action> listAll() {
     return original;
+  }
+
+  @Override
+  public void setActions(List<Action> actions) {
+    original.addAll(actions);
+    available.addAll(actions);
+  }
+
+  public Integer getPickedPerExecution() {
+    return pickedPerExecution;
   }
 
   @Override

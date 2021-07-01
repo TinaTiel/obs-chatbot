@@ -10,7 +10,6 @@ import com.tinatiel.obschatbot.core.client.ActionCommandConsumer;
 import com.tinatiel.obschatbot.core.client.event.ClientErrorEvent;
 import com.tinatiel.obschatbot.core.client.obs.messaging.ObsClientLifecycleGateway;
 import com.tinatiel.obschatbot.core.request.ActionRequest;
-import net.twasi.obsremotejava.OBSRemoteController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,21 +22,22 @@ public class ObsActionCommandConsumer implements ActionCommandConsumer<ObsClient
   private final ObsClientLifecycleGateway lifecycleGateway;
 
   public ObsActionCommandConsumer(
-    ObsClientLifecycleGateway lifecycleGateway) {
+      ObsClientLifecycleGateway lifecycleGateway) {
     this.lifecycleGateway = lifecycleGateway;
   }
 
   @Override
   public void consume(ObsClientDelegate client, ActionRequest actionRequest) {
-      try {
-          if(actionRequest.getAction() instanceof ObsSourceVisibilityAction) {
-            log.debug("Consuming ActionRequest: " + actionRequest);
-            ObsSourceVisibilityAction action = (ObsSourceVisibilityAction) actionRequest.getAction();
-              client.getClient().setSourceVisibility(
-                action.getSceneName(), action.getSourceName(), action.isVisible(), (result) -> {});
-          }
-      } catch (Exception e) {
-        lifecycleGateway.submit(new ClientErrorEvent("Could not execute " + actionRequest, e));
+    try {
+      if (actionRequest.getAction() instanceof ObsSourceVisibilityAction) {
+        log.debug("Consuming ActionRequest: " + actionRequest);
+        ObsSourceVisibilityAction action = (ObsSourceVisibilityAction) actionRequest.getAction();
+        client.getClient().setSourceVisibility(
+            action.getSceneName(), action.getSourceName(), action.isVisible(), (result) -> {
+          });
       }
+    } catch (Exception e) {
+      lifecycleGateway.submit(new ClientErrorEvent("Could not execute " + actionRequest, e));
+    }
   }
 }
