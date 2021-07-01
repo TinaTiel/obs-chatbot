@@ -410,6 +410,9 @@ public class LocalUserServicesIT {
       .localGroupId(existingGroup.getId())
       .build());
 
+    assertThat(localUserRepository.count()).isEqualTo(1);
+    assertThat(localGroupRepository.count()).isEqualTo(1);
+
     // Then the retrieved user has the group assigned to it
     assertThat(localUserService.findById(existingUser.getId()))
       .isPresent()
@@ -429,17 +432,115 @@ public class LocalUserServicesIT {
 
   @Test
   void assignAndRemoveUsersToFromGroup() {
-    fail("to do");
+    // Given an user and group exist
+    LocalGroupDto existingGroup =  assertSaveGroup(LocalGroupDto.builder()
+      .owner(UUID.randomUUID())
+      .name("some group")
+      .build()
+    );
+    LocalUserDto existingUser = assertSaveUser(LocalUserDto.builder()
+      .owner(UUID.randomUUID())
+      .platform(Platform.LOCAL)
+      .username("existing user")
+      .build()
+    );
+
+    // When assigned
+    localUserAssignmentService.addAssignment(LocalUserGroupAssignmentDto.builder()
+      .localUserId(existingUser.getId())
+      .localGroupId(existingGroup.getId())
+      .build());
+    assertThat(localUserRepository.count()).isEqualTo(1);
+    assertThat(localGroupRepository.count()).isEqualTo(1);
+
+    // Then the retrieved user has the group assigned to it
+    assertThat(localUserService.findById(existingUser.getId()).get().getGroups()).hasSize(1);
+
+    // When unassigned
+    localUserAssignmentService.removeAssignment(LocalUserGroupAssignmentDto.builder()
+      .localUserId(existingUser.getId())
+      .localGroupId(existingGroup.getId())
+      .build());
+    assertThat(localUserRepository.count()).isEqualTo(1);
+    assertThat(localGroupRepository.count()).isEqualTo(1);
+
+    // Then the retrieved user has the group remove from it
+    assertThat(localUserService.findById(existingUser.getId()).get().getGroups()).isEmpty();
+
   }
 
   @Test
   void assignAndDeleteGroup() {
-    fail("to do");
+
+    // Given an user and group exist
+    LocalGroupDto existingGroup =  assertSaveGroup(LocalGroupDto.builder()
+      .owner(UUID.randomUUID())
+      .name("some group")
+      .build()
+    );
+    LocalUserDto existingUser = assertSaveUser(LocalUserDto.builder()
+      .owner(UUID.randomUUID())
+      .platform(Platform.LOCAL)
+      .username("existing user")
+      .build()
+    );
+
+    // And have been assigned to each other
+    localUserAssignmentService.addAssignment(LocalUserGroupAssignmentDto.builder()
+      .localUserId(existingUser.getId())
+      .localGroupId(existingGroup.getId())
+      .build());
+    assertThat(localUserRepository.count()).isEqualTo(1);
+    assertThat(localGroupRepository.count()).isEqualTo(1);
+    assertThat(localUserService.findById(existingUser.getId()).get().getGroups()).hasSize(1);
+
+    // When the group is deleted
+    localGroupService.delete(existingGroup.getId());
+
+    // Then it is deleted
+    assertThat(localGroupService.findById(existingGroup.getId())).isEmpty();
+    assertThat(localGroupRepository.count()).isZero();
+
+    // Then the user exists, but has no assignment
+    assertThat(localUserService.findById(existingUser.getId()).get().getGroups()).isEmpty();
+
   }
 
   @Test
   void assignAndDeleteUser() {
-    fail("to do");
+
+    // Given an user and group exist
+    LocalGroupDto existingGroup =  assertSaveGroup(LocalGroupDto.builder()
+      .owner(UUID.randomUUID())
+      .name("some group")
+      .build()
+    );
+    LocalUserDto existingUser = assertSaveUser(LocalUserDto.builder()
+      .owner(UUID.randomUUID())
+      .platform(Platform.LOCAL)
+      .username("existing user")
+      .build()
+    );
+
+    // And have been assigned to each other
+    localUserAssignmentService.addAssignment(LocalUserGroupAssignmentDto.builder()
+      .localUserId(existingUser.getId())
+      .localGroupId(existingGroup.getId())
+      .build());
+    assertThat(localUserRepository.count()).isEqualTo(1);
+    assertThat(localGroupRepository.count()).isEqualTo(1);
+    assertThat(localUserService.findById(existingUser.getId()).get().getGroups()).hasSize(1);
+
+    // When the user is deleted
+    localUserService.delete(existingUser.getId());
+
+    // Then it is deleted
+    assertThat(localUserService.findById(existingUser.getId())).isEmpty();
+    assertThat(localUserRepository.count()).isZero();
+
+    // Then the group still exists
+    assertThat(localGroupService.findById(existingGroup.getId())).isNotEmpty();
+
   }
 
   private LocalGroupDto assertSaveGroup(LocalGroupDto request) {

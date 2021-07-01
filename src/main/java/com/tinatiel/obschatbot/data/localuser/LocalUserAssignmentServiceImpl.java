@@ -46,6 +46,25 @@ public class LocalUserAssignmentServiceImpl implements LocalUserAssignmentServic
   @Override
   public void removeAssignment(LocalUserGroupAssignmentDto assignmentDto) {
     validate(assignmentDto);
+
+    localUserRepository.findById(assignmentDto.getLocalUserId()).ifPresentOrElse(
+      foundUser -> {
+        localGroupRepository.findById(assignmentDto.getLocalGroupId()).ifPresentOrElse(
+          foundGroup -> {
+            foundUser.getGroups().remove(foundGroup);
+            foundGroup.getUsers().remove(foundUser);
+            localUserRepository.saveAndFlush(foundUser);
+          },
+          () -> {
+            // do nothing
+          }
+        );
+      },
+      () -> {
+        // do nothing
+      }
+    );
+
   }
 
   private void validate(LocalUserGroupAssignmentDto dto) {
