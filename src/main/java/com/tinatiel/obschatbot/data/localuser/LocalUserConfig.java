@@ -43,4 +43,9 @@ public class LocalUserConfig {
     return new LocalGroupServiceImpl(localGroupRepository, localGroupMapper());
   }
 
+  @Bean
+  LocalUserAssignmentService localUserAssignmentService() {
+    return new LocalUserAssignmentServiceImpl(localUserRepository, localGroupRepository);
+  }
+
 }

@@ -10,6 +10,7 @@ import com.tinatiel.obschatbot.data.localuser.entity.LocalGroupRepository;
 import com.tinatiel.obschatbot.data.localuser.entity.LocalUserRepository;
 import com.tinatiel.obschatbot.data.localuser.model.LocalGroupDto;
 import com.tinatiel.obschatbot.data.localuser.model.LocalUserDto;
+import com.tinatiel.obschatbot.data.localuser.model.LocalUserGroupAssignmentDto;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -45,6 +46,9 @@ public class LocalUserServicesIT {
 
   @Autowired
   LocalGroupService localGroupService;
+
+  @Autowired
+  LocalUserAssignmentService localUserAssignmentService;
 
   @BeforeEach
   void setUp() {
@@ -357,8 +361,70 @@ public class LocalUserServicesIT {
   }
 
   @Test
+  void invalidAssignmentRequest() {
+    assertThatThrownBy(() -> {
+      localUserAssignmentService.addAssignment(LocalUserGroupAssignmentDto.builder()
+        .localUserId(null)
+        .localGroupId(UUID.randomUUID())
+        .build());
+    }).isInstanceOf(IllegalArgumentException.class);
+    assertThatThrownBy(() -> {
+      localUserAssignmentService.addAssignment(LocalUserGroupAssignmentDto.builder()
+        .localUserId(UUID.randomUUID())
+        .localGroupId(null)
+        .build());
+    }).isInstanceOf(IllegalArgumentException.class);
+
+    assertThatThrownBy(() -> {
+      localUserAssignmentService.removeAssignment(LocalUserGroupAssignmentDto.builder()
+        .localUserId(null)
+        .localGroupId(UUID.randomUUID())
+        .build());
+    }).isInstanceOf(IllegalArgumentException.class);
+    assertThatThrownBy(() -> {
+      localUserAssignmentService.removeAssignment(LocalUserGroupAssignmentDto.builder()
+        .localUserId(UUID.randomUUID())
+        .localGroupId(null)
+        .build());
+    }).isInstanceOf(IllegalArgumentException.class);
+  }
+
+  @Test
   void assignAndRetrieveUserWithGroups() {
-    fail("to do");
+    // Given an user and group exist
+    LocalGroupDto existingGroup =  assertSaveGroup(LocalGroupDto.builder()
+      .owner(UUID.randomUUID())
+      .name("some group")
+      .build()
+    );
+    LocalUserDto existingUser = assertSaveUser(LocalUserDto.builder()
+      .owner(UUID.randomUUID())
+      .platform(Platform.LOCAL)
+      .username("existing user")
+      .build()
+    );
+
+    // When assigned
+    localUserAssignmentService.addAssignment(LocalUserGroupAssignmentDto.builder()
+      .localUserId(existingUser.getId())
+      .localGroupId(existingGroup.getId())
+      .build());
+
+    // Then the retrieved user has the group assigned to it
+    assertThat(localUserService.findById(existingUser.getId()))
+      .isPresent()
+      .get()
+      .usingRecursiveComparison()
+      .isEqualTo(LocalUserDto.builder()
+        .id(existingUser.getId())
+        .owner(existingUser.getOwner())
+        .platform(existingUser.getPlatform())
+        .username(existingUser.getUsername())
+        .broadcaster(existingUser.isBroadcaster())
+        .groups(Arrays.asList(existingGroup))
+        .build()
+      );
+
   }
 
   @Test
