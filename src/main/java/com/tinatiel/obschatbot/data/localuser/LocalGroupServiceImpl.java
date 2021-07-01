@@ -41,6 +41,13 @@ public class LocalGroupServiceImpl implements LocalGroupService {
 
   @Override
   public LocalGroupDto save(LocalGroupDto localGroupDto) {
+    if(localGroupDto == null
+      || localGroupDto.getOwner() == null
+      || localGroupDto.getName() == null
+      || localGroupDto.getName().trim().isEmpty()
+    ) {
+      throw new IllegalArgumentException("Owner and Name are required");
+    }
     return mapper.map(
       repository.save(mapper.map(localGroupDto))
     );

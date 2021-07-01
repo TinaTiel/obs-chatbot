@@ -57,7 +57,9 @@ public class LocalUserServiceImpl implements LocalUserService {
   public LocalUserDto save(LocalUserDto localUserDto) {
     if(localUserDto.getOwner() == null
       || localUserDto.getPlatform() == null
-      || localUserDto.getUsername() == null) {
+      || localUserDto.getUsername() == null
+      || localUserDto.getUsername().trim().isEmpty()
+    ) {
       throw new IllegalArgumentException("User owner, platform, and username are required");
     }
     LocalUserEntity entity = repository.save(mapper.map(localUserDto));
