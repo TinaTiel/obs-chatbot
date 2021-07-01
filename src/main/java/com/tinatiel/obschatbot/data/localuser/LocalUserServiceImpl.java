@@ -12,6 +12,8 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.exception.ConstraintViolationException;
+import org.springframework.dao.DataIntegrityViolationException;
 
 @Slf4j
 @Transactional // we are always pulling user's groups
@@ -72,10 +74,21 @@ public class LocalUserServiceImpl implements LocalUserService {
       throw new DataPersistenceException("Can only have one broadcaster per platform");
     }
 
-    LocalUserEntity entity = repository.save(mapper.map(localUserDto));
-    return mapper.map(
-      repository.saveAndFlush(entity)
-    );
+    // Try to save
+    try {
+      return mapper.map(
+        repository.saveAndFlush(repository.save(mapper.map(localUserDto)))
+      );
+    } catch (Exception e) {
+      if(e instanceof DataIntegrityViolationException
+        && e.getCause() != null
+        && e.getCause() instanceof ConstraintViolationException
+        && ((ConstraintViolationException) e.getCause()).getConstraintName().contains("UNIQUE_USER")) {
+        throw new DataPersistenceException("User on platform already has that username", e);
+      }
+      throw new DataPersistenceException("Could not save user, unexpected error", e);
+    }
+
   }
 
   @Override

@@ -9,10 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 /**
  * Configuration for the local user package.
  */
+@EnableTransactionManagement
 @EntityScan("com.tinatiel.obschatbot.data.localuser.entity")
 @Configuration
 public class LocalUserConfig {

@@ -12,6 +12,8 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -19,6 +21,9 @@ import org.hibernate.annotations.Type;
 
 @NoArgsConstructor
 @Data
+@Table(
+  uniqueConstraints = @UniqueConstraint(name = "UNIQUE_GROUP", columnNames = {"owner", "name"})
+)
 @Entity
 public class LocalGroupEntity extends IdEntity {
 

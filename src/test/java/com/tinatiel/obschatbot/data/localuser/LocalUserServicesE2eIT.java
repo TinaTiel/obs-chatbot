@@ -2,10 +2,8 @@ package com.tinatiel.obschatbot.data.localuser;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.assertj.core.api.Fail.fail;
 
 import com.tinatiel.obschatbot.core.user.Platform;
-import com.tinatiel.obschatbot.data.common.CommonConfig;
 import com.tinatiel.obschatbot.data.error.DataPersistenceException;
 import com.tinatiel.obschatbot.data.localuser.entity.LocalGroupRepository;
 import com.tinatiel.obschatbot.data.localuser.entity.LocalUserRepository;
@@ -20,21 +18,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.test.context.ContextConfiguration;
+import org.springframework.boot.test.context.SpringBootTest;
 
-@ContextConfiguration(classes = {
-  CommonConfig.class,
-  LocalUserConfig.class,
-  LocalUserServicesIT.TestConfig.class})
-@DataJpaTest
-public class LocalUserServicesIT {
-
-  @EnableJpaRepositories(basePackages = "com.tinatiel.obschatbot.data.localuser")
-  @Configuration
-  static class TestConfig {}
+@SpringBootTest
+public class LocalUserServicesE2eIT {
 
   @Autowired
   LocalUserRepository localUserRepository;
@@ -53,8 +40,8 @@ public class LocalUserServicesIT {
 
   @BeforeEach
   void setUp() {
-    localGroupRepository.deleteAll();
     localUserRepository.deleteAll();
+    localGroupRepository.deleteAll();
 
     // Verify initial counts
     assertThat(localGroupRepository.count()).isZero();
@@ -75,7 +62,7 @@ public class LocalUserServicesIT {
   }
 
   @Test
-  void saveWithoutRequiredValues() {
+  void saveInvalidUser() {
     // no owner
     assertThatThrownBy(() -> {
       localUserService.save(LocalUserDto.builder()
@@ -116,6 +103,70 @@ public class LocalUserServicesIT {
 
     assertThat(localUserRepository.count()).isZero();
 
+  }
+
+  @Test
+  void manyBroadcastersNotAllowed() {
+
+    // Given there is already a broadcaster
+    UUID owner = UUID.randomUUID();
+    Platform platform = Platform.TWITCH;
+    LocalUserDto broadcaster = assertSaveUser(LocalUserDto.builder()
+      .owner(owner)
+      .platform(platform)
+      .username("broadcaster")
+      .broadcaster(true)
+      .build()
+    );
+    assertThat(localUserService.findBroadcasterForOwnerAndPlatform(
+      broadcaster.getOwner(), broadcaster.getPlatform())).isPresent();
+
+    // When another broadcaster is saved for the same platform and owner
+    // Then an exception is thrown
+    assertThatThrownBy(() -> {
+      assertSaveUser(LocalUserDto.builder()
+        .owner(owner)
+        .platform(platform)
+        .username("another broadcaster")
+        .broadcaster(true)
+        .build()
+      );
+    }).isInstanceOf(DataPersistenceException.class);
+
+    // And no extra user was created
+    assertThat(localUserRepository.count()).isEqualTo(1);
+
+  }
+
+  @Test
+  void duplicateUsernamesNotAllowed() {
+
+    // Given there is already an user
+    UUID owner = UUID.randomUUID();
+    Platform platform = Platform.TWITCH;
+    LocalUserDto user = assertSaveUser(LocalUserDto.builder()
+      .owner(owner)
+      .platform(platform)
+      .username("user")
+      .broadcaster(true)
+      .build()
+    );
+    assertThat(localUserService.findBroadcasterForOwnerAndPlatform(
+      user.getOwner(), user.getPlatform())).isPresent();
+
+    // When another user is saved for the same platform and username
+    // Then an exception is thrown
+    assertThatThrownBy(() -> {
+      localUserService.save(LocalUserDto.builder()
+        .owner(owner)
+        .platform(platform)
+        .username(user.getUsername())
+        .build()
+      );
+    }).isInstanceOf(DataPersistenceException.class);
+
+    // And no extra user was created
+    assertThat(localUserService.findByOwner(user.getOwner())).hasSize(1);
   }
 
   @Test
@@ -264,45 +315,12 @@ public class LocalUserServicesIT {
       .usingRecursiveComparison()
       .isEqualTo(LocalUserDto.builder()
         .id(existing.getId())
-        .owner(updateRequest.getOwner())
+        .owner(existing.getOwner())
         .platform(updateRequest.getPlatform())
         .username(updateRequest.getUsername())
         .broadcaster(updateRequest.isBroadcaster())
         .build()
       );
-
-  }
-
-  @Test
-  void manyBroadcastersNotAllowed() {
-
-    // Given there is already a broadcaster
-    UUID owner = UUID.randomUUID();
-    Platform platform = Platform.TWITCH;
-    LocalUserDto broadcaster = assertSaveUser(LocalUserDto.builder()
-      .owner(owner)
-      .platform(platform)
-      .username("broadcaster")
-      .broadcaster(true)
-      .build()
-    );
-    assertThat(localUserService.findBroadcasterForOwnerAndPlatform(
-      broadcaster.getOwner(), broadcaster.getPlatform())).isPresent();
-
-    // When another broadcaster is saved for the same platform and owner
-    // Then an exception is thrown
-    assertThatThrownBy(() -> {
-      assertSaveUser(LocalUserDto.builder()
-        .owner(owner)
-        .platform(platform)
-        .username("another broadcaster")
-        .broadcaster(true)
-        .build()
-      );
-    }).isInstanceOf(DataPersistenceException.class);
-
-    // And no extra user was created
-    assertThat(localUserRepository.count()).isEqualTo(1);
 
   }
 
@@ -347,7 +365,7 @@ public class LocalUserServicesIT {
       .usingRecursiveComparison()
       .isEqualTo(LocalGroupDto.builder()
         .id(existing.getId())
-        .owner(request.getOwner())
+        .owner(existing.getOwner())
         .name(request.getName())
         .build()
       );
@@ -386,6 +404,30 @@ public class LocalUserServicesIT {
 
 
     assertThat(localGroupRepository.count()).isZero();
+
+  }
+
+  @Test
+  void duplicateGroupNameNotAllowed() {
+
+    // Given an existing group
+    LocalGroupDto existing =  assertSaveGroup(LocalGroupDto.builder()
+      .owner(UUID.randomUUID())
+      .name("some group")
+      .build()
+    );
+    assertThat(localGroupRepository.count()).isEqualTo(1);
+
+    // When another group is saved with the same name
+    // Then an exception is thrown
+    assertThatThrownBy(() -> {
+      localGroupService.save(
+        LocalGroupDto.builder()
+          .owner(existing.getOwner())
+          .name(existing.getName())
+          .build()
+      );
+    }).isInstanceOf(DataPersistenceException.class);
 
   }
 

@@ -25,6 +25,9 @@ import org.hibernate.annotations.Type;
 
 @NoArgsConstructor
 @Data
+@Table(
+  uniqueConstraints = @UniqueConstraint(name = "UNIQUE_USER", columnNames = {"owner", "platform", "username"})
+)
 @Entity
 public class LocalUserEntity extends IdEntity {
 

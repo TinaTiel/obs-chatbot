@@ -1,5 +1,6 @@
 package com.tinatiel.obschatbot.data.localuser;
 
+import com.tinatiel.obschatbot.data.error.DataPersistenceException;
 import com.tinatiel.obschatbot.data.localuser.entity.LocalGroupRepository;
 import com.tinatiel.obschatbot.data.localuser.entity.LocalUserEntity;
 import com.tinatiel.obschatbot.data.localuser.entity.LocalUserRepository;
@@ -13,7 +14,10 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.exception.ConstraintViolationException;
+import org.springframework.dao.DataIntegrityViolationException;
 
+@Transactional
 @Slf4j
 public class LocalGroupServiceImpl implements LocalGroupService {
 
@@ -48,9 +52,20 @@ public class LocalGroupServiceImpl implements LocalGroupService {
     ) {
       throw new IllegalArgumentException("Owner and Name are required");
     }
-    return mapper.map(
-      repository.save(mapper.map(localGroupDto))
-    );
+    try {
+      return mapper.map(
+        repository.saveAndFlush(mapper.map(localGroupDto))
+      );
+    } catch (Throwable e) {
+      if (e instanceof DataIntegrityViolationException
+        && e.getCause() != null
+        && e.getCause() instanceof ConstraintViolationException
+        && ((ConstraintViolationException) e.getCause()).getConstraintName()
+        .contains("UNIQUE_GROUP")) {
+        throw new DataPersistenceException("Group already has that name", e);
+      }
+      throw new DataPersistenceException("Could not save group, unexpected error", e);
+    }
   }
 
   @Override

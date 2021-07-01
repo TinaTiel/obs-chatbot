@@ -7,7 +7,11 @@ import com.tinatiel.obschatbot.data.localuser.model.LocalUserDto;
 import com.tinatiel.obschatbot.data.localuser.model.LocalUserGroupAssignmentDto;
 import java.util.List;
 import java.util.UUID;
+import javax.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
+@Transactional
 public class LocalUserAssignmentServiceImpl implements LocalUserAssignmentService {
 
   private final LocalUserRepository localUserRepository;
