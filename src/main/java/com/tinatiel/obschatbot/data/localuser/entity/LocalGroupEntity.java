@@ -14,6 +14,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.hibernate.annotations.Type;
 
 @NoArgsConstructor
@@ -26,6 +27,7 @@ public class LocalGroupEntity extends IdEntity {
   private UUID owner;
   private String name;
 
+  @ToString.Exclude
   @ManyToMany(mappedBy = "groups")
   private Set<LocalUserEntity> users = new HashSet<>();
 

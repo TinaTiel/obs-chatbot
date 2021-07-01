@@ -6,6 +6,7 @@ import static org.assertj.core.api.Fail.fail;
 
 import com.tinatiel.obschatbot.core.user.Platform;
 import com.tinatiel.obschatbot.data.common.CommonConfig;
+import com.tinatiel.obschatbot.data.error.DataPersistenceException;
 import com.tinatiel.obschatbot.data.localuser.entity.LocalGroupRepository;
 import com.tinatiel.obschatbot.data.localuser.entity.LocalUserRepository;
 import com.tinatiel.obschatbot.data.localuser.model.LocalGroupDto;
@@ -221,6 +222,7 @@ public class LocalUserServicesIT {
       .owner(owner)
       .platform(platform)
       .username("follower")
+      .broadcaster(false)
       .build()
     );
     assertThat(localUserRepository.count()).isEqualTo(2);
@@ -271,10 +273,37 @@ public class LocalUserServicesIT {
 
   }
 
-  @Disabled
   @Test
-  void manyBroadcasters() {
-    fail("to do; allow many broadcasters?");
+  void manyBroadcastersNotAllowed() {
+
+    // Given there is already a broadcaster
+    UUID owner = UUID.randomUUID();
+    Platform platform = Platform.TWITCH;
+    LocalUserDto broadcaster = assertSaveUser(LocalUserDto.builder()
+      .owner(owner)
+      .platform(platform)
+      .username("broadcaster")
+      .broadcaster(true)
+      .build()
+    );
+    assertThat(localUserService.findBroadcasterForOwnerAndPlatform(
+      broadcaster.getOwner(), broadcaster.getPlatform())).isPresent();
+
+    // When another broadcaster is saved for the same platform and owner
+    // Then an exception is thrown
+    assertThatThrownBy(() -> {
+      assertSaveUser(LocalUserDto.builder()
+        .owner(owner)
+        .platform(platform)
+        .username("another broadcaster")
+        .broadcaster(true)
+        .build()
+      );
+    }).isInstanceOf(DataPersistenceException.class);
+
+    // And no extra user was created
+    assertThat(localUserRepository.count()).isEqualTo(1);
+
   }
 
   @Test

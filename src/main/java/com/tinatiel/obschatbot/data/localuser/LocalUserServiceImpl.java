@@ -1,6 +1,7 @@
 package com.tinatiel.obschatbot.data.localuser;
 
 import com.tinatiel.obschatbot.core.user.Platform;
+import com.tinatiel.obschatbot.data.error.DataPersistenceException;
 import com.tinatiel.obschatbot.data.localuser.entity.LocalUserEntity;
 import com.tinatiel.obschatbot.data.localuser.entity.LocalUserRepository;
 import com.tinatiel.obschatbot.data.localuser.mapper.LocalUserMapper;
@@ -62,6 +63,15 @@ public class LocalUserServiceImpl implements LocalUserService {
     ) {
       throw new IllegalArgumentException("User owner, platform, and username are required");
     }
+
+    // Verify no broadcaster already exists for this platform
+    List<LocalUserEntity> existingBroadcasters = repository.findByOwnerAndPlatformAndBroadcasterTrue(
+      localUserDto.getOwner(), localUserDto.getPlatform());
+    if(!existingBroadcasters.isEmpty() && localUserDto.isBroadcaster()) {
+      log.debug("Found existing broadcasters: " + existingBroadcasters);
+      throw new DataPersistenceException("Can only have one broadcaster per platform");
+    }
+
     LocalUserEntity entity = repository.save(mapper.map(localUserDto));
     return mapper.map(
       repository.saveAndFlush(entity)

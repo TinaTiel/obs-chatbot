@@ -15,7 +15,9 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotEmpty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -60,4 +62,5 @@ public class LocalUserEntity extends IdEntity {
   public int hashCode() {
     return Objects.hash(owner, platform, username);
   }
+
 }
