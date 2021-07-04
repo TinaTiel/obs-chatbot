@@ -1,5 +1,10 @@
 package com.tinatiel.obschatbot.data.command.model.action;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,6 +17,13 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder
+@JsonTypeInfo(use= Id.NAME, include=JsonTypeInfo.As.PROPERTY, property="@type")
+@JsonSubTypes({
+  @Type(value = ExecuteCommandActionDto.class, name = "execute-command"),
+  @Type(value = ObsSourceVisibilityActionDto.class, name = "obs.source-visibility"),
+  @Type(value = SendMessageActionDto.class, name = "send-message"),
+  @Type(value = WaitActionDto.class, name = "wait"),
+})
 public abstract class ActionDto {
 
   protected UUID id;

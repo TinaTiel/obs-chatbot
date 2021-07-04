@@ -1,0 +1,38 @@
+{
+  "owner": "7feab8dd-ceed-4927-bbac-4e9e36222149",
+  "id": "e9569a8d-fbfa-4d1d-996e-88b023814014",
+  "name": "somecommand",
+  "disabled": true,
+  "sequencer": {
+    "@type": "ordered",
+    "reversed": false
+  },
+  "actions": [
+    {
+      "@type": "execute-command",
+      "id": "71562753-dfdf-48af-8502-0722a06ba971",
+      "position": 1,
+      "target": "ef393dae-dcda-11eb-ba80-0242ac130004"
+    },
+    {
+      "@type": "obs.source-visibility",
+      "id": "aadde3c0-dcb8-11eb-ba80-0242ac130004",
+      "position": 2,
+      "sceneName": "somescene",
+      "sourceName": "somesource",
+      "visible": true
+    },
+    {
+      "@type": "send-message",
+      "id": "a196e3c0-dcb8-11eb-ba80-0242ac130004",
+      "position": 3,
+      "message": "howdy"
+    },
+    {
+      "@type": "wait",
+      "id": "b0282a5c-dcb8-11eb-ba80-0242ac130004",
+      "position": 4,
+      "waitDuration": "PT3S"
+    }
+  ]
+}

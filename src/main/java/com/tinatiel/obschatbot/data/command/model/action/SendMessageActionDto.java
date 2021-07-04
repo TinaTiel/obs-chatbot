@@ -17,6 +17,7 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @Data
 @SuperBuilder
+
 public class SendMessageActionDto extends ActionDto {
 
   private String message;
