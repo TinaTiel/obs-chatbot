@@ -28,6 +28,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WithMockUser
@@ -74,7 +75,8 @@ public class CommandControllerTest {
       get(WebConfig.BASE_PATH + "/command/{id}", command.getId())
       .accept(MediaType.APPLICATION_JSON))
       .andDo(print())
-      .andExpect(status().isOk());
+      .andExpect(status().isOk())
+      .andExpect(jsonPath("$.id").value(command.getId().toString()));
 
   }
 
@@ -93,8 +95,32 @@ public class CommandControllerTest {
 
   }
 
-  //  @Test
-//  void listCommands() {
-//
-//  }
+    @Test
+  void listCommands() throws Exception {
+
+    // Given commands are found
+    CommandDto command1 = CommandDto.builder()
+      .owner(owner.getId())
+      .id(UUID.randomUUID())
+      .build();
+    CommandDto command2 = CommandDto.builder()
+      .owner(owner.getId())
+      .id(UUID.randomUUID())
+      .build();
+    CommandDto command3 = CommandDto.builder()
+      .owner(owner.getId())
+      .id(UUID.randomUUID())
+      .build();
+    when(commandEntityService.findByOwner(owner.getId())).thenReturn(Arrays.asList(command1, command2, command3));
+
+    // When queried, they are returned
+    mockMvc.perform(get(WebConfig.BASE_PATH + "/command")
+    .accept(MediaType.APPLICATION_JSON))
+      .andDo(print())
+      .andExpect(status().isOk())
+      .andExpect(jsonPath("$[0].id").value(command1.getId().toString()))
+      .andExpect(jsonPath("$[1].id").value(command2.getId().toString()))
+      .andExpect(jsonPath("$[2].id").value(command3.getId().toString()));
+
+  }
 }

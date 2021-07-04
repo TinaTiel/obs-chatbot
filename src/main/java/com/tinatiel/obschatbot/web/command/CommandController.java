@@ -4,6 +4,7 @@ import com.tinatiel.obschatbot.data.command.CommandEntityService;
 import com.tinatiel.obschatbot.data.command.model.CommandDto;
 import com.tinatiel.obschatbot.security.owner.OwnerService;
 import com.tinatiel.obschatbot.web.WebConfig;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +31,11 @@ public class CommandController {
     return commandEntityService.findById(id)
       .map(ResponseEntity::ok)
       .orElseGet(() -> ResponseEntity.notFound().build());
+  }
+
+  @GetMapping()
+  public List<CommandDto> get() {
+    return commandEntityService.findByOwner(ownerService.getOwner().getId());
   }
 
 }

@@ -19,10 +19,10 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @JsonTypeInfo(use= Id.NAME, include=JsonTypeInfo.As.PROPERTY, property="@type")
 @JsonSubTypes({
-  @Type(value = ExecuteCommandActionDto.class, name = "execute-command"),
+  @Type(value = ExecuteCommandActionDto.class, name = "sys.execute-command"),
   @Type(value = ObsSourceVisibilityActionDto.class, name = "obs.source-visibility"),
-  @Type(value = SendMessageActionDto.class, name = "send-message"),
-  @Type(value = WaitActionDto.class, name = "wait"),
+  @Type(value = SendMessageActionDto.class, name = "twitch.send-message"),
+  @Type(value = WaitActionDto.class, name = "sys.wait"),
 })
 public abstract class ActionDto {
 

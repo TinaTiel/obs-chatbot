@@ -1,4 +1,4 @@
-package com.tinatiel.obschatbot.web.controller;
+package com.tinatiel.obschatbot.web.todo;
 
 import com.tinatiel.obschatbot.core.client.twitch.api.TwitchApiClient;
 import com.tinatiel.obschatbot.core.client.twitch.auth.TwitchAuthValidationService;

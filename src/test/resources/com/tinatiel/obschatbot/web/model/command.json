@@ -9,7 +9,7 @@
   },
   "actions": [
     {
-      "@type": "execute-command",
+      "@type": "sys.execute-command",
       "id": "71562753-dfdf-48af-8502-0722a06ba971",
       "position": 1,
       "target": "ef393dae-dcda-11eb-ba80-0242ac130004"
@@ -23,13 +23,13 @@
       "visible": true
     },
     {
-      "@type": "send-message",
+      "@type": "twitch.send-message",
       "id": "a196e3c0-dcb8-11eb-ba80-0242ac130004",
       "position": 3,
       "message": "howdy"
     },
     {
-      "@type": "wait",
+      "@type": "sys.wait",
       "id": "b0282a5c-dcb8-11eb-ba80-0242ac130004",
       "position": 4,
       "waitDuration": "PT3S"
