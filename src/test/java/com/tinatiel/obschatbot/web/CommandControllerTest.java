@@ -28,6 +28,7 @@ import org.springframework.security.oauth2.client.registration.ClientRegistratio
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -189,6 +190,19 @@ public class CommandControllerTest {
     CommandDto actual = argumentCaptor.getValue();
     assertThat(actual.getId()).isEqualTo(command.getId());
     assertThat(actual.getOwner()).isEqualTo(command.getOwner());
+  }
+
+  @Test
+  void deleteCommand() throws Exception {
+    UUID id = UUID.randomUUID();
+    mockMvc.perform(delete(WebConfig.BASE_PATH + "/command/{id}", id))
+      .andDo(print())
+      .andExpect(status().isOk());
+
+    // And was called with the expected args
+    ArgumentCaptor<UUID> argumentCaptor = ArgumentCaptor.forClass(UUID.class);
+    verify(commandEntityService).delete(argumentCaptor.capture());
+    assertThat(argumentCaptor.getValue()).isEqualTo(id);
   }
 
 }
