@@ -4,12 +4,15 @@ import com.tinatiel.obschatbot.data.command.CommandEntityService;
 import com.tinatiel.obschatbot.data.command.model.CommandDto;
 import com.tinatiel.obschatbot.security.owner.OwnerService;
 import com.tinatiel.obschatbot.web.WebConfig;
+import java.net.URI;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -36,6 +39,26 @@ public class CommandController {
   @GetMapping()
   public List<CommandDto> get() {
     return commandEntityService.findByOwner(ownerService.getOwner().getId());
+  }
+
+  @PostMapping
+  public ResponseEntity<Void> create(@RequestBody CommandDto request) {
+    // Ignore any ids
+    request.setId(null);
+    request.getActions().forEach(it -> it.setId(null));
+
+    // Create
+    CommandDto result = commandEntityService.save(request);
+
+    // Return created
+    return ResponseEntity.created(URI.create("/command/" + result.getId())).build();
+
+  }
+
+  @PutMapping("/{id}")
+  public ResponseEntity<Void> update(@RequestBody CommandDto request) {
+    commandEntityService.save(request);
+    return ResponseEntity.ok().build();
   }
 
 }

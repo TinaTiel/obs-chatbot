@@ -10,6 +10,7 @@ import com.tinatiel.obschatbot.data.command.model.action.ObsSourceVisibilityActi
 import com.tinatiel.obschatbot.data.command.model.action.SendMessageActionDto;
 import com.tinatiel.obschatbot.data.command.model.sequencer.InOrderSequencerDto;
 import com.tinatiel.obschatbot.data.command.model.sequencer.SequencerDto;
+import com.tinatiel.obschatbot.security.WebSecurityConfig;
 import com.tinatiel.obschatbot.security.owner.OwnerDto;
 import com.tinatiel.obschatbot.security.owner.OwnerService;
 import com.tinatiel.obschatbot.web.command.CommandController;
@@ -22,17 +23,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WithMockUser
-@ContextConfiguration(classes = CommandController.class)
+@ContextConfiguration(classes = {CommandController.class, WebSecurityConfig.class})
 @WebMvcTest(CommandController.class)
 public class CommandControllerTest {
 
@@ -44,6 +48,9 @@ public class CommandControllerTest {
 
   @MockBean
   OwnerService ownerService;
+
+  @MockBean
+  ClientRegistrationRepository ignoreme;
 
   OwnerDto owner = OwnerDto.builder().id(UUID.randomUUID()).name("owner").build();
 
@@ -123,4 +130,50 @@ public class CommandControllerTest {
       .andExpect(jsonPath("$[2].id").value(command3.getId().toString()));
 
   }
+
+  @Test
+  void createCommand() throws Exception {
+
+    // Given a new command is saved
+    CommandDto command = CommandDto.builder()
+      .owner(owner.getId())
+      .id(UUID.randomUUID())
+      .build();
+    when(commandEntityService.save(any(CommandDto.class))).thenReturn(command);
+
+    // When put without an id
+    // Then it is created
+    mockMvc.perform(post(WebConfig.BASE_PATH + "/command")
+      .contentType(MediaType.APPLICATION_JSON)
+      .content("{\n"
+        + "  \"name\": \"somecommand\"\n"
+        + "}"))
+      .andDo(print())
+      .andExpect(status().isCreated())
+      .andExpect(header().string("Location", "/command/" + command.getId()));
+
+  }
+
+  @Test
+  void updateCommand() throws Exception {
+
+    // Given a command is saved
+    CommandDto command = CommandDto.builder()
+      .owner(owner.getId())
+      .id(UUID.randomUUID())
+      .build();
+    when(commandEntityService.save(any(CommandDto.class))).thenReturn(command);
+
+    // When put without an id
+    // Then it is created
+    mockMvc.perform(put(WebConfig.BASE_PATH + "/command/{id}", command.getId())
+      .contentType(MediaType.APPLICATION_JSON)
+      .content("{\n"
+        + "  \"id\": \"" + command.getId().toString() + "\",\n"
+        + "  \"name\": \"somecommand\"\n"
+        + "}"))
+      .andDo(print())
+      .andExpect(status().isOk());
+  }
+
 }
