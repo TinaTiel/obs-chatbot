@@ -43,8 +43,9 @@ public class CommandController {
 
   @PostMapping
   public ResponseEntity<Void> create(@RequestBody CommandDto request) {
-    // Ignore any ids
+    // Ignore any ids, and set the owner
     request.setId(null);
+    request.setOwner(ownerService.getOwner().getId());
     request.getActions().forEach(it -> it.setId(null));
 
     // Create

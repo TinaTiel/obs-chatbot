@@ -2,6 +2,7 @@ package com.tinatiel.obschatbot.web;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.tinatiel.obschatbot.data.command.CommandEntityService;
@@ -9,7 +10,6 @@ import com.tinatiel.obschatbot.data.command.model.CommandDto;
 import com.tinatiel.obschatbot.data.command.model.action.ObsSourceVisibilityActionDto;
 import com.tinatiel.obschatbot.data.command.model.action.SendMessageActionDto;
 import com.tinatiel.obschatbot.data.command.model.sequencer.InOrderSequencerDto;
-import com.tinatiel.obschatbot.data.command.model.sequencer.SequencerDto;
 import com.tinatiel.obschatbot.security.WebSecurityConfig;
 import com.tinatiel.obschatbot.security.owner.OwnerDto;
 import com.tinatiel.obschatbot.security.owner.OwnerService;
@@ -19,12 +19,12 @@ import java.util.Optional;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -152,6 +152,13 @@ public class CommandControllerTest {
       .andExpect(status().isCreated())
       .andExpect(header().string("Location", "/command/" + command.getId()));
 
+    // And was called with the expected args
+    ArgumentCaptor<CommandDto> argumentCaptor = ArgumentCaptor.forClass(CommandDto.class);
+    verify(commandEntityService).save(argumentCaptor.capture());
+    CommandDto actual = argumentCaptor.getValue();
+    assertThat(actual.getId()).isNull();
+    assertThat(actual.getOwner()).isEqualTo(owner.getId());
+
   }
 
   @Test
@@ -169,11 +176,19 @@ public class CommandControllerTest {
     mockMvc.perform(put(WebConfig.BASE_PATH + "/command/{id}", command.getId())
       .contentType(MediaType.APPLICATION_JSON)
       .content("{\n"
-        + "  \"id\": \"" + command.getId().toString() + "\",\n"
+        + "  \"owner\": \"" + command.getOwner() + "\",\n"
+        + "  \"id\": \"" + command.getId() + "\",\n"
         + "  \"name\": \"somecommand\"\n"
         + "}"))
       .andDo(print())
       .andExpect(status().isOk());
+
+    // And was called with the expected args
+    ArgumentCaptor<CommandDto> argumentCaptor = ArgumentCaptor.forClass(CommandDto.class);
+    verify(commandEntityService).save(argumentCaptor.capture());
+    CommandDto actual = argumentCaptor.getValue();
+    assertThat(actual.getId()).isEqualTo(command.getId());
+    assertThat(actual.getOwner()).isEqualTo(command.getOwner());
   }
 
 }

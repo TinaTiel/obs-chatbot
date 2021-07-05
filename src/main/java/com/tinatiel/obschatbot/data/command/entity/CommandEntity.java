@@ -13,6 +13,8 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.OrderBy;
+import javax.persistence.OrderColumn;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotBlank;
@@ -48,6 +50,7 @@ public class CommandEntity extends IdEntity {
 
   private boolean disabled;
 
+  @OrderBy("position")
   @OneToMany(
     cascade = {CascadeType.ALL},
     orphanRemoval = true
