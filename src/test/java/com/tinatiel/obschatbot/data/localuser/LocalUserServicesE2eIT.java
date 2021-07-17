@@ -51,6 +51,7 @@ public class LocalUserServicesE2eIT {
   @Test
   void createUser() {
     assertSaveUser(LocalUserDto.builder()
+      .id(UUID.randomUUID())
       .owner(UUID.randomUUID())
       .platform(Platform.LOCAL)
       .username("mango")
@@ -66,6 +67,7 @@ public class LocalUserServicesE2eIT {
     // no owner
     assertThatThrownBy(() -> {
       localUserService.save(LocalUserDto.builder()
+        .id(UUID.randomUUID())
         .owner(null)
         .platform(Platform.LOCAL)
         .username("foo")
@@ -76,6 +78,7 @@ public class LocalUserServicesE2eIT {
     // no platform
     assertThatThrownBy(() -> {
       localUserService.save(LocalUserDto.builder()
+        .id(UUID.randomUUID())
         .owner(UUID.randomUUID())
         .platform(null)
         .username("foo")
@@ -86,6 +89,7 @@ public class LocalUserServicesE2eIT {
     // no username
     assertThatThrownBy(() -> {
       localUserService.save(LocalUserDto.builder()
+        .id(UUID.randomUUID())
         .owner(UUID.randomUUID())
         .platform(Platform.LOCAL)
         .username(null)
@@ -94,6 +98,7 @@ public class LocalUserServicesE2eIT {
     }).isInstanceOf(IllegalArgumentException.class);
     assertThatThrownBy(() -> {
       localUserService.save(LocalUserDto.builder()
+        .id(UUID.randomUUID())
         .owner(UUID.randomUUID())
         .platform(Platform.LOCAL)
         .username("    ")
@@ -112,6 +117,7 @@ public class LocalUserServicesE2eIT {
     UUID owner = UUID.randomUUID();
     Platform platform = Platform.TWITCH;
     LocalUserDto broadcaster = assertSaveUser(LocalUserDto.builder()
+      .id(UUID.randomUUID())
       .owner(owner)
       .platform(platform)
       .username("broadcaster")
@@ -125,6 +131,7 @@ public class LocalUserServicesE2eIT {
     // Then an exception is thrown
     assertThatThrownBy(() -> {
       assertSaveUser(LocalUserDto.builder()
+        .id(UUID.randomUUID())
         .owner(owner)
         .platform(platform)
         .username("another broadcaster")
@@ -145,6 +152,7 @@ public class LocalUserServicesE2eIT {
     UUID owner = UUID.randomUUID();
     Platform platform = Platform.TWITCH;
     LocalUserDto user = assertSaveUser(LocalUserDto.builder()
+      .id(UUID.randomUUID())
       .owner(owner)
       .platform(platform)
       .username("user")
@@ -158,6 +166,7 @@ public class LocalUserServicesE2eIT {
     // Then an exception is thrown
     assertThatThrownBy(() -> {
       localUserService.save(LocalUserDto.builder()
+        .id(UUID.randomUUID())
         .owner(owner)
         .platform(platform)
         .username(user.getUsername())
@@ -174,6 +183,7 @@ public class LocalUserServicesE2eIT {
 
     // Given a new user
     LocalUserDto request = LocalUserDto.builder()
+      .id(UUID.randomUUID())
       .owner(UUID.randomUUID())
       .platform(Platform.LOCAL)
       .username("mango")
@@ -190,7 +200,7 @@ public class LocalUserServicesE2eIT {
     // Then it can be retrieved
     LocalUserDto actual = localUserService.findById(result.getId()).get();
     assertThat(actual).usingRecursiveComparison().isEqualTo(result);
-    assertThat(request).usingRecursiveComparison().ignoringFields("id", "groups").isEqualTo(actual);
+    assertThat(request).usingRecursiveComparison().ignoringFields("groups").isEqualTo(actual);
 
     // And the new groups were ignored
     assertThat(actual.getGroups()).isEmpty();
@@ -204,6 +214,7 @@ public class LocalUserServicesE2eIT {
     // Given several users on the same owner
     UUID owner = UUID.randomUUID();
     LocalUserDto user1 = assertSaveUser(LocalUserDto.builder()
+      .id(UUID.randomUUID())
       .owner(owner)
       .platform(Platform.TWITCH)
       .username("broadcaster")
@@ -211,6 +222,7 @@ public class LocalUserServicesE2eIT {
       .build()
     );
     LocalUserDto user2 = assertSaveUser(LocalUserDto.builder()
+      .id(UUID.randomUUID())
       .owner(owner)
       .platform(Platform.LOCAL)
       .username("follower")
@@ -233,12 +245,14 @@ public class LocalUserServicesE2eIT {
     UUID owner = UUID.randomUUID();
     Platform platform = Platform.TWITCH;
     LocalUserDto user = assertSaveUser(LocalUserDto.builder()
+      .id(UUID.randomUUID())
       .owner(owner)
       .platform(platform)
       .username("user1")
       .build()
     );
     assertSaveUser(LocalUserDto.builder()
+      .id(UUID.randomUUID())
       .owner(owner)
       .platform(platform)
       .username("user2")
@@ -263,6 +277,7 @@ public class LocalUserServicesE2eIT {
     UUID owner = UUID.randomUUID();
     Platform platform = Platform.TWITCH;
     LocalUserDto broadcaster = assertSaveUser(LocalUserDto.builder()
+      .id(UUID.randomUUID())
       .owner(owner)
       .platform(platform)
       .username("broadcaster")
@@ -270,6 +285,7 @@ public class LocalUserServicesE2eIT {
       .build()
     );
     assertSaveUser(LocalUserDto.builder()
+      .id(UUID.randomUUID())
       .owner(owner)
       .platform(platform)
       .username("follower")
@@ -291,6 +307,7 @@ public class LocalUserServicesE2eIT {
 
     // Given an existing user
     LocalUserDto existing = assertSaveUser(LocalUserDto.builder()
+      .id(UUID.randomUUID())
       .owner(UUID.randomUUID())
       .platform(Platform.LOCAL)
       .username("existing")
@@ -328,6 +345,7 @@ public class LocalUserServicesE2eIT {
   void createGroup() {
 
     assertSaveGroup(LocalGroupDto.builder()
+      .id(UUID.randomUUID())
       .owner(UUID.randomUUID())
       .name("some group")
       .build()
@@ -341,6 +359,7 @@ public class LocalUserServicesE2eIT {
 
     // Given an existing group
     LocalGroupDto existing =  assertSaveGroup(LocalGroupDto.builder()
+      .id(UUID.randomUUID())
       .owner(UUID.randomUUID())
       .name("some group")
       .build()
@@ -378,6 +397,7 @@ public class LocalUserServicesE2eIT {
     // no owner
     assertThatThrownBy(() -> {
       localGroupService.save(LocalGroupDto.builder()
+        .id(UUID.randomUUID())
         .owner(null)
         .name("foo")
         .build()
@@ -387,6 +407,7 @@ public class LocalUserServicesE2eIT {
     // no name
     assertThatThrownBy(() -> {
       localGroupService.save(LocalGroupDto.builder()
+        .id(UUID.randomUUID())
         .owner(UUID.randomUUID())
         .name(null)
         .build()
@@ -396,6 +417,7 @@ public class LocalUserServicesE2eIT {
     // empty name
     assertThatThrownBy(() -> {
       localGroupService.save(LocalGroupDto.builder()
+        .id(UUID.randomUUID())
         .owner(UUID.randomUUID())
         .name("   ")
         .build()
@@ -412,6 +434,7 @@ public class LocalUserServicesE2eIT {
 
     // Given an existing group
     LocalGroupDto existing =  assertSaveGroup(LocalGroupDto.builder()
+      .id(UUID.randomUUID())
       .owner(UUID.randomUUID())
       .name("some group")
       .build()
@@ -423,6 +446,7 @@ public class LocalUserServicesE2eIT {
     assertThatThrownBy(() -> {
       localGroupService.save(
         LocalGroupDto.builder()
+          .id(UUID.randomUUID())
           .owner(existing.getOwner())
           .name(existing.getName())
           .build()
@@ -464,11 +488,13 @@ public class LocalUserServicesE2eIT {
   void assignAndRetrieveUserWithGroups() {
     // Given an user and group exist
     LocalGroupDto existingGroup =  assertSaveGroup(LocalGroupDto.builder()
+      .id(UUID.randomUUID())
       .owner(UUID.randomUUID())
       .name("some group")
       .build()
     );
     LocalUserDto existingUser = assertSaveUser(LocalUserDto.builder()
+      .id(UUID.randomUUID())
       .owner(UUID.randomUUID())
       .platform(Platform.LOCAL)
       .username("existing user")
@@ -505,11 +531,13 @@ public class LocalUserServicesE2eIT {
   void assignAndRemoveUsersToFromGroup() {
     // Given an user and group exist
     LocalGroupDto existingGroup =  assertSaveGroup(LocalGroupDto.builder()
+      .id(UUID.randomUUID())
       .owner(UUID.randomUUID())
       .name("some group")
       .build()
     );
     LocalUserDto existingUser = assertSaveUser(LocalUserDto.builder()
+      .id(UUID.randomUUID())
       .owner(UUID.randomUUID())
       .platform(Platform.LOCAL)
       .username("existing user")
@@ -545,11 +573,13 @@ public class LocalUserServicesE2eIT {
 
     // Given an user and group exist
     LocalGroupDto existingGroup =  assertSaveGroup(LocalGroupDto.builder()
+      .id(UUID.randomUUID())
       .owner(UUID.randomUUID())
       .name("some group")
       .build()
     );
     LocalUserDto existingUser = assertSaveUser(LocalUserDto.builder()
+      .id(UUID.randomUUID())
       .owner(UUID.randomUUID())
       .platform(Platform.LOCAL)
       .username("existing user")
@@ -582,11 +612,13 @@ public class LocalUserServicesE2eIT {
 
     // Given an user and group exist
     LocalGroupDto existingGroup =  assertSaveGroup(LocalGroupDto.builder()
+      .id(UUID.randomUUID())
       .owner(UUID.randomUUID())
       .name("some group")
       .build()
     );
     LocalUserDto existingUser = assertSaveUser(LocalUserDto.builder()
+      .id(UUID.randomUUID())
       .owner(UUID.randomUUID())
       .platform(Platform.LOCAL)
       .username("existing user")
@@ -622,9 +654,9 @@ public class LocalUserServicesE2eIT {
     // Then it can be retrieved
     LocalGroupDto actual = localGroupService.findById(result.getId()).get();
     assertThat(actual).usingRecursiveComparison().isEqualTo(result);
-    assertThat(request).usingRecursiveComparison().ignoringFields("id").isEqualTo(actual);
+    assertThat(request).usingRecursiveComparison().isEqualTo(actual);
     List<LocalGroupDto> actuals = localGroupService.findByOwner(result.getOwner());
-    assertThat(actuals).usingRecursiveComparison().ignoringFields("id").isEqualTo(Arrays.asList(
+    assertThat(actuals).usingRecursiveComparison().isEqualTo(Arrays.asList(
       request
     ));
 
@@ -638,7 +670,7 @@ public class LocalUserServicesE2eIT {
     // Then it can be retrieved
     LocalUserDto actual = localUserService.findById(result.getId()).get();
     assertThat(actual).usingRecursiveComparison().isEqualTo(result);
-    assertThat(request).usingRecursiveComparison().ignoringFields("id").isEqualTo(actual);
+    assertThat(request).usingRecursiveComparison().isEqualTo(actual);
 
     return result;
   }

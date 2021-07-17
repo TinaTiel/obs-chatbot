@@ -31,14 +31,14 @@ public class CommandController {
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<CommandDto> get(@PathVariable("id") UUID id) {
+  public ResponseEntity<CommandDto> findById(@PathVariable("id") UUID id) {
     return commandEntityService.findById(id)
       .map(ResponseEntity::ok)
       .orElseGet(() -> ResponseEntity.notFound().build());
   }
 
   @GetMapping()
-  public List<CommandDto> get() {
+  public List<CommandDto> findAll() {
     return commandEntityService.findByOwner(ownerService.getOwner().getId());
   }
 
