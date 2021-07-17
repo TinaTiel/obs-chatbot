@@ -13,7 +13,6 @@ import com.tinatiel.obschatbot.data.command.model.sequencer.InOrderSequencerDto;
 import com.tinatiel.obschatbot.security.WebSecurityConfig;
 import com.tinatiel.obschatbot.security.owner.OwnerDto;
 import com.tinatiel.obschatbot.security.owner.OwnerService;
-import com.tinatiel.obschatbot.web.command.CommandController;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.UUID;
@@ -33,7 +32,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -171,7 +169,7 @@ public class CommandControllerTest {
       .build();
     when(commandEntityService.save(any(CommandDto.class))).thenReturn(command);
 
-    // When put without an id
+    // When put
     // Then it is created
     mockMvc.perform(put(WebConfig.BASE_PATH + "/command/{id}", command.getId())
       .contentType(MediaType.APPLICATION_JSON)

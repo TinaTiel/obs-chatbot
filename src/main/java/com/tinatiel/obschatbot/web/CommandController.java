@@ -1,4 +1,4 @@
-package com.tinatiel.obschatbot.web.command;
+package com.tinatiel.obschatbot.web;
 
 import com.tinatiel.obschatbot.data.command.CommandEntityService;
 import com.tinatiel.obschatbot.data.command.model.CommandDto;
