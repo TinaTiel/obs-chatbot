@@ -42,30 +42,16 @@ public class CommandController {
     return commandEntityService.findByOwner(ownerService.getOwner().getId());
   }
 
-  @PostMapping
-  public ResponseEntity<Void> create(@RequestBody CommandDto request) {
-    // Ignore any ids, and set the owner
-    request.setId(null);
-    request.setOwner(ownerService.getOwner().getId());
-    request.getActions().forEach(it -> it.setId(null));
-
-    // Create
-    CommandDto result = commandEntityService.save(request);
-
-    // Return created
-    return ResponseEntity.created(URI.create("/command/" + result.getId())).build();
-
-  }
-
   @PutMapping("/{id}")
-  public ResponseEntity<Void> update(@PathVariable("id") UUID id, @RequestBody CommandDto request) {
-    if(request != null && !id.equals(request.getId())) throw new IllegalArgumentException("Id does not match");
+  public ResponseEntity<Void> save(@PathVariable("id") UUID id, @RequestBody CommandDto request) {
+    request.setId(id);
+    request.setOwner(ownerService.getOwner().getId());
     commandEntityService.save(request);
     return ResponseEntity.ok().build();
   }
 
   @DeleteMapping("/{id}")
-  public ResponseEntity<Void> update(@PathVariable("id") UUID id) {
+  public ResponseEntity<Void> delete(@PathVariable("id") UUID id) {
     commandEntityService.delete(id);
     return ResponseEntity.ok().build();
   }

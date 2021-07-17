@@ -50,12 +50,19 @@ public class CommandMapperTests {
   void mapCommandWithInOrderSequencer() {
 
     // Given commands
+    UUID seqId = UUID.randomUUID();
     InOrderSequencerEntity sequencerEntity = new InOrderSequencerEntity();
+    sequencerEntity.setId(seqId);
     sequencerEntity.setReversed(true);
+
     CommandEntity entity = new CommandEntity();
     entity.setSequencer(sequencerEntity);
 
-    InOrderSequencerDto sequencerDto = InOrderSequencerDto.builder().reversed(true).build();
+    InOrderSequencerDto sequencerDto = InOrderSequencerDto.builder()
+      .id(seqId)
+      .reversed(true)
+      .build();
+
     CommandDto dto = CommandDto.builder()
       .sequencer(sequencerDto)
       .build();
@@ -75,17 +82,21 @@ public class CommandMapperTests {
 
     // Given commands
     SendMessageActionEntity actionEntity1 = new SendMessageActionEntity();
+    actionEntity1.setId(UUID.randomUUID());
     actionEntity1.setPosition(24);
     actionEntity1.setMessage("Some message");
     WaitActionEntity actionEntity2 = new WaitActionEntity();
+    actionEntity2.setId(UUID.randomUUID());
     actionEntity2.setPosition(25);
     actionEntity2.setWaitDuration(Duration.ofSeconds(5));
     CommandEntity entity = new CommandEntity();
     entity.setActions(Arrays.asList(actionEntity1, actionEntity2));
 
     SendMessageActionDto actionDto1 = SendMessageActionDto.builder()
+      .id(actionEntity1.getId())
       .position(24).message("Some message").build();
     WaitActionDto actionDto2 = WaitActionDto.builder()
+      .id(actionEntity2.getId())
       .position(25).waitDuration(Duration.ofSeconds(5)).build();
     CommandDto dto = CommandDto.builder()
       .actions(Arrays.asList(actionDto1, actionDto2))

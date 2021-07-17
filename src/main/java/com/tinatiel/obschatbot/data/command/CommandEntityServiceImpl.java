@@ -38,63 +38,23 @@ public class CommandEntityServiceImpl implements CommandEntityService {
     // Map the request to an entity
     CommandEntity requestEntity = mapper.map(request);
 
-    if(requestEntity.getId() != null) {
-      // Get the existing entity and update if id is present
-      return updateCommand(requestEntity);
-    } else {
-      // Otherwise, create the entity
-      return createCommand(requestEntity);
-    }
-
-  }
-
-  private CommandDto createCommand(CommandEntity request) {
     try {
       CommandEntity result = repository.save(
-        request
+        requestEntity
       );
       repository.flush();
       return mapper.map(result);
     } catch (Exception e) {
       throw new DataPersistenceException(request, e);
     }
-  }
+//    if(requestEntity.getId() != null) {
+//      // Get the existing entity and update if id is present
+//      return updateCommand(requestEntity);
+//    } else {
+//      // Otherwise, create the entity
+//      return createCommand(requestEntity);
+//    }
 
-  private CommandDto updateCommand(CommandEntity request) {
-
-    try {
-
-      // Get the existing command
-      CommandEntity existing = repository.findById(request.getId())
-        .orElseThrow(() -> new UnexpectedException(
-          "Did not find existing command with id " + request.getId()
-        ));
-
-      // Update the command attributes
-      existing.setName(request.getName());
-      existing.setDisabled(request.isDisabled());
-
-      // Update the sequencer
-      if(existing.getSequencer() != null) {
-        sequencerRepository.delete(existing.getSequencer());
-
-        existing.setSequencer(request.getSequencer());
-      }
-
-      // Update the actions
-      if(request.getActions() != null) {
-        existing.setActions(request.getActions());
-      }
-
-      // Save and flush the changes
-      CommandEntity result = repository.save(
-        existing
-      );
-      repository.flush();
-      return mapper.map(result);
-    } catch (Exception e) {
-      throw new DataPersistenceException(request, e);
-    }
   }
 
   @Override

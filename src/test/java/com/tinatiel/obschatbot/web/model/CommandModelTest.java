@@ -28,7 +28,7 @@ public class CommandModelTest {
     .owner(UUID.fromString("7feab8dd-ceed-4927-bbac-4e9e36222149"))
     .id(UUID.fromString("e9569a8d-fbfa-4d1d-996e-88b023814014"))
     .name("somecommand")
-    .sequencer(InOrderSequencerDto.builder().build())
+    .sequencer(InOrderSequencerDto.builder().id(UUID.fromString("a10ca5a8-e6df-11eb-ba80-0242ac130004")).build())
     .disabled(true)
     .actions(Arrays.asList(
       ExecuteCommandActionDto.builder().id(UUID.fromString("71562753-dfdf-48af-8502-0722a06ba971")).position(1)

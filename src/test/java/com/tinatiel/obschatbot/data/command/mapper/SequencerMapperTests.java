@@ -8,6 +8,7 @@ import com.tinatiel.obschatbot.data.command.entity.sequencer.SequencerEntity;
 import com.tinatiel.obschatbot.data.command.model.sequencer.InOrderSequencerDto;
 import com.tinatiel.obschatbot.data.command.model.sequencer.RandomOrderSequencerDto;
 import com.tinatiel.obschatbot.data.command.model.sequencer.SequencerDto;
+import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 
@@ -20,9 +21,11 @@ public class SequencerMapperTests {
 
     // Given commands
     InOrderSequencerEntity entity = new InOrderSequencerEntity();
+    entity.setId(UUID.randomUUID());
     entity.setReversed(true);
 
     SequencerDto dto = InOrderSequencerDto.builder()
+      .id(entity.getId())
       .reversed(true)
       .build();
 
@@ -41,9 +44,11 @@ public class SequencerMapperTests {
 
     // Given commands
     RandomOrderSequencerEntity entity = new RandomOrderSequencerEntity();
+    entity.setId(UUID.randomUUID());
     entity.setPickedPerExecution(24);
 
     SequencerDto dto = RandomOrderSequencerDto.builder()
+      .id(entity.getId())
       .pickedPerExecution(24)
       .build();
 

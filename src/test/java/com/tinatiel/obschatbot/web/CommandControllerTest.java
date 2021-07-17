@@ -144,20 +144,19 @@ public class CommandControllerTest {
 
     // When put without an id
     // Then it is created
-    mockMvc.perform(post(WebConfig.BASE_PATH + "/command")
+    mockMvc.perform(put(WebConfig.BASE_PATH + "/command/{id}", command.getId())
       .contentType(MediaType.APPLICATION_JSON)
       .content("{\n"
         + "  \"name\": \"somecommand\"\n"
         + "}"))
       .andDo(print())
-      .andExpect(status().isCreated())
-      .andExpect(header().string("Location", "/command/" + command.getId()));
+      .andExpect(status().isOk());
 
     // And was called with the expected args
     ArgumentCaptor<CommandDto> argumentCaptor = ArgumentCaptor.forClass(CommandDto.class);
     verify(commandEntityService).save(argumentCaptor.capture());
     CommandDto actual = argumentCaptor.getValue();
-    assertThat(actual.getId()).isNull();
+    assertThat(actual.getId()).isEqualTo(command.getId());
     assertThat(actual.getOwner()).isEqualTo(owner.getId());
 
   }
@@ -177,8 +176,6 @@ public class CommandControllerTest {
     mockMvc.perform(put(WebConfig.BASE_PATH + "/command/{id}", command.getId())
       .contentType(MediaType.APPLICATION_JSON)
       .content("{\n"
-        + "  \"owner\": \"" + command.getOwner() + "\",\n"
-        + "  \"id\": \"" + command.getId() + "\",\n"
         + "  \"name\": \"somecommand\"\n"
         + "}"))
       .andDo(print())

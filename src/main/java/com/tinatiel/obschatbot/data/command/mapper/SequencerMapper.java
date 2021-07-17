@@ -25,8 +25,6 @@ public interface SequencerMapper {
 
   default SequencerEntity map(SequencerDto dto) {
     if(dto == null) return null;
-    SequencerEntity entity = new SequencerEntity();
-
     if(dto instanceof InOrderSequencerDto) {
       return map((InOrderSequencerDto) dto);
     } else if (dto instanceof RandomOrderSequencerDto) {

@@ -62,13 +62,14 @@ public class CommandDataServicesIT {
 
     // Given a command
     CommandDto request = CommandDto.builder()
+      .id(UUID.randomUUID())
       .owner(owner)
       .name("somecommandwitheverything")
-      .sequencer(InOrderSequencerDto.builder().build())
+      .sequencer(InOrderSequencerDto.builder().id(UUID.randomUUID()).build())
       .actions(Arrays.asList(
-        ObsSourceVisibilityActionDto.builder().position(2).sourceName("donate").visible(true).build(),
-        WaitActionDto.builder().position(3).waitDuration(Duration.ofSeconds(2)).build(),
-        ObsSourceVisibilityActionDto.builder().position(4).sourceName("donate").visible(false).build()
+        ObsSourceVisibilityActionDto.builder().id(UUID.randomUUID()).position(2).sourceName("donate").visible(true).build(),
+        WaitActionDto.builder().id(UUID.randomUUID()).position(3).waitDuration(Duration.ofSeconds(2)).build(),
+        ObsSourceVisibilityActionDto.builder().id(UUID.randomUUID()).position(4).sourceName("donate").visible(false).build()
       ))
       .build();
 
@@ -81,7 +82,7 @@ public class CommandDataServicesIT {
     // And when updated
     CommandDto updateRequest = found;
     updateRequest.setActions(Arrays.asList(
-      SendMessageActionDto.builder().position(1).message("donate!").build(),
+      SendMessageActionDto.builder().id(UUID.randomUUID()).position(1).message("donate!").build(),
       result.getActions().get(0),
       result.getActions().get(1),
       result.getActions().get(2)
@@ -109,22 +110,24 @@ public class CommandDataServicesIT {
 
     // Given we save a command owned by the system
     CommandDto innerCommandDto = commandEntityService.save(CommandDto.builder()
+      .id(UUID.randomUUID())
       .owner(SystemOwnerService.SYSTEM_ID)
       .name("inner")
-      .sequencer(InOrderSequencerDto.builder().build())
+      .sequencer(InOrderSequencerDto.builder().id(UUID.randomUUID()).build())
       .actions(Arrays.asList(
-        SendMessageActionDto.builder().position(1).message("world").build()
+        SendMessageActionDto.builder().id(UUID.randomUUID()).position(1).message("world").build()
       ))
       .build());
 
     // And given we save another command that references that command
     CommandDto outerCommandDto = commandEntityService.save(CommandDto.builder()
+      .id(UUID.randomUUID())
       .owner(SystemOwnerService.SYSTEM_ID)
       .name("outer")
-      .sequencer(InOrderSequencerDto.builder().build())
+      .sequencer(InOrderSequencerDto.builder().id(UUID.randomUUID()).build())
       .actions(Arrays.asList(
-        SendMessageActionDto.builder().position(1).message("hello").build(),
-        ExecuteCommandActionDto.builder().position(2).target(innerCommandDto.getId()).build()
+        SendMessageActionDto.builder().id(UUID.randomUUID()).position(1).message("hello").build(),
+        ExecuteCommandActionDto.builder().id(UUID.randomUUID()).position(2).target(innerCommandDto.getId()).build()
       ))
     .build());
 

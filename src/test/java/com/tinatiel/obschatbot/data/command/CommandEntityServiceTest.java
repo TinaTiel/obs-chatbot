@@ -77,36 +77,44 @@ public class CommandEntityServiceTest {
 
       // create commands with no children
       CommandEntity commandOnly = new CommandEntity();
+      commandOnly.setId(UUID.randomUUID());
       commandOnly.setOwner(owner);
       commandOnly.setName("toplevel");
       commandOnly.setDisabled(false);
 
       CommandEntity commandOnly2 = new CommandEntity();
+      commandOnly2.setId(UUID.randomUUID());
       commandOnly2.setOwner(owner);
       commandOnly2.setName("toplevel2");
       commandOnly2.setDisabled(false);
 
       // create commands with sequencer
       InOrderSequencerEntity seq1 = new InOrderSequencerEntity();
+      seq1.setId(UUID.randomUUID());
       seq1.setReversed(false);
       CommandEntity commandWithSeq1 = new CommandEntity();
+      commandWithSeq1.setId(UUID.randomUUID());
       commandWithSeq1.setOwner(owner);
       commandWithSeq1.setName("inorder");
       commandWithSeq1.setSequencer(seq1);
 
       // create command with actions
       ObsSourceVisibilityActionEntity action1 = new ObsSourceVisibilityActionEntity();
+      action1.setId(UUID.randomUUID());
       action1.setPosition(1);
       action1.setSourceName("meme");
       action1.setVisible(true);
       WaitActionEntity action2 = new WaitActionEntity();
+      action2.setId(UUID.randomUUID());
       action2.setPosition(2);
       action2.setWaitDuration(Duration.ofSeconds(2));
       ObsSourceVisibilityActionEntity action3 = new ObsSourceVisibilityActionEntity();
+      action3.setId(UUID.randomUUID());
       action3.setPosition(3);
       action3.setSourceName("meme");
       action3.setVisible(false);
       CommandEntity commandWithActions = new CommandEntity();
+      commandWithActions.setId(UUID.randomUUID());
       commandWithActions.setOwner(owner);
       commandWithActions.setName("twoactions");
       commandWithActions.setActions(Arrays.asList(action1, action2, action3));
@@ -133,6 +141,7 @@ public class CommandEntityServiceTest {
 
       // Given a command
       CommandDto request = CommandDto.builder()
+        .id(UUID.randomUUID())
         .owner(UUID.randomUUID())
         .name("foo")
         .build();
@@ -170,6 +179,7 @@ public class CommandEntityServiceTest {
 
       // When a new command for same owner is saved
       service.save(CommandDto.builder()
+        .id(UUID.randomUUID())
         .owner(owner)
         .name("foo")
         .build());
@@ -177,6 +187,7 @@ public class CommandEntityServiceTest {
       // And a new command for a different owner is saved with the same name
       UUID otherOwner = UUID.randomUUID();
       service.save(CommandDto.builder()
+        .id(UUID.randomUUID())
         .owner(otherOwner)
         .name("foo")
         .build());
@@ -194,12 +205,14 @@ public class CommandEntityServiceTest {
 
       assertThatThrownBy(() -> {
         service.save(CommandDto.builder()
+          .id(UUID.randomUUID())
           .owner(owner)
           .build());
       }).isInstanceOf(DataPersistenceException.class);
 
       assertThatThrownBy(() -> {
         service.save(CommandDto.builder()
+          .id(UUID.randomUUID())
           .owner(owner)
           .name("  ")
           .build());
@@ -212,6 +225,7 @@ public class CommandEntityServiceTest {
 
     assertThatThrownBy(() -> {
       service.save(CommandDto.builder()
+        .id(UUID.randomUUID())
         .name("foo")
         .build());
     }).isInstanceOf(DataPersistenceException.class);
@@ -224,6 +238,7 @@ public class CommandEntityServiceTest {
       // Creating a new command on an existing name throws an exception
       assertThatThrownBy(() -> {
         service.save(CommandDto.builder()
+          .id(UUID.randomUUID())
           .owner(owner)
           .name(existingCommand.getName())
           .build());
@@ -232,6 +247,7 @@ public class CommandEntityServiceTest {
       // Updating an existing command to the existing name
       assertThatThrownBy(() -> {
         service.save(CommandDto.builder()
+          .id(UUID.randomUUID())
           .owner(owner)
           .id(existingCommand2.getId())
           .name(existingCommand.getName())
@@ -246,6 +262,7 @@ public class CommandEntityServiceTest {
     // Create a new command, same name as existing but with different owner throws no exceptions
     UUID otherOwner = UUID.randomUUID();
     service.save(CommandDto.builder()
+      .id(UUID.randomUUID())
       .owner(otherOwner)
       .name(existingCommand.getName())
       .build());
@@ -301,9 +318,10 @@ public class CommandEntityServiceTest {
 
     // Given a command with a sequencer
     CommandDto request = CommandDto.builder()
+      .id(UUID.randomUUID())
       .owner(UUID.randomUUID())
       .name("sequenced")
-      .sequencer(InOrderSequencerDto.builder().reversed(false).build())
+      .sequencer(InOrderSequencerDto.builder().id(UUID.randomUUID()).reversed(false).build())
       .build();
 
     // When saved and retrieved
@@ -327,10 +345,11 @@ public class CommandEntityServiceTest {
 
     // Given a request to update the sequencer of an existing command
     CommandDto request = CommandDto.builder()
-      .owner(owner)
       .id(existingCommandWithSequencer.getId())
+      .owner(owner)
       .name(existingCommandWithSequencer.getName())
       .sequencer(RandomOrderSequencerDto.builder()
+        .id(UUID.randomUUID())
         .pickedPerExecution(69)
         .build()
       )
@@ -354,13 +373,14 @@ public class CommandEntityServiceTest {
 
     // Given a command with actions
     CommandDto request = CommandDto.builder()
+      .id(UUID.randomUUID())
       .owner(UUID.randomUUID())
       .name("withactions")
       .actions(Arrays.asList(
-          SendMessageActionDto.builder().position(1).message("donate!").build(),
-          ObsSourceVisibilityActionDto.builder().position(2).sourceName("donate").visible(true).build(),
-          WaitActionDto.builder().position(3).waitDuration(Duration.ofSeconds(2)).build(),
-          ObsSourceVisibilityActionDto.builder().position(4).sourceName("donate").visible(false).build()
+          SendMessageActionDto.builder().id(UUID.randomUUID()).position(1).message("donate!").build(),
+          ObsSourceVisibilityActionDto.builder().id(UUID.randomUUID()).position(2).sourceName("donate").visible(true).build(),
+          WaitActionDto.builder().position(3).id(UUID.randomUUID()).waitDuration(Duration.ofSeconds(2)).build(),
+          ObsSourceVisibilityActionDto.builder().id(UUID.randomUUID()).position(4).sourceName("donate").visible(false).build()
         ))
       .build();
 
@@ -421,10 +441,12 @@ public class CommandEntityServiceTest {
 
     // And given a request to insert an additional action
     ActionDto action1 = existing.getActions().get(0);
+    action1.setId(UUID.randomUUID());
     action1.setPosition(1);
     ActionDto action2 = SendMessageActionDto.builder()
-      .message("Whoohoo!")
+      .id(UUID.randomUUID())
       .position(2)
+      .message("Whoohoo!")
       .build();
     ActionDto action3 = existing.getActions().get(1);
     action3.setPosition(2);

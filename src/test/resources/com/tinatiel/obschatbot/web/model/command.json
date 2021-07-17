@@ -5,6 +5,7 @@
   "disabled": true,
   "sequencer": {
     "@type": "ordered",
+    "id": "a10ca5a8-e6df-11eb-ba80-0242ac130004",
     "reversed": false
   },
   "actions": [

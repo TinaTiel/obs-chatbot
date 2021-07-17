@@ -4,11 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-@Builder
+@SuperBuilder
 public class InOrderSequencerDto extends SequencerDto {
   private boolean reversed;
 }

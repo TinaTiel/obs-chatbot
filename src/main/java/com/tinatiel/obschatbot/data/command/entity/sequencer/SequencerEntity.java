@@ -21,7 +21,7 @@ import lombok.Setter;
 @Inheritance(strategy =  InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "sequencer_type", discriminatorType = DiscriminatorType.STRING)
 @Table(name = "sequencer")
-public class SequencerEntity extends IdEntity {
+public abstract class SequencerEntity extends IdEntity {
 
   //  @Id
 //  @org.hibernate.annotations.Type(type = "org.hibernate.type.UUIDCharType")
