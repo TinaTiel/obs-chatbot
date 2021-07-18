@@ -28,9 +28,9 @@ public class LocalUserAssignmentServiceImpl implements LocalUserAssignmentServic
   public void addAssignment(LocalUserGroupAssignmentDto assignmentDto) {
     validate(assignmentDto);
 
-    localUserRepository.findById(assignmentDto.getLocalUserId()).ifPresentOrElse(
+    localUserRepository.findById(assignmentDto.getUserId()).ifPresentOrElse(
       foundUser -> {
-        localGroupRepository.findById(assignmentDto.getLocalGroupId()).ifPresentOrElse(
+        localGroupRepository.findById(assignmentDto.getGroupId()).ifPresentOrElse(
           foundGroup -> {
             foundUser.getGroups().add(foundGroup);
             foundGroup.getUsers().add(foundUser);
@@ -51,9 +51,9 @@ public class LocalUserAssignmentServiceImpl implements LocalUserAssignmentServic
   public void removeAssignment(LocalUserGroupAssignmentDto assignmentDto) {
     validate(assignmentDto);
 
-    localUserRepository.findById(assignmentDto.getLocalUserId()).ifPresentOrElse(
+    localUserRepository.findById(assignmentDto.getUserId()).ifPresentOrElse(
       foundUser -> {
-        localGroupRepository.findById(assignmentDto.getLocalGroupId()).ifPresentOrElse(
+        localGroupRepository.findById(assignmentDto.getGroupId()).ifPresentOrElse(
           foundGroup -> {
             foundUser.getGroups().remove(foundGroup);
             foundGroup.getUsers().remove(foundUser);
@@ -72,7 +72,7 @@ public class LocalUserAssignmentServiceImpl implements LocalUserAssignmentServic
   }
 
   private void validate(LocalUserGroupAssignmentDto dto) {
-    if(dto.getLocalUserId() == null || dto.getLocalGroupId() == null) {
+    if(dto.getUserId() == null || dto.getGroupId() == null) {
       throw new IllegalArgumentException("User and Group id are required");
     }
   }

@@ -459,27 +459,27 @@ public class LocalUserServicesE2eIT {
   void invalidAssignmentRequest() {
     assertThatThrownBy(() -> {
       localUserAssignmentService.addAssignment(LocalUserGroupAssignmentDto.builder()
-        .localUserId(null)
-        .localGroupId(UUID.randomUUID())
+        .userId(null)
+        .groupId(UUID.randomUUID())
         .build());
     }).isInstanceOf(IllegalArgumentException.class);
     assertThatThrownBy(() -> {
       localUserAssignmentService.addAssignment(LocalUserGroupAssignmentDto.builder()
-        .localUserId(UUID.randomUUID())
-        .localGroupId(null)
+        .userId(UUID.randomUUID())
+        .groupId(null)
         .build());
     }).isInstanceOf(IllegalArgumentException.class);
 
     assertThatThrownBy(() -> {
       localUserAssignmentService.removeAssignment(LocalUserGroupAssignmentDto.builder()
-        .localUserId(null)
-        .localGroupId(UUID.randomUUID())
+        .userId(null)
+        .groupId(UUID.randomUUID())
         .build());
     }).isInstanceOf(IllegalArgumentException.class);
     assertThatThrownBy(() -> {
       localUserAssignmentService.removeAssignment(LocalUserGroupAssignmentDto.builder()
-        .localUserId(UUID.randomUUID())
-        .localGroupId(null)
+        .userId(UUID.randomUUID())
+        .groupId(null)
         .build());
     }).isInstanceOf(IllegalArgumentException.class);
   }
@@ -503,8 +503,8 @@ public class LocalUserServicesE2eIT {
 
     // When assigned
     localUserAssignmentService.addAssignment(LocalUserGroupAssignmentDto.builder()
-      .localUserId(existingUser.getId())
-      .localGroupId(existingGroup.getId())
+      .userId(existingUser.getId())
+      .groupId(existingGroup.getId())
       .build());
 
     assertThat(localUserRepository.count()).isEqualTo(1);
@@ -546,8 +546,8 @@ public class LocalUserServicesE2eIT {
 
     // When assigned
     localUserAssignmentService.addAssignment(LocalUserGroupAssignmentDto.builder()
-      .localUserId(existingUser.getId())
-      .localGroupId(existingGroup.getId())
+      .userId(existingUser.getId())
+      .groupId(existingGroup.getId())
       .build());
     assertThat(localUserRepository.count()).isEqualTo(1);
     assertThat(localGroupRepository.count()).isEqualTo(1);
@@ -557,8 +557,8 @@ public class LocalUserServicesE2eIT {
 
     // When unassigned
     localUserAssignmentService.removeAssignment(LocalUserGroupAssignmentDto.builder()
-      .localUserId(existingUser.getId())
-      .localGroupId(existingGroup.getId())
+      .userId(existingUser.getId())
+      .groupId(existingGroup.getId())
       .build());
     assertThat(localUserRepository.count()).isEqualTo(1);
     assertThat(localGroupRepository.count()).isEqualTo(1);
@@ -588,8 +588,8 @@ public class LocalUserServicesE2eIT {
 
     // And have been assigned to each other
     localUserAssignmentService.addAssignment(LocalUserGroupAssignmentDto.builder()
-      .localUserId(existingUser.getId())
-      .localGroupId(existingGroup.getId())
+      .userId(existingUser.getId())
+      .groupId(existingGroup.getId())
       .build());
     assertThat(localUserRepository.count()).isEqualTo(1);
     assertThat(localGroupRepository.count()).isEqualTo(1);
@@ -627,8 +627,8 @@ public class LocalUserServicesE2eIT {
 
     // And have been assigned to each other
     localUserAssignmentService.addAssignment(LocalUserGroupAssignmentDto.builder()
-      .localUserId(existingUser.getId())
-      .localGroupId(existingGroup.getId())
+      .userId(existingUser.getId())
+      .groupId(existingGroup.getId())
       .build());
     assertThat(localUserRepository.count()).isEqualTo(1);
     assertThat(localGroupRepository.count()).isEqualTo(1);

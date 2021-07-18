@@ -11,6 +11,6 @@ import lombok.NoArgsConstructor;
 @Builder
 @Data
 public class LocalUserGroupAssignmentDto {
-  UUID localUserId;
-  UUID localGroupId;
+  UUID userId;
+  UUID groupId;
 }
