@@ -7,7 +7,9 @@ import com.tinatiel.obschatbot.web.WebConfig;
 import java.net.URI;
 import java.util.List;
 import java.util.UUID;
+import javax.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -43,7 +45,7 @@ public class CommandController {
   }
 
   @PutMapping("/{id}")
-  public ResponseEntity<Void> save(@PathVariable("id") UUID id, @RequestBody CommandDto request) {
+  public ResponseEntity<Void> save(@PathVariable("id") UUID id, @Valid @RequestBody CommandDto request) {
     request.setId(id);
     request.setOwner(ownerService.getOwner().getId());
     commandEntityService.save(request);

@@ -3,6 +3,7 @@ package com.tinatiel.obschatbot.web;
 import com.tinatiel.obschatbot.data.localuser.LocalUserAssignmentService;
 import com.tinatiel.obschatbot.data.localuser.model.LocalUserGroupAssignmentDto;
 import com.tinatiel.obschatbot.security.owner.OwnerService;
+import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -24,7 +25,7 @@ public class UserAssignmentController {
   }
 
   @DeleteMapping
-  ResponseEntity<Void> deleteAssignment(@RequestBody LocalUserGroupAssignmentDto assignmentDto) {
+  ResponseEntity<Void> deleteAssignment(@Valid @RequestBody LocalUserGroupAssignmentDto assignmentDto) {
     localUserAssignmentService.removeAssignment(assignmentDto);
     return ResponseEntity.ok(null);
   }

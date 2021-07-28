@@ -5,6 +5,7 @@ import com.tinatiel.obschatbot.data.localuser.model.LocalGroupDto;
 import com.tinatiel.obschatbot.security.owner.OwnerService;
 import java.util.List;
 import java.util.UUID;
+import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -36,7 +37,7 @@ public class GroupController {
   }
 
   @PutMapping("/{id}")
-  public ResponseEntity<Void> save(@PathVariable("id") UUID id, @RequestBody LocalGroupDto request) {
+  public ResponseEntity<Void> save(@PathVariable("id") UUID id, @Valid @RequestBody LocalGroupDto request) {
     request.setId(id);
     request.setOwner(ownerService.getOwner().getId());
     localGroupService.save(request);

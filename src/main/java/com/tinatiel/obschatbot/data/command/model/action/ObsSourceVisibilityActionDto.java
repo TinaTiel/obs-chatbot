@@ -5,6 +5,7 @@
 
 package com.tinatiel.obschatbot.data.command.model.action;
 
+import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,6 +21,8 @@ import lombok.experimental.SuperBuilder;
 public class ObsSourceVisibilityActionDto extends ActionDto {
 
   private String sceneName;
+
+  @NotNull
   private String sourceName;
   private boolean visible;
 

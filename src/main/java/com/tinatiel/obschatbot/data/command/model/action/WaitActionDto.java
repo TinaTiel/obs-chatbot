@@ -1,6 +1,7 @@
 package com.tinatiel.obschatbot.data.command.model.action;
 
 import java.time.Duration;
+import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,6 +17,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public class WaitActionDto extends ActionDto {
 
+  @NotNull
   private Duration waitDuration;
   
 }

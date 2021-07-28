@@ -126,6 +126,7 @@ public class GroupControllerTest {
     mockMvc.perform(put(WebConfig.BASE_PATH + "/group/{id}", group.getId())
       .contentType(MediaType.APPLICATION_JSON)
       .content("{\n"
+        + "  \"id\": \"" + UUID.randomUUID().toString() + "\",\n"
         + "  \"name\": \"foo\"\n"
         + "}"))
       .andDo(print())
@@ -156,6 +157,7 @@ public class GroupControllerTest {
     mockMvc.perform(put(WebConfig.BASE_PATH + "/group/{id}", user.getId())
       .contentType(MediaType.APPLICATION_JSON)
       .content("{\n"
+        + "  \"id\": \"" + user.getId().toString() + "\",\n"
         + "  \"name\": \"foo\"\n"
         + "}"))
       .andDo(print())

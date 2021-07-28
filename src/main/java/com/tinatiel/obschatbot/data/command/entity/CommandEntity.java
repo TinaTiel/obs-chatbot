@@ -29,7 +29,7 @@ import org.hibernate.annotations.Type;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "command", uniqueConstraints = {@UniqueConstraint(columnNames = {"owner", "name"})})
+@Table(name = "command", uniqueConstraints = {@UniqueConstraint(columnNames = {"owner", "name"}, name = "UNIQUE_NAME")})
 @Entity
 public class CommandEntity extends IdEntity {
 

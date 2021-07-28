@@ -5,6 +5,7 @@
 
 package com.tinatiel.obschatbot.data.command.model.action;
 
+import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,6 +21,7 @@ import lombok.experimental.SuperBuilder;
 
 public class SendMessageActionDto extends ActionDto {
 
+  @NotNull
   private String message;
 
 }

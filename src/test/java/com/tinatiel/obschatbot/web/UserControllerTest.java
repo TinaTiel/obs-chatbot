@@ -11,6 +11,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.tinatiel.obschatbot.core.user.Platform;
 import com.tinatiel.obschatbot.data.command.model.CommandDto;
 import com.tinatiel.obschatbot.data.command.model.action.ObsSourceVisibilityActionDto;
 import com.tinatiel.obschatbot.data.command.model.action.SendMessageActionDto;
@@ -21,6 +22,7 @@ import com.tinatiel.obschatbot.data.localuser.model.LocalUserDto;
 import com.tinatiel.obschatbot.security.WebSecurityConfig;
 import com.tinatiel.obschatbot.security.owner.OwnerDto;
 import com.tinatiel.obschatbot.security.owner.OwnerService;
+import com.tinatiel.obschatbot.web.error.GlobalControllerErrorAdvice;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.UUID;
@@ -127,6 +129,7 @@ public class UserControllerTest {
       .owner(owner.getId())
       .id(UUID.randomUUID())
       .broadcaster(true)
+      .platform(Platform.TWITCH)
       .username("foo")
       .build();
     when(localUserService.save(any(LocalUserDto.class))).thenReturn(user);
@@ -136,6 +139,8 @@ public class UserControllerTest {
     mockMvc.perform(put(WebConfig.BASE_PATH + "/user/{id}", user.getId())
       .contentType(MediaType.APPLICATION_JSON)
       .content("{\n"
+        + "  \"id\": \"" + UUID.randomUUID().toString() + "\",\n"
+        + "  \"platform\": \"" + "TWITCH" + "\",\n"
         + "  \"username\": \"foo\"\n"
         + "}"))
       .andDo(print())
@@ -158,6 +163,7 @@ public class UserControllerTest {
       .owner(owner.getId())
       .id(UUID.randomUUID())
       .broadcaster(true)
+      .platform(Platform.TWITCH)
       .username("foo")
       .build();
     when(localUserService.save(any(LocalUserDto.class))).thenReturn(user);
@@ -167,6 +173,8 @@ public class UserControllerTest {
     mockMvc.perform(put(WebConfig.BASE_PATH + "/user/{id}", user.getId())
       .contentType(MediaType.APPLICATION_JSON)
       .content("{\n"
+        + "  \"id\": \"" + user.getId().toString() + "\",\n"
+        + "  \"platform\": \"" + user.getPlatform() + "\",\n"
         + "  \"username\": \"foo\"\n"
         + "}"))
       .andDo(print())

@@ -145,7 +145,13 @@ public class CommandControllerTest {
     mockMvc.perform(put(WebConfig.BASE_PATH + "/command/{id}", command.getId())
       .contentType(MediaType.APPLICATION_JSON)
       .content("{\n"
-        + "  \"name\": \"somecommand\"\n"
+        + "  \"id\": \"" + command.getId() + "\",\n"
+        + "  \"name\": \"somecommand\",\n"
+        + "  \"sequencer\": {\n"
+        + "    \"@type\": \"ordered\",\n"
+        + "    \"id\": \"a10ca5a8-e6df-11eb-ba80-0242ac130004\",\n"
+        + "    \"reversed\": false\n"
+        + "  }\n"
         + "}"))
       .andDo(print())
       .andExpect(status().isOk());
@@ -174,7 +180,13 @@ public class CommandControllerTest {
     mockMvc.perform(put(WebConfig.BASE_PATH + "/command/{id}", command.getId())
       .contentType(MediaType.APPLICATION_JSON)
       .content("{\n"
-        + "  \"name\": \"somecommand\"\n"
+        + "  \"id\": \"" + command.getId() + "\",\n"
+        + "  \"name\": \"somecommand\",\n"
+        + "  \"sequencer\": {\n"
+        + "    \"@type\": \"ordered\",\n"
+        + "    \"id\": \"a10ca5a8-e6df-11eb-ba80-0242ac130004\",\n"
+        + "    \"reversed\": false\n"
+        + "  }\n"
         + "}"))
       .andDo(print())
       .andExpect(status().isOk());

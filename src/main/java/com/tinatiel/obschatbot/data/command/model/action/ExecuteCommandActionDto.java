@@ -6,6 +6,7 @@
 package com.tinatiel.obschatbot.data.command.model.action;
 
 import java.util.UUID;
+import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,6 +21,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public class ExecuteCommandActionDto extends ActionDto {
 
+  @NotNull
   private UUID target;
 
 }

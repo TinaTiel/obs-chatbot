@@ -45,15 +45,8 @@ public class CommandEntityServiceImpl implements CommandEntityService {
       repository.flush();
       return mapper.map(result);
     } catch (Exception e) {
-      throw new DataPersistenceException(request, e);
+      throw DataPersistenceException.fromObject(request, e);
     }
-//    if(requestEntity.getId() != null) {
-//      // Get the existing entity and update if id is present
-//      return updateCommand(requestEntity);
-//    } else {
-//      // Otherwise, create the entity
-//      return createCommand(requestEntity);
-//    }
 
   }
 

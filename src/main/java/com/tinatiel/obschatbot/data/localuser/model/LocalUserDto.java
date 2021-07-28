@@ -7,6 +7,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,8 +26,11 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @Data
 public class LocalUserDto extends OwnerDto {
+  @NotNull
   private UUID id;
+  @NotNull
   private Platform platform;
+  @NotBlank
   private String username;
   @Builder.Default
   private List<LocalGroupDto> groups = new ArrayList<>();

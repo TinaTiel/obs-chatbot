@@ -2,6 +2,7 @@ package com.tinatiel.obschatbot.data.system.model;
 
 import com.tinatiel.obschatbot.data.common.OwnerDto;
 import java.util.UUID;
+import javax.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,12 +20,14 @@ public class SystemSettingsDto extends OwnerDto {
   /**
    * Maximum number of actions executed at once in a batch
    */
+  @Positive
   private int maxActionBatchSize;
 
   /**
    * Milliseconds timeout for expanding a Command into actions; failsafe
    * in the case when cycle detection fails.
    */
+  @Positive
   private int recursionTimeoutMillis;
 
 }
