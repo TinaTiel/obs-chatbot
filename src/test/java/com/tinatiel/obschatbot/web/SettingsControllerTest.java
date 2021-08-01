@@ -13,6 +13,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tinatiel.obschatbot.data.client.obs.ObsClientDataService;
+import com.tinatiel.obschatbot.data.client.obs.model.ObsClientSettingsDto;
 import com.tinatiel.obschatbot.data.localuser.LocalUserService;
 import com.tinatiel.obschatbot.data.system.SystemSettingsDataService;
 import com.tinatiel.obschatbot.data.system.entity.SystemSettingsEntity;
@@ -42,6 +44,9 @@ public class SettingsControllerTest {
 
   @MockBean
   SystemSettingsDataService systemSettingsDataService;
+
+  @MockBean
+  ObsClientDataService obsClientDataService;
 
   @MockBean
   OwnerService ownerService;
@@ -117,6 +122,77 @@ public class SettingsControllerTest {
     ArgumentCaptor<SystemSettingsDto> captor = ArgumentCaptor.forClass(SystemSettingsDto.class);
     verify(systemSettingsDataService).save(captor.capture());
     SystemSettingsDto actual = captor.getValue();
+    assertThat(actual).usingRecursiveComparison().ignoringFields("owner").isEqualTo(settings);
+    assertThat(actual.getOwner()).isEqualTo(owner.getId());
+
+  }
+
+  @Test
+  void getObsSettings() throws Exception {
+
+    // Given settings exist
+    ObsClientSettingsDto settings = ObsClientSettingsDto.builder()
+      .owner(owner.getId())
+      .host("localhost")
+      .password("password")
+      .port(4444)
+      .connectionTimeoutMs(1234)
+      .build();
+    when(obsClientDataService.findByOwner(owner.getId())).thenReturn(Optional.of(settings));
+
+    // They can be retrieved
+    mockMvc.perform(get(WebConfig.BASE_PATH + "/settings/obs")
+        .accept(MediaType.APPLICATION_JSON)
+      ).andDo(print())
+      .andExpect(status().isOk())
+      .andExpect(jsonPath("$.owner").value(owner.getId().toString()))
+      .andExpect(jsonPath("$.host").value("localhost"))
+      .andExpect(jsonPath("$.password").value("password"))
+      .andExpect(jsonPath("$.port").value(4444))
+      .andExpect(jsonPath("$.connectionTimeoutMs").value(1234));
+
+  }
+
+  @Test
+  void getObsSettingsNotFound() throws Exception {
+
+    // Given settings don't exist
+    when(obsClientDataService.findByOwner(owner.getId())).thenReturn(Optional.empty());
+
+    // when called
+    mockMvc.perform(get(WebConfig.BASE_PATH + "/settings/obs")
+        .accept(MediaType.APPLICATION_JSON)
+      ).andDo(print())
+      .andExpect(status().isNotFound());
+
+    // And the service was called
+    verify(obsClientDataService).findByOwner(owner.getId());
+
+  }
+
+  @Test
+  void saveObsSettings() throws Exception {
+
+    // Given settings
+    ObsClientSettingsDto settings = ObsClientSettingsDto.builder()
+      .owner(owner.getId())
+      .host("localhost")
+      .password("password")
+      .port(4444)
+      .connectionTimeoutMs(1234)
+      .build();
+
+    // When saved it is ok
+    mockMvc.perform(put(WebConfig.BASE_PATH + "/settings/obs")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(objectMapper.writeValueAsString(settings))
+      ).andDo(print())
+      .andExpect(status().isOk());
+
+    // And the service was called with the expected settings
+    ArgumentCaptor<ObsClientSettingsDto> captor = ArgumentCaptor.forClass(ObsClientSettingsDto.class);
+    verify(obsClientDataService).save(captor.capture());
+    ObsClientSettingsDto actual = captor.getValue();
     assertThat(actual).usingRecursiveComparison().ignoringFields("owner").isEqualTo(settings);
     assertThat(actual.getOwner()).isEqualTo(owner.getId());
 
