@@ -77,7 +77,7 @@ public class TwitchAuthClientControllerTest {
       .andExpect(status().isOk())
       .andExpect(jsonPath("$.owner").value(owner.getId().toString()))
       .andExpect(jsonPath("$.clientId").value("clientid"))
-      .andExpect(jsonPath("$.clientSecret").value("clientsecret"));
+      .andExpect(jsonPath("$.clientSecret").value("[REDACTED]"));
 
   }
 

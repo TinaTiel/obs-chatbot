@@ -30,7 +30,12 @@ public class TwitchAuthController {
 
   @GetMapping("/settings")
   ResponseEntity<TwitchClientAuthDataDto> getTwitchAuthSettings() {
-    return twitchClientAuthDataService.findByOwner(ownerService.getOwner().getId())
+    return twitchClientAuthDataService
+      .findByOwner(ownerService.getOwner().getId())
+      .map(it -> {
+        if(it.getClientSecret() != null) it.setClientSecret("[REDACTED]");
+        return it;
+      })
       .map(ResponseEntity::ok)
       .orElseGet(() -> ResponseEntity.notFound().build());
   }
