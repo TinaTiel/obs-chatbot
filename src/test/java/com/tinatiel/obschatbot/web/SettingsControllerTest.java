@@ -17,6 +17,8 @@ import com.tinatiel.obschatbot.data.client.obs.ObsClientDataService;
 import com.tinatiel.obschatbot.data.client.obs.model.ObsClientSettingsDto;
 import com.tinatiel.obschatbot.data.client.twitch.auth.TwitchClientAuthDataService;
 import com.tinatiel.obschatbot.data.client.twitch.auth.model.TwitchClientAuthDataDto;
+import com.tinatiel.obschatbot.data.client.twitch.chat.TwitchClientChatDataService;
+import com.tinatiel.obschatbot.data.client.twitch.chat.model.TwitchClientChatDataDto;
 import com.tinatiel.obschatbot.data.localuser.LocalUserService;
 import com.tinatiel.obschatbot.data.system.SystemSettingsDataService;
 import com.tinatiel.obschatbot.data.system.entity.SystemSettingsEntity;
@@ -47,6 +49,7 @@ public class SettingsControllerTest {
   @MockBean SystemSettingsDataService systemSettingsDataService;
   @MockBean ObsClientDataService obsClientDataService;
   @MockBean TwitchClientAuthDataService twitchClientAuthDataService;
+  @MockBean TwitchClientChatDataService twitchClientChatDataService;
 
   @MockBean
   OwnerService ownerService;
@@ -193,6 +196,86 @@ public class SettingsControllerTest {
     ArgumentCaptor<ObsClientSettingsDto> captor = ArgumentCaptor.forClass(ObsClientSettingsDto.class);
     verify(obsClientDataService).save(captor.capture());
     ObsClientSettingsDto actual = captor.getValue();
+    assertThat(actual).usingRecursiveComparison().ignoringFields("owner").isEqualTo(settings);
+    assertThat(actual.getOwner()).isEqualTo(owner.getId());
+
+  }
+
+  @Test
+  void getTwitchSettings() throws Exception {
+
+    // Given settings exist
+    TwitchClientChatDataDto settings = TwitchClientChatDataDto.builder()
+      .owner(owner.getId())
+      .broadcasterChannelUsername("broadcaster")
+      .trigger("!")
+      .parseEntireMessage(false)
+      .connectionAttempts(3)
+      .connectionTimeoutMs(1234)
+      .joinMessage("...has joined")
+      .leaveMessage("...has left")
+      .build();
+    when(twitchClientChatDataService.findByOwner(owner.getId())).thenReturn(Optional.of(settings));
+
+    // They can be retrieved
+    mockMvc.perform(get(WebConfig.BASE_PATH + "/settings/twitch")
+        .accept(MediaType.APPLICATION_JSON)
+      ).andDo(print())
+      .andExpect(status().isOk())
+      .andExpect(jsonPath("$.owner").value(owner.getId().toString()))
+      .andExpect(jsonPath("$.broadcasterChannelUsername").value("broadcaster"))
+      .andExpect(jsonPath("$.trigger").value("!"))
+      .andExpect(jsonPath("$.parseEntireMessage").value(false))
+      .andExpect(jsonPath("$.connectionAttempts").value(3))
+      .andExpect(jsonPath("$.connectionTimeoutMs").value(1234))
+      .andExpect(jsonPath("$.joinMessage").value("...has joined"))
+      .andExpect(jsonPath("$.leaveMessage").value("...has left"));
+
+  }
+
+  @Test
+  void getTwitchSettingsNotFound() throws Exception {
+
+    // Given settings don't exist
+    when(twitchClientChatDataService.findByOwner(owner.getId())).thenReturn(Optional.empty());
+
+    // when called
+    mockMvc.perform(get(WebConfig.BASE_PATH + "/settings/twitch")
+        .accept(MediaType.APPLICATION_JSON)
+      ).andDo(print())
+      .andExpect(status().isNotFound());
+
+    // And the service was called
+    verify(twitchClientChatDataService).findByOwner(owner.getId());
+
+  }
+
+  @Test
+  void saveTwitchSettings() throws Exception {
+
+    // Given settings
+    TwitchClientChatDataDto settings = TwitchClientChatDataDto.builder()
+      .owner(owner.getId())
+      .broadcasterChannelUsername("newbroadcaster")
+      .trigger("#")
+      .parseEntireMessage(true)
+      .connectionAttempts(30)
+      .connectionTimeoutMs(12340)
+      .joinMessage("...joined")
+      .leaveMessage("...left")
+      .build();
+
+    // When saved it is ok
+    mockMvc.perform(put(WebConfig.BASE_PATH + "/settings/twitch")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(objectMapper.writeValueAsString(settings))
+      ).andDo(print())
+      .andExpect(status().isOk());
+
+    // And the service was called with the expected settings
+    ArgumentCaptor<TwitchClientChatDataDto> captor = ArgumentCaptor.forClass(TwitchClientChatDataDto.class);
+    verify(twitchClientChatDataService).save(captor.capture());
+    TwitchClientChatDataDto actual = captor.getValue();
     assertThat(actual).usingRecursiveComparison().ignoringFields("owner").isEqualTo(settings);
     assertThat(actual.getOwner()).isEqualTo(owner.getId());
 
