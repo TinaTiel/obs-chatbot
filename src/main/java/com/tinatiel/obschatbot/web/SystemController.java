@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@RequestMapping(path = WebConfig.BASE_PATH + "/settings")
+@RequestMapping(path = WebConfig.BASE_PATH + "/system")
 @RestController
 @RequiredArgsConstructor
 public class SystemController {
@@ -26,16 +26,14 @@ public class SystemController {
   private final OwnerService ownerService;
   private final SystemSettingsDataService systemSettingsDataService;
 
-  private static final String SYSTEM = "/system";
-
-  @GetMapping(SYSTEM)
+  @GetMapping("/settings")
   ResponseEntity<SystemSettingsDto> getSystemSettings() {
     return systemSettingsDataService.findByOwner(ownerService.getOwner().getId())
       .map(ResponseEntity::ok)
       .orElseGet(() -> ResponseEntity.notFound().build());
   }
 
-  @PutMapping(SYSTEM)
+  @PutMapping("/settings")
   ResponseEntity<Void> saveSystemSettings(@RequestBody SystemSettingsDto settingsDto) {
     settingsDto.setOwner(ownerService.getOwner().getId());
     systemSettingsDataService.save(settingsDto);

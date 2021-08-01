@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@RequestMapping(path = WebConfig.BASE_PATH + "/settings")
+@RequestMapping(path = WebConfig.BASE_PATH + "/twitch/auth")
 @RestController
 @RequiredArgsConstructor
 public class TwitchAuthController {
@@ -25,16 +25,14 @@ public class TwitchAuthController {
   private final OwnerService ownerService;
   private final TwitchClientAuthDataService twitchClientAuthDataService;
 
-  private static final String TWITCH = "/twitch";
-
-  @GetMapping(TWITCH + "/auth")
+  @GetMapping("/settings")
   ResponseEntity<TwitchClientAuthDataDto> getTwitchAuthSettings() {
     return twitchClientAuthDataService.findByOwner(ownerService.getOwner().getId())
       .map(ResponseEntity::ok)
       .orElseGet(() -> ResponseEntity.notFound().build());
   }
 
-  @PutMapping(TWITCH + "/auth")
+  @PutMapping("/settings")
   ResponseEntity<Void> saveTwitchAuthSettings(@RequestBody TwitchClientAuthDataDto settingsDto) {
     settingsDto.setOwner(ownerService.getOwner().getId());
     twitchClientAuthDataService.save(settingsDto);

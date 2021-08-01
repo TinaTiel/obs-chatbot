@@ -78,7 +78,7 @@ public class ObsClientControllerTest {
     when(obsClientDataService.findByOwner(owner.getId())).thenReturn(Optional.of(settings));
 
     // They can be retrieved
-    mockMvc.perform(get(WebConfig.BASE_PATH + "/settings/obs")
+    mockMvc.perform(get(WebConfig.BASE_PATH + "/obs/settings")
         .accept(MediaType.APPLICATION_JSON)
       ).andDo(print())
       .andExpect(status().isOk())
@@ -97,7 +97,7 @@ public class ObsClientControllerTest {
     when(obsClientDataService.findByOwner(owner.getId())).thenReturn(Optional.empty());
 
     // when called
-    mockMvc.perform(get(WebConfig.BASE_PATH + "/settings/obs")
+    mockMvc.perform(get(WebConfig.BASE_PATH + "/obs/settings")
         .accept(MediaType.APPLICATION_JSON)
       ).andDo(print())
       .andExpect(status().isNotFound());
@@ -120,7 +120,7 @@ public class ObsClientControllerTest {
       .build();
 
     // When saved it is ok
-    mockMvc.perform(put(WebConfig.BASE_PATH + "/settings/obs")
+    mockMvc.perform(put(WebConfig.BASE_PATH + "/obs/settings")
         .contentType(MediaType.APPLICATION_JSON)
         .content(objectMapper.writeValueAsString(settings))
       ).andDo(print())

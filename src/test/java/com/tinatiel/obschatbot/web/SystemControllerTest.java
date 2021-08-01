@@ -65,7 +65,7 @@ public class SystemControllerTest {
     when(systemSettingsDataService.findByOwner(owner.getId())).thenReturn(Optional.of(settings));
 
     // They can be retrieved
-    mockMvc.perform(get(WebConfig.BASE_PATH + "/settings/system")
+    mockMvc.perform(get(WebConfig.BASE_PATH + "/system/settings")
       .accept(MediaType.APPLICATION_JSON)
     ).andDo(print())
       .andExpect(status().isOk())
@@ -82,7 +82,7 @@ public class SystemControllerTest {
     when(systemSettingsDataService.findByOwner(owner.getId())).thenReturn(Optional.empty());
 
     // when called
-    mockMvc.perform(get(WebConfig.BASE_PATH + "/settings/system")
+    mockMvc.perform(get(WebConfig.BASE_PATH + "/system/settings")
         .accept(MediaType.APPLICATION_JSON)
       ).andDo(print())
       .andExpect(status().isNotFound());
@@ -102,7 +102,7 @@ public class SystemControllerTest {
       .build();
 
     // When saved it is ok
-    mockMvc.perform(put(WebConfig.BASE_PATH + "/settings/system")
+    mockMvc.perform(put(WebConfig.BASE_PATH + "/system/settings")
       .contentType(MediaType.APPLICATION_JSON)
       .content(objectMapper.writeValueAsString(settings))
     ).andDo(print())

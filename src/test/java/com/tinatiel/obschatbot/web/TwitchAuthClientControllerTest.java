@@ -65,7 +65,7 @@ public class TwitchAuthClientControllerTest {
     when(twitchClientAuthDataService.findByOwner(owner.getId())).thenReturn(Optional.of(settings));
 
     // They can be retrieved
-    mockMvc.perform(get(WebConfig.BASE_PATH + "/settings/twitch/auth")
+    mockMvc.perform(get(WebConfig.BASE_PATH + "/twitch/auth/settings")
         .accept(MediaType.APPLICATION_JSON)
       ).andDo(print())
       .andExpect(status().isOk())
@@ -82,7 +82,7 @@ public class TwitchAuthClientControllerTest {
     when(twitchClientAuthDataService.findByOwner(owner.getId())).thenReturn(Optional.empty());
 
     // when called
-    mockMvc.perform(get(WebConfig.BASE_PATH + "/settings/twitch/auth")
+    mockMvc.perform(get(WebConfig.BASE_PATH + "/twitch/auth/settings")
         .accept(MediaType.APPLICATION_JSON)
       ).andDo(print())
       .andExpect(status().isNotFound());
@@ -103,7 +103,7 @@ public class TwitchAuthClientControllerTest {
       .build();
 
     // When saved it is ok
-    mockMvc.perform(put(WebConfig.BASE_PATH + "/settings/twitch/auth")
+    mockMvc.perform(put(WebConfig.BASE_PATH + "/twitch/auth/settings")
         .contentType(MediaType.APPLICATION_JSON)
         .content(objectMapper.writeValueAsString(settings))
       ).andDo(print())
