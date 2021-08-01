@@ -15,6 +15,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tinatiel.obschatbot.data.client.obs.ObsClientDataService;
 import com.tinatiel.obschatbot.data.client.obs.model.ObsClientSettingsDto;
+import com.tinatiel.obschatbot.data.client.twitch.auth.TwitchClientAuthDataService;
+import com.tinatiel.obschatbot.data.client.twitch.auth.model.TwitchClientAuthDataDto;
 import com.tinatiel.obschatbot.data.localuser.LocalUserService;
 import com.tinatiel.obschatbot.data.system.SystemSettingsDataService;
 import com.tinatiel.obschatbot.data.system.entity.SystemSettingsEntity;
@@ -42,11 +44,9 @@ public class SettingsControllerTest {
   @Autowired
   MockMvc mockMvc;
 
-  @MockBean
-  SystemSettingsDataService systemSettingsDataService;
-
-  @MockBean
-  ObsClientDataService obsClientDataService;
+  @MockBean SystemSettingsDataService systemSettingsDataService;
+  @MockBean ObsClientDataService obsClientDataService;
+  @MockBean TwitchClientAuthDataService twitchClientAuthDataService;
 
   @MockBean
   OwnerService ownerService;
@@ -193,6 +193,71 @@ public class SettingsControllerTest {
     ArgumentCaptor<ObsClientSettingsDto> captor = ArgumentCaptor.forClass(ObsClientSettingsDto.class);
     verify(obsClientDataService).save(captor.capture());
     ObsClientSettingsDto actual = captor.getValue();
+    assertThat(actual).usingRecursiveComparison().ignoringFields("owner").isEqualTo(settings);
+    assertThat(actual.getOwner()).isEqualTo(owner.getId());
+
+  }
+
+  @Test
+  void getTwitchAuthSettings() throws Exception {
+
+    // Given settings exist
+    TwitchClientAuthDataDto settings = TwitchClientAuthDataDto.builder()
+      .owner(owner.getId())
+      .clientId("clientid")
+      .clientSecret("clientsecret")
+      .build();
+    when(twitchClientAuthDataService.findByOwner(owner.getId())).thenReturn(Optional.of(settings));
+
+    // They can be retrieved
+    mockMvc.perform(get(WebConfig.BASE_PATH + "/settings/twitch/auth")
+        .accept(MediaType.APPLICATION_JSON)
+      ).andDo(print())
+      .andExpect(status().isOk())
+      .andExpect(jsonPath("$.owner").value(owner.getId().toString()))
+      .andExpect(jsonPath("$.clientId").value("clientid"))
+      .andExpect(jsonPath("$.clientSecret").value("clientsecret"));
+
+  }
+
+  @Test
+  void getTwitchAuthSettingsNotFound() throws Exception {
+
+    // Given settings don't exist
+    when(twitchClientAuthDataService.findByOwner(owner.getId())).thenReturn(Optional.empty());
+
+    // when called
+    mockMvc.perform(get(WebConfig.BASE_PATH + "/settings/twitch/auth")
+        .accept(MediaType.APPLICATION_JSON)
+      ).andDo(print())
+      .andExpect(status().isNotFound());
+
+    // And the service was called
+    verify(twitchClientAuthDataService).findByOwner(owner.getId());
+
+  }
+
+  @Test
+  void saveTwitchAuthSettings() throws Exception {
+
+    // Given settings
+    TwitchClientAuthDataDto settings = TwitchClientAuthDataDto.builder()
+      .owner(owner.getId())
+      .clientId("clientid")
+      .clientSecret("newclientsecret")
+      .build();
+
+    // When saved it is ok
+    mockMvc.perform(put(WebConfig.BASE_PATH + "/settings/twitch/auth")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(objectMapper.writeValueAsString(settings))
+      ).andDo(print())
+      .andExpect(status().isOk());
+
+    // And the service was called with the expected settings
+    ArgumentCaptor<TwitchClientAuthDataDto> captor = ArgumentCaptor.forClass(TwitchClientAuthDataDto.class);
+    verify(twitchClientAuthDataService).save(captor.capture());
+    TwitchClientAuthDataDto actual = captor.getValue();
     assertThat(actual).usingRecursiveComparison().ignoringFields("owner").isEqualTo(settings);
     assertThat(actual.getOwner()).isEqualTo(owner.getId());
 
