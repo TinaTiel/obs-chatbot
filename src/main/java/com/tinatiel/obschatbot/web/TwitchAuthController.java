@@ -1,5 +1,6 @@
 package com.tinatiel.obschatbot.web;
 
+import com.tinatiel.obschatbot.core.client.twitch.auth.TwitchAuthClient;
 import com.tinatiel.obschatbot.data.client.obs.ObsClientDataService;
 import com.tinatiel.obschatbot.data.client.obs.model.ObsClientSettingsDto;
 import com.tinatiel.obschatbot.data.client.twitch.auth.TwitchClientAuthDataService;
@@ -10,6 +11,7 @@ import com.tinatiel.obschatbot.data.system.SystemSettingsDataService;
 import com.tinatiel.obschatbot.data.system.model.SystemSettingsDto;
 import com.tinatiel.obschatbot.security.owner.OwnerService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -24,6 +26,7 @@ public class TwitchAuthController {
 
   private final OwnerService ownerService;
   private final TwitchClientAuthDataService twitchClientAuthDataService;
+  private final TwitchAuthClient twitchAuthClient;
 
   @GetMapping("/settings")
   ResponseEntity<TwitchClientAuthDataDto> getTwitchAuthSettings() {
@@ -37,6 +40,16 @@ public class TwitchAuthController {
     settingsDto.setOwner(ownerService.getOwner().getId());
     twitchClientAuthDataService.save(settingsDto);
     return ResponseEntity.ok(null);
+  }
+
+  @GetMapping("/status")
+  ResponseEntity<Void> checkAuthStatus() {
+    boolean tokenIsValid = twitchAuthClient.isCurrentAccessTokenValid();
+    if(tokenIsValid) {
+      return ResponseEntity.ok(null);
+    } else {
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    }
   }
 
 }

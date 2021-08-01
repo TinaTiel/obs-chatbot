@@ -10,11 +10,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tinatiel.obschatbot.core.client.twitch.auth.TwitchAuthClient;
 import com.tinatiel.obschatbot.data.client.twitch.auth.TwitchClientAuthDataService;
 import com.tinatiel.obschatbot.data.client.twitch.auth.model.TwitchClientAuthDataDto;
 import com.tinatiel.obschatbot.security.WebSecurityConfig;
 import com.tinatiel.obschatbot.security.owner.OwnerDto;
 import com.tinatiel.obschatbot.security.owner.OwnerService;
+import com.tinatiel.obschatbot.web.model.ClientStatusRequestDto;
+import com.tinatiel.obschatbot.web.model.ClientStatusRequestDto.State;
 import java.util.Optional;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,6 +40,9 @@ public class TwitchAuthClientControllerTest {
 
   @MockBean
   TwitchClientAuthDataService twitchClientAuthDataService;
+
+  @MockBean
+  TwitchAuthClient twitchAuthClient;
 
   @MockBean
   OwnerService ownerService;
@@ -115,6 +121,38 @@ public class TwitchAuthClientControllerTest {
     TwitchClientAuthDataDto actual = captor.getValue();
     assertThat(actual).usingRecursiveComparison().ignoringFields("owner").isEqualTo(settings);
     assertThat(actual.getOwner()).isEqualTo(owner.getId());
+
+  }
+
+  @Test
+  void authStatusGood() throws Exception {
+
+    // Given authenticated
+    when(twitchAuthClient.isCurrentAccessTokenValid()).thenReturn(true);
+
+    // When requested, then it is ok
+    mockMvc.perform(get(WebConfig.BASE_PATH + "/twitch/auth/status"))
+      .andDo(print())
+      .andExpect(status().isOk());
+
+    // And the service was started
+    verify(twitchAuthClient).isCurrentAccessTokenValid();
+
+  }
+
+  @Test
+  void authStatusBad() throws Exception {
+
+    // Given not authenticated
+    when(twitchAuthClient.isCurrentAccessTokenValid()).thenReturn(false);
+
+    // When requested, then it is ok
+    mockMvc.perform(get(WebConfig.BASE_PATH + "/twitch/auth/status"))
+      .andDo(print())
+      .andExpect(status().isUnauthorized());
+
+    // And the service was started
+    verify(twitchAuthClient).isCurrentAccessTokenValid();
 
   }
 
