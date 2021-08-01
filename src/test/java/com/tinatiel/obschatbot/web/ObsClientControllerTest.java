@@ -13,19 +13,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tinatiel.obschatbot.core.client.ClientManager;
 import com.tinatiel.obschatbot.data.client.obs.ObsClientDataService;
 import com.tinatiel.obschatbot.data.client.obs.model.ObsClientSettingsDto;
-import com.tinatiel.obschatbot.data.client.twitch.auth.TwitchClientAuthDataService;
-import com.tinatiel.obschatbot.data.client.twitch.auth.model.TwitchClientAuthDataDto;
-import com.tinatiel.obschatbot.data.client.twitch.chat.TwitchClientChatDataService;
-import com.tinatiel.obschatbot.data.client.twitch.chat.model.TwitchClientChatDataDto;
-import com.tinatiel.obschatbot.data.localuser.LocalUserService;
-import com.tinatiel.obschatbot.data.system.SystemSettingsDataService;
-import com.tinatiel.obschatbot.data.system.entity.SystemSettingsEntity;
-import com.tinatiel.obschatbot.data.system.model.SystemSettingsDto;
 import com.tinatiel.obschatbot.security.WebSecurityConfig;
 import com.tinatiel.obschatbot.security.owner.OwnerDto;
 import com.tinatiel.obschatbot.security.owner.OwnerService;
+import com.tinatiel.obschatbot.web.model.ClientStatusRequestDto;
+import com.tinatiel.obschatbot.web.model.ClientStatusRequestDto.State;
 import java.util.Optional;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
@@ -48,6 +43,8 @@ public class ObsClientControllerTest {
 
   @MockBean
   ObsClientDataService obsClientDataService;
+  @MockBean
+  ClientManager obsClientManager;
 
   @MockBean
   OwnerService ownerService;
@@ -132,6 +129,66 @@ public class ObsClientControllerTest {
     ObsClientSettingsDto actual = captor.getValue();
     assertThat(actual).usingRecursiveComparison().ignoringFields("owner").isEqualTo(settings);
     assertThat(actual.getOwner()).isEqualTo(owner.getId());
+
+  }
+
+  @Test
+  void startObs() throws Exception {
+
+    // Given status request
+    ClientStatusRequestDto settings = ClientStatusRequestDto.builder()
+      .state(State.START)
+      .build();
+
+    // When saved it is ok
+    mockMvc.perform(put(WebConfig.BASE_PATH + "/obs/status")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(objectMapper.writeValueAsString(settings))
+      ).andDo(print())
+      .andExpect(status().isOk());
+
+    // And the service was started
+    verify(obsClientManager).startClient();
+
+  }
+
+  @Test
+  void stopObs() throws Exception {
+
+    // Given status request
+    ClientStatusRequestDto settings = ClientStatusRequestDto.builder()
+      .state(State.STOP)
+      .build();
+
+    // When saved it is ok
+    mockMvc.perform(put(WebConfig.BASE_PATH + "/obs/status")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(objectMapper.writeValueAsString(settings))
+      ).andDo(print())
+      .andExpect(status().isOk());
+
+    // And the service was started
+    verify(obsClientManager).stopClient();
+
+  }
+
+  @Test
+  void restartObs() throws Exception {
+
+    // Given status request
+    ClientStatusRequestDto settings = ClientStatusRequestDto.builder()
+      .state(State.RESTART)
+      .build();
+
+    // When saved it is ok
+    mockMvc.perform(put(WebConfig.BASE_PATH + "/obs/status")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(objectMapper.writeValueAsString(settings))
+      ).andDo(print())
+      .andExpect(status().isOk());
+
+    // And the service was started
+    verify(obsClientManager).reloadClient();
 
   }
 
