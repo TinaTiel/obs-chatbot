@@ -81,7 +81,7 @@ public class ObsClientControllerTest {
       .andExpect(status().isOk())
       .andExpect(jsonPath("$.owner").value(owner.getId().toString()))
       .andExpect(jsonPath("$.host").value("localhost"))
-      .andExpect(jsonPath("$.password").value("password"))
+      .andExpect(jsonPath("$.password").value("[REDACTED]"))
       .andExpect(jsonPath("$.port").value(4444))
       .andExpect(jsonPath("$.connectionTimeoutMs").value(1234));
 

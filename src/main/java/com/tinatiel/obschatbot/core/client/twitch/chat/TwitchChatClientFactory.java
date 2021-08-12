@@ -46,8 +46,6 @@ public class TwitchChatClientFactory implements ClientFactory<PircBotX, TwitchCh
 
     // Get a fresh set of settings
     TwitchChatClientSettings settings = clientSettingsFactory.getSettings();
-    String fooi = settings.getIrcHost();
-    Integer bar = settings.getIrcPort();
     // Create a new bot with those settings
     org.pircbotx.Configuration.Builder builder = new org.pircbotx.Configuration.Builder()
       // Twitch's IRC url

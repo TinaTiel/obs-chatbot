@@ -11,6 +11,7 @@ import com.tinatiel.obschatbot.data.system.SystemSettingsDataService;
 import com.tinatiel.obschatbot.data.system.model.SystemSettingsDto;
 import com.tinatiel.obschatbot.security.owner.OwnerService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@Slf4j
 @RequestMapping(path = WebConfig.BASE_PATH + "/twitch/auth")
 @RestController
 @RequiredArgsConstructor
@@ -33,6 +35,7 @@ public class TwitchAuthController {
     return twitchClientAuthDataService
       .findByOwner(ownerService.getOwner().getId())
       .map(it -> {
+        log.debug("Client secret is: " + it.getClientSecret());
         if(it.getClientSecret() != null) it.setClientSecret("[REDACTED]");
         return it;
       })

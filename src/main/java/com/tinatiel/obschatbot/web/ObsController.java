@@ -6,6 +6,7 @@ import com.tinatiel.obschatbot.data.client.obs.model.ObsClientSettingsDto;
 import com.tinatiel.obschatbot.security.owner.OwnerService;
 import com.tinatiel.obschatbot.web.model.ClientStatusRequestDto;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@Slf4j
 @RequestMapping(path = WebConfig.BASE_PATH + "/obs")
 @RestController
 @RequiredArgsConstructor
@@ -25,6 +27,11 @@ public class ObsController {
   @GetMapping("/settings")
   ResponseEntity<ObsClientSettingsDto> getOBsSettings() {
     return obsClientDataService.findByOwner(ownerService.getOwner().getId())
+      .map(it -> {
+        log.debug("OBS Password is: " + it.getPassword());
+        if(it.getPassword() != null) it.setPassword("[REDACTED]");
+        return it;
+      })
       .map(ResponseEntity::ok)
       .orElseGet(() -> ResponseEntity.notFound().build());
   }

@@ -58,7 +58,7 @@ public class ExecutableCommandMapperImpl implements ExecutableCommandMapper {
         // Get the persisted command
         CommandDto nestedCommand = commandService
           .findById(((ExecuteCommandActionDto) actionDto).getTarget())
-          .orElseThrow(() -> new UnexpectedException("No command found by id " + ((ExecuteCommandActionDto) actionDto).getTarget()));
+          .orElseThrow(() -> new UnexpectedException("While building list of actions for command '" + dto.getName() + "', encountered executeCommand action with a target command that doesn't exist: id " + ((ExecuteCommandActionDto) actionDto).getTarget()));
 
         // Check for cycles
         if(visited.contains(nestedCommand.getName())) {
