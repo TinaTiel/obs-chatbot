@@ -15,6 +15,9 @@
     <version>0.1.0-alpha</version>
     <modules>
         <module>monolith</module>
+        <module>command-service</module>
+        <module>request-service</module>
+        <module>security</module>
     </modules>
 
 </project>
