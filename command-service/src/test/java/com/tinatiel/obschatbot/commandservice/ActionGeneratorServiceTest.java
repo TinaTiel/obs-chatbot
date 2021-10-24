@@ -21,7 +21,9 @@ import com.tinatiel.obschatbot.commandservice.dto.action.args.ActionArgsFactory;
 import com.tinatiel.obschatbot.commandservice.service.ActionGeneratorService;
 import com.tinatiel.obschatbot.commandservice.service.ActionGeneratorServiceImpl;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 
 public class ActionGeneratorServiceTest {
@@ -64,7 +66,10 @@ public class ActionGeneratorServiceTest {
     // When generated with args
     ActionGeneratorService actionGeneratorService = new ActionGeneratorServiceImpl(
       actionArgsFactory,
-      List.of(generator));
+      Map.of(
+        TestActionSequence.class, generator
+      )
+    );
     CommandArgs args = mock(CommandArgs.class);
     List<Action> results = actionGeneratorService.generate(command, args);
 
@@ -78,26 +83,21 @@ public class ActionGeneratorServiceTest {
   @Test
   void shouldThrowExceptionIfNoGeneratorsCanAcceptSequence() {
 
-    // Given a bunch of generators that don't accept anything
-    ActionSequenceGenerator generator1 = mock(ActionSequenceGenerator.class);
-    ActionSequenceGenerator generator2 = mock(ActionSequenceGenerator.class);
-    ActionSequenceGenerator generator3 = mock(ActionSequenceGenerator.class);
-    when(generator1.accept(any())).thenReturn(false);
-    when(generator2.accept(any())).thenReturn(false);
-    when(generator3.accept(any())).thenReturn(false);
+    // Given an action generator service
+    // with any action args factory
+    // and no generators
+    ActionGeneratorService actionGeneratorService = new ActionGeneratorServiceImpl(
+      mock(ActionArgsFactory.class),
+      new HashMap<>()
+    );
 
-    // And an ActionArgsFactory
-    ActionArgsFactory actionArgsFactory = mock(ActionArgsFactory.class);
-
-    // When generated against a command with a sequence
-    // Then an exception is thrown
+    // And any command
     CommandDto anyCommand = CommandDto.builder()
       .actionSequence(mock(ActionSequence.class))
       .build();
-    ActionGeneratorService actionGeneratorService = new ActionGeneratorServiceImpl(
-      actionArgsFactory,
-      List.of(
-      generator1, generator2, generator3));
+
+    // When generated against a command with a sequence
+    // Then an exception is thrown
     assertThatThrownBy(() -> {
       actionGeneratorService.generate(anyCommand, mock(CommandArgs.class));
     }).isInstanceOf(UnknownActionSequenceException.class);
@@ -105,71 +105,19 @@ public class ActionGeneratorServiceTest {
   }
 
   @Test
-  void shouldUseFirstAcceptingGenerator() {
-
-    // Given a generator that would return actions, but won't accept any generator
-    ActionSequenceGenerator<?> generatorIgnored = mock(ActionSequenceGenerator.class);
-    when(generatorIgnored.accept(any())).thenReturn(false);
-    when(generatorIgnored.generate(any())).thenReturn(List.of(new TestAction()));
-
-    // And a generator that will accept any generator and return some actions
-    List<Action> expectedActions = List.of(new TestAction(), new TestAction(), new TestAction());
-    ActionSequenceGenerator<?> firstAcceptingGenerator = mock(ActionSequenceGenerator.class);
-    when(firstAcceptingGenerator.accept(any())).thenReturn(true);
-    when(firstAcceptingGenerator.generate(any())).thenReturn(expectedActions);
-
-    // And another generator that will accept any generator and return some actions
-    ActionSequenceGenerator<?> secondAcceptingGenerator = mock(ActionSequenceGenerator.class);
-    when(secondAcceptingGenerator.accept(any())).thenReturn(true);
-    when(secondAcceptingGenerator.generate(any())).thenReturn(List.of(new TestAction(), new TestAction()));
-
-    // And an ActionArgsFactory that returns the action passed to it
-    ActionArgsFactory actionArgsFactory = new TestActionArgsFactory();
-
-    // And given the service is creator with the generators in the above order
-    ActionGeneratorService actionGeneratorService = new ActionGeneratorServiceImpl(
-      actionArgsFactory,
-      List.of(generatorIgnored, firstAcceptingGenerator, secondAcceptingGenerator)
-    );
-
-    // When generated against any command with at least one sequence
-    CommandDto anyCommand = CommandDto.builder()
-      .actionSequence(mock(ActionSequence.class))
-      .build();
-    List<Action> result = actionGeneratorService.generate(anyCommand, mock(CommandArgs.class));
-
-    // Then the first generator that accepted the action is what is used to return the actions
-    assertThat(result).usingRecursiveComparison().isEqualTo(expectedActions);
-
-  }
-
-  @Test
-  void shouldNotAcceptNullOrEmptyGenerators() {
-
-    // Given an ActionArgsFactory
-    ActionArgsFactory actionArgsFactory = mock(ActionArgsFactory.class);
-
-    assertThatThrownBy(() -> {
-      new ActionGeneratorServiceImpl(actionArgsFactory, null);
-    }).isInstanceOf(IllegalArgumentException.class);
-
-    assertThatThrownBy(() -> {
-      new ActionGeneratorServiceImpl(actionArgsFactory, new ArrayList<>());
-    }).isInstanceOf(IllegalArgumentException.class);
-
-  }
-
-  @Test
   void shouldReturnNoActionsIfCommandHasNoSequence() {
 
-    // Given the service has generators that accept any command
+    // Given an action generator that will generate a list of actions
+    ActionSequenceGenerator<TestActionSequence> generator = new TestActionSequenceGenerator();
+
     // And an ActionArgsFactory that returns the action passed to it
     ActionArgsFactory actionArgsFactory = new TestActionArgsFactory();
     ActionGeneratorService actionGeneratorService = new ActionGeneratorServiceImpl(
       actionArgsFactory,
-      List.of(
-      new TestActionSequenceGenerator()
-    ));
+      Map.of(
+        TestActionSequence.class, generator
+      )
+    );
 
     // And given a command with no sequencer
     CommandDto commandWithoutSequencer = CommandDto.builder().build();
