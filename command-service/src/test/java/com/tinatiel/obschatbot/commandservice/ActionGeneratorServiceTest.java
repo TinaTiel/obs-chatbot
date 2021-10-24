@@ -9,15 +9,13 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.tinatiel.obschatbot.commandservice.action.TestAction;
-import com.tinatiel.obschatbot.commandservice.actionsequence.TestActionSequence;
-import com.tinatiel.obschatbot.commandservice.dto.action.actionsequence.UnknownActionSequenceException;
 import com.tinatiel.obschatbot.commandservice.dto.CommandArgs;
 import com.tinatiel.obschatbot.commandservice.dto.CommandDto;
 import com.tinatiel.obschatbot.commandservice.dto.action.Action;
 import com.tinatiel.obschatbot.commandservice.dto.action.ExecuteCommandAction;
 import com.tinatiel.obschatbot.commandservice.dto.action.actionsequence.ActionSequence;
 import com.tinatiel.obschatbot.commandservice.dto.action.actionsequence.ActionSequenceGenerator;
-import com.tinatiel.obschatbot.commandservice.dto.action.args.ActionArgsFactory;
+import com.tinatiel.obschatbot.commandservice.dto.action.args.ActionArgsProcessorFactory;
 import com.tinatiel.obschatbot.commandservice.service.ActionGeneratorService;
 import com.tinatiel.obschatbot.commandservice.service.ActionGeneratorServiceImpl;
 import java.util.ArrayList;
@@ -61,11 +59,11 @@ public class ActionGeneratorServiceTest {
     ActionSequenceGenerator<TestActionSequence> generator = new TestActionSequenceGenerator();
 
     // And an ActionArgsFactory that returns the action passed to it
-    ActionArgsFactory actionArgsFactory = new TestActionArgsFactory();
+    ActionArgsProcessorFactory actionArgsProcessorFactory = new TestActionArgsProcessorFactory();
 
     // When generated with args
     ActionGeneratorService actionGeneratorService = new ActionGeneratorServiceImpl(
-      actionArgsFactory,
+      actionArgsProcessorFactory,
       Map.of(
         TestActionSequence.class, generator
       )
@@ -81,26 +79,33 @@ public class ActionGeneratorServiceTest {
   }
 
   @Test
-  void shouldThrowExceptionIfNoGeneratorsCanAcceptSequence() {
+  void shouldReturnActionsInOrderAsIsIfNoGeneratorAvailableForSequence() {
+
+    // Given an action args processor factory that returns the actions as is
+    ActionArgsProcessorFactory actionArgsProcessorFactory = new TestActionArgsProcessorFactory();
 
     // Given an action generator service
-    // with any action args factory
     // and no generators
     ActionGeneratorService actionGeneratorService = new ActionGeneratorServiceImpl(
-      mock(ActionArgsFactory.class),
+      actionArgsProcessorFactory,
       new HashMap<>()
     );
 
-    // And any command
+    // And a command with a sequence of actions
+    ActionSequence actionSequence = mock(ActionSequence.class);
+    List<Action> expectedActions = List.of(
+      new TestAction(), new TestAction(), new TestAction()
+    );
+    when(actionSequence.getActions()).thenReturn(expectedActions);
     CommandDto anyCommand = CommandDto.builder()
-      .actionSequence(mock(ActionSequence.class))
+      .actionSequence(actionSequence)
       .build();
 
     // When generated against a command with a sequence
-    // Then an exception is thrown
-    assertThatThrownBy(() -> {
-      actionGeneratorService.generate(anyCommand, mock(CommandArgs.class));
-    }).isInstanceOf(UnknownActionSequenceException.class);
+    List<Action> results = actionGeneratorService.generate(anyCommand, mock(CommandArgs.class));
+
+    // Then the actions are returned in the order they were provided
+    assertThat(results).containsExactlyElementsOf(expectedActions);
 
   }
 
@@ -111,9 +116,9 @@ public class ActionGeneratorServiceTest {
     ActionSequenceGenerator<TestActionSequence> generator = new TestActionSequenceGenerator();
 
     // And an ActionArgsFactory that returns the action passed to it
-    ActionArgsFactory actionArgsFactory = new TestActionArgsFactory();
+    ActionArgsProcessorFactory actionArgsProcessorFactory = new TestActionArgsProcessorFactory();
     ActionGeneratorService actionGeneratorService = new ActionGeneratorServiceImpl(
-      actionArgsFactory,
+      actionArgsProcessorFactory,
       Map.of(
         TestActionSequence.class, generator
       )
@@ -133,22 +138,31 @@ public class ActionGeneratorServiceTest {
   public static class TestActionSequenceGenerator implements ActionSequenceGenerator<TestActionSequence> {
 
     @Override
-    public boolean accept(ActionSequence actionSequence) {
-      return true;
-    }
-
-    @Override
     public List<Action> generate(TestActionSequence actionSequence) {
       return new ArrayList<>(actionSequence.getActions());
     }
 
   }
 
-  public static class TestActionArgsFactory implements ActionArgsFactory {
+  public static class TestActionArgsProcessorFactory implements ActionArgsProcessorFactory {
 
     @Override
     public Action process(Action action, CommandArgs commandArgs) {
       return action;
+    }
+  }
+
+  public static class TestActionSequence implements ActionSequence {
+
+    private final List<Action> actions;
+
+    public TestActionSequence(List<Action> actions) {
+      this.actions = actions;
+    }
+
+    @Override
+    public List<Action> getActions() {
+      return new ArrayList(actions);
     }
   }
 

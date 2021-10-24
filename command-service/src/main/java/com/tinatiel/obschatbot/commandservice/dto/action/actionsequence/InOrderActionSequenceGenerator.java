@@ -8,11 +8,6 @@ import java.util.List;
 public class InOrderActionSequenceGenerator implements ActionSequenceGenerator<InOrderActionSequence> {
 
   @Override
-  public boolean accept(ActionSequence actionSequence) {
-    return actionSequence instanceof InOrderActionSequence;
-  }
-
-  @Override
   public List<Action> generate(InOrderActionSequence actionSequence) {
     List<Action> actions = new ArrayList<>(actionSequence.getActions());
     if(actionSequence.isReverse()) {
@@ -20,4 +15,5 @@ public class InOrderActionSequenceGenerator implements ActionSequenceGenerator<I
     }
     return actions;
   }
+
 }

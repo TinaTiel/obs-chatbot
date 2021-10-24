@@ -6,17 +6,24 @@ import com.tinatiel.obschatbot.commandservice.dto.action.Action;
 import com.tinatiel.obschatbot.commandservice.dto.action.ExecuteCommandAction;
 import com.tinatiel.obschatbot.commandservice.dto.action.actionsequence.ActionSequence;
 import com.tinatiel.obschatbot.commandservice.dto.action.actionsequence.ActionSequenceGenerator;
-import com.tinatiel.obschatbot.commandservice.dto.action.actionsequence.UnknownActionSequenceException;
-import com.tinatiel.obschatbot.commandservice.dto.action.args.ActionArgsFactory;
+import com.tinatiel.obschatbot.commandservice.dto.action.actionsequence.InOrderActionSequenceGenerator;
+import com.tinatiel.obschatbot.commandservice.dto.action.args.ActionArgsProcessorFactory;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RequiredArgsConstructor
 public class ActionGeneratorServiceImpl implements ActionGeneratorService {
 
-  private final ActionArgsFactory actionArgsFactory;
+  private final ActionSequenceGenerator DEFAULT_GENERATOR = actionSequence -> {
+    log.warn("No action sequence generator was found for sequence type " + actionSequence.getClass());
+    return actionSequence.getActions();
+  };
+
+  private final ActionArgsProcessorFactory actionArgsProcessorFactory;
   private final Map<Class<? extends ActionSequence>, ActionSequenceGenerator<?>> generators;
 
   @Override
@@ -33,24 +40,19 @@ public class ActionGeneratorServiceImpl implements ActionGeneratorService {
   }
 
   private void generate(List<Action> accumulator, ActionSequence sequence, CommandArgs commandArgs) {
+
     List<Action> generatedActions = getGenerator(sequence).generate(sequence);
     for (Action action:generatedActions) {
       if(action instanceof ExecuteCommandAction) {
         this.generate(accumulator, ((ExecuteCommandAction) action).getActionSequence(), commandArgs);
       } else {
-        accumulator.add(actionArgsFactory.process(action, commandArgs));
+        accumulator.add(actionArgsProcessorFactory.process(action, commandArgs));
       }
     }
   }
 
   private ActionSequenceGenerator getGenerator(ActionSequence sequence) {
-    if (generators.containsKey(sequence.getClass())) {
-      return generators.get(sequence.getClass());
-    } else {
-      throw new UnknownActionSequenceException(
-        "No generator available for action sequence " + sequence.getClass()
-      );
-    }
+    return generators.getOrDefault(sequence.getClass(), DEFAULT_GENERATOR);
   }
 
 }
