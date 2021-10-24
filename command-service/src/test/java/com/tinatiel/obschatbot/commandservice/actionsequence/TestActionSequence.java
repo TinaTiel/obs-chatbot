@@ -1,7 +1,7 @@
 package com.tinatiel.obschatbot.commandservice.actionsequence;
 
 import com.tinatiel.obschatbot.commandservice.dto.action.Action;
-import com.tinatiel.obschatbot.commandservice.dto.actionsequence.ActionSequence;
+import com.tinatiel.obschatbot.commandservice.dto.action.actionsequence.ActionSequence;
 import java.util.ArrayList;
 import java.util.List;
 

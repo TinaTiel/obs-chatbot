@@ -1,6 +1,6 @@
 package com.tinatiel.obschatbot.commandservice.dto;
 
-import com.tinatiel.obschatbot.commandservice.dto.actionsequence.ActionSequence;
+import com.tinatiel.obschatbot.commandservice.dto.action.actionsequence.ActionSequence;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

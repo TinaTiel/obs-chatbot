@@ -6,8 +6,7 @@
 package com.tinatiel.obschatbot.commandservice.dto.action;
 
 
-import com.tinatiel.obschatbot.commandservice.dto.CommandArgs;
-import com.tinatiel.obschatbot.commandservice.dto.actionsequence.ActionSequence;
+import com.tinatiel.obschatbot.commandservice.dto.action.actionsequence.ActionSequence;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,9 +25,4 @@ import lombok.ToString;
 public class ExecuteCommandAction implements Action {
   private UUID target;
   private ActionSequence actionSequence;
-
-  @Override
-  public Action withCommandArgs(CommandArgs commandArgs) {
-    return this;
-  }
 }

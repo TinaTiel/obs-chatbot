@@ -21,14 +21,5 @@ import lombok.ToString;
 @ToString
 @Getter
 public class SendMessageAction implements Action {
-
   private String message;
-
-  @Override
-  public Action withCommandArgs(CommandArgs commandArgs) {
-    // TODO map any args by name into message template; e.g. if the message is "Hello {username}"
-    // and the args includes an argument "username" with value 'Steve' then the copy of the action
-    // should have the message "Hello Steve"
-    return this;
-  }
 }

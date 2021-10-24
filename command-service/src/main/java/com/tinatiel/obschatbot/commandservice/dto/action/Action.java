@@ -5,16 +5,10 @@
 
 package com.tinatiel.obschatbot.commandservice.dto.action;
 
-import com.tinatiel.obschatbot.commandservice.dto.CommandArgs;
-
 /**
  * Defines a specific action that can occur, for example hiding an OBS scene, sending a chat
  * message, pausing/waiting, etc.
  */
 public interface Action {
 
-  /**
-   * Creates a clone of the Action using the supplied args
-   */
-  Action withCommandArgs(CommandArgs commandArgs);
 }

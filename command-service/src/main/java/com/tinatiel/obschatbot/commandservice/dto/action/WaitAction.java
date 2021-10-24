@@ -20,9 +20,4 @@ import lombok.ToString;
 public class WaitAction implements Action {
   private Duration waitDuration;
   private Duration waitTimeout;
-
-  @Override
-  public Action withCommandArgs(CommandArgs commandArgs) {
-    return this;
-  }
 }

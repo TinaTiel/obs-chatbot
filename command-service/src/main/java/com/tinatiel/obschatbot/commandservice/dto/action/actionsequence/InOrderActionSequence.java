@@ -1,4 +1,4 @@
-package com.tinatiel.obschatbot.commandservice.dto.actionsequence;
+package com.tinatiel.obschatbot.commandservice.dto.action.actionsequence;
 
 import com.tinatiel.obschatbot.commandservice.dto.action.Action;
 import java.util.List;

@@ -4,21 +4,25 @@ import com.tinatiel.obschatbot.commandservice.dto.CommandArgs;
 import com.tinatiel.obschatbot.commandservice.dto.CommandDto;
 import com.tinatiel.obschatbot.commandservice.dto.action.Action;
 import com.tinatiel.obschatbot.commandservice.dto.action.ExecuteCommandAction;
-import com.tinatiel.obschatbot.commandservice.dto.actionsequence.ActionSequence;
-import com.tinatiel.obschatbot.commandservice.dto.actionsequence.ActionSequenceGenerator;
-import com.tinatiel.obschatbot.commandservice.dto.actionsequence.UnknownActionSequenceException;
+import com.tinatiel.obschatbot.commandservice.dto.action.actionsequence.ActionSequence;
+import com.tinatiel.obschatbot.commandservice.dto.action.actionsequence.ActionSequenceGenerator;
+import com.tinatiel.obschatbot.commandservice.dto.action.actionsequence.UnknownActionSequenceException;
+import com.tinatiel.obschatbot.commandservice.dto.action.args.ActionArgsFactory;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ActionGeneratorServiceImpl implements ActionGeneratorService {
 
+  private final ActionArgsFactory actionArgsFactory;
   private final List<ActionSequenceGenerator<?>> generators;
 
   public ActionGeneratorServiceImpl(
+    ActionArgsFactory actionArgsFactory,
     List<ActionSequenceGenerator<?>> generators) {
     if(generators == null || generators.isEmpty()) {
       throw new IllegalArgumentException("Generators cannot be null");
     }
+    this.actionArgsFactory = actionArgsFactory;
     this.generators = generators;
   }
 
@@ -36,12 +40,12 @@ public class ActionGeneratorServiceImpl implements ActionGeneratorService {
   }
 
   private void generate(List<Action> accumulator, ActionSequence sequence, CommandArgs commandArgs) {
-    List<Action> generatedActions = findFirstGenerator(sequence).generate(sequence, commandArgs);
+    List<Action> generatedActions = findFirstGenerator(sequence).generate(sequence);
     for (Action action:generatedActions) {
       if(action instanceof ExecuteCommandAction) {
         this.generate(accumulator, ((ExecuteCommandAction) action).getActionSequence(), commandArgs);
       } else {
-        accumulator.add(action);
+        accumulator.add(actionArgsFactory.process(action, commandArgs));
       }
     }
   }

@@ -24,9 +24,4 @@ public class ObsSourceVisibilityAction implements Action {
   private String sceneName;
   private String sourceName;
   private boolean visible;
-
-  @Override
-  public Action withCommandArgs(CommandArgs commandArgs) {
-    return this;
-  }
 }

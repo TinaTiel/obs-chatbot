@@ -1,6 +1,5 @@
-package com.tinatiel.obschatbot.commandservice.dto.actionsequence;
+package com.tinatiel.obschatbot.commandservice.dto.action.actionsequence;
 
-import com.tinatiel.obschatbot.commandservice.dto.CommandArgs;
 import com.tinatiel.obschatbot.commandservice.dto.action.Action;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -14,7 +13,7 @@ public class InOrderActionSequenceGenerator implements ActionSequenceGenerator<I
   }
 
   @Override
-  public List<Action> generate(InOrderActionSequence actionSequence, CommandArgs commandArgs) {
+  public List<Action> generate(InOrderActionSequence actionSequence) {
     List<Action> actions = new ArrayList<>(actionSequence.getActions());
     if(actionSequence.isReverse()) {
       Collections.reverse(actions);
