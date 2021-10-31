@@ -3,10 +3,9 @@ package com.tinatiel.obschatbot.commandservice.service;
 import com.tinatiel.obschatbot.commandservice.dto.CommandArgs;
 import com.tinatiel.obschatbot.commandservice.dto.CommandDto;
 import com.tinatiel.obschatbot.commandservice.dto.action.Action;
-import com.tinatiel.obschatbot.commandservice.dto.action.ExecuteCommandAction;
+import com.tinatiel.obschatbot.commandservice.dto.action.ExecuteSequenceAction;
 import com.tinatiel.obschatbot.commandservice.dto.action.actionsequence.ActionSequence;
 import com.tinatiel.obschatbot.commandservice.dto.action.actionsequence.ActionSequenceGenerator;
-import com.tinatiel.obschatbot.commandservice.dto.action.actionsequence.InOrderActionSequenceGenerator;
 import com.tinatiel.obschatbot.commandservice.dto.action.args.ActionArgsProcessorFactory;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 public class ActionGeneratorServiceImpl implements ActionGeneratorService {
 
   private final ActionSequenceGenerator DEFAULT_GENERATOR = actionSequence -> {
-    log.warn("No action sequence generator was found for sequence type " + actionSequence.getClass());
+    log.warn("No action sequence generator was registered/found for sequence type " + actionSequence.getClass());
     return actionSequence.getActions();
   };
 
@@ -28,8 +27,9 @@ public class ActionGeneratorServiceImpl implements ActionGeneratorService {
 
   @Override
   public List<Action> generate(CommandDto commandDto, CommandArgs commandArgs) {
+
     // Exit early if there is no sequence
-    if(commandDto != null && commandDto.getActionSequence() == null) {
+    if(commandDto == null || commandDto.getActionSequence() == null) {
       return new ArrayList<>();
     }
 
@@ -37,14 +37,15 @@ public class ActionGeneratorServiceImpl implements ActionGeneratorService {
     List<Action> result = new ArrayList<>();
     generate(result, commandDto.getActionSequence(), commandArgs);
     return result;
+
   }
 
   private void generate(List<Action> accumulator, ActionSequence sequence, CommandArgs commandArgs) {
 
     List<Action> generatedActions = getGenerator(sequence).generate(sequence);
     for (Action action:generatedActions) {
-      if(action instanceof ExecuteCommandAction) {
-        this.generate(accumulator, ((ExecuteCommandAction) action).getActionSequence(), commandArgs);
+      if(action instanceof ExecuteSequenceAction) {
+        this.generate(accumulator, ((ExecuteSequenceAction) action).getActionSequence(), commandArgs);
       } else {
         accumulator.add(actionArgsProcessorFactory.process(action, commandArgs));
       }

@@ -12,7 +12,7 @@ import com.tinatiel.obschatbot.commandservice.action.TestAction;
 import com.tinatiel.obschatbot.commandservice.dto.CommandArgs;
 import com.tinatiel.obschatbot.commandservice.dto.CommandDto;
 import com.tinatiel.obschatbot.commandservice.dto.action.Action;
-import com.tinatiel.obschatbot.commandservice.dto.action.ExecuteCommandAction;
+import com.tinatiel.obschatbot.commandservice.dto.action.ExecuteSequenceAction;
 import com.tinatiel.obschatbot.commandservice.dto.action.actionsequence.ActionSequence;
 import com.tinatiel.obschatbot.commandservice.dto.action.actionsequence.ActionSequenceGenerator;
 import com.tinatiel.obschatbot.commandservice.dto.action.args.ActionArgsProcessorFactory;
@@ -42,10 +42,10 @@ public class ActionGeneratorServiceTest {
       .actionSequence(new TestActionSequence(List.of(
         action1,
         action2,
-        ExecuteCommandAction.builder()
+        ExecuteSequenceAction.builder()
           .actionSequence(new TestActionSequence(List.of(
             action31,
-            ExecuteCommandAction.builder().actionSequence(new TestActionSequence(List.of(
+            ExecuteSequenceAction.builder().actionSequence(new TestActionSequence(List.of(
               action321,
               action322
             ))).build(),
@@ -68,8 +68,7 @@ public class ActionGeneratorServiceTest {
         TestActionSequence.class, generator
       )
     );
-    CommandArgs args = mock(CommandArgs.class);
-    List<Action> results = actionGeneratorService.generate(command, args);
+    List<Action> results = actionGeneratorService.generate(command, mock(CommandArgs.class));
 
     // Then a list of actions is generated
     assertThat(results).usingRecursiveComparison().isEqualTo(List.of(

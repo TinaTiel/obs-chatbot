@@ -15,14 +15,15 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 /**
- * An Action that allows execution of another Command.
+ * An Action that allows execution of an action sequence, the sequence being derived
+ * either directly or indirectly from the ID of another command.
  */
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @ToString
 @Getter
-public class ExecuteCommandAction implements Action {
-  private UUID target;
+public class ExecuteSequenceAction implements Action {
+  private UUID sequenceFromCommandId;
   private ActionSequence actionSequence;
 }

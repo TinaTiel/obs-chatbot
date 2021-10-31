@@ -16,8 +16,6 @@
     <modules>
         <module>monolith</module>
         <module>command-service</module>
-        <module>request-service</module>
-        <module>security</module>
     </modules>
 
 </project>
