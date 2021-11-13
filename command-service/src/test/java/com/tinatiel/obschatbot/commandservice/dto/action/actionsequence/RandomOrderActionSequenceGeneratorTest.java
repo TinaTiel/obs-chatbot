@@ -1,12 +1,10 @@
-package com.tinatiel.obschatbot.commandservice.action.actionsequence;
+package com.tinatiel.obschatbot.commandservice.dto.action.actionsequence;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import com.tinatiel.obschatbot.commandservice.action.TestAction;
+import com.tinatiel.obschatbot.commandservice.dto.action.TestAction;
 import com.tinatiel.obschatbot.commandservice.dto.action.Action;
-import com.tinatiel.obschatbot.commandservice.dto.action.actionsequence.RandomSequence;
-import com.tinatiel.obschatbot.commandservice.dto.action.actionsequence.RandomSequenceGenerator;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.RepeatedTest;

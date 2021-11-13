@@ -1,16 +1,13 @@
-package com.tinatiel.obschatbot.commandservice.action.args;
+package com.tinatiel.obschatbot.commandservice.dto.action.args;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import com.tinatiel.obschatbot.commandservice.action.TestAction;
+import com.tinatiel.obschatbot.commandservice.dto.action.TestAction;
 import com.tinatiel.obschatbot.commandservice.dto.CommandArgs;
 import com.tinatiel.obschatbot.commandservice.dto.action.Action;
-import com.tinatiel.obschatbot.commandservice.dto.action.args.ActionArgsProcessor;
-import com.tinatiel.obschatbot.commandservice.dto.action.args.ActionArgsProcessorFactory;
-import com.tinatiel.obschatbot.commandservice.dto.action.args.ActionArgsProcessorFactoryImpl;
 import java.util.HashMap;
 import java.util.Map;
 import org.junit.jupiter.api.Test;

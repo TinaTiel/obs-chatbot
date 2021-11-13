@@ -1,6 +1,5 @@
-package com.tinatiel.obschatbot.commandservice.action;
+package com.tinatiel.obschatbot.commandservice.dto.action;
 
-import com.tinatiel.obschatbot.commandservice.dto.action.Action;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.ToString;

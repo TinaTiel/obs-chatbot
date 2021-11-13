@@ -10,20 +10,24 @@ import com.tinatiel.obschatbot.commandservice.dto.action.actionsequence.ActionSe
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
+import lombok.With;
 
 /**
  * An Action that allows execution of an action sequence, the sequence being derived
  * either directly or indirectly from the ID of another command.
  */
+@With
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
+@Data
+@Builder(toBuilder = true)
 @ToString
-@Getter
 public class ExecuteSequenceAction implements Action {
-  private UUID sequenceFromCommandId;
+  private UUID commandId;
   private ActionSequence actionSequence;
 }

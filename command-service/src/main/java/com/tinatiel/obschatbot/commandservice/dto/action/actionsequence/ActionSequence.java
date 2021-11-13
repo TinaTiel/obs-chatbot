@@ -5,4 +5,5 @@ import java.util.List;
 
 public interface ActionSequence {
   List<Action> getActions();
+  void setActions(List<Action> actions);
 }

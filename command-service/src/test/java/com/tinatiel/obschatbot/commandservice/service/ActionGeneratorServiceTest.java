@@ -1,4 +1,4 @@
-package com.tinatiel.obschatbot.commandservice;
+package com.tinatiel.obschatbot.commandservice.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -8,16 +8,15 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.tinatiel.obschatbot.commandservice.action.TestAction;
+import com.tinatiel.obschatbot.commandservice.dto.action.TestAction;
 import com.tinatiel.obschatbot.commandservice.dto.CommandArgs;
 import com.tinatiel.obschatbot.commandservice.dto.CommandDto;
 import com.tinatiel.obschatbot.commandservice.dto.action.Action;
 import com.tinatiel.obschatbot.commandservice.dto.action.ExecuteSequenceAction;
 import com.tinatiel.obschatbot.commandservice.dto.action.actionsequence.ActionSequence;
 import com.tinatiel.obschatbot.commandservice.dto.action.actionsequence.ActionSequenceGenerator;
+import com.tinatiel.obschatbot.commandservice.dto.action.actionsequence.TestActionSequence;
 import com.tinatiel.obschatbot.commandservice.dto.action.args.ActionArgsProcessorFactory;
-import com.tinatiel.obschatbot.commandservice.service.ActionGeneratorService;
-import com.tinatiel.obschatbot.commandservice.service.ActionGeneratorServiceImpl;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -148,20 +147,6 @@ public class ActionGeneratorServiceTest {
     @Override
     public Action process(Action action, CommandArgs commandArgs) {
       return action;
-    }
-  }
-
-  public static class TestActionSequence implements ActionSequence {
-
-    private final List<Action> actions;
-
-    public TestActionSequence(List<Action> actions) {
-      this.actions = actions;
-    }
-
-    @Override
-    public List<Action> getActions() {
-      return new ArrayList(actions);
     }
   }
 

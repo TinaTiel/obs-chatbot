@@ -1,11 +1,9 @@
-package com.tinatiel.obschatbot.commandservice.action.actionsequence;
+package com.tinatiel.obschatbot.commandservice.dto.action.actionsequence;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.tinatiel.obschatbot.commandservice.action.TestAction;
+import com.tinatiel.obschatbot.commandservice.dto.action.TestAction;
 import com.tinatiel.obschatbot.commandservice.dto.action.Action;
-import com.tinatiel.obschatbot.commandservice.dto.action.actionsequence.InOrderActionSequence;
-import com.tinatiel.obschatbot.commandservice.dto.action.actionsequence.InOrderActionSequenceGenerator;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 
